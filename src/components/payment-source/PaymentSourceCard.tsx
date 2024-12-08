@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { MoreVertical, Plus, Minus, ChevronDown, ChevronUp } from "lucide-react";
+import { MoreVertical, ChevronDown, ChevronUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -10,7 +10,6 @@ import {
 import { PaymentSourceDialog } from "./PaymentSourceDialog";
 import { useFinance } from "@/contexts/FinanceContext";
 import { useToast } from "@/hooks/use-toast";
-import { AmountDialog } from "./AmountDialog";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -38,9 +37,7 @@ export const PaymentSourceCard = ({ source }: PaymentSourceCardProps) => {
   const { deletePaymentSource } = useFinance();
   const { toast } = useToast();
   const [showEditDialog, setShowEditDialog] = useState(false);
-  const [showAmountDialog, setShowAmountDialog] = useState(false);
   const [showUpiList, setShowUpiList] = useState(false);
-  const [amountOperation, setAmountOperation] = useState<"add" | "subtract">("add");
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat("en-IN", {
@@ -58,23 +55,18 @@ export const PaymentSourceCard = ({ source }: PaymentSourceCardProps) => {
     });
   };
 
-  const handleAmountEdit = (operation: "add" | "subtract") => {
-    setAmountOperation(operation);
-    setShowAmountDialog(true);
-  };
-
   return (
-    <div className="space-y-2">
+    <div className="space-y-3">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
-          <div className="w-12 h-12 bg-green-50 rounded-[12px] flex items-center justify-center">
+          <div className="w-12 h-12 bg-green-50 rounded-[12px] flex items-center justify-center flex-shrink-0">
             <span className="text-green-500 text-lg">
               {source.name[0].toUpperCase()}
             </span>
           </div>
           <div>
             <p className="text-base font-medium text-gray-900">{source.name}</p>
-            <div className="flex items-center gap-1 text-sm text-gray-500">
+            <div className="flex items-center gap-2 text-sm text-gray-500">
               <span>{source.type}</span>
               {source.linked && source.upiApps && source.upiApps.length > 0 && (
                 <button
@@ -93,7 +85,7 @@ export const PaymentSourceCard = ({ source }: PaymentSourceCardProps) => {
           </div>
         </div>
         <div className="flex items-center gap-4">
-          <span className="text-base font-medium text-gray-900">
+          <span className="text-base font-medium text-gray-900 whitespace-nowrap">
             {formatCurrency(source.amount)}
           </span>
           <DropdownMenu>
@@ -107,14 +99,6 @@ export const PaymentSourceCard = ({ source }: PaymentSourceCardProps) => {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuItem onClick={() => handleAmountEdit("add")}>
-                <Plus className="w-4 h-4 mr-2" />
-                Add Amount
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => handleAmountEdit("subtract")}>
-                <Minus className="w-4 h-4 mr-2" />
-                Subtract Amount
-              </DropdownMenuItem>
               <DropdownMenuItem onClick={() => setShowEditDialog(true)}>
                 Edit Details
               </DropdownMenuItem>
@@ -168,13 +152,6 @@ export const PaymentSourceCard = ({ source }: PaymentSourceCardProps) => {
         open={showEditDialog}
         onOpenChange={setShowEditDialog}
         source={source}
-      />
-      
-      <AmountDialog
-        open={showAmountDialog}
-        onOpenChange={setShowAmountDialog}
-        source={source}
-        operation={amountOperation}
       />
     </div>
   );
