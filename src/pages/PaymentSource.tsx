@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { ArrowLeft, Plus, Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -40,6 +40,7 @@ const INDIAN_BANKS = [
 export const PaymentSource = () => {
   const { addPaymentSource } = useFinance();
   const { toast } = useToast();
+  const navigate = useNavigate();
   const [selectedType, setSelectedType] = useState<"bank" | "credit">("bank");
   const [selectedBank, setSelectedBank] = useState("");
   const [customUpi, setCustomUpi] = useState("");
