@@ -30,6 +30,8 @@ type FinanceContextType = {
   paymentSources: PaymentSource[];
   addTransaction: (transaction: Omit<Transaction, "id" | "date">) => void;
   addPaymentSource: (source: Omit<PaymentSource, "id">) => void;
+  editPaymentSource: (source: PaymentSource) => void;
+  deletePaymentSource: (id: string) => void;
   getFormattedPaymentSources: () => { id: string; name: string }[];
 };
 
@@ -125,6 +127,18 @@ export const FinanceProvider = ({ children }: { children: React.ReactNode }) => 
     setPaymentSources((prev) => [...prev, source]);
   }, []);
 
+  const editPaymentSource = useCallback((updatedSource: PaymentSource) => {
+    setPaymentSources((prev) =>
+      prev.map((source) =>
+        source.id === updatedSource.id ? updatedSource : source
+      )
+    );
+  }, []);
+
+  const deletePaymentSource = useCallback((id: string) => {
+    setPaymentSources((prev) => prev.filter((source) => source.id !== id));
+  }, []);
+
   return (
     <FinanceContext.Provider
       value={{
@@ -137,6 +151,8 @@ export const FinanceProvider = ({ children }: { children: React.ReactNode }) => 
         paymentSources,
         addTransaction,
         addPaymentSource,
+        editPaymentSource,
+        deletePaymentSource,
         getFormattedPaymentSources,
       }}
     >
