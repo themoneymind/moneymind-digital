@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useFinance } from "@/contexts/FinanceContext";
 import { useToast } from "@/hooks/use-toast";
-import { TransactionSelectDialog } from "./TransactionSelectDialog";
 import { UpiAppsSelector } from "./UpiAppsSelector";
 import { AmountOperations } from "./AmountOperations";
 
@@ -26,7 +25,7 @@ export const PaymentSourceDialog = ({
   onOpenChange,
   source,
 }: PaymentSourceDialogProps) => {
-  const { editPaymentSource, editTransaction } = useFinance();
+  const { editPaymentSource } = useFinance();
   const { toast } = useToast();
   const [name, setName] = useState(source?.name || "");
   const [selectedUpiApps, setSelectedUpiApps] = useState<string[]>(
@@ -34,7 +33,6 @@ export const PaymentSourceDialog = ({
   );
   const [amount, setAmount] = useState("");
   const [operation, setOperation] = useState<"add" | "subtract">("add");
-  const [showTransactionSelect, setShowTransactionSelect] = useState(false);
 
   const handleUpiToggle = (upiApp: string) => {
     setSelectedUpiApps((prev) =>
@@ -59,47 +57,22 @@ export const PaymentSourceDialog = ({
 
     const numAmount = Number(amount);
 
-    if (operation === "add") {
-      const newAmount = source.amount + numAmount;
-      editPaymentSource({
-        ...source,
-        amount: newAmount,
-        name: name.trim(),
-        linked: selectedUpiApps.length > 0,
-        upiApps: selectedUpiApps.length > 0 ? selectedUpiApps : undefined,
-      });
-
+    if (operation === "subtract" && numAmount > source.amount) {
       toast({
-        title: "Success",
-        description: `Amount added to ${name}`,
+        title: "Error",
+        description: "Cannot subtract more than the available balance",
+        variant: "destructive",
       });
-
-      setAmount("");
-      onOpenChange(false);
-    } else {
-      if (numAmount > source.amount) {
-        toast({
-          title: "Error",
-          description: "Cannot subtract more than the available balance",
-          variant: "destructive",
-        });
-        return;
-      }
-      setShowTransactionSelect(true);
+      return;
     }
-  };
 
-  const handleTransactionSelect = (transactionId: string) => {
-    if (!source) return;
-
-    const numAmount = Number(amount);
-    editTransaction(transactionId, {
-      amount: numAmount,
-    });
+    const newAmount = operation === "add" 
+      ? source.amount + numAmount 
+      : source.amount - numAmount;
 
     editPaymentSource({
       ...source,
-      amount: source.amount - numAmount,
+      amount: newAmount,
       name: name.trim(),
       linked: selectedUpiApps.length > 0,
       upiApps: selectedUpiApps.length > 0 ? selectedUpiApps : undefined,
@@ -107,7 +80,7 @@ export const PaymentSourceDialog = ({
 
     toast({
       title: "Success",
-      description: `Amount subtracted from ${name}`,
+      description: `Amount ${operation}ed ${operation === 'add' ? 'to' : 'from'} ${name}`,
     });
 
     setAmount("");
@@ -120,49 +93,37 @@ export const PaymentSourceDialog = ({
   };
 
   return (
-    <>
-      <Dialog open={open} onOpenChange={handleDialogClose}>
-        <DialogContent className="sm:max-w-[425px]">
-          <DialogHeader>
-            <DialogTitle className="text-lg">Edit Payment Source</DialogTitle>
-          </DialogHeader>
-          <div className="grid gap-4 py-4">
-            <div className="space-y-2">
-              <Input
-                placeholder="Enter name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                className="h-12 rounded-[12px] text-base"
-              />
-            </div>
-            {source?.type === "Bank" && (
-              <UpiAppsSelector
-                selectedUpiApps={selectedUpiApps}
-                onUpiToggle={handleUpiToggle}
-              />
-            )}
-            <AmountOperations
-              operation={operation}
-              setOperation={setOperation}
-              amount={amount}
-              setAmount={setAmount}
+    <Dialog open={open} onOpenChange={handleDialogClose}>
+      <DialogContent className="sm:max-w-[425px]">
+        <DialogHeader>
+          <DialogTitle className="text-lg">Edit Payment Source</DialogTitle>
+        </DialogHeader>
+        <div className="grid gap-4 py-4">
+          <div className="space-y-2">
+            <Input
+              placeholder="Enter name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              className="h-12 rounded-[12px] text-base"
             />
-            <Button onClick={handleAmountChange} className="h-12 rounded-[12px] mt-2">
-              Save Changes
-            </Button>
           </div>
-        </DialogContent>
-      </Dialog>
-
-      {source && (
-        <TransactionSelectDialog
-          open={showTransactionSelect}
-          onOpenChange={setShowTransactionSelect}
-          sourceId={source.id}
-          amountToSubtract={Number(amount)}
-          onTransactionSelect={handleTransactionSelect}
-        />
-      )}
-    </>
+          {source?.type === "Bank" && (
+            <UpiAppsSelector
+              selectedUpiApps={selectedUpiApps}
+              onUpiToggle={handleUpiToggle}
+            />
+          )}
+          <AmountOperations
+            operation={operation}
+            setOperation={setOperation}
+            amount={amount}
+            setAmount={setAmount}
+          />
+          <Button onClick={handleAmountChange} className="h-12 rounded-[12px] mt-2">
+            Save Changes
+          </Button>
+        </div>
+      </DialogContent>
+    </Dialog>
   );
 };
