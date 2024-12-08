@@ -13,12 +13,12 @@ export const BalanceCard = () => {
   };
 
   return (
-    <div className="p-6 mx-4 rounded-2xl bg-gradient-to-r from-primary-gradient-from to-primary-gradient-to text-white">
+    <div className="p-6 mx-4 rounded-apple bg-gradient-to-r from-primary-gradient-from to-primary-gradient-to text-white shadow-lg">
       <h2 className="mb-4 text-sm font-medium opacity-90">Total Balance</h2>
       <p className="mb-6 text-3xl font-bold">{formatCurrency(balance)}</p>
       <div className="flex justify-between">
         <div className="flex items-center gap-3">
-          <div className="bg-white/20 p-2 rounded-full">
+          <div className="bg-white/20 p-2 rounded-apple">
             <ArrowUpRight className="w-5 h-5" />
           </div>
           <div>
@@ -27,7 +27,7 @@ export const BalanceCard = () => {
           </div>
         </div>
         <div className="flex items-center gap-3">
-          <div className="bg-white/20 p-2 rounded-full">
+          <div className="bg-white/20 p-2 rounded-apple">
             <ArrowDownRight className="w-5 h-5" />
           </div>
           <div>

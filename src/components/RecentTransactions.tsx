@@ -28,12 +28,12 @@ export const RecentTransactions = () => {
   };
 
   return (
-    <div className="p-6 mx-4 bg-white rounded-2xl shadow-sm">
+    <div className="p-6 mx-4 bg-white rounded-apple shadow-lg">
       <h2 className="mb-6 text-lg font-semibold">Recent Transactions</h2>
       <div className="relative mb-6">
         <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
         <Input
-          className="pl-10 h-12 border-gray-200"
+          className="pl-10 h-12 border-gray-200 rounded-apple"
           placeholder="Search transactions..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
@@ -41,7 +41,7 @@ export const RecentTransactions = () => {
       </div>
       <div className="flex gap-2 mb-6">
         <Button
-          className={`rounded-full px-6 ${
+          className={`rounded-apple px-6 ${
             filter === "all" ? "bg-blue-600 text-white" : "bg-gray-100 text-gray-600"
           }`}
           variant={filter === "all" ? "default" : "outline"}
@@ -50,7 +50,7 @@ export const RecentTransactions = () => {
           All
         </Button>
         <Button
-          className={`rounded-full px-6 ${
+          className={`rounded-apple px-6 ${
             filter === "income" ? "bg-blue-600 text-white" : "bg-gray-100 text-gray-600"
           }`}
           variant={filter === "income" ? "default" : "outline"}
@@ -59,7 +59,7 @@ export const RecentTransactions = () => {
           Income
         </Button>
         <Button
-          className={`rounded-full px-6 ${
+          className={`rounded-apple px-6 ${
             filter === "expense" ? "bg-blue-600 text-white" : "bg-gray-100 text-gray-600"
           }`}
           variant={filter === "expense" ? "default" : "outline"}
@@ -73,7 +73,7 @@ export const RecentTransactions = () => {
           <div key={transaction.id} className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               <div
-                className={`w-12 h-12 rounded-full flex items-center justify-center ${
+                className={`w-12 h-12 rounded-apple flex items-center justify-center ${
                   transaction.type === "expense"
                     ? "bg-red-50 text-red-500"
                     : "bg-green-50 text-green-500"
@@ -97,7 +97,7 @@ export const RecentTransactions = () => {
                 {transaction.type === "expense" ? "-" : "+"}
                 {formatCurrency(transaction.amount)}
               </span>
-              <Button variant="ghost" size="icon" className="hover:bg-gray-100 rounded-full">
+              <Button variant="ghost" size="icon" className="hover:bg-gray-100 rounded-apple">
                 <MoreVertical className="w-5 h-5 text-gray-500" />
               </Button>
             </div>

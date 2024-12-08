@@ -14,10 +14,10 @@ export const PaymentSources = () => {
   };
 
   return (
-    <div className="p-6 mx-4 bg-white rounded-2xl shadow-sm">
+    <div className="p-6 mx-4 bg-white rounded-apple shadow-lg">
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-lg font-semibold">Payment Sources</h2>
-        <Button size="icon" variant="ghost" className="hover:bg-gray-100 rounded-full">
+        <Button size="icon" variant="ghost" className="hover:bg-gray-100 rounded-apple">
           <Plus className="w-5 h-5 text-gray-700" />
         </Button>
       </div>
@@ -25,7 +25,7 @@ export const PaymentSources = () => {
         {paymentSources.map((source) => (
           <div key={source.id} className="flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 bg-green-50 rounded-full flex items-center justify-center">
+              <div className="w-12 h-12 bg-green-50 rounded-apple flex items-center justify-center">
                 <span className="text-green-500 text-lg">{source.name[0].toUpperCase()}</span>
               </div>
               <div>
@@ -42,7 +42,7 @@ export const PaymentSources = () => {
             </div>
             <div className="flex items-center gap-4">
               <span className="text-base font-medium text-gray-900">{formatCurrency(source.amount)}</span>
-              <Button variant="ghost" size="icon" className="hover:bg-gray-100 rounded-full">
+              <Button variant="ghost" size="icon" className="hover:bg-gray-100 rounded-apple">
                 <MoreVertical className="w-5 h-5 text-gray-500" />
               </Button>
             </div>
