@@ -1,9 +1,36 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
+import { useState } from "react";
+import { useToast } from "@/hooks/use-toast";
 
 export const SignIn = () => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const navigate = useNavigate();
+  const { toast } = useToast();
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    // In a real app, this would validate against a backend
+    if (email && password) {
+      localStorage.setItem("isAuthenticated", "true");
+      toast({
+        title: "Success",
+        description: "Successfully signed in",
+      });
+      navigate("/dashboard");
+    } else {
+      toast({
+        title: "Error",
+        description: "Please fill in all fields",
+        variant: "destructive",
+      });
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background p-6">
       <Link to="/" className="inline-block mb-8">
@@ -18,15 +45,19 @@ export const SignIn = () => {
           </p>
         </div>
 
-        <form className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4">
           <Input
             type="email"
             placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             className="h-14 rounded-[12px]"
           />
           <Input
             type="password"
             placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
             className="h-14 rounded-[12px]"
           />
           <Link
@@ -35,7 +66,7 @@ export const SignIn = () => {
           >
             Forgot Password?
           </Link>
-          <Button className="w-full h-14 rounded-[12px] text-base">
+          <Button type="submit" className="w-full h-14 rounded-[12px] text-base">
             Sign In
           </Button>
         </form>

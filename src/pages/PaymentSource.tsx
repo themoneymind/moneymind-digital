@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Plus, Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -74,23 +74,27 @@ export const PaymentSource = () => {
       upiDetails.push(customUpi);
     }
 
-    addPaymentSource({
+    const newSource = {
       name: selectedBank || "Credit Card",
       type: selectedType === "bank" ? "Bank" : "Credit Card",
       amount: 0,
-      linked: upiDetails.length > 0, // Convert to boolean
+      linked: upiDetails.length > 0,
       upiApps: upiDetails.length > 0 ? upiDetails : undefined,
-    });
+    };
+
+    addPaymentSource(newSource);
+    
+    // Save to localStorage
+    const existingSources = JSON.parse(localStorage.getItem("paymentSources") || "[]");
+    localStorage.setItem("paymentSources", JSON.stringify([...existingSources, newSource]));
 
     toast({
       title: "Success",
       description: "Payment source added successfully",
     });
 
-    // Reset form
-    setSelectedBank("");
-    setCustomUpi("");
-    setSelectedUpiApps([]);
+    // Navigate to dashboard after adding first payment source
+    navigate("/dashboard");
   };
 
   return (
