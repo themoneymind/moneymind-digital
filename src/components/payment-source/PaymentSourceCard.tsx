@@ -57,35 +57,35 @@ export const PaymentSourceCard = ({ source }: PaymentSourceCardProps) => {
 
   return (
     <div className="space-y-3">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-4">
-          <div className="w-12 h-12 bg-green-50 rounded-[12px] flex items-center justify-center flex-shrink-0">
-            <span className="text-green-500 text-lg">
+      <div className="flex items-center justify-between p-3 border-b border-gray-100">
+        <div className="flex items-center gap-3 flex-1 min-w-0">
+          <div className="w-10 h-10 bg-green-50 rounded-[10px] flex items-center justify-center flex-shrink-0">
+            <span className="text-green-500 text-sm font-medium">
               {source.name[0].toUpperCase()}
             </span>
           </div>
-          <div>
-            <p className="text-base font-medium text-gray-900">{source.name}</p>
-            <div className="flex items-center gap-2 text-sm text-gray-500">
-              <span>{source.type}</span>
+          <div className="min-w-0 flex-1">
+            <p className="text-sm font-medium text-gray-900 truncate">{source.name}</p>
+            <div className="flex items-center gap-2">
+              <span className="text-xs text-gray-500">{source.type}</span>
               {source.linked && source.upiApps && source.upiApps.length > 0 && (
                 <button
                   onClick={() => setShowUpiList(!showUpiList)}
-                  className="flex items-center gap-1 text-blue-600"
+                  className="flex items-center gap-1 text-xs text-blue-600"
                 >
                   {source.upiApps.length} UPI linked
                   {showUpiList ? (
-                    <ChevronUp className="w-4 h-4" />
+                    <ChevronUp className="w-3 h-3" />
                   ) : (
-                    <ChevronDown className="w-4 h-4" />
+                    <ChevronDown className="w-3 h-3" />
                   )}
                 </button>
               )}
             </div>
           </div>
         </div>
-        <div className="flex items-center gap-4">
-          <span className="text-base font-medium text-gray-900 whitespace-nowrap">
+        <div className="flex items-center gap-3">
+          <span className="text-sm font-medium text-gray-900 whitespace-nowrap">
             {formatCurrency(source.amount)}
           </span>
           <DropdownMenu>
@@ -93,12 +93,12 @@ export const PaymentSourceCard = ({ source }: PaymentSourceCardProps) => {
               <Button
                 variant="ghost"
                 size="icon"
-                className="hover:bg-gray-100 rounded-[12px]"
+                className="h-8 w-8 hover:bg-gray-100 rounded-[10px]"
               >
-                <MoreVertical className="w-5 h-5 text-gray-500" />
+                <MoreVertical className="w-4 h-4 text-gray-500" />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
+            <DropdownMenuContent align="end" className="w-48">
               <DropdownMenuItem onClick={() => setShowEditDialog(true)}>
                 Edit Details
               </DropdownMenuItem>
@@ -136,13 +136,13 @@ export const PaymentSourceCard = ({ source }: PaymentSourceCardProps) => {
       </div>
 
       {showUpiList && source.upiApps && (
-        <div className="ml-16 space-y-2">
+        <div className="ml-13 space-y-2 px-3">
           {source.upiApps.map((app) => (
             <div
               key={app}
-              className="flex items-center justify-between p-3 bg-gray-50 rounded-[12px]"
+              className="flex items-center justify-between p-2 bg-gray-50 rounded-[10px]"
             >
-              <span className="text-sm text-gray-600">{app}</span>
+              <span className="text-xs text-gray-600">{app}</span>
             </div>
           ))}
         </div>

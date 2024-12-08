@@ -82,29 +82,29 @@ export const RecentTransactions = () => {
           Expense
         </Button>
       </div>
-      <div className="space-y-6">
+      <div className="space-y-1">
         {filteredTransactions.map((transaction) => (
-          <div key={transaction.id} className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
+          <div key={transaction.id} className="flex items-center justify-between p-3 border-b border-gray-100 hover:bg-gray-50">
+            <div className="flex items-center gap-3 flex-1 min-w-0">
               <div
-                className={`w-12 h-12 rounded-apple flex items-center justify-center ${
+                className={`w-10 h-10 rounded-[10px] flex items-center justify-center flex-shrink-0 ${
                   transaction.type === "expense"
                     ? "bg-red-50 text-red-500"
                     : "bg-green-50 text-green-500"
                 }`}
               >
-                <span className="text-lg">{transaction.category[0].toUpperCase()}</span>
+                <span className="text-sm font-medium">{transaction.category[0].toUpperCase()}</span>
               </div>
-              <div>
-                <p className="font-medium text-gray-900">{transaction.category}</p>
-                <p className="text-sm text-gray-500">
+              <div className="min-w-0 flex-1">
+                <p className="text-sm font-medium text-gray-900 truncate">{transaction.category}</p>
+                <p className="text-xs text-gray-500">
                   {format(transaction.date, "MMM d, h:mm a")}
                 </p>
               </div>
             </div>
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-3">
               <span
-                className={`font-medium ${
+                className={`text-sm font-medium whitespace-nowrap ${
                   transaction.type === "expense" ? "text-red-500" : "text-green-500"
                 }`}
               >
@@ -113,11 +113,11 @@ export const RecentTransactions = () => {
               </span>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="icon" className="hover:bg-gray-100 rounded-apple">
-                    <MoreVertical className="w-5 h-5 text-gray-500" />
+                  <Button variant="ghost" size="icon" className="h-8 w-8 hover:bg-gray-100 rounded-[10px]">
+                    <MoreVertical className="w-4 h-4 text-gray-500" />
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
+                <DropdownMenuContent align="end" className="w-48">
                   <DropdownMenuItem onClick={() => handleEditClick(transaction)}>
                     Edit Transaction
                   </DropdownMenuItem>
