@@ -46,14 +46,14 @@ export const NewTransaction = () => {
 
   return (
     <div className="p-6 mx-4 bg-white rounded-apple shadow-lg">
-      <h2 className="mb-6 text-lg font-semibold">New Transaction</h2>
+      <h2 className="mb-6 text-base font-semibold">New Transaction</h2>
       <div className="flex gap-2 mb-6">
         <Button
           variant="outline"
-          className={`flex-1 rounded-full h-11 ${
+          className={`flex-1 rounded-full h-10 ${
             type === "expense"
-              ? "bg-red-50 text-red-500 border-red-100"
-              : "bg-white"
+              ? "bg-red-50 text-red-500 border-red-100 hover:bg-red-50"
+              : "bg-white hover:bg-gray-50"
           }`}
           onClick={() => setType("expense")}
         >
@@ -61,10 +61,10 @@ export const NewTransaction = () => {
         </Button>
         <Button
           variant="outline"
-          className={`flex-1 rounded-full h-11 ${
+          className={`flex-1 rounded-full h-10 ${
             type === "income"
-              ? "bg-green-50 text-green-500 border-green-100"
-              : "bg-white"
+              ? "bg-green-50 text-green-500 border-green-100 hover:bg-green-50"
+              : "bg-white hover:bg-gray-50"
           }`}
           onClick={() => setType("income")}
         >
@@ -84,7 +84,7 @@ export const NewTransaction = () => {
         </div>
         <div className="flex gap-2">
           <Select value={category} onValueChange={setCategory}>
-            <SelectTrigger className="w-full h-12 border-gray-200 rounded-apple">
+            <SelectTrigger className="w-full h-11 border-gray-200 rounded-apple">
               <SelectValue placeholder="Select category" />
             </SelectTrigger>
             <SelectContent>
@@ -95,13 +95,13 @@ export const NewTransaction = () => {
               <SelectItem value="investment">Investment</SelectItem>
             </SelectContent>
           </Select>
-          <Button size="icon" variant="outline" className="h-12 w-12 border-gray-200 rounded-apple">
+          <Button size="icon" variant="outline" className="h-11 w-11 border-gray-200 rounded-apple">
             <Plus className="w-5 h-5" />
           </Button>
         </div>
         <div className="flex gap-2">
           <Select value={source} onValueChange={setSource}>
-            <SelectTrigger className="w-full h-12 border-gray-200 rounded-apple">
+            <SelectTrigger className="w-full h-11 border-gray-200 rounded-apple">
               <SelectValue placeholder="Select payment source" />
             </SelectTrigger>
             <SelectContent>
@@ -110,18 +110,18 @@ export const NewTransaction = () => {
               <SelectItem value="card">Credit Card</SelectItem>
             </SelectContent>
           </Select>
-          <Button size="icon" variant="outline" className="h-12 w-12 border-gray-200 rounded-apple">
+          <Button size="icon" variant="outline" className="h-11 w-11 border-gray-200 rounded-apple">
             <Plus className="w-5 h-5" />
           </Button>
         </div>
         <Input
           placeholder="Description or note (Optional)"
-          className="h-12 border-gray-200 rounded-apple"
+          className="h-11 border-gray-200 rounded-apple"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
         />
         <Button
-          className="w-full h-12 bg-blue-600 hover:bg-blue-700 rounded-apple"
+          className="w-full h-11 bg-blue-600 hover:bg-blue-700 rounded-apple"
           onClick={handleSubmit}
         >
           Add Transaction

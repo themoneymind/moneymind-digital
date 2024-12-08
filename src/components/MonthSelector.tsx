@@ -16,7 +16,7 @@ export const MonthSelector = () => {
   return (
     <div className="flex items-center justify-between p-4 mx-4 bg-white rounded-apple shadow-sm">
       <button 
-        className="p-2 hover:bg-gray-50 rounded-apple" 
+        className="p-2 hover:bg-gray-50 rounded-full" 
         onClick={handlePrevMonth}
       >
         <ArrowLeft className="w-4 h-4 text-gray-600" />
@@ -25,7 +25,7 @@ export const MonthSelector = () => {
         {format(currentMonth, "MMMM yyyy")}
       </span>
       <button 
-        className="p-2 hover:bg-gray-50 rounded-apple" 
+        className="p-2 hover:bg-gray-50 rounded-full" 
         onClick={handleNextMonth}
       >
         <ArrowRight className="w-4 h-4 text-gray-600" />
