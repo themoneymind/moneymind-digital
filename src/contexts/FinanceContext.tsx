@@ -29,10 +29,12 @@ type FinanceContextType = {
   transactions: Transaction[];
   paymentSources: PaymentSource[];
   addTransaction: (transaction: Omit<Transaction, "id" | "date">) => void;
+  editTransaction: (id: string, updates: Partial<Omit<Transaction, "id">>) => void;
   addPaymentSource: (source: Omit<PaymentSource, "id">) => void;
   editPaymentSource: (source: PaymentSource) => void;
   deletePaymentSource: (id: string) => void;
   getFormattedPaymentSources: () => { id: string; name: string }[];
+  getTransactionsBySource: (sourceId: string) => Transaction[];
 };
 
 const FinanceContext = createContext<FinanceContextType | null>(null);
@@ -78,13 +80,11 @@ export const FinanceProvider = ({ children }: { children: React.ReactNode }) => 
     const formattedSources: { id: string; name: string }[] = [];
     
     paymentSources.forEach(source => {
-      // Add the main bank/card entry
       formattedSources.push({
         id: source.id,
         name: source.name
       });
 
-      // Add individual UPI entries if they exist
       if (source.linked && source.upiApps && source.upiApps.length > 0) {
         source.upiApps.forEach(upiApp => {
           formattedSources.push({
@@ -97,6 +97,10 @@ export const FinanceProvider = ({ children }: { children: React.ReactNode }) => 
 
     return formattedSources;
   }, [paymentSources]);
+
+  const getTransactionsBySource = useCallback((sourceId: string) => {
+    return transactions.filter(transaction => transaction.source === sourceId);
+  }, [transactions]);
 
   const balance = transactions.reduce((acc, curr) => {
     return curr.type === "income" ? acc + curr.amount : acc - curr.amount;
@@ -117,6 +121,54 @@ export const FinanceProvider = ({ children }: { children: React.ReactNode }) => 
       date: new Date(),
     };
     setTransactions((prev) => [transaction, ...prev]);
+
+    // Update payment source amount
+    const sourceId = transaction.source.split('-')[0]; // Handle UPI app IDs
+    setPaymentSources(prev => prev.map(source => {
+      if (source.id === sourceId) {
+        return {
+          ...source,
+          amount: transaction.type === 'expense' 
+            ? source.amount - transaction.amount
+            : source.amount + transaction.amount
+        };
+      }
+      return source;
+    }));
+  }, []);
+
+  const editTransaction = useCallback((id: string, updates: Partial<Omit<Transaction, "id">>) => {
+    setTransactions(prev => {
+      const oldTransaction = prev.find(t => t.id === id);
+      if (!oldTransaction) return prev;
+
+      const updatedTransactions = prev.map(t => {
+        if (t.id === id) {
+          return { ...t, ...updates };
+        }
+        return t;
+      });
+
+      // Update payment source amounts if amount changed
+      if (updates.amount !== undefined && updates.amount !== oldTransaction.amount) {
+        const sourceId = oldTransaction.source.split('-')[0];
+        const amountDiff = updates.amount - oldTransaction.amount;
+        
+        setPaymentSources(prevSources => prevSources.map(source => {
+          if (source.id === sourceId) {
+            return {
+              ...source,
+              amount: oldTransaction.type === 'expense'
+                ? source.amount + (oldTransaction.amount - updates.amount)
+                : source.amount + (updates.amount - oldTransaction.amount)
+            };
+          }
+          return source;
+        }));
+      }
+
+      return updatedTransactions;
+    });
   }, []);
 
   const addPaymentSource = useCallback((newSource: Omit<PaymentSource, "id">) => {
@@ -150,10 +202,12 @@ export const FinanceProvider = ({ children }: { children: React.ReactNode }) => 
         transactions,
         paymentSources,
         addTransaction,
+        editTransaction,
         addPaymentSource,
         editPaymentSource,
         deletePaymentSource,
         getFormattedPaymentSources,
+        getTransactionsBySource,
       }}
     >
       {children}

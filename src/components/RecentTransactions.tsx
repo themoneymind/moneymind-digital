@@ -4,11 +4,20 @@ import { Button } from "@/components/ui/button";
 import { useFinance } from "@/contexts/FinanceContext";
 import { useState } from "react";
 import { format } from "date-fns";
+import { TransactionEditDialog } from "./transaction/TransactionEditDialog";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 export const RecentTransactions = () => {
   const { transactions } = useFinance();
   const [filter, setFilter] = useState<"all" | "income" | "expense">("all");
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedTransaction, setSelectedTransaction] = useState<typeof transactions[0] | null>(null);
+  const [showEditDialog, setShowEditDialog] = useState(false);
 
   const filteredTransactions = transactions.filter((transaction) => {
     const matchesFilter =
@@ -25,6 +34,11 @@ export const RecentTransactions = () => {
       currency: "INR",
       maximumFractionDigits: 0,
     }).format(amount);
+  };
+
+  const handleEditClick = (transaction: typeof transactions[0]) => {
+    setSelectedTransaction(transaction);
+    setShowEditDialog(true);
   };
 
   return (
@@ -97,13 +111,30 @@ export const RecentTransactions = () => {
                 {transaction.type === "expense" ? "-" : "+"}
                 {formatCurrency(transaction.amount)}
               </span>
-              <Button variant="ghost" size="icon" className="hover:bg-gray-100 rounded-apple">
-                <MoreVertical className="w-5 h-5 text-gray-500" />
-              </Button>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="icon" className="hover:bg-gray-100 rounded-apple">
+                    <MoreVertical className="w-5 h-5 text-gray-500" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem onClick={() => handleEditClick(transaction)}>
+                    Edit Transaction
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
           </div>
         ))}
       </div>
+
+      {selectedTransaction && (
+        <TransactionEditDialog
+          open={showEditDialog}
+          onOpenChange={setShowEditDialog}
+          transaction={selectedTransaction}
+        />
+      )}
     </div>
   );
 };
