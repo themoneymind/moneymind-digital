@@ -56,23 +56,24 @@ export const PaymentSourceCard = ({ source }: PaymentSourceCardProps) => {
   };
 
   return (
-    <div className="space-y-2">
-      <div className="flex items-center justify-between p-3">
-        <div className="flex items-center gap-3 flex-1 min-w-0">
+    <div className="border-b border-gray-100 last:border-0">
+      <div className="flex items-start justify-between p-4">
+        <div className="flex items-start gap-3 flex-1 min-w-0">
           <div className="w-10 h-10 bg-green-50 rounded-[10px] flex items-center justify-center flex-shrink-0">
             <span className="text-green-500 text-sm font-medium">
               {source.name[0].toUpperCase()}
             </span>
           </div>
-          <div className="min-w-0 flex-1">
-            <div className="flex items-center gap-2">
-              <p className="text-sm font-medium text-gray-900 truncate">
+          <div className="min-w-0 flex-1 space-y-1">
+            <div className="flex flex-col">
+              <p className="text-base font-medium text-gray-900 truncate">
                 {source.name}
               </p>
+              <span className="text-xs text-gray-500">{source.type}</span>
               {source.linked && source.upiApps && source.upiApps.length > 0 && (
                 <button
                   onClick={() => setShowUpiList(!showUpiList)}
-                  className="flex items-center gap-1 text-xs text-blue-600"
+                  className="flex items-center gap-1 text-xs text-blue-600 mt-1 w-fit"
                 >
                   {source.upiApps.length} UPI linked
                   {showUpiList ? (
@@ -83,11 +84,22 @@ export const PaymentSourceCard = ({ source }: PaymentSourceCardProps) => {
                 </button>
               )}
             </div>
-            <span className="text-xs text-gray-500">{source.type}</span>
+            {showUpiList && source.upiApps && (
+              <div className="space-y-1 mt-2">
+                {source.upiApps.map((app) => (
+                  <div
+                    key={app}
+                    className="text-xs text-gray-600 pl-2"
+                  >
+                    {app}
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
-        <div className="flex items-center gap-3">
-          <span className="text-sm font-medium text-gray-900 whitespace-nowrap">
+        <div className="flex items-start gap-3">
+          <span className="text-base font-medium text-gray-900 whitespace-nowrap">
             {formatCurrency(source.amount)}
           </span>
           <DropdownMenu>
@@ -136,19 +148,6 @@ export const PaymentSourceCard = ({ source }: PaymentSourceCardProps) => {
           </DropdownMenu>
         </div>
       </div>
-
-      {showUpiList && source.upiApps && (
-        <div className="ml-16 space-y-2">
-          {source.upiApps.map((app) => (
-            <div
-              key={app}
-              className="flex items-center justify-between p-2 bg-gray-50 rounded-[10px]"
-            >
-              <span className="text-xs text-gray-600">{app}</span>
-            </div>
-          ))}
-        </div>
-      )}
 
       <PaymentSourceDialog
         open={showEditDialog}
