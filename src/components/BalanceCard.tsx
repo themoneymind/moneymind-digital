@@ -23,7 +23,7 @@ export const BalanceCard = () => {
           </div>
           <div>
             <p className="text-sm opacity-90">Income</p>
-            <p className="font-semibold">{formatCurrency(income)}</p>
+            <p className="text-base font-semibold">{formatCurrency(income)}</p>
           </div>
         </div>
         <div className="flex items-center gap-3">
@@ -32,7 +32,7 @@ export const BalanceCard = () => {
           </div>
           <div>
             <p className="text-sm opacity-90">Expense</p>
-            <p className="font-semibold">{formatCurrency(expense)}</p>
+            <p className="text-base font-semibold">{formatCurrency(expense)}</p>
           </div>
         </div>
       </div>

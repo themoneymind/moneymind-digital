@@ -29,7 +29,7 @@ export const PaymentSources = () => {
                 <span className="text-green-500 text-lg">{source.name[0].toUpperCase()}</span>
               </div>
               <div>
-                <p className="font-medium text-gray-900">{source.name}</p>
+                <p className="text-base font-medium text-gray-900">{source.name}</p>
                 <p className="text-sm text-gray-500">
                   {source.type}
                   {source.linked && (
@@ -41,7 +41,7 @@ export const PaymentSources = () => {
               </div>
             </div>
             <div className="flex items-center gap-4">
-              <span className="font-medium text-gray-900">{formatCurrency(source.amount)}</span>
+              <span className="text-base font-medium text-gray-900">{formatCurrency(source.amount)}</span>
               <Button variant="ghost" size="icon" className="hover:bg-gray-100 rounded-full">
                 <MoreVertical className="w-5 h-5 text-gray-500" />
               </Button>
