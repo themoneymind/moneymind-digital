@@ -50,7 +50,7 @@ export const NewTransaction = () => {
       <div className="flex gap-2 mb-6">
         <Button
           variant="outline"
-          className={`flex-1 rounded-apple ${
+          className={`flex-1 rounded-full h-11 ${
             type === "expense"
               ? "bg-red-50 text-red-500 border-red-100"
               : "bg-white"
@@ -61,7 +61,7 @@ export const NewTransaction = () => {
         </Button>
         <Button
           variant="outline"
-          className={`flex-1 rounded-apple ${
+          className={`flex-1 rounded-full h-11 ${
             type === "income"
               ? "bg-green-50 text-green-500 border-green-100"
               : "bg-white"

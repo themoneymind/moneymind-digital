@@ -13,26 +13,26 @@ export const BalanceCard = () => {
   };
 
   return (
-    <div className="p-6 mx-4 rounded-apple bg-gradient-to-r from-primary-gradient-from to-primary-gradient-to text-white shadow-lg">
-      <h2 className="mb-4 text-sm font-medium opacity-90">Total Balance</h2>
+    <div className="p-6 mx-4 rounded-apple bg-[#7C3AED] text-white shadow-lg">
+      <h2 className="mb-2 text-sm font-medium opacity-90">Total Balance</h2>
       <p className="mb-6 text-3xl font-bold">{formatCurrency(balance)}</p>
       <div className="flex justify-between">
-        <div className="flex items-center gap-3">
-          <div className="bg-white/20 p-2 rounded-apple">
-            <ArrowUpRight className="w-5 h-5" />
+        <div className="flex items-center gap-2">
+          <div className="bg-white/20 p-1.5 rounded-full">
+            <ArrowUpRight className="w-4 h-4" />
           </div>
           <div>
-            <p className="text-sm opacity-90">Income</p>
-            <p className="text-base font-semibold">{formatCurrency(income)}</p>
+            <p className="text-xs opacity-90">Income</p>
+            <p className="text-sm font-semibold">{formatCurrency(income)}</p>
           </div>
         </div>
-        <div className="flex items-center gap-3">
-          <div className="bg-white/20 p-2 rounded-apple">
-            <ArrowDownRight className="w-5 h-5" />
+        <div className="flex items-center gap-2">
+          <div className="bg-white/20 p-1.5 rounded-full">
+            <ArrowDownRight className="w-4 h-4" />
           </div>
           <div>
-            <p className="text-sm opacity-90">Expense</p>
-            <p className="text-base font-semibold">{formatCurrency(expense)}</p>
+            <p className="text-xs opacity-90">Expense</p>
+            <p className="text-sm font-semibold">{formatCurrency(expense)}</p>
           </div>
         </div>
       </div>
