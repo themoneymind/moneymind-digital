@@ -13,7 +13,7 @@ export const BalanceCard = () => {
   };
 
   return (
-    <div className="p-6 mx-4 rounded-apple bg-[#7C3AED] text-white shadow-lg">
+    <div className="p-6 mx-4 rounded-apple bg-gradient-to-br from-primary-gradient-from to-primary-gradient-to text-white shadow-lg">
       <h2 className="mb-2 text-xs font-medium opacity-90">Total Balance</h2>
       <p className="mb-6 text-4xl font-bold">{formatCurrency(balance)}</p>
       <div className="flex justify-between">

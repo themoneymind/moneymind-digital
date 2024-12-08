@@ -1,4 +1,4 @@
-import { ArrowLeft, ArrowRight } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useFinance } from "@/contexts/FinanceContext";
 import { format, addMonths, subMonths } from "date-fns";
 
@@ -19,7 +19,7 @@ export const MonthSelector = () => {
         className="p-2 hover:bg-gray-50 rounded-full" 
         onClick={handlePrevMonth}
       >
-        <ArrowLeft className="w-4 h-4 text-gray-600" />
+        <ChevronLeft className="w-4 h-4 text-gray-600" />
       </button>
       <span className="text-sm font-medium text-gray-900">
         {format(currentMonth, "MMMM yyyy")}
@@ -28,7 +28,7 @@ export const MonthSelector = () => {
         className="p-2 hover:bg-gray-50 rounded-full" 
         onClick={handleNextMonth}
       >
-        <ArrowRight className="w-4 h-4 text-gray-600" />
+        <ChevronRight className="w-4 h-4 text-gray-600" />
       </button>
     </div>
   );
