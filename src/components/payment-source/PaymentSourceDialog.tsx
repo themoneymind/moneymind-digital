@@ -44,7 +44,10 @@ export const PaymentSourceDialog = ({
     );
   };
 
-  const handleAmountChange = () => {
+  const handleAmountChange = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
     if (!source || !amount.trim() || isNaN(Number(amount))) {
       toast({
         title: "Error",
@@ -85,9 +88,20 @@ export const PaymentSourceDialog = ({
     onOpenChange(false);
   };
 
+  const handleDialogClose = () => {
+    setAmount("");
+    onOpenChange(false);
+  };
+
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[425px]" onClick={(e) => e.stopPropagation()}>
+    <Dialog open={open} onOpenChange={handleDialogClose}>
+      <DialogContent 
+        className="sm:max-w-[425px]"
+        onInteractOutside={(e) => {
+          e.preventDefault();
+          handleDialogClose();
+        }}
+      >
         <DialogHeader>
           <DialogTitle className="text-lg">Edit Payment Source</DialogTitle>
         </DialogHeader>
