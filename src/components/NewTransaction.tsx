@@ -9,7 +9,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Link } from "react-router-dom";
 
 export const NewTransaction = () => {
-  const { addTransaction, paymentSources } = useFinance();
+  const { addTransaction, getFormattedPaymentSources } = useFinance();
   const { toast } = useToast();
   const [type, setType] = useState<"expense" | "income">("expense");
   const [amount, setAmount] = useState("");
@@ -28,21 +28,7 @@ export const NewTransaction = () => {
   const defaultExpenseCategories = ["Food", "Transport", "Shopping"];
   const defaultIncomeCategories = ["Salary", "Freelance", "Investment"];
 
-  const formatSourceName = (source: any) => {
-    if (source.type === "Credit Card") {
-      return source.name;
-    }
-
-    let displayName = source.name;
-    if (source.linked && source.upiApps && source.upiApps.length > 0) {
-      if (source.upiApps.length === 1) {
-        displayName += ` with UPI - ${source.name} ${source.upiApps[0]}`;
-      } else {
-        displayName += ` with Multiple UPI - ${source.name} ${source.upiApps[0]}`;
-      }
-    }
-    return displayName;
-  };
+  const formattedSources = getFormattedPaymentSources();
 
   const handleAddCategory = () => {
     if (!newCategory.trim()) {
@@ -185,9 +171,9 @@ export const NewTransaction = () => {
               <SelectValue placeholder="Select payment source" />
             </SelectTrigger>
             <SelectContent className="rounded-[12px] bg-white border-gray-200">
-              {paymentSources.map((src) => (
+              {formattedSources.map((src) => (
                 <SelectItem key={src.id} value={src.id}>
-                  {formatSourceName(src)}
+                  {src.name}
                 </SelectItem>
               ))}
             </SelectContent>

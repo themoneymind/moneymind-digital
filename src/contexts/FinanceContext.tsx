@@ -16,7 +16,8 @@ type PaymentSource = {
   name: string;
   type: string;
   amount: number;
-  linked?: number;
+  linked?: boolean;
+  upiApps?: string[];
 };
 
 type FinanceContextType = {
@@ -29,6 +30,7 @@ type FinanceContextType = {
   paymentSources: PaymentSource[];
   addTransaction: (transaction: Omit<Transaction, "id" | "date">) => void;
   addPaymentSource: (source: Omit<PaymentSource, "id">) => void;
+  getFormattedPaymentSources: () => { id: string; name: string }[];
 };
 
 const FinanceContext = createContext<FinanceContextType | null>(null);
@@ -63,28 +65,46 @@ export const FinanceProvider = ({ children }: { children: React.ReactNode }) => 
   ]);
 
   const [paymentSources, setPaymentSources] = useState<PaymentSource[]>([
-    { id: "1", name: "Canara bank", type: "Bank", amount: 120000, linked: 1 },
+    { id: "1", name: "Canara bank", type: "Bank", amount: 120000, linked: true, upiApps: ["GPay", "PhonePe", "Cred"] },
     { id: "2", name: "Pluxee", type: "Credit Card", amount: 0 },
     { id: "3", name: "UPI", type: "UPI", amount: 0 },
-    { id: "4", name: "HDFC bank", type: "Bank", amount: 93050, linked: 2 },
-    { id: "5", name: "ICICI", type: "Bank", amount: 13250, linked: 1 },
+    { id: "4", name: "HDFC bank", type: "Bank", amount: 93050, linked: true, upiApps: ["PhonePe", "GPay"] },
+    { id: "5", name: "ICICI", type: "Bank", amount: 13250, linked: true, upiApps: ["GPay"] },
   ]);
 
-  const filteredTransactions = transactions.filter(transaction => {
-    const transactionDate = new Date(transaction.date);
-    return transactionDate >= startOfMonth(currentMonth) && 
-           transactionDate <= endOfMonth(currentMonth);
-  });
+  const getFormattedPaymentSources = useCallback(() => {
+    const formattedSources: { id: string; name: string }[] = [];
+    
+    paymentSources.forEach(source => {
+      // Add the main bank/card entry
+      formattedSources.push({
+        id: source.id,
+        name: source.name
+      });
 
-  const balance = filteredTransactions.reduce((acc, curr) => {
+      // Add individual UPI entries if they exist
+      if (source.linked && source.upiApps && source.upiApps.length > 0) {
+        source.upiApps.forEach(upiApp => {
+          formattedSources.push({
+            id: `${source.id}-${upiApp.toLowerCase()}`,
+            name: `${source.name} ${upiApp}`
+          });
+        });
+      }
+    });
+
+    return formattedSources;
+  }, [paymentSources]);
+
+  const balance = transactions.reduce((acc, curr) => {
     return curr.type === "income" ? acc + curr.amount : acc - curr.amount;
   }, 0);
 
-  const income = filteredTransactions.reduce((acc, curr) => {
+  const income = transactions.reduce((acc, curr) => {
     return curr.type === "income" ? acc + curr.amount : acc;
   }, 0);
 
-  const expense = filteredTransactions.reduce((acc, curr) => {
+  const expense = transactions.reduce((acc, curr) => {
     return curr.type === "expense" ? acc + curr.amount : acc;
   }, 0);
 
@@ -117,6 +137,7 @@ export const FinanceProvider = ({ children }: { children: React.ReactNode }) => 
         paymentSources,
         addTransaction,
         addPaymentSource,
+        getFormattedPaymentSources,
       }}
     >
       {children}

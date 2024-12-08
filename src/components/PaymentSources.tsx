@@ -14,22 +14,6 @@ export const PaymentSources = () => {
     }).format(amount);
   };
 
-  const formatSourceName = (source: any) => {
-    if (source.type === "Credit Card") {
-      return source.name;
-    }
-
-    let displayName = source.name;
-    if (source.linked && source.upiApps && source.upiApps.length > 0) {
-      if (source.upiApps.length === 1) {
-        displayName += ` with UPI - ${source.name} ${source.upiApps[0]}`;
-      } else {
-        displayName += ` with Multiple UPI - ${source.name} ${source.upiApps[0]}`;
-      }
-    }
-    return displayName;
-  };
-
   return (
     <div className="p-6 mx-4 bg-white rounded-[20px]">
       <div className="flex items-center justify-between mb-6">
@@ -48,9 +32,14 @@ export const PaymentSources = () => {
                 <span className="text-green-500 text-lg">{source.name[0].toUpperCase()}</span>
               </div>
               <div>
-                <p className="text-base font-medium text-gray-900">{formatSourceName(source)}</p>
+                <p className="text-base font-medium text-gray-900">{source.name}</p>
                 <p className="text-sm text-gray-500">
                   {source.type}
+                  {source.linked && source.upiApps && source.upiApps.length > 0 && (
+                    <span className="ml-1">
+                      ({source.upiApps.join(", ")})
+                    </span>
+                  )}
                 </p>
               </div>
             </div>
