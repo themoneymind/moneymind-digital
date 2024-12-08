@@ -18,18 +18,21 @@ export default {
       },
     },
     extend: {
+      fontFamily: {
+        sans: ["Inter", "sans-serif"],
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
-        background: "hsl(var(--background))",
+        background: "#F8FAFC",
         foreground: "hsl(var(--foreground))",
         primary: {
-          DEFAULT: "#9b87f5",
+          DEFAULT: "#6366F1",
           foreground: "#FFFFFF",
           gradient: {
-            from: "#9b87f5",
-            to: "#7367f0",
+            from: "#7C3AED",
+            to: "#6366F1",
           },
         },
         success: {

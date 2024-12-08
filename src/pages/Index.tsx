@@ -8,9 +8,9 @@ import { BottomNav } from "@/components/BottomNav";
 
 const Index = () => {
   return (
-    <div className="min-h-screen bg-gray-50 pb-24">
+    <div className="min-h-screen bg-gray-50 pb-24 max-w-md mx-auto font-sans">
       <Header />
-      <div className="space-y-4 py-4">
+      <div className="space-y-6 py-4">
         <MonthSelector />
         <BalanceCard />
         <NewTransaction />

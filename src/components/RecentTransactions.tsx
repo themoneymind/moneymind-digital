@@ -28,69 +28,77 @@ export const RecentTransactions = () => {
   };
 
   return (
-    <div className="p-4 mx-4 bg-white rounded-xl">
-      <h2 className="mb-4 text-lg font-semibold">Recent Transactions</h2>
-      <div className="relative mb-4">
+    <div className="p-6 mx-4 bg-white rounded-2xl shadow-sm">
+      <h2 className="mb-6 text-lg font-semibold">Recent Transactions</h2>
+      <div className="relative mb-6">
         <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
         <Input
-          className="pl-10"
+          className="pl-10 h-12 border-gray-200"
           placeholder="Search transactions..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
         />
       </div>
-      <div className="flex gap-2 mb-4">
+      <div className="flex gap-2 mb-6">
         <Button
-          className={filter === "all" ? "bg-blue-600" : ""}
+          className={`rounded-full px-6 ${
+            filter === "all" ? "bg-blue-600 text-white" : "bg-gray-100 text-gray-600"
+          }`}
           variant={filter === "all" ? "default" : "outline"}
           onClick={() => setFilter("all")}
         >
           All
         </Button>
         <Button
+          className={`rounded-full px-6 ${
+            filter === "income" ? "bg-blue-600 text-white" : "bg-gray-100 text-gray-600"
+          }`}
           variant={filter === "income" ? "default" : "outline"}
           onClick={() => setFilter("income")}
         >
           Income
         </Button>
         <Button
+          className={`rounded-full px-6 ${
+            filter === "expense" ? "bg-blue-600 text-white" : "bg-gray-100 text-gray-600"
+          }`}
           variant={filter === "expense" ? "default" : "outline"}
           onClick={() => setFilter("expense")}
         >
           Expense
         </Button>
       </div>
-      <div className="space-y-4">
+      <div className="space-y-6">
         {filteredTransactions.map((transaction) => (
           <div key={transaction.id} className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-4">
               <div
-                className={`w-10 h-10 rounded-full flex items-center justify-center ${
+                className={`w-12 h-12 rounded-full flex items-center justify-center ${
                   transaction.type === "expense"
-                    ? "bg-red-100 text-red-500"
-                    : "bg-green-100 text-green-500"
+                    ? "bg-red-50 text-red-500"
+                    : "bg-green-50 text-green-500"
                 }`}
               >
-                <span>{transaction.category[0]}</span>
+                <span className="text-lg">{transaction.category[0].toUpperCase()}</span>
               </div>
               <div>
-                <p className="font-medium">{transaction.category}</p>
+                <p className="font-medium text-gray-900">{transaction.category}</p>
                 <p className="text-sm text-gray-500">
                   {format(transaction.date, "MMM d, h:mm a")}
                 </p>
               </div>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-4">
               <span
-                className={
-                  transaction.type === "expense" ? "text-danger" : "text-success"
-                }
+                className={`font-medium ${
+                  transaction.type === "expense" ? "text-red-500" : "text-green-500"
+                }`}
               >
                 {transaction.type === "expense" ? "-" : "+"}
                 {formatCurrency(transaction.amount)}
               </span>
-              <Button variant="ghost" size="icon">
-                <MoreVertical className="w-4 h-4" />
+              <Button variant="ghost" size="icon" className="hover:bg-gray-100 rounded-full">
+                <MoreVertical className="w-5 h-5 text-gray-500" />
               </Button>
             </div>
           </div>

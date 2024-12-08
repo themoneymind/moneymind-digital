@@ -14,13 +14,13 @@ export const MonthSelector = () => {
   };
 
   return (
-    <div className="flex items-center justify-between p-4 mx-4 bg-white rounded-lg">
-      <button className="p-2" onClick={handlePrevMonth}>
-        <ArrowLeft className="w-5 h-5" />
+    <div className="flex items-center justify-between p-4 mx-4 bg-white rounded-2xl shadow-sm">
+      <button className="p-2 hover:bg-gray-50 rounded-full" onClick={handlePrevMonth}>
+        <ArrowLeft className="w-5 h-5 text-gray-600" />
       </button>
-      <span className="text-lg font-medium">{format(currentMonth, "MMMM yyyy")}</span>
-      <button className="p-2" onClick={handleNextMonth}>
-        <ArrowRight className="w-5 h-5" />
+      <span className="text-base font-medium">{format(currentMonth, "MMMM yyyy")}</span>
+      <button className="p-2 hover:bg-gray-50 rounded-full" onClick={handleNextMonth}>
+        <ArrowRight className="w-5 h-5 text-gray-600" />
       </button>
     </div>
   );
