@@ -5,6 +5,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useState } from "react";
 import { useFinance } from "@/contexts/FinanceContext";
 import { useToast } from "@/hooks/use-toast";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 
 export const NewTransaction = () => {
   const { addTransaction } = useFinance();
@@ -14,6 +15,40 @@ export const NewTransaction = () => {
   const [category, setCategory] = useState("");
   const [source, setSource] = useState("");
   const [description, setDescription] = useState("");
+  const [newCategory, setNewCategory] = useState("");
+  const [customCategories, setCustomCategories] = useState<{
+    expense: string[];
+    income: string[];
+  }>({
+    expense: [],
+    income: [],
+  });
+
+  const defaultExpenseCategories = ["Food", "Transport", "Shopping"];
+  const defaultIncomeCategories = ["Salary", "Freelance", "Investment"];
+
+  const handleAddCategory = () => {
+    if (!newCategory.trim()) {
+      toast({
+        title: "Error",
+        description: "Please enter a category name",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setCustomCategories((prev) => ({
+      ...prev,
+      [type]: [...prev[type], newCategory.trim()],
+    }));
+
+    setNewCategory("");
+    
+    toast({
+      title: "Success",
+      description: "Category added successfully",
+    });
+  };
 
   const handleSubmit = () => {
     if (!amount || !category || !source) {
@@ -43,6 +78,10 @@ export const NewTransaction = () => {
       description: "Transaction added successfully",
     });
   };
+
+  const categories = type === "expense" 
+    ? [...defaultExpenseCategories, ...customCategories.expense]
+    : [...defaultIncomeCategories, ...customCategories.income];
 
   return (
     <div className="p-6 mx-4 bg-white rounded-[20px]">
@@ -89,24 +128,46 @@ export const NewTransaction = () => {
             <SelectTrigger className="w-full h-14 border-gray-200 rounded-[12px]">
               <SelectValue placeholder="Select category" />
             </SelectTrigger>
-            <SelectContent className="rounded-[12px]">
-              <SelectItem value="food">Food</SelectItem>
-              <SelectItem value="transport">Transport</SelectItem>
-              <SelectItem value="shopping">Shopping</SelectItem>
-              <SelectItem value="salary">Salary</SelectItem>
-              <SelectItem value="investment">Investment</SelectItem>
+            <SelectContent className="rounded-[12px] bg-white border-gray-200">
+              {categories.map((cat) => (
+                <SelectItem key={cat} value={cat.toLowerCase()}>
+                  {cat}
+                </SelectItem>
+              ))}
             </SelectContent>
           </Select>
-          <Button size="icon" variant="outline" className="h-14 w-14 border-gray-200 rounded-[12px]">
-            <Plus className="w-5 h-5" />
-          </Button>
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button size="icon" variant="outline" className="h-14 w-14 border-gray-200 rounded-[12px]">
+                <Plus className="w-5 h-5" />
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-[425px] rounded-[20px]">
+              <DialogHeader>
+                <DialogTitle>Add Custom Category</DialogTitle>
+              </DialogHeader>
+              <div className="grid gap-4 py-4">
+                <div className="flex gap-4">
+                  <Input
+                    placeholder="Enter category name"
+                    value={newCategory}
+                    onChange={(e) => setNewCategory(e.target.value)}
+                    className="h-14 border-gray-200 rounded-[12px]"
+                  />
+                  <Button onClick={handleAddCategory} className="h-14 rounded-[12px]">
+                    Add
+                  </Button>
+                </div>
+              </div>
+            </DialogContent>
+          </Dialog>
         </div>
         <div className="flex gap-2">
           <Select value={source} onValueChange={setSource}>
             <SelectTrigger className="w-full h-14 border-gray-200 rounded-[12px]">
               <SelectValue placeholder="Select payment source" />
             </SelectTrigger>
-            <SelectContent className="rounded-[12px]">
+            <SelectContent className="rounded-[12px] bg-white border-gray-200">
               <SelectItem value="bank">Bank Account</SelectItem>
               <SelectItem value="cash">Cash</SelectItem>
               <SelectItem value="card">Credit Card</SelectItem>
