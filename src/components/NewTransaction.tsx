@@ -6,9 +6,10 @@ import { useState } from "react";
 import { useFinance } from "@/contexts/FinanceContext";
 import { useToast } from "@/hooks/use-toast";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Link } from "react-router-dom";
 
 export const NewTransaction = () => {
-  const { addTransaction } = useFinance();
+  const { addTransaction, paymentSources } = useFinance();
   const { toast } = useToast();
   const [type, setType] = useState<"expense" | "income">("expense");
   const [amount, setAmount] = useState("");
@@ -26,6 +27,22 @@ export const NewTransaction = () => {
 
   const defaultExpenseCategories = ["Food", "Transport", "Shopping"];
   const defaultIncomeCategories = ["Salary", "Freelance", "Investment"];
+
+  const formatSourceName = (source: any) => {
+    if (source.type === "Credit Card") {
+      return source.name;
+    }
+
+    let displayName = source.name;
+    if (source.linked && source.upiApps && source.upiApps.length > 0) {
+      if (source.upiApps.length === 1) {
+        displayName += ` with UPI - ${source.name} ${source.upiApps[0]}`;
+      } else {
+        displayName += ` with Multiple UPI - ${source.name} ${source.upiApps[0]}`;
+      }
+    }
+    return displayName;
+  };
 
   const handleAddCategory = () => {
     if (!newCategory.trim()) {
@@ -168,14 +185,18 @@ export const NewTransaction = () => {
               <SelectValue placeholder="Select payment source" />
             </SelectTrigger>
             <SelectContent className="rounded-[12px] bg-white border-gray-200">
-              <SelectItem value="bank">Bank Account</SelectItem>
-              <SelectItem value="cash">Cash</SelectItem>
-              <SelectItem value="card">Credit Card</SelectItem>
+              {paymentSources.map((src) => (
+                <SelectItem key={src.id} value={src.id}>
+                  {formatSourceName(src)}
+                </SelectItem>
+              ))}
             </SelectContent>
           </Select>
-          <Button size="icon" variant="outline" className="h-14 w-14 border-gray-200 rounded-[12px]">
-            <Plus className="w-5 h-5" />
-          </Button>
+          <Link to="/payment-source">
+            <Button size="icon" variant="outline" className="h-14 w-14 border-gray-200 rounded-[12px]">
+              <Plus className="w-5 h-5" />
+            </Button>
+          </Link>
         </div>
         <Input
           placeholder="Description or note (Optional)"

@@ -1,6 +1,7 @@
 import { Plus, MoreVertical } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useFinance } from "@/contexts/FinanceContext";
+import { Link } from "react-router-dom";
 
 export const PaymentSources = () => {
   const { paymentSources } = useFinance();
@@ -13,36 +14,49 @@ export const PaymentSources = () => {
     }).format(amount);
   };
 
+  const formatSourceName = (source: any) => {
+    if (source.type === "Credit Card") {
+      return source.name;
+    }
+
+    let displayName = source.name;
+    if (source.linked && source.upiApps && source.upiApps.length > 0) {
+      if (source.upiApps.length === 1) {
+        displayName += ` with UPI - ${source.name} ${source.upiApps[0]}`;
+      } else {
+        displayName += ` with Multiple UPI - ${source.name} ${source.upiApps[0]}`;
+      }
+    }
+    return displayName;
+  };
+
   return (
-    <div className="p-6 mx-4 bg-white rounded-apple shadow-lg">
+    <div className="p-6 mx-4 bg-white rounded-[20px]">
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-lg font-semibold">Payment Sources</h2>
-        <Button size="icon" variant="ghost" className="hover:bg-gray-100 rounded-apple">
-          <Plus className="w-5 h-5 text-gray-700" />
-        </Button>
+        <Link to="/payment-source">
+          <Button size="icon" variant="ghost" className="hover:bg-gray-100 rounded-[12px]">
+            <Plus className="w-5 h-5 text-gray-700" />
+          </Button>
+        </Link>
       </div>
       <div className="space-y-6">
         {paymentSources.map((source) => (
           <div key={source.id} className="flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 bg-green-50 rounded-apple flex items-center justify-center">
+              <div className="w-12 h-12 bg-green-50 rounded-[12px] flex items-center justify-center">
                 <span className="text-green-500 text-lg">{source.name[0].toUpperCase()}</span>
               </div>
               <div>
-                <p className="text-base font-medium text-gray-900">{source.name}</p>
+                <p className="text-base font-medium text-gray-900">{formatSourceName(source)}</p>
                 <p className="text-sm text-gray-500">
                   {source.type}
-                  {source.linked && (
-                    <span className="text-blue-500 ml-2">
-                      {source.linked} UPI linked
-                    </span>
-                  )}
                 </p>
               </div>
             </div>
             <div className="flex items-center gap-4">
               <span className="text-base font-medium text-gray-900">{formatCurrency(source.amount)}</span>
-              <Button variant="ghost" size="icon" className="hover:bg-gray-100 rounded-apple">
+              <Button variant="ghost" size="icon" className="hover:bg-gray-100 rounded-[12px]">
                 <MoreVertical className="w-5 h-5 text-gray-500" />
               </Button>
             </div>
