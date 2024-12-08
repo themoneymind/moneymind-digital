@@ -1,12 +1,23 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import { Header } from "@/components/Header";
+import { MonthSelector } from "@/components/MonthSelector";
+import { BalanceCard } from "@/components/BalanceCard";
+import { NewTransaction } from "@/components/NewTransaction";
+import { RecentTransactions } from "@/components/RecentTransactions";
+import { PaymentSources } from "@/components/PaymentSources";
+import { BottomNav } from "@/components/BottomNav";
 
 const Index = () => {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4">Welcome to Your Blank App</h1>
-        <p className="text-xl text-gray-600">Start building your amazing project here!</p>
+    <div className="min-h-screen bg-gray-50 pb-24">
+      <Header />
+      <div className="space-y-4 py-4">
+        <MonthSelector />
+        <BalanceCard />
+        <NewTransaction />
+        <RecentTransactions />
+        <PaymentSources />
       </div>
+      <BottomNav />
     </div>
   );
 };
