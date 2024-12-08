@@ -1,4 +1,4 @@
-import { ArrowDownRight, ArrowUpRight } from "lucide-react";
+import { ArrowDown, ArrowUp } from "lucide-react";
 import { useFinance } from "@/contexts/FinanceContext";
 
 export const BalanceCard = () => {
@@ -18,8 +18,8 @@ export const BalanceCard = () => {
       <p className="mb-6 text-4xl font-bold">{formatCurrency(balance)}</p>
       <div className="flex justify-between">
         <div className="flex items-center gap-2">
-          <div className="bg-white/20 p-1.5 rounded-full">
-            <ArrowUpRight className="w-4 h-4" />
+          <div className="bg-green-400/20 p-1.5 rounded-full">
+            <ArrowDown className="w-4 h-4 text-green-400" />
           </div>
           <div>
             <p className="text-[10px] opacity-90">Income</p>
@@ -27,8 +27,8 @@ export const BalanceCard = () => {
           </div>
         </div>
         <div className="flex items-center gap-2">
-          <div className="bg-white/20 p-1.5 rounded-full">
-            <ArrowDownRight className="w-4 h-4" />
+          <div className="bg-red-400/20 p-1.5 rounded-full">
+            <ArrowUp className="w-4 h-4 text-red-400" />
           </div>
           <div>
             <p className="text-[10px] opacity-90">Expense</p>
