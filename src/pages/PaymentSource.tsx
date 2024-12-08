@@ -78,7 +78,8 @@ export const PaymentSource = () => {
       name: selectedBank || "Credit Card",
       type: selectedType === "bank" ? "Bank" : "Credit Card",
       amount: 0,
-      linked: upiDetails.length,
+      linked: upiDetails.length > 0, // Convert to boolean
+      upiApps: upiDetails.length > 0 ? upiDetails : undefined,
     });
 
     toast({
