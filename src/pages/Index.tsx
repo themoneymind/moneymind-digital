@@ -5,12 +5,22 @@ import { NewTransaction } from "@/components/NewTransaction";
 import { RecentTransactions } from "@/components/RecentTransactions";
 import { PaymentSources } from "@/components/PaymentSources";
 import { BottomNav } from "@/components/BottomNav";
+import { Avatar } from "@/components/ui/avatar";
 
 const Index = () => {
   return (
     <div className="min-h-screen bg-gray-50 pb-24 max-w-md mx-auto font-sans">
       <Header />
       <div className="space-y-6 py-4">
+        <div className="flex items-center gap-3 px-4">
+          <Avatar className="w-16 h-16">
+            <img src="/lovable-uploads/e9fc4495-d8ba-4dcb-82a4-48a4e9bb6d1c.png" alt="Profile" className="object-cover" />
+          </Avatar>
+          <div className="flex flex-col items-start">
+            <h1 className="text-xl font-semibold">Elumalai Ravi</h1>
+            <p className="text-sm text-gray-500">Building wealth together</p>
+          </div>
+        </div>
         <MonthSelector />
         <BalanceCard />
         <NewTransaction />

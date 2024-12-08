@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useCallback } from "react";
+import { startOfMonth, endOfMonth } from "date-fns";
 
 type Transaction = {
   id: string;
@@ -69,6 +70,24 @@ export const FinanceProvider = ({ children }: { children: React.ReactNode }) => 
     { id: "5", name: "ICICI", type: "Bank", amount: 13250, linked: 1 },
   ]);
 
+  const filteredTransactions = transactions.filter(transaction => {
+    const transactionDate = new Date(transaction.date);
+    return transactionDate >= startOfMonth(currentMonth) && 
+           transactionDate <= endOfMonth(currentMonth);
+  });
+
+  const balance = filteredTransactions.reduce((acc, curr) => {
+    return curr.type === "income" ? acc + curr.amount : acc - curr.amount;
+  }, 0);
+
+  const income = filteredTransactions.reduce((acc, curr) => {
+    return curr.type === "income" ? acc + curr.amount : acc;
+  }, 0);
+
+  const expense = filteredTransactions.reduce((acc, curr) => {
+    return curr.type === "expense" ? acc + curr.amount : acc;
+  }, 0);
+
   const addTransaction = useCallback((newTransaction: Omit<Transaction, "id" | "date">) => {
     const transaction = {
       ...newTransaction,
@@ -85,18 +104,6 @@ export const FinanceProvider = ({ children }: { children: React.ReactNode }) => 
     };
     setPaymentSources((prev) => [...prev, source]);
   }, []);
-
-  const balance = transactions.reduce((acc, curr) => {
-    return curr.type === "income" ? acc + curr.amount : acc - curr.amount;
-  }, 0);
-
-  const income = transactions.reduce((acc, curr) => {
-    return curr.type === "income" ? acc + curr.amount : acc;
-  }, 0);
-
-  const expense = transactions.reduce((acc, curr) => {
-    return curr.type === "expense" ? acc + curr.amount : acc;
-  }, 0);
 
   return (
     <FinanceContext.Provider
