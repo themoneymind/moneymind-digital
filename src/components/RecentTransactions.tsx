@@ -88,53 +88,63 @@ export const RecentTransactions = () => {
       </div>
       <div className="space-y-1">
         {filteredTransactions.map((transaction) => (
-          <div key={transaction.id} className="grid grid-cols-[44px_1fr_auto_auto] items-center gap-3 p-3 border-b border-gray-100 hover:bg-gray-50">
-            <div
-              className={`w-8 h-8 rounded-[8px] flex items-center justify-center ${
-                transaction.type === "expense"
-                  ? "bg-red-50 text-red-500"
-                  : "bg-green-50 text-green-500"
-              }`}
-            >
-              <span className="text-xs font-medium">{transaction.category[0].toUpperCase()}</span>
-            </div>
-            <div className="min-w-0">
-              <p className="text-sm font-medium text-gray-900 truncate">
-                {toSentenceCase(transaction.category)}
-              </p>
-              <div className="flex items-center gap-1">
-                {transaction.description && (
-                  <p className="text-xs text-gray-500 truncate">{transaction.description}</p>
-                )}
-                <p className="text-[10px] text-gray-400 whitespace-nowrap">
-                  {format(transaction.date, "MMM d, h:mm a")}
-                </p>
+          <div key={transaction.id} className="border-b border-gray-100 last:border-0">
+            <div className="flex items-start justify-between p-3">
+              <div className="flex items-start gap-2.5 flex-1 min-w-0">
+                <div
+                  className={`w-8 h-8 rounded-[8px] flex items-center justify-center flex-shrink-0 ${
+                    transaction.type === "expense"
+                      ? "bg-red-50 text-red-500"
+                      : "bg-green-50 text-green-500"
+                  }`}
+                >
+                  <span className="text-xs font-medium">
+                    {transaction.category[0].toUpperCase()}
+                  </span>
+                </div>
+                <div className="min-w-0 flex-1 space-y-0.5">
+                  <p className="text-sm font-medium text-gray-900 truncate">
+                    {toSentenceCase(transaction.category)}
+                  </p>
+                  <div className="flex flex-col">
+                    {transaction.description && (
+                      <p className="text-xs text-gray-500 truncate">
+                        {transaction.description}
+                      </p>
+                    )}
+                    <p className="text-[10px] text-gray-400">
+                      {format(transaction.date, "MMM d, h:mm a")}
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div className="flex items-start gap-2 pl-2">
+                <span
+                  className={`text-sm font-medium text-gray-900 whitespace-nowrap ${
+                    transaction.type === "expense" ? "text-red-500" : "text-green-500"
+                  }`}
+                >
+                  {transaction.type === "expense" ? "-" : "+"}
+                  {formatCurrency(transaction.amount)}
+                </span>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-7 w-7 hover:bg-gray-100 rounded-[8px] -mr-2"
+                    >
+                      <MoreVertical className="w-3.5 h-3.5 text-gray-500" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-48">
+                    <DropdownMenuItem onClick={() => handleEditClick(transaction)}>
+                      Edit Transaction
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </div>
             </div>
-            <span
-              className={`text-sm font-medium whitespace-nowrap px-4 mr-2 ${
-                transaction.type === "expense" ? "text-red-500" : "text-green-500"
-              }`}
-            >
-              {transaction.type === "expense" ? "-" : "+"}
-              {formatCurrency(transaction.amount)}
-            </span>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button 
-                  variant="ghost" 
-                  size="icon" 
-                  className="h-8 w-8 hover:bg-gray-100 rounded-[10px] mr-2"
-                >
-                  <MoreVertical className="w-4 h-4 text-gray-500" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-48">
-                <DropdownMenuItem onClick={() => handleEditClick(transaction)}>
-                  Edit Transaction
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
           </div>
         ))}
       </div>
