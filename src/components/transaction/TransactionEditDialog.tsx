@@ -1,12 +1,11 @@
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useFinance } from "@/contexts/FinanceContext";
 import { useToast } from "@/hooks/use-toast";
 import { useState } from "react";
-import { X } from "lucide-react";
-import { TransactionAmountOperations } from "./TransactionAmountOperations";
+import { Plus, Minus } from "lucide-react";
 
 type Transaction = {
   id: string;
@@ -34,113 +33,111 @@ export const TransactionEditDialog = ({
   const formattedSources = getFormattedPaymentSources();
   const [operation, setOperation] = useState<"add" | "subtract">("add");
   const [amount, setAmount] = useState("");
-  const [source, setSource] = useState(transaction.source);
-  const [description, setDescription] = useState(transaction.description || "");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     e.stopPropagation();
     
-    if (!source) {
+    const formData = new FormData(e.currentTarget);
+    const source = formData.get("source") as string;
+    const description = formData.get("description") as string;
+
+    if (!amount && !source) {
       toast({
         title: "Error",
-        description: "Please select a payment source",
+        description: "Please fill in all required fields",
         variant: "destructive",
       });
       return;
     }
 
     const numAmount = Number(amount);
-    if (amount && !isNaN(numAmount)) {
-      const finalAmount = operation === "add" 
-        ? transaction.amount + numAmount 
-        : transaction.amount - numAmount;
+    const finalAmount = operation === "add" 
+      ? transaction.amount + numAmount 
+      : transaction.amount - numAmount;
 
-      if (finalAmount < 0) {
-        toast({
-          title: "Error",
-          description: "Transaction amount cannot be negative",
-          variant: "destructive",
-        });
-        return;
-      }
+    editTransaction(transaction.id, {
+      amount: finalAmount,
+      source: source || transaction.source,
+      description,
+    });
 
-      editTransaction(transaction.id, {
-        amount: finalAmount,
-        source,
-        description,
-      });
+    toast({
+      title: "Success",
+      description: "Transaction updated successfully",
+    });
 
-      toast({
-        title: "Success",
-        description: "Transaction updated successfully",
-      });
-
-      setAmount("");
-      onOpenChange(false);
-    } else if (source !== transaction.source || description !== transaction.description) {
-      editTransaction(transaction.id, {
-        source,
-        description,
-      });
-
-      toast({
-        title: "Success",
-        description: "Transaction updated successfully",
-      });
-
-      onOpenChange(false);
-    }
+    setAmount("");
+    onOpenChange(false);
   };
 
   const handleDialogClose = (open: boolean) => {
-    if (!open) {
-      setAmount("");
-      setSource(transaction.source);
-      setDescription(transaction.description || "");
-      setOperation("add");
-    }
+    setAmount("");
     onOpenChange(open);
   };
 
   return (
     <Dialog open={open} onOpenChange={handleDialogClose}>
-      <DialogContent 
-        className="sm:max-w-[425px] mx-4 relative rounded-2xl" 
-        onClick={(e) => e.stopPropagation()}
-      >
-        <button
-          onClick={() => onOpenChange(false)}
-          className="absolute right-4 top-4 p-2.5 rounded-full hover:bg-red-50 transition-colors group"
-        >
-          <X className="h-6 w-6 text-red-500 group-hover:scale-110 transition-transform" />
-        </button>
-        
-        <DialogHeader className="space-y-3 mb-4">
-          <DialogTitle className="text-xl">Edit Transaction</DialogTitle>
+      <DialogContent className="sm:max-w-[425px]" onClick={(e) => e.stopPropagation()}>
+        <DialogHeader>
+          <DialogTitle>Edit Transaction</DialogTitle>
+          <DialogDescription>
+            Make changes to your transaction here. Click save when you're done.
+          </DialogDescription>
         </DialogHeader>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="flex gap-2 mb-4">
+            <Button
+              type="button"
+              variant={operation === "add" ? "default" : "outline"}
+              onClick={() => setOperation("add")}
+              className="flex-1 h-12 gap-2"
+            >
+              <Plus className="w-4 h-4" />
+              Add
+            </Button>
+            <Button
+              type="button"
+              variant={operation === "subtract" ? "default" : "outline"}
+              onClick={() => setOperation("subtract")}
+              className="flex-1 h-12 gap-2"
+            >
+              <Minus className="w-4 h-4" />
+              Subtract
+            </Button>
+          </div>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <TransactionAmountOperations
-            operation={operation}
-            setOperation={setOperation}
-            amount={amount}
-            setAmount={setAmount}
-            currentAmount={transaction.amount}
-          />
+          <div className="space-y-2">
+            <label htmlFor="amount" className="text-sm font-medium">
+              Amount
+            </label>
+            <div className="relative">
+              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">
+                ₹
+              </span>
+              <Input
+                id="amount"
+                name="amount"
+                type="number"
+                value={amount}
+                onChange={(e) => setAmount(e.target.value)}
+                className="pl-7"
+              />
+            </div>
+          </div>
 
           <div className="space-y-2">
             <label htmlFor="source" className="text-sm font-medium">
               Payment Source
             </label>
-            <Select value={source} onValueChange={setSource}>
-              <SelectTrigger className="h-12 rounded-xl">
+            <Select name="source" defaultValue={transaction.source}>
+              <SelectTrigger>
                 <SelectValue placeholder="Select payment source" />
               </SelectTrigger>
               <SelectContent>
-                {formattedSources.map((src) => (
-                  <SelectItem key={src.id} value={src.id}>
-                    {src.name}
+                {formattedSources.map((source) => (
+                  <SelectItem key={source.id} value={source.id}>
+                    {source.name}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -153,14 +150,12 @@ export const TransactionEditDialog = ({
             </label>
             <Input
               id="description"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              className="h-12 rounded-xl"
-              placeholder="Add a note (optional)"
+              name="description"
+              defaultValue={transaction.description}
             />
           </div>
 
-          <Button type="submit" className="w-full h-12 rounded-xl">
+          <Button type="submit" className="w-full">
             Save Changes
           </Button>
         </form>
