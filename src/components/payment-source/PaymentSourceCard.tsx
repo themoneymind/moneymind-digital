@@ -1,10 +1,15 @@
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { formatCurrency } from "@/utils/formatCurrency"; // Assuming you have a utility function for formatting currency
-import { PaymentSourceCardProps } from "@/types"; // Adjust the import based on your project structure
+import { formatCurrency } from "@/utils/formatCurrency";
+import { PaymentSourceCardProps } from "@/types";
 import { MoreVertical } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export const PaymentSourceCard = ({ source }: PaymentSourceCardProps) => {
+  const handleEditClick = () => {
+    // TODO: Implement edit functionality
+    console.log("Edit clicked for source:", source.id);
+  };
+
   return (
     <div className="border-b border-gray-100 last:border-0">
       <div className="flex items-center justify-between p-3">
@@ -25,7 +30,7 @@ export const PaymentSourceCard = ({ source }: PaymentSourceCardProps) => {
             </div>
           </div>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1">
           <span className="text-sm font-medium text-gray-900 whitespace-nowrap">
             {formatCurrency(source.amount)}
           </span>
