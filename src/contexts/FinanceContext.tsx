@@ -37,37 +37,73 @@ export const FinanceProvider = ({ children }: { children: React.ReactNode }) => 
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [paymentSources, setPaymentSources] = useState<PaymentSource[]>([]);
   
-  const { fetchTransactions, addTransaction, editTransaction } = useTransactions();
+  const { fetchTransactions, addTransaction: addTxn, editTransaction: editTxn } = useTransactions();
   const { 
     fetchPaymentSources, 
-    addPaymentSource, 
-    editPaymentSource, 
-    deletePaymentSource 
+    addPaymentSource: addSource, 
+    editPaymentSource: editSource, 
+    deletePaymentSource: deleteSource 
   } = usePaymentSources();
 
   // Fetch payment sources
   useEffect(() => {
     if (!user) return;
-
-    const loadPaymentSources = async () => {
-      const sources = await fetchPaymentSources();
-      setPaymentSources(sources);
-    };
-
     loadPaymentSources();
   }, [user, fetchPaymentSources]);
 
   // Fetch transactions
   useEffect(() => {
     if (!user) return;
-
-    const loadTransactions = async () => {
-      const txns = await fetchTransactions();
-      setTransactions(txns);
-    };
-
     loadTransactions();
   }, [user, fetchTransactions]);
+
+  const loadPaymentSources = async () => {
+    const sources = await fetchPaymentSources();
+    setPaymentSources(sources);
+  };
+
+  const loadTransactions = async () => {
+    const txns = await fetchTransactions();
+    setTransactions(txns);
+  };
+
+  const addTransaction = async (transaction: Omit<Transaction, "id" | "date" | "user_id" | "created_at" | "updated_at">) => {
+    await addTxn(transaction);
+    
+    // Update payment source amount
+    const sourceIndex = paymentSources.findIndex(s => s.id === transaction.source);
+    if (sourceIndex !== -1) {
+      const updatedSource = { ...paymentSources[sourceIndex] };
+      updatedSource.amount = transaction.type === 'expense' 
+        ? Number(updatedSource.amount) - Number(transaction.amount)
+        : Number(updatedSource.amount) + Number(transaction.amount);
+      
+      await editSource(updatedSource);
+    }
+    
+    // Refresh data
+    await Promise.all([loadTransactions(), loadPaymentSources()]);
+  };
+
+  const editTransaction = async (id: string, updates: Partial<Omit<Transaction, "id" | "created_at" | "updated_at">>) => {
+    await editTxn(id, updates);
+    await Promise.all([loadTransactions(), loadPaymentSources()]);
+  };
+
+  const editPaymentSource = async (source: PaymentSource) => {
+    await editSource(source);
+    await loadPaymentSources();
+  };
+
+  const addPaymentSource = async (source: Omit<PaymentSource, "id">) => {
+    await addSource(source);
+    await loadPaymentSources();
+  };
+
+  const deletePaymentSource = async (id: string) => {
+    await deleteSource(id);
+    await loadPaymentSources();
+  };
 
   const balance = transactions.reduce((acc, curr) => {
     return curr.type === "income" ? acc + curr.amount : acc - curr.amount;

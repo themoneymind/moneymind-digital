@@ -43,9 +43,14 @@ export const usePaymentSources = () => {
   const editPaymentSource = useCallback(async (updatedSource: PaymentSource) => {
     if (!user) return;
 
+    console.log("Updating payment source:", updatedSource);
+
     const { error } = await supabase
       .from("payment_sources")
-      .update(updatedSource)
+      .update({
+        ...updatedSource,
+        amount: Number(updatedSource.amount)
+      })
       .eq("id", updatedSource.id);
 
     if (error) {
