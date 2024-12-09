@@ -13,25 +13,23 @@ export const PaymentSourceCard = ({ source }: PaymentSourceCardProps) => {
   return (
     <div className="border-b border-gray-100 last:border-0">
       <div className="flex items-center justify-between p-3">
-        <div className="flex items-center gap-2.5 flex-1 min-w-0">
-          <div className="w-8 h-8 bg-green-50 rounded-[8px] flex items-center justify-center flex-shrink-0">
-            <span className="text-green-500 text-xs font-medium">
-              {source.name[0].toUpperCase()}
+        <div className="flex items-center gap-3 flex-1 min-w-0">
+          <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center flex-shrink-0">
+            <span className="text-blue-600 font-medium">
+              {source.name.charAt(0).toUpperCase()}
             </span>
           </div>
-          <div className="min-w-0 flex-1">
-            <div className="flex flex-col">
-              <p className="text-sm font-medium text-gray-900 truncate">
-                {source.name}
-              </p>
-              {source.upiId && (
-                <p className="text-xs text-gray-500 truncate">{source.upiId}</p>
-              )}
-            </div>
+          <div className="min-w-0">
+            <p className="text-sm font-medium text-gray-900 truncate">
+              {source.name}
+            </p>
+            {source.upiId && (
+              <p className="text-xs text-gray-500 truncate">{source.upiId}</p>
+            )}
           </div>
         </div>
-        <div className="flex items-center gap-1">
-          <span className="text-sm font-medium text-gray-900 whitespace-nowrap">
+        <div className="flex items-center">
+          <span className="text-sm font-medium text-gray-900 whitespace-nowrap mr-6">
             {formatCurrency(source.amount)}
           </span>
           <DropdownMenu>
@@ -39,12 +37,12 @@ export const PaymentSourceCard = ({ source }: PaymentSourceCardProps) => {
               <Button
                 variant="ghost"
                 size="icon"
-                className="h-7 w-7 hover:bg-gray-100 rounded-[8px]"
+                className="h-8 w-8 hover:bg-gray-100 rounded-[8px] mr-2"
               >
-                <MoreVertical className="w-3.5 h-3.5 text-gray-500" />
+                <MoreVertical className="w-4 h-4 text-gray-500" />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
+            <DropdownMenuContent align="end" className="w-48">
               <DropdownMenuItem onClick={handleEditClick}>
                 Edit Payment Source
               </DropdownMenuItem>
