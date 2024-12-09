@@ -3,25 +3,7 @@ import { startOfMonth, endOfMonth } from "date-fns";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "./AuthContext";
 import { useToast } from "@/hooks/use-toast";
-
-type Transaction = {
-  id: string;
-  type: "income" | "expense";
-  amount: number;
-  category: string;
-  source: string;
-  description?: string;
-  date: Date;
-};
-
-type PaymentSource = {
-  id: string;
-  name: string;
-  type: string;
-  amount: number;
-  linked?: boolean;
-  upiApps?: string[];
-};
+import { Transaction, TransactionType, PaymentSource } from "@/types/finance";
 
 type FinanceContextType = {
   currentMonth: Date;
@@ -31,8 +13,8 @@ type FinanceContextType = {
   expense: number;
   transactions: Transaction[];
   paymentSources: PaymentSource[];
-  addTransaction: (transaction: Omit<Transaction, "id" | "date">) => Promise<void>;
-  editTransaction: (id: string, updates: Partial<Omit<Transaction, "id">>) => Promise<void>;
+  addTransaction: (transaction: Omit<Transaction, "id" | "date" | "user_id" | "created_at" | "updated_at">) => Promise<void>;
+  editTransaction: (id: string, updates: Partial<Omit<Transaction, "id" | "created_at" | "updated_at">>) => Promise<void>;
   addPaymentSource: (source: Omit<PaymentSource, "id">) => Promise<void>;
   editPaymentSource: (source: PaymentSource) => Promise<void>;
   deletePaymentSource: (id: string) => Promise<void>;
@@ -115,10 +97,14 @@ export const FinanceProvider = ({ children }: { children: React.ReactNode }) => 
         return;
       }
 
-      setTransactions(data.map(t => ({
+      // Convert the type and date fields to match our Transaction type
+      const formattedTransactions: Transaction[] = (data || []).map(t => ({
         ...t,
-        date: new Date(t.date)
-      })) || []);
+        type: t.type as TransactionType, // Type assertion since we know the values are correct
+        date: new Date(t.date),
+      }));
+
+      setTransactions(formattedTransactions);
     };
 
     fetchTransactions();
@@ -157,7 +143,7 @@ export const FinanceProvider = ({ children }: { children: React.ReactNode }) => 
     return curr.type === "expense" ? acc + curr.amount : acc;
   }, 0);
 
-  const addTransaction = useCallback(async (newTransaction: Omit<Transaction, "id" | "date">) => {
+  const addTransaction = useCallback(async (newTransaction: Omit<Transaction, "id" | "date" | "user_id" | "created_at" | "updated_at">) => {
     if (!user) return;
 
     const { data, error } = await supabase
@@ -207,12 +193,18 @@ export const FinanceProvider = ({ children }: { children: React.ReactNode }) => 
     });
   }, [user, paymentSources, toast]);
 
-  const editTransaction = useCallback(async (id: string, updates: Partial<Omit<Transaction, "id">>) => {
+  const editTransaction = useCallback(async (id: string, updates: Partial<Omit<Transaction, "id" | "created_at" | "updated_at">>) => {
     if (!user) return;
+
+    // Convert Date to ISO string if it exists in updates
+    const formattedUpdates = {
+      ...updates,
+      date: updates.date ? updates.date.toISOString() : undefined
+    };
 
     const { error } = await supabase
       .from("transactions")
-      .update(updates)
+      .update(formattedUpdates)
       .eq("id", id);
 
     if (error) {
