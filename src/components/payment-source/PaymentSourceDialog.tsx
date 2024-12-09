@@ -42,7 +42,7 @@ export const PaymentSourceDialog = ({
     );
   };
 
-  const handleAmountChange = (e: React.MouseEvent) => {
+  const handleAmountChange = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
     
@@ -70,21 +70,30 @@ export const PaymentSourceDialog = ({
       ? source.amount + numAmount 
       : source.amount - numAmount;
 
-    editPaymentSource({
-      ...source,
-      amount: newAmount,
-      name: name.trim(),
-      linked: selectedUpiApps.length > 0,
-      upiApps: selectedUpiApps.length > 0 ? selectedUpiApps : undefined,
-    });
+    try {
+      await editPaymentSource({
+        ...source,
+        amount: newAmount,
+        name: name.trim(),
+        linked: selectedUpiApps.length > 0,
+        upiApps: selectedUpiApps.length > 0 ? selectedUpiApps : undefined,
+      });
 
-    toast({
-      title: "Success",
-      description: `Amount ${operation}ed ${operation === 'add' ? 'to' : 'from'} ${name}`,
-    });
+      toast({
+        title: "Success",
+        description: `Amount ${operation}ed ${operation === 'add' ? 'to' : 'from'} ${name}`,
+      });
 
-    setAmount("");
-    onOpenChange(false);
+      setAmount("");
+      onOpenChange(false);
+    } catch (error) {
+      console.error("Error updating payment source:", error);
+      toast({
+        title: "Error",
+        description: "Failed to update payment source",
+        variant: "destructive",
+      });
+    }
   };
 
   const handleDialogClose = () => {

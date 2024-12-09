@@ -36,19 +36,9 @@ export const usePaymentSources = () => {
 
     if (error) {
       console.error("Error adding payment source:", error);
-      toast({
-        title: "Error",
-        description: "Failed to add payment source",
-        variant: "destructive",
-      });
-      return;
+      throw error;
     }
-
-    toast({
-      title: "Success",
-      description: "Payment source added successfully",
-    });
-  }, [user, toast]);
+  }, [user]);
 
   const editPaymentSource = useCallback(async (updatedSource: PaymentSource) => {
     if (!user) return;
@@ -60,19 +50,9 @@ export const usePaymentSources = () => {
 
     if (error) {
       console.error("Error updating payment source:", error);
-      toast({
-        title: "Error",
-        description: "Failed to update payment source",
-        variant: "destructive",
-      });
-      return;
+      throw error;
     }
-
-    toast({
-      title: "Success",
-      description: "Payment source updated successfully",
-    });
-  }, [user, toast]);
+  }, [user]);
 
   const deletePaymentSource = useCallback(async (id: string) => {
     if (!user) return;
@@ -84,19 +64,9 @@ export const usePaymentSources = () => {
 
     if (error) {
       console.error("Error deleting payment source:", error);
-      toast({
-        title: "Error",
-        description: "Failed to delete payment source",
-        variant: "destructive",
-      });
-      return;
+      throw error;
     }
-
-    toast({
-      title: "Success",
-      description: "Payment source deleted successfully",
-    });
-  }, [user, toast]);
+  }, [user]);
 
   return {
     fetchPaymentSources,

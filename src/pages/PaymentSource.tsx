@@ -60,7 +60,7 @@ export const PaymentSource = () => {
     );
   };
 
-  const handleAddPaymentSource = () => {
+  const handleAddPaymentSource = async () => {
     if (!selectedBank && selectedType === "bank") {
       toast({
         title: "Error",
@@ -70,32 +70,37 @@ export const PaymentSource = () => {
       return;
     }
 
-    const upiDetails = [...selectedUpiApps];
-    if (customUpi) {
-      upiDetails.push(customUpi);
+    const upiDetails = selectedUpiApps.slice();
+    if (customUpi.trim()) {
+      upiDetails.push(customUpi.trim());
     }
 
-    const newSource = {
-      name: selectedBank || "Credit Card",
-      type: selectedType === "bank" ? "Bank" : "Credit Card",
-      amount: 0,
-      linked: upiDetails.length > 0,
-      upiApps: upiDetails.length > 0 ? upiDetails : undefined,
-    };
+    try {
+      const newSource = {
+        name: selectedBank || "Credit Card",
+        type: selectedType === "bank" ? "Bank" : "Credit Card",
+        amount: 0,
+        linked: upiDetails.length > 0,
+        upiApps: upiDetails.length > 0 ? upiDetails : undefined,
+      };
 
-    addPaymentSource(newSource);
-    
-    // Save to localStorage and remove first-time user flag
-    const existingSources = JSON.parse(localStorage.getItem("paymentSources") || "[]");
-    localStorage.setItem("paymentSources", JSON.stringify([...existingSources, newSource]));
-    localStorage.removeItem("isFirstTimeUser");
+      await addPaymentSource(newSource);
+      localStorage.removeItem("isFirstTimeUser");
 
-    toast({
-      title: "Success",
-      description: "Payment source added successfully",
-    });
+      toast({
+        title: "Success",
+        description: "Payment source added successfully",
+      });
 
-    navigate("/dashboard");
+      navigate("/dashboard");
+    } catch (error) {
+      console.error("Error adding payment source:", error);
+      toast({
+        title: "Error",
+        description: "Failed to add payment source",
+        variant: "destructive",
+      });
+    }
   };
 
   return (
