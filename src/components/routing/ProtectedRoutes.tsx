@@ -1,6 +1,5 @@
 import { Route } from "react-router-dom";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
-import { FinanceProvider } from "@/contexts/FinanceContext";
 import Index from "@/pages/Index";
 import { PaymentSource } from "@/pages/PaymentSource";
 
@@ -11,9 +10,7 @@ export const ProtectedRoutes = () => {
         path="/dashboard"
         element={
           <ProtectedRoute>
-            <FinanceProvider>
-              <Index />
-            </FinanceProvider>
+            <Index />
           </ProtectedRoute>
         }
       />
@@ -21,9 +18,7 @@ export const ProtectedRoutes = () => {
         path="/payment-source"
         element={
           <ProtectedRoute>
-            <FinanceProvider>
-              <PaymentSource />
-            </FinanceProvider>
+            <PaymentSource />
           </ProtectedRoute>
         }
       />
