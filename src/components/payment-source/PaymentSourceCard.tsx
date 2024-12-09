@@ -57,7 +57,7 @@ export const PaymentSourceCard = ({ source }: PaymentSourceCardProps) => {
 
   return (
     <div className="border-b border-gray-100 last:border-0">
-      <div className="flex items-center justify-between py-2.5 px-3">
+      <div className="flex items-center justify-between py-3 px-3">
         <div className="flex items-center gap-2 flex-1 min-w-0">
           <div className="w-6 h-6 bg-green-50 rounded-[6px] flex items-center justify-center flex-shrink-0">
             <span className="text-green-500 text-[10px] font-medium">
