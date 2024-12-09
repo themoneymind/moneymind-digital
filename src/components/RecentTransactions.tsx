@@ -1,17 +1,9 @@
-import { Search, MoreVertical, Pencil, Trash } from "lucide-react";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { useFinance } from "@/contexts/FinanceContext";
 import { useState } from "react";
-import { format } from "date-fns";
+import { useFinance } from "@/contexts/FinanceContext";
 import { TransactionEditDialog } from "./transaction/TransactionEditDialog";
-import { getCategoryIcon } from "@/utils/categoryIcons";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { TransactionSearch } from "./transaction/TransactionSearch";
+import { TransactionFilters } from "./transaction/TransactionFilters";
+import { TransactionItem } from "./transaction/TransactionItem";
 
 export const RecentTransactions = () => {
   const { transactions } = useFinance();
@@ -56,121 +48,28 @@ export const RecentTransactions = () => {
       <div className="flex items-center mb-4">
         <h2 className="text-base font-semibold">Recent Transactions</h2>
       </div>
-      <div className="relative mb-4">
-        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-3.5 h-3.5 text-gray-400" />
-        <Input
-          className="pl-9 h-10 border-gray-200 rounded-apple text-sm"
-          placeholder="Search transactions..."
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-        />
-      </div>
-      <div className="flex gap-2 mb-4">
-        <Button
-          className={`rounded-apple px-4 py-1.5 text-sm ${
-            filter === "all" ? "bg-blue-600 text-white" : "bg-gray-100 text-gray-600"
-          }`}
-          variant={filter === "all" ? "default" : "outline"}
-          onClick={() => setFilter("all")}
-        >
-          All
-        </Button>
-        <Button
-          className={`rounded-apple px-4 py-1.5 text-sm ${
-            filter === "income" ? "bg-blue-600 text-white" : "bg-gray-100 text-gray-600"
-          }`}
-          variant={filter === "income" ? "default" : "outline"}
-          onClick={() => setFilter("income")}
-        >
-          Income
-        </Button>
-        <Button
-          className={`rounded-apple px-4 py-1.5 text-sm ${
-            filter === "expense" ? "bg-blue-600 text-white" : "bg-gray-100 text-gray-600"
-          }`}
-          variant={filter === "expense" ? "default" : "outline"}
-          onClick={() => setFilter("expense")}
-        >
-          Expense
-        </Button>
-      </div>
+      
+      <TransactionSearch 
+        searchQuery={searchQuery}
+        setSearchQuery={setSearchQuery}
+      />
+      
+      <TransactionFilters 
+        filter={filter}
+        setFilter={setFilter}
+      />
+      
       <div className="space-y-0.5">
-        {filteredTransactions.map((transaction) => {
-          const IconComponent = getCategoryIcon(transaction.category);
-          return (
-            <div key={transaction.id} className="border-b border-gray-100 last:border-0">
-              <div className="flex items-center justify-between py-2 px-3">
-                <div className="flex items-center gap-2.5 flex-1 min-w-0">
-                  <div
-                    className={`w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 ${
-                      transaction.type === "expense"
-                        ? "bg-red-50"
-                        : "bg-green-50"
-                    }`}
-                  >
-                    <IconComponent
-                      className={`w-3 h-3 ${
-                        transaction.type === "expense"
-                          ? "text-red-500"
-                          : "text-green-500"
-                      }`}
-                    />
-                  </div>
-                  <div className="min-w-0 flex-1">
-                    <p className="text-xs font-medium text-gray-900">
-                      {toSentenceCase(transaction.category)}
-                    </p>
-                    {transaction.description && (
-                      <p className="text-[11px] text-gray-500 truncate mt-0.5">
-                        {transaction.description}
-                      </p>
-                    )}
-                    <p className="text-[10px] text-gray-400 mt-0.5">
-                      {format(transaction.date, "MMM d, h:mm a")}
-                    </p>
-                  </div>
-                </div>
-                <div className="flex items-center justify-end gap-5 ml-auto pr-0">
-                  <span
-                    className={`text-xs font-medium whitespace-nowrap ${
-                      transaction.type === "expense" ? "text-red-500" : "text-green-500"
-                    }`}
-                  >
-                    {transaction.type === "expense" ? "-" : "+"}
-                    {formatCurrency(transaction.amount)}
-                  </span>
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="h-6 w-6 hover:bg-transparent rounded-[8px]"
-                      >
-                        <MoreVertical className="w-3.5 h-3.5 text-gray-500" />
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="w-32">
-                      <DropdownMenuItem 
-                        onClick={() => handleEditClick(transaction)}
-                        className="gap-2 text-xs"
-                      >
-                        <Pencil className="w-3.5 h-3.5" />
-                        Edit
-                      </DropdownMenuItem>
-                      <DropdownMenuItem 
-                        onClick={() => handleDeleteClick(transaction.id)}
-                        className="gap-2 text-xs text-red-500 focus:text-red-500"
-                      >
-                        <Trash className="w-3.5 h-3.5" />
-                        Delete
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </div>
-              </div>
-            </div>
-          );
-        })}
+        {filteredTransactions.map((transaction) => (
+          <TransactionItem
+            key={transaction.id}
+            transaction={transaction}
+            onEdit={handleEditClick}
+            onDelete={handleDeleteClick}
+            formatCurrency={formatCurrency}
+            toSentenceCase={toSentenceCase}
+          />
+        ))}
       </div>
 
       {selectedTransaction && (
