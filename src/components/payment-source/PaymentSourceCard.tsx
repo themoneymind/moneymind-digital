@@ -57,9 +57,9 @@ export const PaymentSourceCard = ({ source }: PaymentSourceCardProps) => {
 
   return (
     <div className="border-b border-gray-100 last:border-0">
-      <div className="flex items-center justify-between py-3 px-3">
-        <div className="flex items-center gap-2 flex-1 min-w-0">
-          <div className="w-6 h-6 bg-green-50 rounded-[6px] flex items-center justify-center flex-shrink-0">
+      <div className="flex items-center justify-between py-2.5 px-4">
+        <div className="flex items-center gap-3 flex-1 min-w-0">
+          <div className="w-7 h-7 bg-green-50 rounded-[8px] flex items-center justify-center flex-shrink-0">
             <span className="text-green-500 text-[10px] font-medium">
               {source.name[0].toUpperCase()}
             </span>
@@ -107,9 +107,9 @@ export const PaymentSourceCard = ({ source }: PaymentSourceCardProps) => {
               <Button
                 variant="ghost"
                 size="icon"
-                className="h-5 w-5 hover:bg-transparent p-0"
+                className="h-6 w-6 hover:bg-transparent p-0"
               >
-                <MoreVertical className="w-3 h-3 text-gray-500" />
+                <MoreVertical className="w-3.5 h-3.5 text-gray-500" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-32">
