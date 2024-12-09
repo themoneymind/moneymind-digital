@@ -1,69 +1,46 @@
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { useState } from "react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Pencil } from "lucide-react";
 import { useFinance } from "@/contexts/FinanceContext";
-import { useToast } from "@/hooks/use-toast";
-import { useState } from "react";
+import { Transaction } from "@/types/finance";
+import { PaymentSourceSelector } from "./PaymentSourceSelector";
 import { TransactionAmountOperations } from "./TransactionAmountOperations";
+import { extractBaseSourceId } from "@/utils/transactionUtils";
 
-type Transaction = {
-  id: string;
-  type: "income" | "expense";
-  amount: number;
-  category: string;
-  source: string;
-  description?: string;
-  date: Date;
-};
-
-type TransactionEditDialogProps = {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
+interface TransactionEditDialogProps {
   transaction: Transaction;
-};
+}
 
 export const TransactionEditDialog = ({
-  open,
-  onOpenChange,
   transaction,
 }: TransactionEditDialogProps) => {
-  const { editTransaction, getFormattedPaymentSources } = useFinance();
-  const { toast } = useToast();
-  const formattedSources = getFormattedPaymentSources();
-  const [operation, setOperation] = useState<"add" | "subtract">("add");
-  const [amount, setAmount] = useState("");
+  const { editTransaction } = useFinance();
+  const [open, setOpen] = useState(false);
   const [selectedSource, setSelectedSource] = useState(transaction.source);
   const [description, setDescription] = useState(transaction.description || "");
+  const [numAmount, setNumAmount] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    if (!amount && !selectedSource) {
-      toast({
-        title: "Error",
-        description: "Please fill in all required fields",
-        variant: "destructive",
-      });
+
+    if (!selectedSource) {
       return;
     }
 
-    const numAmount = Number(amount);
-    if (operation === "subtract" && numAmount > transaction.amount) {
-      toast({
-        title: "Error",
-        description: "Cannot subtract more than the current amount",
-        variant: "destructive",
-      });
-      return;
-    }
+    const finalAmount =
+      transaction.type === "income"
+        ? transaction.amount + Number(numAmount)
+        : transaction.amount - Number(numAmount);
 
-    const finalAmount = operation === "add" 
-      ? transaction.amount + numAmount 
-      : transaction.amount - numAmount;
-
-    // Extract the base payment source ID by removing any UPI app suffix
-    const baseSourceId = selectedSource.split("-")[0];
+    const baseSourceId = extractBaseSourceId(selectedSource);
 
     editTransaction(transaction.id, {
       amount: finalAmount,
@@ -71,72 +48,42 @@ export const TransactionEditDialog = ({
       description,
     });
 
-    toast({
-      title: "Success",
-      description: "Transaction updated successfully",
-    });
-
-    setAmount("");
-    onOpenChange(false);
-  };
-
-  const handleDialogClose = (open: boolean) => {
-    if (!open) {
-      setAmount("");
-      setOperation("add");
-      setDescription(transaction.description || "");
-      setSelectedSource(transaction.source);
-    }
-    onOpenChange(open);
+    // Reset form
+    setNumAmount("");
+    setOpen(false);
   };
 
   return (
-    <Dialog open={open} onOpenChange={handleDialogClose}>
-      <DialogContent className="sm:max-w-[425px]">
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        <Button
+          size="icon"
+          variant="ghost"
+          className="h-8 w-8 hover:bg-gray-100"
+        >
+          <Pencil className="h-4 w-4" />
+        </Button>
+      </DialogTrigger>
+      <DialogContent>
         <DialogHeader>
-          <DialogTitle className="text-xl font-semibold">Edit Transaction</DialogTitle>
+          <DialogTitle>Edit Transaction</DialogTitle>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-6 mt-4">
           <TransactionAmountOperations
-            currentAmount={transaction.amount}
-            operation={operation}
-            setOperation={setOperation}
-            amount={amount}
-            setAmount={setAmount}
+            amount={numAmount}
+            setAmount={setNumAmount}
           />
-
-          <div className="space-y-2">
-            <label htmlFor="source" className="text-sm font-medium">
-              Payment Source
-            </label>
-            <Select value={selectedSource} onValueChange={setSelectedSource}>
-              <SelectTrigger className="h-12 rounded-[12px]">
-                <SelectValue placeholder="Select payment source" />
-              </SelectTrigger>
-              <SelectContent>
-                {formattedSources.map((source) => (
-                  <SelectItem key={source.id} value={source.id}>
-                    {source.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div className="space-y-2">
-            <label htmlFor="description" className="text-sm font-medium">
-              Description
-            </label>
-            <Input
-              id="description"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              className="h-12 rounded-[12px]"
-            />
-          </div>
-
-          <Button type="submit" className="w-full h-12 rounded-[12px]">
-            Save Changes
+          <PaymentSourceSelector
+            value={selectedSource}
+            onChange={setSelectedSource}
+          />
+          <Input
+            placeholder="Description (optional)"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+          />
+          <Button type="submit" className="w-full">
+            Update Transaction
           </Button>
         </form>
       </DialogContent>
