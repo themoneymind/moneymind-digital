@@ -1,27 +1,17 @@
-import { Route } from "react-router-dom";
-import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
-import Index from "@/pages/Index";
-import { PaymentSource } from "@/pages/PaymentSource";
+import { Navigate, Outlet } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
+import { FinanceProvider } from "@/contexts/FinanceContext";
 
 export const ProtectedRoutes = () => {
+  const { user } = useAuth();
+
+  if (!user) {
+    return <Navigate to="/signin" />;
+  }
+
   return (
-    <>
-      <Route
-        path="/dashboard"
-        element={
-          <ProtectedRoute>
-            <Index />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/payment-source"
-        element={
-          <ProtectedRoute>
-            <PaymentSource />
-          </ProtectedRoute>
-        }
-      />
-    </>
+    <FinanceProvider>
+      <Outlet />
+    </FinanceProvider>
   );
 };
