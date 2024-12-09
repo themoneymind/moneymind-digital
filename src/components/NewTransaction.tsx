@@ -33,7 +33,7 @@ export const NewTransaction = () => {
     }));
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!amount || !category || !source) {
       toast({
         title: "Error",
@@ -43,18 +43,15 @@ export const NewTransaction = () => {
       return;
     }
 
-    // Extract the base payment source ID by removing any UPI app suffix and ensuring it's a valid UUID
-    const baseSourceId = source.split("-")[0];
-    
-    // Add some logging to help debug
-    console.log("Submitting transaction with source:", baseSourceId);
-
     try {
-      addTransaction({
+      // Log for debugging
+      console.log("Submitting transaction with source:", source);
+
+      await addTransaction({
         type,
         amount: Number(amount),
         category,
-        source: baseSourceId,
+        source, // Use the full UUID directly
         description,
       });
 
