@@ -52,22 +52,22 @@ export const RecentTransactions = () => {
   };
 
   return (
-    <div className="p-6 mx-4 bg-white rounded-apple">
-      <div className="flex items-center mb-6">
-        <h2 className="text-lg font-semibold">Recent Transactions</h2>
+    <div className="p-5 mx-4 bg-white rounded-apple">
+      <div className="flex items-center mb-4">
+        <h2 className="text-base font-semibold">Recent Transactions</h2>
       </div>
-      <div className="relative mb-6">
-        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+      <div className="relative mb-4">
+        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-3.5 h-3.5 text-gray-400" />
         <Input
-          className="pl-10 h-12 border-gray-200 rounded-apple"
+          className="pl-9 h-10 border-gray-200 rounded-apple text-sm"
           placeholder="Search transactions..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
         />
       </div>
-      <div className="flex gap-2 mb-6">
+      <div className="flex gap-2 mb-4">
         <Button
-          className={`rounded-apple px-6 ${
+          className={`rounded-apple px-4 py-1.5 text-sm ${
             filter === "all" ? "bg-blue-600 text-white" : "bg-gray-100 text-gray-600"
           }`}
           variant={filter === "all" ? "default" : "outline"}
@@ -76,7 +76,7 @@ export const RecentTransactions = () => {
           All
         </Button>
         <Button
-          className={`rounded-apple px-6 ${
+          className={`rounded-apple px-4 py-1.5 text-sm ${
             filter === "income" ? "bg-blue-600 text-white" : "bg-gray-100 text-gray-600"
           }`}
           variant={filter === "income" ? "default" : "outline"}
@@ -85,7 +85,7 @@ export const RecentTransactions = () => {
           Income
         </Button>
         <Button
-          className={`rounded-apple px-6 ${
+          className={`rounded-apple px-4 py-1.5 text-sm ${
             filter === "expense" ? "bg-blue-600 text-white" : "bg-gray-100 text-gray-600"
           }`}
           variant={filter === "expense" ? "default" : "outline"}
@@ -94,22 +94,22 @@ export const RecentTransactions = () => {
           Expense
         </Button>
       </div>
-      <div className="space-y-1">
+      <div className="space-y-0.5">
         {filteredTransactions.map((transaction) => {
           const IconComponent = getCategoryIcon(transaction.category);
           return (
             <div key={transaction.id} className="border-b border-gray-100 last:border-0">
-              <div className="flex items-center justify-between py-3 px-4">
-                <div className="flex items-center gap-3 flex-1 min-w-0">
+              <div className="flex items-center justify-between py-2 px-3">
+                <div className="flex items-center gap-2.5 flex-1 min-w-0">
                   <div
-                    className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
+                    className={`w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 ${
                       transaction.type === "expense"
                         ? "bg-red-50"
                         : "bg-green-50"
                     }`}
                   >
                     <IconComponent
-                      className={`w-3.5 h-3.5 ${
+                      className={`w-3 h-3 ${
                         transaction.type === "expense"
                           ? "text-red-500"
                           : "text-green-500"
@@ -117,11 +117,11 @@ export const RecentTransactions = () => {
                     />
                   </div>
                   <div className="min-w-0 flex-1">
-                    <p className="text-sm font-medium text-gray-900">
+                    <p className="text-xs font-medium text-gray-900">
                       {toSentenceCase(transaction.category)}
                     </p>
                     {transaction.description && (
-                      <p className="text-xs text-gray-500 truncate">
+                      <p className="text-[11px] text-gray-500 truncate mt-0.5">
                         {transaction.description}
                       </p>
                     )}
@@ -130,9 +130,9 @@ export const RecentTransactions = () => {
                     </p>
                   </div>
                 </div>
-                <div className="flex items-center justify-end gap-4 ml-auto pr-1">
+                <div className="flex items-center justify-end gap-5 ml-auto pr-0">
                   <span
-                    className={`text-sm font-medium whitespace-nowrap ${
+                    className={`text-xs font-medium whitespace-nowrap ${
                       transaction.type === "expense" ? "text-red-500" : "text-green-500"
                     }`}
                   >
@@ -144,24 +144,24 @@ export const RecentTransactions = () => {
                       <Button
                         variant="ghost"
                         size="icon"
-                        className="h-8 w-8 hover:bg-transparent rounded-[8px]"
+                        className="h-6 w-6 hover:bg-transparent rounded-[8px]"
                       >
-                        <MoreVertical className="w-4 h-4 text-gray-500" />
+                        <MoreVertical className="w-3.5 h-3.5 text-gray-500" />
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end" className="w-32">
                       <DropdownMenuItem 
                         onClick={() => handleEditClick(transaction)}
-                        className="gap-2"
+                        className="gap-2 text-xs"
                       >
-                        <Pencil className="w-4 h-4" />
+                        <Pencil className="w-3.5 h-3.5" />
                         Edit
                       </DropdownMenuItem>
                       <DropdownMenuItem 
                         onClick={() => handleDeleteClick(transaction.id)}
-                        className="gap-2 text-red-500 focus:text-red-500"
+                        className="gap-2 text-xs text-red-500 focus:text-red-500"
                       >
-                        <Trash className="w-4 h-4" />
+                        <Trash className="w-3.5 h-3.5" />
                         Delete
                       </DropdownMenuItem>
                     </DropdownMenuContent>
