@@ -102,14 +102,14 @@ export const RecentTransactions = () => {
               <div className="flex items-center justify-between py-3 px-4">
                 <div className="flex items-center gap-3 flex-1 min-w-0">
                   <div
-                    className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${
+                    className={`w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 ${
                       transaction.type === "expense"
                         ? "bg-red-50"
                         : "bg-green-50"
                     }`}
                   >
                     <IconComponent
-                      className={`w-5 h-5 ${
+                      className={`w-4 h-4 ${
                         transaction.type === "expense"
                           ? "text-red-500"
                           : "text-green-500"
@@ -130,7 +130,7 @@ export const RecentTransactions = () => {
                     </p>
                   </div>
                 </div>
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-4">
                   <span
                     className={`text-sm font-medium whitespace-nowrap ${
                       transaction.type === "expense" ? "text-red-500" : "text-green-500"
