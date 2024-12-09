@@ -1,9 +1,11 @@
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useFinance } from "@/contexts/FinanceContext";
 import { useToast } from "@/hooks/use-toast";
+import { useState } from "react";
+import { Plus, Minus } from "lucide-react";
 
 type Transaction = {
   id: string;
@@ -29,15 +31,18 @@ export const TransactionEditDialog = ({
   const { editTransaction, getFormattedPaymentSources } = useFinance();
   const { toast } = useToast();
   const formattedSources = getFormattedPaymentSources();
+  const [operation, setOperation] = useState<"add" | "subtract">("add");
+  const [amount, setAmount] = useState("");
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    e.stopPropagation();
+    
     const formData = new FormData(e.currentTarget);
-    const amount = Number(formData.get("amount"));
     const source = formData.get("source") as string;
     const description = formData.get("description") as string;
 
-    if (!amount || !source) {
+    if (!amount && !source) {
       toast({
         title: "Error",
         description: "Please fill in all required fields",
@@ -46,9 +51,14 @@ export const TransactionEditDialog = ({
       return;
     }
 
+    const numAmount = Number(amount);
+    const finalAmount = operation === "add" 
+      ? transaction.amount + numAmount 
+      : transaction.amount - numAmount;
+
     editTransaction(transaction.id, {
-      amount,
-      source,
+      amount: finalAmount,
+      source: source || transaction.source,
       description,
     });
 
@@ -57,16 +67,46 @@ export const TransactionEditDialog = ({
       description: "Transaction updated successfully",
     });
 
+    setAmount("");
     onOpenChange(false);
   };
 
+  const handleDialogClose = (open: boolean) => {
+    setAmount("");
+    onOpenChange(open);
+  };
+
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[425px]">
+    <Dialog open={open} onOpenChange={handleDialogClose}>
+      <DialogContent className="sm:max-w-[425px]" onClick={(e) => e.stopPropagation()}>
         <DialogHeader>
           <DialogTitle>Edit Transaction</DialogTitle>
+          <DialogDescription>
+            Make changes to your transaction here. Click save when you're done.
+          </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="flex gap-2 mb-4">
+            <Button
+              type="button"
+              variant={operation === "add" ? "default" : "outline"}
+              onClick={() => setOperation("add")}
+              className="flex-1 h-12 gap-2"
+            >
+              <Plus className="w-4 h-4" />
+              Add
+            </Button>
+            <Button
+              type="button"
+              variant={operation === "subtract" ? "default" : "outline"}
+              onClick={() => setOperation("subtract")}
+              className="flex-1 h-12 gap-2"
+            >
+              <Minus className="w-4 h-4" />
+              Subtract
+            </Button>
+          </div>
+
           <div className="space-y-2">
             <label htmlFor="amount" className="text-sm font-medium">
               Amount
@@ -79,7 +119,8 @@ export const TransactionEditDialog = ({
                 id="amount"
                 name="amount"
                 type="number"
-                defaultValue={transaction.amount}
+                value={amount}
+                onChange={(e) => setAmount(e.target.value)}
                 className="pl-7"
               />
             </div>
