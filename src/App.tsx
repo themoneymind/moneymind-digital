@@ -47,7 +47,11 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
     return <Navigate to="/payment-source" replace />;
   }
 
-  return <>{children}</>;
+  return (
+    <FinanceProvider>
+      {children}
+    </FinanceProvider>
+  );
 };
 
 const AppRoutes = () => {
@@ -94,11 +98,9 @@ const App = () => (
     <BrowserRouter>
       <AuthProvider>
         <TooltipProvider>
-          <FinanceProvider>
-            <Toaster />
-            <Sonner />
-            <AppRoutes />
-          </FinanceProvider>
+          <Toaster />
+          <Sonner />
+          <AppRoutes />
         </TooltipProvider>
       </AuthProvider>
     </BrowserRouter>
