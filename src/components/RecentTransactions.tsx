@@ -1,4 +1,4 @@
-import { Search, MoreVertical } from "lucide-react";
+import { Search, MoreVertical, Pencil, Trash } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useFinance } from "@/contexts/FinanceContext";
@@ -40,6 +40,11 @@ export const RecentTransactions = () => {
   const handleEditClick = (transaction: typeof transactions[0]) => {
     setSelectedTransaction(transaction);
     setShowEditDialog(true);
+  };
+
+  const handleDeleteClick = (transactionId: string) => {
+    // TODO: Implement delete functionality when backend is ready
+    console.log("Delete transaction:", transactionId);
   };
 
   const toSentenceCase = (str: string) => {
@@ -125,7 +130,7 @@ export const RecentTransactions = () => {
                     </p>
                   </div>
                 </div>
-                <div className="flex items-center gap-4 pl-4">
+                <div className="flex items-center gap-2.5 pl-4">
                   <span
                     className={`text-sm font-medium whitespace-nowrap ${
                       transaction.type === "expense" ? "text-red-500" : "text-green-500"
@@ -144,9 +149,20 @@ export const RecentTransactions = () => {
                         <MoreVertical className="w-4 h-4 text-gray-500" />
                       </Button>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="w-48">
-                      <DropdownMenuItem onClick={() => handleEditClick(transaction)}>
-                        Edit Transaction
+                    <DropdownMenuContent align="end" className="w-32">
+                      <DropdownMenuItem 
+                        onClick={() => handleEditClick(transaction)}
+                        className="gap-2"
+                      >
+                        <Pencil className="w-4 h-4" />
+                        Edit
+                      </DropdownMenuItem>
+                      <DropdownMenuItem 
+                        onClick={() => handleDeleteClick(transaction.id)}
+                        className="gap-2 text-red-500 focus:text-red-500"
+                      >
+                        <Trash className="w-4 h-4" />
+                        Delete
                       </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
