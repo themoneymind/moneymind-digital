@@ -1,5 +1,6 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
+import { FinanceProvider } from "@/contexts/FinanceContext";
 import Index from "@/pages/Index";
 import { PaymentSource } from "@/pages/PaymentSource";
 
@@ -11,10 +12,12 @@ export const ProtectedRoutes = () => {
   }
 
   return (
-    <Routes>
-      <Route path="/" element={<Index />} />
-      <Route path="/payment-source" element={<PaymentSource />} />
-      <Route path="*" element={<Navigate to="/" />} />
-    </Routes>
+    <FinanceProvider>
+      <Routes>
+        <Route path="/" element={<Index />} />
+        <Route path="/payment-source" element={<PaymentSource />} />
+        <Route path="*" element={<Navigate to="/" />} />
+      </Routes>
+    </FinanceProvider>
   );
 };
