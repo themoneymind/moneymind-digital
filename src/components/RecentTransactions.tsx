@@ -130,7 +130,7 @@ export const RecentTransactions = () => {
                     </p>
                   </div>
                 </div>
-                <div className="flex items-center justify-end gap-2 ml-auto">
+                <div className="flex items-center justify-end gap-2 ml-auto pr-0">
                   <span
                     className={`text-sm font-medium whitespace-nowrap ${
                       transaction.type === "expense" ? "text-red-500" : "text-green-500"
