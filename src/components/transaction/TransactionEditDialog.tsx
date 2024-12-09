@@ -39,36 +39,35 @@ export const TransactionEditDialog = ({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!amount && !selectedSource) {
+    if (!selectedSource) {
       toast({
         title: "Error",
-        description: "Please fill in all required fields",
+        description: "Please select a payment source",
         variant: "destructive",
       });
       return;
     }
 
     const numAmount = Number(amount);
-    if (operation === "subtract" && numAmount > transaction.amount) {
+    if (amount && isNaN(numAmount)) {
       toast({
         title: "Error",
-        description: "Cannot subtract more than the current amount",
+        description: "Please enter a valid amount",
         variant: "destructive",
       });
       return;
     }
 
-    const finalAmount = operation === "add" 
-      ? transaction.amount + numAmount 
-      : transaction.amount - numAmount;
-
-    // Extract the base payment source ID (everything before any "-" if it exists)
-    const baseSourceId = selectedSource.split("-")[0];
+    const finalAmount = amount 
+      ? (operation === "add" 
+          ? transaction.amount + numAmount 
+          : transaction.amount - numAmount)
+      : transaction.amount;
 
     try {
       await editTransaction(transaction.id, {
         amount: finalAmount,
-        source: baseSourceId,
+        source: selectedSource.split('-')[0], // Get base source ID
         description,
       });
 
@@ -83,7 +82,7 @@ export const TransactionEditDialog = ({
       console.error("Error updating transaction:", error);
       toast({
         title: "Error",
-        description: "Failed to update transaction",
+        description: error instanceof Error ? error.message : "Failed to update transaction",
         variant: "destructive",
       });
     }

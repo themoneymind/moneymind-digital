@@ -4,8 +4,6 @@ import {
   updatePaymentSourceAmount, 
   validateExpenseAmount, 
   getBaseSourceId,
-  isUpiSource,
-  getUpiApp
 } from "@/utils/paymentSourceUtils";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -84,13 +82,15 @@ export const useTransactionOperations = (
       true
     );
 
-    // If amount is being updated, validate for expense
-    if (updates.amount && originalTransaction.type === "expense") {
-      const sourceId = updates.source || originalTransaction.source;
+    const sourceId = updates.source || originalTransaction.source;
+    const newAmount = updates.amount || originalTransaction.amount;
+
+    // If it's an expense, validate the new amount
+    if (originalTransaction.type === "expense") {
       const hasEnoughBalance = validateExpenseAmount(
         paymentSources,
         sourceId,
-        Number(updates.amount)
+        newAmount
       );
       if (!hasEnoughBalance) {
         // Reapply original effect since we're failing
@@ -104,10 +104,8 @@ export const useTransactionOperations = (
     }
 
     // Apply new transaction effect
-    const newAmount = updates.amount || originalTransaction.amount;
-    const newSource = updates.source || originalTransaction.source;
     await handleTransactionEffect(
-      newSource,
+      sourceId,
       newAmount,
       originalTransaction.type as TransactionType
     );
@@ -120,7 +118,16 @@ export const useTransactionOperations = (
       })
       .eq("id", id);
 
-    if (error) throw error;
+    if (error) {
+      // If update fails, revert to original state
+      await handleTransactionEffect(
+        originalTransaction.source,
+        originalTransaction.amount,
+        originalTransaction.type as TransactionType
+      );
+      throw error;
+    }
+
     await refreshData();
   };
 
