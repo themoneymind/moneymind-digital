@@ -4,11 +4,9 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Pencil } from "lucide-react";
 import { useFinance } from "@/contexts/FinanceContext";
 import { Transaction } from "@/types/finance";
 import { PaymentSourceSelector } from "./PaymentSourceSelector";
@@ -17,16 +15,19 @@ import { extractBaseSourceId } from "@/utils/transactionUtils";
 
 interface TransactionEditDialogProps {
   transaction: Transaction;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
 }
 
 export const TransactionEditDialog = ({
   transaction,
+  open,
+  onOpenChange,
 }: TransactionEditDialogProps) => {
   const { editTransaction } = useFinance();
-  const [open, setOpen] = useState(false);
   const [selectedSource, setSelectedSource] = useState(transaction.source);
   const [description, setDescription] = useState(transaction.description || "");
-  const [numAmount, setNumAmount] = useState("");
+  const [amount, setAmount] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -35,43 +36,28 @@ export const TransactionEditDialog = ({
       return;
     }
 
-    const finalAmount =
-      transaction.type === "income"
-        ? transaction.amount + Number(numAmount)
-        : transaction.amount - Number(numAmount);
-
     const baseSourceId = extractBaseSourceId(selectedSource);
 
     editTransaction(transaction.id, {
-      amount: finalAmount,
+      amount: Number(amount),
       source: baseSourceId,
       description,
     });
 
-    // Reset form
-    setNumAmount("");
-    setOpen(false);
+    setAmount("");
+    onOpenChange(false);
   };
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button
-          size="icon"
-          variant="ghost"
-          className="h-8 w-8 hover:bg-gray-100"
-        >
-          <Pencil className="h-4 w-4" />
-        </Button>
-      </DialogTrigger>
+    <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Edit Transaction</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-6 mt-4">
           <TransactionAmountOperations
-            amount={numAmount}
-            setAmount={setNumAmount}
+            amount={amount}
+            setAmount={setAmount}
           />
           <PaymentSourceSelector
             value={selectedSource}
