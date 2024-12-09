@@ -1,9 +1,8 @@
-import React, { createContext, useContext, useState, useCallback, useEffect } from "react";
-import { startOfMonth, endOfMonth } from "date-fns";
-import { supabase } from "@/integrations/supabase/client";
+import React, { createContext, useContext, useState, useEffect } from "react";
 import { useAuth } from "./AuthContext";
-import { useToast } from "@/hooks/use-toast";
-import { Transaction, TransactionType, PaymentSource } from "@/types/finance";
+import { Transaction, PaymentSource } from "@/types/finance";
+import { useTransactions } from "@/hooks/useTransactions";
+import { usePaymentSources } from "@/hooks/usePaymentSources";
 
 type FinanceContextType = {
   currentMonth: Date;
@@ -34,102 +33,41 @@ export const useFinance = () => {
 
 export const FinanceProvider = ({ children }: { children: React.ReactNode }) => {
   const { user } = useAuth();
-  const { toast } = useToast();
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [paymentSources, setPaymentSources] = useState<PaymentSource[]>([]);
+  
+  const { fetchTransactions, addTransaction, editTransaction } = useTransactions();
+  const { 
+    fetchPaymentSources, 
+    addPaymentSource, 
+    editPaymentSource, 
+    deletePaymentSource 
+  } = usePaymentSources();
 
   // Fetch payment sources
   useEffect(() => {
     if (!user) return;
 
-    const fetchPaymentSources = async () => {
-      const { data, error } = await supabase
-        .from("payment_sources")
-        .select("*")
-        .eq("user_id", user.id);
-
-      if (error) {
-        console.error("Error fetching payment sources:", error);
-        return;
-      }
-
-      setPaymentSources(data || []);
+    const loadPaymentSources = async () => {
+      const sources = await fetchPaymentSources();
+      setPaymentSources(sources);
     };
 
-    fetchPaymentSources();
-
-    // Subscribe to realtime changes
-    const subscription = supabase
-      .channel('payment_sources_changes')
-      .on(
-        'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
-          table: 'payment_sources',
-          filter: `user_id=eq.${user.id}`,
-        },
-        () => {
-          fetchPaymentSources();
-        }
-      )
-      .subscribe();
-
-    return () => {
-      subscription.unsubscribe();
-    };
-  }, [user]);
+    loadPaymentSources();
+  }, [user, fetchPaymentSources]);
 
   // Fetch transactions
   useEffect(() => {
     if (!user) return;
 
-    const fetchTransactions = async () => {
-      const { data, error } = await supabase
-        .from("transactions")
-        .select("*")
-        .eq("user_id", user.id)
-        .order("date", { ascending: false });
-
-      if (error) {
-        console.error("Error fetching transactions:", error);
-        return;
-      }
-
-      // Convert the type and date fields to match our Transaction type
-      const formattedTransactions: Transaction[] = (data || []).map(t => ({
-        ...t,
-        type: t.type as TransactionType, // Type assertion since we know the values are correct
-        date: new Date(t.date),
-      }));
-
-      setTransactions(formattedTransactions);
+    const loadTransactions = async () => {
+      const txns = await fetchTransactions();
+      setTransactions(txns);
     };
 
-    fetchTransactions();
-
-    // Subscribe to realtime changes
-    const subscription = supabase
-      .channel('transactions_changes')
-      .on(
-        'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
-          table: 'transactions',
-          filter: `user_id=eq.${user.id}`,
-        },
-        () => {
-          fetchTransactions();
-        }
-      )
-      .subscribe();
-
-    return () => {
-      subscription.unsubscribe();
-    };
-  }, [user]);
+    loadTransactions();
+  }, [user, fetchTransactions]);
 
   const balance = transactions.reduce((acc, curr) => {
     return curr.type === "income" ? acc + curr.amount : acc - curr.amount;
@@ -143,161 +81,7 @@ export const FinanceProvider = ({ children }: { children: React.ReactNode }) => 
     return curr.type === "expense" ? acc + curr.amount : acc;
   }, 0);
 
-  const addTransaction = useCallback(async (newTransaction: Omit<Transaction, "id" | "date" | "user_id" | "created_at" | "updated_at">) => {
-    if (!user) return;
-
-    const { data, error } = await supabase
-      .from("transactions")
-      .insert([{
-        ...newTransaction,
-        user_id: user.id,
-        date: new Date().toISOString()
-      }])
-      .select()
-      .single();
-
-    if (error) {
-      console.error("Error adding transaction:", error);
-      toast({
-        title: "Error",
-        description: "Failed to add transaction",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    // Update payment source amount
-    const sourceId = newTransaction.source.split('-')[0];
-    const { error: sourceError } = await supabase
-      .from("payment_sources")
-      .update({
-        amount: newTransaction.type === 'expense' 
-          ? paymentSources.find(s => s.id === sourceId)!.amount - newTransaction.amount
-          : paymentSources.find(s => s.id === sourceId)!.amount + newTransaction.amount
-      })
-      .eq("id", sourceId);
-
-    if (sourceError) {
-      console.error("Error updating payment source:", sourceError);
-      toast({
-        title: "Error",
-        description: "Failed to update payment source",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    toast({
-      title: "Success",
-      description: "Transaction added successfully",
-    });
-  }, [user, paymentSources, toast]);
-
-  const editTransaction = useCallback(async (id: string, updates: Partial<Omit<Transaction, "id" | "created_at" | "updated_at">>) => {
-    if (!user) return;
-
-    // Convert Date to ISO string if it exists in updates
-    const formattedUpdates = {
-      ...updates,
-      date: updates.date ? updates.date.toISOString() : undefined
-    };
-
-    const { error } = await supabase
-      .from("transactions")
-      .update(formattedUpdates)
-      .eq("id", id);
-
-    if (error) {
-      console.error("Error updating transaction:", error);
-      toast({
-        title: "Error",
-        description: "Failed to update transaction",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    toast({
-      title: "Success",
-      description: "Transaction updated successfully",
-    });
-  }, [user, toast]);
-
-  const addPaymentSource = useCallback(async (newSource: Omit<PaymentSource, "id">) => {
-    if (!user) return;
-
-    const { error } = await supabase
-      .from("payment_sources")
-      .insert([{
-        ...newSource,
-        user_id: user.id
-      }]);
-
-    if (error) {
-      console.error("Error adding payment source:", error);
-      toast({
-        title: "Error",
-        description: "Failed to add payment source",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    toast({
-      title: "Success",
-      description: "Payment source added successfully",
-    });
-  }, [user, toast]);
-
-  const editPaymentSource = useCallback(async (updatedSource: PaymentSource) => {
-    if (!user) return;
-
-    const { error } = await supabase
-      .from("payment_sources")
-      .update(updatedSource)
-      .eq("id", updatedSource.id);
-
-    if (error) {
-      console.error("Error updating payment source:", error);
-      toast({
-        title: "Error",
-        description: "Failed to update payment source",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    toast({
-      title: "Success",
-      description: "Payment source updated successfully",
-    });
-  }, [user, toast]);
-
-  const deletePaymentSource = useCallback(async (id: string) => {
-    if (!user) return;
-
-    const { error } = await supabase
-      .from("payment_sources")
-      .delete()
-      .eq("id", id);
-
-    if (error) {
-      console.error("Error deleting payment source:", error);
-      toast({
-        title: "Error",
-        description: "Failed to delete payment source",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    toast({
-      title: "Success",
-      description: "Payment source deleted successfully",
-    });
-  }, [user, toast]);
-
-  const getFormattedPaymentSources = useCallback(() => {
+  const getFormattedPaymentSources = () => {
     const formattedSources: { id: string; name: string }[] = [];
     
     paymentSources.forEach(source => {
@@ -317,11 +101,11 @@ export const FinanceProvider = ({ children }: { children: React.ReactNode }) => 
     });
 
     return formattedSources;
-  }, [paymentSources]);
+  };
 
-  const getTransactionsBySource = useCallback((sourceId: string) => {
+  const getTransactionsBySource = (sourceId: string) => {
     return transactions.filter(transaction => transaction.source === sourceId);
-  }, [transactions]);
+  };
 
   return (
     <FinanceContext.Provider
