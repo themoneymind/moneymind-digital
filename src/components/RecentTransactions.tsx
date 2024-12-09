@@ -99,17 +99,17 @@ export const RecentTransactions = () => {
           const IconComponent = getCategoryIcon(transaction.category);
           return (
             <div key={transaction.id} className="border-b border-gray-100 last:border-0">
-              <div className="flex items-center justify-between p-4">
+              <div className="flex items-center justify-between py-3 px-4">
                 <div className="flex items-center gap-3 flex-1 min-w-0">
                   <div
-                    className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
+                    className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${
                       transaction.type === "expense"
                         ? "bg-red-50"
                         : "bg-green-50"
                     }`}
                   >
                     <IconComponent
-                      className={`w-4 h-4 ${
+                      className={`w-5 h-5 ${
                         transaction.type === "expense"
                           ? "text-red-500"
                           : "text-green-500"
@@ -130,7 +130,7 @@ export const RecentTransactions = () => {
                     </p>
                   </div>
                 </div>
-                <div className="flex items-center gap-2.5 pl-4">
+                <div className="flex items-center gap-3">
                   <span
                     className={`text-sm font-medium whitespace-nowrap ${
                       transaction.type === "expense" ? "text-red-500" : "text-green-500"
