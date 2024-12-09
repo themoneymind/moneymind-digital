@@ -41,9 +41,13 @@ export const RecentTransactions = () => {
     setShowEditDialog(true);
   };
 
+  const toSentenceCase = (str: string) => {
+    return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+  };
+
   return (
     <div className="p-6 mx-4 bg-white rounded-apple">
-      <h2 className="mb-6 text-lg font-semibold">Recent Transactions</h2>
+      <h2 className="mb-6 text-lg font-semibold pl-[44px]">Recent Transactions</h2>
       <div className="relative mb-6">
         <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
         <Input
@@ -84,9 +88,9 @@ export const RecentTransactions = () => {
       </div>
       <div className="space-y-1">
         {filteredTransactions.map((transaction) => (
-          <div key={transaction.id} className="grid grid-cols-[auto_1fr_auto_auto] items-center gap-3 p-3 border-b border-gray-100 hover:bg-gray-50">
+          <div key={transaction.id} className="grid grid-cols-[44px_1fr_auto_auto] items-center gap-3 p-3 border-b border-gray-100 hover:bg-gray-50">
             <div
-              className={`w-8 h-8 rounded-[8px] flex items-center justify-center ml-1 ${
+              className={`w-8 h-8 rounded-[8px] flex items-center justify-center ${
                 transaction.type === "expense"
                   ? "bg-red-50 text-red-500"
                   : "bg-green-50 text-green-500"
@@ -95,8 +99,8 @@ export const RecentTransactions = () => {
               <span className="text-xs font-medium">{transaction.category[0].toUpperCase()}</span>
             </div>
             <div className="min-w-0">
-              <p className="text-sm font-medium text-gray-900 truncate uppercase">
-                {transaction.category}
+              <p className="text-sm font-medium text-gray-900 truncate">
+                {toSentenceCase(transaction.category)}
               </p>
               <div className="flex items-center gap-1">
                 {transaction.description && (
@@ -108,7 +112,7 @@ export const RecentTransactions = () => {
               </div>
             </div>
             <span
-              className={`text-sm font-medium whitespace-nowrap px-4 ${
+              className={`text-sm font-medium whitespace-nowrap px-4 mr-2 ${
                 transaction.type === "expense" ? "text-red-500" : "text-green-500"
               }`}
             >
@@ -120,7 +124,7 @@ export const RecentTransactions = () => {
                 <Button 
                   variant="ghost" 
                   size="icon" 
-                  className="h-8 w-8 hover:bg-gray-100 rounded-[10px] mr-0"
+                  className="h-8 w-8 hover:bg-gray-100 rounded-[10px] mr-2"
                 >
                   <MoreVertical className="w-4 h-4 text-gray-500" />
                 </Button>
