@@ -79,12 +79,11 @@ export const FinanceProvider = ({ children }: { children: React.ReactNode }) => 
     };
 
     await editSource(updatedSource);
-    await loadPaymentSources(); // Refresh payment sources
+    await loadPaymentSources();
   };
 
   const addTransaction = async (transaction: Omit<Transaction, "id" | "date" | "user_id" | "created_at" | "updated_at">) => {
     try {
-      // First, validate if there's enough balance for expense
       if (transaction.type === 'expense') {
         const source = paymentSources.find(s => s.id === transaction.source);
         if (!source || Number(source.amount) < Number(transaction.amount)) {
@@ -92,17 +91,13 @@ export const FinanceProvider = ({ children }: { children: React.ReactNode }) => 
         }
       }
 
-      // Add the transaction
       await addTxn(transaction);
-
-      // Update payment source amount
       await updatePaymentSourceAmount(
         transaction.source,
         Number(transaction.amount),
         transaction.type === 'income'
       );
 
-      // Refresh data
       await Promise.all([loadTransactions(), loadPaymentSources()]);
     } catch (error) {
       console.error("Error in addTransaction:", error);
@@ -112,28 +107,54 @@ export const FinanceProvider = ({ children }: { children: React.ReactNode }) => 
 
   const editTransaction = async (id: string, updates: Partial<Omit<Transaction, "id" | "created_at" | "updated_at">>) => {
     try {
-      // Get the original transaction
       const originalTransaction = transactions.find(t => t.id === id);
       if (!originalTransaction) throw new Error("Transaction not found");
 
-      // If amount or type is being updated, we need to adjust payment source
-      if (updates.amount || updates.type || updates.source) {
-        // Revert the original transaction's effect on payment source
+      // If amount is being updated
+      if (updates.amount !== undefined) {
+        // First, revert the original transaction's effect
         await updatePaymentSourceAmount(
           originalTransaction.source,
-          Number(originalTransaction.amount),
+          originalTransaction.amount,
           originalTransaction.type === 'expense' // Reverse the original effect
         );
 
-        // Apply the new transaction's effect
-        const newAmount = updates.amount || originalTransaction.amount;
-        const newType = updates.type || originalTransaction.type;
-        const newSource = updates.source || originalTransaction.source;
+        // Check if there's enough balance for expense
+        if (originalTransaction.type === 'expense') {
+          const source = paymentSources.find(s => s.id === originalTransaction.source);
+          if (!source || Number(source.amount) + originalTransaction.amount < Number(updates.amount)) {
+            // Reapply the original amount since we're failing
+            await updatePaymentSourceAmount(
+              originalTransaction.source,
+              originalTransaction.amount,
+              originalTransaction.type === 'income'
+            );
+            throw new Error("Insufficient balance in the payment source");
+          }
+        }
 
+        // Apply the new amount
         await updatePaymentSourceAmount(
-          newSource,
-          Number(newAmount),
-          newType === 'income'
+          originalTransaction.source,
+          Number(updates.amount),
+          originalTransaction.type === 'income'
+        );
+      }
+
+      // If source is being updated
+      if (updates.source && updates.source !== originalTransaction.source) {
+        // Revert amount from old source
+        await updatePaymentSourceAmount(
+          originalTransaction.source,
+          originalTransaction.amount,
+          originalTransaction.type === 'expense'
+        );
+
+        // Add amount to new source
+        await updatePaymentSourceAmount(
+          updates.source,
+          updates.amount || originalTransaction.amount,
+          originalTransaction.type === 'income'
         );
       }
 
