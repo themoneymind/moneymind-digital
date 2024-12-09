@@ -1,11 +1,12 @@
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useFinance } from "@/contexts/FinanceContext";
 import { useToast } from "@/hooks/use-toast";
 import { useState } from "react";
-import { Plus, Minus, X } from "lucide-react";
+import { X } from "lucide-react";
+import { TransactionAmountOperations } from "./TransactionAmountOperations";
 
 type Transaction = {
   id: string;
@@ -55,6 +56,15 @@ export const TransactionEditDialog = ({
         ? transaction.amount + numAmount 
         : transaction.amount - numAmount;
 
+      if (finalAmount < 0) {
+        toast({
+          title: "Error",
+          description: "Transaction amount cannot be negative",
+          variant: "destructive",
+        });
+        return;
+      }
+
       editTransaction(transaction.id, {
         amount: finalAmount,
         source,
@@ -84,24 +94,19 @@ export const TransactionEditDialog = ({
   };
 
   const handleDialogClose = (open: boolean) => {
-    setAmount("");
-    setSource(transaction.source);
-    setDescription(transaction.description || "");
+    if (!open) {
+      setAmount("");
+      setSource(transaction.source);
+      setDescription(transaction.description || "");
+      setOperation("add");
+    }
     onOpenChange(open);
-  };
-
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat("en-IN", {
-      style: "currency",
-      currency: "INR",
-      maximumFractionDigits: 0,
-    }).format(amount);
   };
 
   return (
     <Dialog open={open} onOpenChange={handleDialogClose}>
       <DialogContent 
-        className="sm:max-w-[425px] mx-4 relative" 
+        className="sm:max-w-[425px] mx-4 relative rounded-2xl" 
         onClick={(e) => e.stopPropagation()}
       >
         <button
@@ -113,51 +118,16 @@ export const TransactionEditDialog = ({
         
         <DialogHeader className="space-y-3 mb-4">
           <DialogTitle className="text-xl">Edit Transaction</DialogTitle>
-          <DialogDescription className="text-base font-medium">
-            Current Amount: {formatCurrency(transaction.amount)}
-          </DialogDescription>
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="flex gap-2">
-            <Button
-              type="button"
-              variant={operation === "add" ? "default" : "outline"}
-              onClick={() => setOperation("add")}
-              className="flex-1 h-12 gap-2 rounded-xl hover:scale-105 transition-transform"
-            >
-              <Plus className="w-5 h-5" />
-              Add
-            </Button>
-            <Button
-              type="button"
-              variant={operation === "subtract" ? "default" : "outline"}
-              onClick={() => setOperation("subtract")}
-              className="flex-1 h-12 gap-2 rounded-xl hover:scale-105 transition-transform"
-            >
-              <Minus className="w-5 h-5" />
-              Subtract
-            </Button>
-          </div>
-
-          <div className="space-y-2">
-            <label htmlFor="amount" className="text-sm font-medium">
-              Amount
-            </label>
-            <div className="relative">
-              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">
-                ₹
-              </span>
-              <Input
-                id="amount"
-                type="number"
-                value={amount}
-                onChange={(e) => setAmount(e.target.value)}
-                className="pl-7 h-12 rounded-xl"
-                placeholder="Enter amount to add/subtract"
-              />
-            </div>
-          </div>
+          <TransactionAmountOperations
+            operation={operation}
+            setOperation={setOperation}
+            amount={amount}
+            setAmount={setAmount}
+            currentAmount={transaction.amount}
+          />
 
           <div className="space-y-2">
             <label htmlFor="source" className="text-sm font-medium">
