@@ -9,15 +9,29 @@ const validateUUID = (id: string): boolean => {
 
 export const getBaseSourceId = (sourceId: string): string => {
   // For UPI sources, extract the base UUID part (before any UPI app suffix)
-  const baseId = sourceId.split('-').slice(0, 5).join('-');
+  const parts = sourceId.split('-');
   
-  // Validate the base UUID part
-  if (!validateUUID(baseId)) {
-    console.error("Invalid base source ID:", baseId, "from source ID:", sourceId);
+  // If we have more than 5 parts, it's a UPI source ID (UUID + UPI app)
+  // UUID format: 8-4-4-4-12 characters
+  if (parts.length > 5) {
+    const baseId = parts.slice(0, 5).join('-');
+    console.log("Processing UPI source:", sourceId, "Base ID:", baseId);
+    
+    if (!validateUUID(baseId)) {
+      console.error("Invalid base source ID:", baseId, "from source ID:", sourceId);
+      throw new Error("Invalid payment source ID format");
+    }
+    
+    return baseId;
+  }
+  
+  // For regular bank sources, validate the entire ID
+  if (!validateUUID(sourceId)) {
+    console.error("Invalid source ID format:", sourceId);
     throw new Error("Invalid payment source ID format");
   }
   
-  return baseId;
+  return sourceId;
 };
 
 export const updatePaymentSourceAmount = async (
