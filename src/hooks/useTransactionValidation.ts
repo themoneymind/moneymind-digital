@@ -32,8 +32,21 @@ export const useTransactionValidation = () => {
     source: string,
     paymentSources: PaymentSource[]
   ) => {
+    if (!source) {
+      toast({
+        title: "Error",
+        description: "Please select a payment source",
+        variant: "destructive",
+      });
+      return null;
+    }
+
     const baseSourceId = getBaseSourceId(source);
-    console.log("Base source ID:", baseSourceId);
+    console.log("Validating payment source:", {
+      sourceId: source,
+      baseSourceId,
+      availableSources: paymentSources.map(s => ({ id: s.id, name: s.name }))
+    });
     
     const baseSource = paymentSources.find(s => s.id === baseSourceId);
     console.log("Found base source:", baseSource);
