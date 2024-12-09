@@ -32,15 +32,13 @@ export const useTransactions = () => {
   const addTransaction = useCallback(async (newTransaction: Omit<Transaction, "id" | "date" | "user_id" | "created_at" | "updated_at">) => {
     if (!user) return;
 
-    const { data, error } = await supabase
+    const { error } = await supabase
       .from("transactions")
       .insert([{
         ...newTransaction,
         user_id: user.id,
         date: new Date().toISOString()
-      }])
-      .select()
-      .single();
+      }]);
 
     if (error) {
       console.error("Error adding transaction:", error);
@@ -56,8 +54,6 @@ export const useTransactions = () => {
       title: "Success",
       description: "Transaction added successfully",
     });
-
-    return data;
   }, [user, toast]);
 
   const editTransaction = useCallback(async (id: string, updates: Partial<Omit<Transaction, "id" | "created_at" | "updated_at">>) => {
