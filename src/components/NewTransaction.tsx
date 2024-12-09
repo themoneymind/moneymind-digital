@@ -43,11 +43,14 @@ export const NewTransaction = () => {
       return;
     }
 
+    // Extract the base payment source ID by removing any UPI app suffix
+    const baseSourceId = source.split("-")[0];
+
     addTransaction({
       type,
       amount: Number(amount),
       category,
-      source,
+      source: baseSourceId,
       description,
     });
 
