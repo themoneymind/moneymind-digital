@@ -6,8 +6,16 @@ import { RecentTransactions } from "@/components/RecentTransactions";
 import { PaymentSources } from "@/components/PaymentSources";
 import { BottomNav } from "@/components/BottomNav";
 import { ProfilePicture } from "@/components/ProfilePicture";
+import { useAuth } from "@/contexts/AuthContext";
+import { Navigate } from "react-router-dom";
 
 const Index = () => {
+  const { user } = useAuth();
+
+  if (!user) {
+    return <Navigate to="/signin" />;
+  }
+
   return (
     <div className="min-h-screen bg-gray-50 pb-24 max-w-md mx-auto font-sans">
       <Header />
