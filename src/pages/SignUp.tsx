@@ -70,7 +70,7 @@ export const SignUp = () => {
         description: "Account created successfully. Please check your email to verify your account.",
       });
       
-      navigate("/payment-source");
+      // Don't navigate here - let the ProtectedRoute handle navigation
     } catch (error) {
       toast({
         title: "Error",

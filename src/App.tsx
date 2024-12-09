@@ -12,21 +12,38 @@ import { SignIn } from "./pages/SignIn";
 import { ForgotPassword } from "./pages/ForgotPassword";
 import { PaymentSource } from "./pages/PaymentSource";
 import { useAuth } from "./contexts/AuthContext";
+import { useEffect } from "react";
+import { supabase } from "@/integrations/supabase/client";
 
 const queryClient = new QueryClient();
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { session } = useAuth();
 
+  useEffect(() => {
+    const checkFirstTimeUser = async () => {
+      if (!session?.user) return;
+
+      const { data: sources } = await supabase
+        .from("payment_sources")
+        .select("id")
+        .eq("user_id", session.user.id)
+        .limit(1);
+
+      const isFirstTimeUser = !sources || sources.length === 0;
+      localStorage.setItem("isFirstTimeUser", isFirstTimeUser.toString());
+    };
+
+    checkFirstTimeUser();
+  }, [session]);
+
   if (!session) {
     return <Navigate to="/" replace />;
   }
 
-  // Only redirect to payment source page for first-time users
-  const hasPaymentSources = localStorage.getItem("paymentSources");
   const isFirstTimeUser = localStorage.getItem("isFirstTimeUser") === "true";
 
-  if (isFirstTimeUser && !hasPaymentSources && window.location.pathname !== "/payment-source") {
+  if (isFirstTimeUser && window.location.pathname !== "/payment-source") {
     return <Navigate to="/payment-source" replace />;
   }
 
