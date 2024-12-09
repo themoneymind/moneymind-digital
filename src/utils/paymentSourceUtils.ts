@@ -61,6 +61,13 @@ export const updatePaymentSourceAmount = async (
   const currentAmount = Number(source.amount) || 0;
   const newAmount = isAddition ? currentAmount + amount : currentAmount - amount;
 
+  console.log("Balance check:", {
+    currentAmount,
+    amount,
+    isAddition,
+    newAmount
+  });
+
   if (newAmount < 0) {
     console.error("Insufficient balance:", currentAmount, "Required:", amount);
     throw new Error("Insufficient balance in the payment source");

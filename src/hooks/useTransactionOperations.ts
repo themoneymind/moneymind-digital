@@ -84,20 +84,33 @@ export const useTransactionOperations = (
 
     const sourceId = updates.source || originalTransaction.source;
     const newAmount = updates.amount || originalTransaction.amount;
+    const type = originalTransaction.type as TransactionType;
 
     // If it's an expense, validate the new amount
-    if (originalTransaction.type === "expense") {
-      const hasEnoughBalance = validateExpenseAmount(
-        paymentSources,
-        sourceId,
-        newAmount
-      );
-      if (!hasEnoughBalance) {
+    if (type === "expense") {
+      // For expenses, we need to check if the source has enough balance
+      const baseSourceId = getBaseSourceId(sourceId);
+      const source = paymentSources.find(s => s.id === baseSourceId);
+      
+      if (!source) {
         // Reapply original effect since we're failing
         await handleTransactionEffect(
           originalTransaction.source,
           originalTransaction.amount,
-          originalTransaction.type as TransactionType
+          type
+        );
+        throw new Error("Payment source not found");
+      }
+
+      // Add back the original amount since we reverted it
+      const adjustedSourceAmount = source.amount + originalTransaction.amount;
+      
+      if (adjustedSourceAmount < newAmount) {
+        // Reapply original effect since we're failing
+        await handleTransactionEffect(
+          originalTransaction.source,
+          originalTransaction.amount,
+          type
         );
         throw new Error("Insufficient balance in the payment source");
       }
@@ -107,7 +120,7 @@ export const useTransactionOperations = (
     await handleTransactionEffect(
       sourceId,
       newAmount,
-      originalTransaction.type as TransactionType
+      type
     );
 
     const { error } = await supabase
@@ -123,7 +136,7 @@ export const useTransactionOperations = (
       await handleTransactionEffect(
         originalTransaction.source,
         originalTransaction.amount,
-        originalTransaction.type as TransactionType
+        type
       );
       throw error;
     }
