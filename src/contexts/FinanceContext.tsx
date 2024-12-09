@@ -1,8 +1,10 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { useAuth } from "./AuthContext";
-import { Transaction, PaymentSource } from "@/types/finance";
+import { Transaction, TransactionType } from "@/types/transactions";
+import { PaymentSource } from "@/types/finance";
 import { useTransactions } from "@/hooks/useTransactions";
 import { usePaymentSources } from "@/hooks/usePaymentSources";
+import { useTransactionOperations } from "@/hooks/useTransactionOperations";
 
 type FinanceContextType = {
   currentMonth: Date;
@@ -37,7 +39,7 @@ export const FinanceProvider = ({ children }: { children: React.ReactNode }) => 
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [paymentSources, setPaymentSources] = useState<PaymentSource[]>([]);
   
-  const { fetchTransactions, addTransaction: addTxn, editTransaction: editTxn } = useTransactions();
+  const { fetchTransactions } = useTransactions();
   const { 
     fetchPaymentSources, 
     addPaymentSource: addSource, 
@@ -45,15 +47,27 @@ export const FinanceProvider = ({ children }: { children: React.ReactNode }) => 
     deletePaymentSource: deleteSource 
   } = usePaymentSources();
 
+  const refreshData = async () => {
+    await Promise.all([
+      loadTransactions(),
+      loadPaymentSources()
+    ]);
+  };
+
+  const { addTransaction, editTransaction } = useTransactionOperations(
+    paymentSources,
+    refreshData
+  );
+
   useEffect(() => {
     if (!user) return;
     loadPaymentSources();
-  }, [user, fetchPaymentSources]);
+  }, [user]);
 
   useEffect(() => {
     if (!user) return;
     loadTransactions();
-  }, [user, fetchTransactions]);
+  }, [user]);
 
   const loadPaymentSources = async () => {
     const sources = await fetchPaymentSources();
@@ -65,139 +79,13 @@ export const FinanceProvider = ({ children }: { children: React.ReactNode }) => 
     setTransactions(txns);
   };
 
-  const updatePaymentSourceAmount = async (sourceId: string, amount: number, isAddition: boolean) => {
-    const sourceIndex = paymentSources.findIndex(s => s.id === sourceId);
-    if (sourceIndex === -1) return;
-
-    const source = paymentSources[sourceIndex];
-    const currentAmount = Number(source.amount) || 0;
-    const newAmount = isAddition ? currentAmount + amount : currentAmount - amount;
-
-    const updatedSource = {
-      ...source,
-      amount: newAmount
-    };
-
-    await editSource(updatedSource);
+  const addPaymentSource = async (source: Omit<PaymentSource, "id">) => {
+    await addSource(source);
     await loadPaymentSources();
   };
 
-  const addTransaction = async (transaction: Omit<Transaction, "id" | "date" | "user_id" | "created_at" | "updated_at">) => {
-    try {
-      if (transaction.type === 'expense') {
-        const source = paymentSources.find(s => s.id === transaction.source);
-        if (!source || Number(source.amount) < Number(transaction.amount)) {
-          throw new Error("Insufficient balance in the selected payment source");
-        }
-      }
-
-      await addTxn(transaction);
-      await updatePaymentSourceAmount(
-        transaction.source,
-        Number(transaction.amount),
-        transaction.type === 'income'
-      );
-
-      await Promise.all([loadTransactions(), loadPaymentSources()]);
-    } catch (error) {
-      console.error("Error in addTransaction:", error);
-      throw error;
-    }
-  };
-
-  const editTransaction = async (id: string, updates: Partial<Omit<Transaction, "id" | "created_at" | "updated_at">>) => {
-    try {
-      const originalTransaction = transactions.find(t => t.id === id);
-      if (!originalTransaction) throw new Error("Transaction not found");
-
-      // If amount is being updated
-      if (updates.amount !== undefined) {
-        // First, revert the original transaction's effect
-        await updatePaymentSourceAmount(
-          originalTransaction.source,
-          originalTransaction.amount,
-          originalTransaction.type === 'expense' // Reverse the original effect
-        );
-
-        // Check if there's enough balance for expense
-        if (originalTransaction.type === 'expense') {
-          const source = paymentSources.find(s => s.id === originalTransaction.source);
-          if (!source || Number(source.amount) + originalTransaction.amount < Number(updates.amount)) {
-            // Reapply the original amount since we're failing
-            await updatePaymentSourceAmount(
-              originalTransaction.source,
-              originalTransaction.amount,
-              originalTransaction.type === 'income'
-            );
-            throw new Error("Insufficient balance in the payment source");
-          }
-        }
-
-        // Apply the new amount
-        await updatePaymentSourceAmount(
-          originalTransaction.source,
-          Number(updates.amount),
-          originalTransaction.type === 'income'
-        );
-      }
-
-      // If source is being updated
-      if (updates.source && updates.source !== originalTransaction.source) {
-        // Revert amount from old source
-        await updatePaymentSourceAmount(
-          originalTransaction.source,
-          originalTransaction.amount,
-          originalTransaction.type === 'expense'
-        );
-
-        // Add amount to new source
-        await updatePaymentSourceAmount(
-          updates.source,
-          updates.amount || originalTransaction.amount,
-          originalTransaction.type === 'income'
-        );
-      }
-
-      await editTxn(id, updates);
-      await Promise.all([loadTransactions(), loadPaymentSources()]);
-    } catch (error) {
-      console.error("Error in editTransaction:", error);
-      throw error;
-    }
-  };
-
   const editPaymentSource = async (source: PaymentSource) => {
-    try {
-      const originalSource = paymentSources.find(s => s.id === source.id);
-      if (!originalSource) throw new Error("Payment source not found");
-
-      // Calculate the difference in amount
-      const amountDifference = Number(source.amount) - Number(originalSource.amount);
-
-      // Update the payment source
-      await editSource(source);
-
-      // If there's a change in amount, we need to reflect this in the total balance
-      if (amountDifference !== 0) {
-        // Create an adjustment transaction
-        await addTxn({
-          type: amountDifference > 0 ? 'income' : 'expense',
-          amount: Math.abs(amountDifference),
-          category: 'Balance Adjustment',
-          source: source.id,
-          description: `Balance adjustment for ${source.name}`,
-        });
-      }
-
-      await Promise.all([loadPaymentSources(), loadTransactions()]);
-    } catch (error) {
-      console.error("Error in editPaymentSource:", error);
-      throw error;
-    }
-  };
-
-  const addPaymentSource = async (source: Omit<PaymentSource, "id">) => {
-    await addSource(source);
+    await editSource(source);
     await loadPaymentSources();
   };
 
