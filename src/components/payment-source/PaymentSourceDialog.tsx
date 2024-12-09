@@ -16,7 +16,7 @@ type PaymentSourceDialogProps = {
     type: string;
     amount: number;
     linked?: boolean;
-    upiApps?: string[];
+    upi_apps?: string[];
   };
 };
 
@@ -29,7 +29,7 @@ export const PaymentSourceDialog = ({
   const { toast } = useToast();
   const [name, setName] = useState(source?.name || "");
   const [selectedUpiApps, setSelectedUpiApps] = useState<string[]>(
-    source?.upiApps || []
+    source?.upi_apps || []
   );
   const [amount, setAmount] = useState("");
   const [operation, setOperation] = useState<"add" | "subtract">("add");
@@ -76,7 +76,7 @@ export const PaymentSourceDialog = ({
         amount: newAmount,
         name: name.trim(),
         linked: selectedUpiApps.length > 0,
-        upiApps: selectedUpiApps.length > 0 ? selectedUpiApps : undefined,
+        upi_apps: selectedUpiApps.length > 0 ? selectedUpiApps : undefined,
       });
 
       toast({

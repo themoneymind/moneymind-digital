@@ -29,7 +29,7 @@ type PaymentSourceCardProps = {
     type: string;
     amount: number;
     linked?: boolean;
-    upiApps?: string[];
+    upi_apps?: string[];
   };
 };
 
@@ -70,12 +70,12 @@ export const PaymentSourceCard = ({ source }: PaymentSourceCardProps) => {
                 {source.name}
               </p>
               <span className="text-[10px] text-gray-500 leading-4">{source.type}</span>
-              {source.linked && source.upiApps && source.upiApps.length > 0 && (
+              {source.linked && source.upi_apps && source.upi_apps.length > 0 && (
                 <button
                   onClick={() => setShowUpiList(!showUpiList)}
                   className="flex items-center gap-0.5 text-[10px] text-blue-600 w-fit leading-4 mt-0.5"
                 >
-                  {source.upiApps.length} UPI linked
+                  {source.upi_apps.length} UPI linked
                   {showUpiList ? (
                     <ChevronUp className="w-2.5 h-2.5" />
                   ) : (
@@ -84,9 +84,9 @@ export const PaymentSourceCard = ({ source }: PaymentSourceCardProps) => {
                 </button>
               )}
             </div>
-            {showUpiList && source.upiApps && (
+            {showUpiList && source.upi_apps && (
               <div className="space-y-0.5 mt-1">
-                {source.upiApps.map((app) => (
+                {source.upi_apps.map((app) => (
                   <div
                     key={app}
                     className="text-[10px] text-gray-600 pl-2 leading-4"

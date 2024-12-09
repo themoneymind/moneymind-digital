@@ -19,5 +19,5 @@ export type PaymentSource = {
   type: string;
   amount: number;
   linked?: boolean;
-  upiApps?: string[];
+  upi_apps?: string[];
 };

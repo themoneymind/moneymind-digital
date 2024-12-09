@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useNavigate, Link } from "react-router-dom";
-import { ArrowLeft, Plus, Search } from "lucide-react";
+import { ArrowLeft, Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -81,7 +81,7 @@ export const PaymentSource = () => {
         type: selectedType === "bank" ? "Bank" : "Credit Card",
         amount: 0,
         linked: upiDetails.length > 0,
-        upiApps: upiDetails.length > 0 ? upiDetails : undefined,
+        upi_apps: upiDetails.length > 0 ? upiDetails : undefined,
       };
 
       await addPaymentSource(newSource);
