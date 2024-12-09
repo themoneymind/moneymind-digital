@@ -1,11 +1,11 @@
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useFinance } from "@/contexts/FinanceContext";
 import { useToast } from "@/hooks/use-toast";
 import { useState } from "react";
-import { Plus, Minus } from "lucide-react";
+import { TransactionAmountOperations } from "./TransactionAmountOperations";
 
 type Transaction = {
   id: string;
@@ -33,16 +33,13 @@ export const TransactionEditDialog = ({
   const formattedSources = getFormattedPaymentSources();
   const [operation, setOperation] = useState<"add" | "subtract">("add");
   const [amount, setAmount] = useState("");
+  const [selectedSource, setSelectedSource] = useState(transaction.source);
+  const [description, setDescription] = useState(transaction.description || "");
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    e.stopPropagation();
     
-    const formData = new FormData(e.currentTarget);
-    const source = formData.get("source") as string;
-    const description = formData.get("description") as string;
-
-    if (!amount && !source) {
+    if (!amount && !selectedSource) {
       toast({
         title: "Error",
         description: "Please fill in all required fields",
@@ -52,13 +49,22 @@ export const TransactionEditDialog = ({
     }
 
     const numAmount = Number(amount);
+    if (operation === "subtract" && numAmount > transaction.amount) {
+      toast({
+        title: "Error",
+        description: "Cannot subtract more than the current amount",
+        variant: "destructive",
+      });
+      return;
+    }
+
     const finalAmount = operation === "add" 
       ? transaction.amount + numAmount 
       : transaction.amount - numAmount;
 
     editTransaction(transaction.id, {
       amount: finalAmount,
-      source: source || transaction.source,
+      source: selectedSource,
       description,
     });
 
@@ -72,66 +78,36 @@ export const TransactionEditDialog = ({
   };
 
   const handleDialogClose = (open: boolean) => {
-    setAmount("");
+    if (!open) {
+      setAmount("");
+      setOperation("add");
+      setDescription(transaction.description || "");
+      setSelectedSource(transaction.source);
+    }
     onOpenChange(open);
   };
 
   return (
     <Dialog open={open} onOpenChange={handleDialogClose}>
-      <DialogContent className="sm:max-w-[425px]" onClick={(e) => e.stopPropagation()}>
+      <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Edit Transaction</DialogTitle>
-          <DialogDescription>
-            Make changes to your transaction here. Click save when you're done.
-          </DialogDescription>
+          <DialogTitle className="text-xl font-semibold">Edit Transaction</DialogTitle>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="flex gap-2 mb-4">
-            <Button
-              type="button"
-              variant={operation === "add" ? "default" : "outline"}
-              onClick={() => setOperation("add")}
-              className="flex-1 h-12 gap-2"
-            >
-              <Plus className="w-4 h-4" />
-              Add
-            </Button>
-            <Button
-              type="button"
-              variant={operation === "subtract" ? "default" : "outline"}
-              onClick={() => setOperation("subtract")}
-              className="flex-1 h-12 gap-2"
-            >
-              <Minus className="w-4 h-4" />
-              Subtract
-            </Button>
-          </div>
-
-          <div className="space-y-2">
-            <label htmlFor="amount" className="text-sm font-medium">
-              Amount
-            </label>
-            <div className="relative">
-              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">
-                ₹
-              </span>
-              <Input
-                id="amount"
-                name="amount"
-                type="number"
-                value={amount}
-                onChange={(e) => setAmount(e.target.value)}
-                className="pl-7"
-              />
-            </div>
-          </div>
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <TransactionAmountOperations
+            currentAmount={transaction.amount}
+            operation={operation}
+            setOperation={setOperation}
+            amount={amount}
+            setAmount={setAmount}
+          />
 
           <div className="space-y-2">
             <label htmlFor="source" className="text-sm font-medium">
               Payment Source
             </label>
-            <Select name="source" defaultValue={transaction.source}>
-              <SelectTrigger>
+            <Select value={selectedSource} onValueChange={setSelectedSource}>
+              <SelectTrigger className="h-12 rounded-[12px]">
                 <SelectValue placeholder="Select payment source" />
               </SelectTrigger>
               <SelectContent>
@@ -150,12 +126,13 @@ export const TransactionEditDialog = ({
             </label>
             <Input
               id="description"
-              name="description"
-              defaultValue={transaction.description}
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              className="h-12 rounded-[12px]"
             />
           </div>
 
-          <Button type="submit" className="w-full">
+          <Button type="submit" className="w-full h-12 rounded-[12px]">
             Save Changes
           </Button>
         </form>
