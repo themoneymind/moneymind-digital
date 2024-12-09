@@ -14,6 +14,7 @@ export const getBaseSourceId = (sourceId: string): string => {
   
   // Validate the base UUID part
   if (!validateUUID(baseId)) {
+    console.error("Invalid base source ID:", baseId, "from source ID:", sourceId);
     throw new Error("Invalid payment source ID format");
   }
   
@@ -35,13 +36,20 @@ export const updatePaymentSourceAmount = async (
     .eq("id", baseSourceId)
     .single();
 
-  if (fetchError) throw fetchError;
-  if (!source) throw new Error("Payment source not found");
+  if (fetchError) {
+    console.error("Error fetching payment source:", fetchError);
+    throw fetchError;
+  }
+  if (!source) {
+    console.error("Payment source not found:", baseSourceId);
+    throw new Error("Payment source not found");
+  }
 
   const currentAmount = Number(source.amount) || 0;
   const newAmount = isAddition ? currentAmount + amount : currentAmount - amount;
 
   if (newAmount < 0) {
+    console.error("Insufficient balance:", currentAmount, "Required:", amount);
     throw new Error("Insufficient balance in the payment source");
   }
 
@@ -55,7 +63,10 @@ export const updatePaymentSourceAmount = async (
     .update(updatedSource)
     .eq("id", baseSourceId);
 
-  if (error) throw error;
+  if (error) {
+    console.error("Error updating payment source:", error);
+    throw error;
+  }
 };
 
 export const validateExpenseAmount = (
@@ -68,10 +79,18 @@ export const validateExpenseAmount = (
 
   const source = paymentSources.find(s => s.id === baseSourceId);
   if (!source) {
+    console.error("Payment source not found:", baseSourceId);
     throw new Error("Payment source not found");
   }
 
-  return Number(source.amount) >= amount;
+  const hasEnoughBalance = Number(source.amount) >= amount;
+  console.log("Balance check:", {
+    available: source.amount,
+    required: amount,
+    hasEnough: hasEnoughBalance
+  });
+
+  return hasEnoughBalance;
 };
 
 export const isUpiSource = (sourceId: string): boolean => {
