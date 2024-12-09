@@ -10,18 +10,11 @@ import {
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 
-// UUID validation regex
-const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-
 export const useTransactionOperations = (
   paymentSources: PaymentSource[],
   refreshData: () => Promise<void>
 ) => {
   const { user } = useAuth();
-
-  const validateUUID = (id: string): boolean => {
-    return UUID_REGEX.test(id);
-  };
 
   const handleTransactionEffect = async (
     sourceId: string,
@@ -29,13 +22,7 @@ export const useTransactionOperations = (
     type: TransactionType,
     isReverse: boolean = false
   ) => {
-    // Get the base source ID (bank account) for the transaction
     const baseSourceId = getBaseSourceId(sourceId);
-    
-    if (!validateUUID(baseSourceId)) {
-      throw new Error("Invalid payment source ID format");
-    }
-
     const shouldAdd = isReverse ? type === "expense" : type === "income";
     await updatePaymentSourceAmount(baseSourceId, amount, shouldAdd);
   };
@@ -44,10 +31,7 @@ export const useTransactionOperations = (
     if (!user) throw new Error("User not authenticated");
 
     const baseSourceId = getBaseSourceId(transaction.source);
-    if (!validateUUID(baseSourceId)) {
-      throw new Error("Invalid payment source ID format");
-    }
-
+    
     if (transaction.type === "expense") {
       const hasEnoughBalance = validateExpenseAmount(
         paymentSources,
@@ -59,7 +43,6 @@ export const useTransactionOperations = (
       }
     }
 
-    // Store the original source ID (including UPI app if present) in the transaction
     const { error } = await supabase
       .from("transactions")
       .insert({
@@ -70,7 +53,6 @@ export const useTransactionOperations = (
 
     if (error) throw error;
 
-    // Always update the base source (bank account) amount
     await handleTransactionEffect(
       baseSourceId,
       Number(transaction.amount),
@@ -85,17 +67,6 @@ export const useTransactionOperations = (
   ) => {
     if (!user) throw new Error("User not authenticated");
 
-    if (!validateUUID(id)) {
-      throw new Error("Invalid transaction ID format");
-    }
-
-    if (updates.source) {
-      const baseSourceId = getBaseSourceId(updates.source);
-      if (!validateUUID(baseSourceId)) {
-        throw new Error("Invalid payment source ID format");
-      }
-    }
-
     const { data: originalTransaction, error: fetchError } = await supabase
       .from("transactions")
       .select("*")
@@ -105,27 +76,26 @@ export const useTransactionOperations = (
     if (fetchError) throw fetchError;
     if (!originalTransaction) throw new Error("Transaction not found");
 
-    // Revert original transaction effect on the base source
-    const originalBaseSourceId = getBaseSourceId(originalTransaction.source);
+    // Revert original transaction effect
     await handleTransactionEffect(
-      originalBaseSourceId,
+      originalTransaction.source,
       originalTransaction.amount,
       originalTransaction.type as TransactionType,
       true
     );
 
-    // If it's an expense, validate new amount against base source
-    if (originalTransaction.type === "expense" && updates.amount) {
-      const baseSourceId = getBaseSourceId(updates.source || originalTransaction.source);
+    // If amount is being updated, validate for expense
+    if (updates.amount && originalTransaction.type === "expense") {
+      const sourceId = updates.source || originalTransaction.source;
       const hasEnoughBalance = validateExpenseAmount(
         paymentSources,
-        baseSourceId,
+        sourceId,
         Number(updates.amount)
       );
       if (!hasEnoughBalance) {
         // Reapply original effect since we're failing
         await handleTransactionEffect(
-          originalBaseSourceId,
+          originalTransaction.source,
           originalTransaction.amount,
           originalTransaction.type as TransactionType
         );
@@ -133,23 +103,21 @@ export const useTransactionOperations = (
       }
     }
 
-    // Format date to ISO string if it exists in updates
-    const formattedUpdates = {
-      ...updates,
-      date: updates.date ? updates.date.toISOString() : undefined
-    };
-
-    // Apply new transaction effect on the base source
-    const newBaseSourceId = getBaseSourceId(updates.source || originalTransaction.source);
+    // Apply new transaction effect
+    const newAmount = updates.amount || originalTransaction.amount;
+    const newSource = updates.source || originalTransaction.source;
     await handleTransactionEffect(
-      newBaseSourceId,
-      Number(updates.amount || originalTransaction.amount),
-      updates.type as TransactionType || originalTransaction.type as TransactionType
+      newSource,
+      newAmount,
+      originalTransaction.type as TransactionType
     );
 
     const { error } = await supabase
       .from("transactions")
-      .update(formattedUpdates)
+      .update({
+        ...updates,
+        date: updates.date ? updates.date.toISOString() : undefined
+      })
       .eq("id", id);
 
     if (error) throw error;

@@ -36,7 +36,7 @@ export const TransactionEditDialog = ({
   const [selectedSource, setSelectedSource] = useState(transaction.source);
   const [description, setDescription] = useState(transaction.description || "");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!amount && !selectedSource) {
@@ -65,19 +65,28 @@ export const TransactionEditDialog = ({
     // Extract the base payment source ID (everything before any "-" if it exists)
     const baseSourceId = selectedSource.split("-")[0];
 
-    editTransaction(transaction.id, {
-      amount: finalAmount,
-      source: baseSourceId,
-      description,
-    });
+    try {
+      await editTransaction(transaction.id, {
+        amount: finalAmount,
+        source: baseSourceId,
+        description,
+      });
 
-    toast({
-      title: "Success",
-      description: "Transaction updated successfully",
-    });
+      toast({
+        title: "Success",
+        description: "Transaction updated successfully",
+      });
 
-    setAmount("");
-    onOpenChange(false);
+      setAmount("");
+      onOpenChange(false);
+    } catch (error) {
+      console.error("Error updating transaction:", error);
+      toast({
+        title: "Error",
+        description: "Failed to update transaction",
+        variant: "destructive",
+      });
+    }
   };
 
   const handleDialogClose = (open: boolean) => {
