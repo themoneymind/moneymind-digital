@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useFinance } from "@/contexts/FinanceContext";
@@ -9,23 +9,13 @@ import { CategorySelector } from "./transaction/CategorySelector";
 import { PaymentSourceSelector } from "./transaction/PaymentSourceSelector";
 import { getBaseSourceId } from "@/utils/paymentSourceUtils";
 
-type NewTransactionProps = {
-  initialType?: TransactionType;
-  initialSource?: string;
-  onSuccess?: () => void;
-};
-
-export const NewTransaction = ({ 
-  initialType,
-  initialSource,
-  onSuccess 
-}: NewTransactionProps) => {
+export const NewTransaction = () => {
   const { addTransaction, getFormattedPaymentSources, paymentSources } = useFinance();
   const { toast } = useToast();
-  const [type, setType] = useState<TransactionType>(initialType || "expense");
+  const [type, setType] = useState<TransactionType>("expense");
   const [amount, setAmount] = useState("");
   const [category, setCategory] = useState("");
-  const [source, setSource] = useState(initialSource || "");
+  const [source, setSource] = useState("");
   const [description, setDescription] = useState("");
   const [customCategories, setCustomCategories] = useState<{
     expense: string[];
@@ -34,15 +24,6 @@ export const NewTransaction = ({
     expense: [],
     income: [],
   });
-
-  useEffect(() => {
-    if (initialType) {
-      setType(initialType);
-    }
-    if (initialSource) {
-      setSource(initialSource);
-    }
-  }, [initialType, initialSource]);
 
   const formattedSources = getFormattedPaymentSources();
 
@@ -105,7 +86,7 @@ export const NewTransaction = ({
         type,
         amount: numAmount,
         category,
-        source,
+        source, // Use the full source ID to preserve UPI app information
         description,
       });
 
@@ -119,11 +100,6 @@ export const NewTransaction = ({
         title: "Success",
         description: "Transaction added successfully",
       });
-
-      // Call onSuccess callback if provided
-      if (onSuccess) {
-        onSuccess();
-      }
     } catch (error) {
       console.error("Error adding transaction:", error);
       toast({

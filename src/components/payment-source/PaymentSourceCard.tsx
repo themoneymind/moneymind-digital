@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { MoreVertical, ChevronDown, ChevronUp, Plus, Minus } from "lucide-react";
+import { MoreVertical, ChevronDown, ChevronUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -21,8 +21,6 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
-import { NewTransaction } from "../NewTransaction";
 
 type PaymentSourceCardProps = {
   source: {
@@ -40,8 +38,6 @@ export const PaymentSourceCard = ({ source }: PaymentSourceCardProps) => {
   const { toast } = useToast();
   const [showEditDialog, setShowEditDialog] = useState(false);
   const [showUpiList, setShowUpiList] = useState(false);
-  const [showTransactionDialog, setShowTransactionDialog] = useState(false);
-  const [transactionType, setTransactionType] = useState<"expense" | "income">("expense");
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat("en-IN", {
@@ -57,11 +53,6 @@ export const PaymentSourceCard = ({ source }: PaymentSourceCardProps) => {
       title: "Success",
       description: "Payment source deleted successfully",
     });
-  };
-
-  const handleTransactionClick = (type: "expense" | "income") => {
-    setTransactionType(type);
-    setShowTransactionDialog(true);
   };
 
   return (
@@ -108,27 +99,9 @@ export const PaymentSourceCard = ({ source }: PaymentSourceCardProps) => {
           </div>
         </div>
         <div className="flex items-center gap-4 ml-auto">
-          <div className="flex items-center gap-2">
-            <Button
-              variant="ghost"
-              size="icon"
-              className="h-6 w-6 hover:bg-gray-100 rounded-full"
-              onClick={() => handleTransactionClick("expense")}
-            >
-              <Minus className="w-3.5 h-3.5 text-red-500" />
-            </Button>
-            <span className="text-xs font-medium text-gray-900 whitespace-nowrap">
-              {formatCurrency(source.amount)}
-            </span>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="h-6 w-6 hover:bg-gray-100 rounded-full"
-              onClick={() => handleTransactionClick("income")}
-            >
-              <Plus className="w-3.5 h-3.5 text-green-500" />
-            </Button>
-          </div>
+          <span className="text-xs font-medium text-gray-900 whitespace-nowrap">
+            {formatCurrency(source.amount)}
+          </span>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button
@@ -184,16 +157,6 @@ export const PaymentSourceCard = ({ source }: PaymentSourceCardProps) => {
         onOpenChange={setShowEditDialog}
         source={source}
       />
-
-      <Dialog open={showTransactionDialog} onOpenChange={setShowTransactionDialog}>
-        <DialogContent className="sm:max-w-[425px] p-0">
-          <NewTransaction 
-            initialType={transactionType}
-            initialSource={source.id}
-            onSuccess={() => setShowTransactionDialog(false)}
-          />
-        </DialogContent>
-      </Dialog>
     </div>
   );
 };
