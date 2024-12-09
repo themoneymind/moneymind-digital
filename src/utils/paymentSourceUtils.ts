@@ -8,16 +8,15 @@ const validateUUID = (id: string): boolean => {
 };
 
 export const getBaseSourceId = (sourceId: string): string => {
-  // If it's already a valid UUID, return it as is
-  if (validateUUID(sourceId)) {
-    return sourceId;
-  }
+  // Split by hyphen to handle UPI sources (e.g., "uuid-gpay")
+  const parts = sourceId.split("-");
+  const baseId = parts[0];
   
-  // If it contains a hyphen, get the part before it and validate
-  const baseId = sourceId.split("-")[0];
+  // Validate the base UUID part
   if (!validateUUID(baseId)) {
     throw new Error("Invalid payment source ID format");
   }
+  
   return baseId;
 };
 
@@ -26,10 +25,9 @@ export const updatePaymentSourceAmount = async (
   amount: number,
   isAddition: boolean
 ) => {
+  console.log("Updating amount for source:", sourceId);
   const baseSourceId = getBaseSourceId(sourceId);
-  if (!validateUUID(baseSourceId)) {
-    throw new Error("Invalid payment source ID format");
-  }
+  console.log("Base source ID:", baseSourceId);
 
   const { data: source, error: fetchError } = await supabase
     .from("payment_sources")
@@ -66,9 +64,7 @@ export const validateExpenseAmount = (
   amount: number
 ): boolean => {
   const baseSourceId = getBaseSourceId(sourceId);
-  if (!validateUUID(baseSourceId)) {
-    throw new Error("Invalid payment source ID format");
-  }
+  console.log("Validating expense amount for source:", sourceId, "base:", baseSourceId);
 
   const source = paymentSources.find(s => s.id === baseSourceId);
   if (!source) {
