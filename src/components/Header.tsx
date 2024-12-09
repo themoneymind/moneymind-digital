@@ -1,10 +1,13 @@
 import { ArrowLeft, Bell, LogOut } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 export const Header = () => {
+  const navigate = useNavigate();
+
   const handleLogout = () => {
     localStorage.removeItem("isAuthenticated");
     localStorage.removeItem("isFirstTimeUser");
-    window.location.href = "/";
+    navigate("/signin"); // Changed from "/" to "/signin"
   };
 
   return (
