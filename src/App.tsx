@@ -47,11 +47,7 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
     return <Navigate to="/payment-source" replace />;
   }
 
-  return (
-    <FinanceProvider>
-      {children}
-    </FinanceProvider>
-  );
+  return children;
 };
 
 const AppRoutes = () => {
@@ -77,7 +73,9 @@ const AppRoutes = () => {
         path="/dashboard"
         element={
           <ProtectedRoute>
-            <Index />
+            <FinanceProvider>
+              <Index />
+            </FinanceProvider>
           </ProtectedRoute>
         }
       />
@@ -85,7 +83,9 @@ const AppRoutes = () => {
         path="/payment-source"
         element={
           <ProtectedRoute>
-            <PaymentSource />
+            <FinanceProvider>
+              <PaymentSource />
+            </FinanceProvider>
           </ProtectedRoute>
         }
       />
