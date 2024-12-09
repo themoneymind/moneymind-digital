@@ -1,7 +1,7 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { FinanceProvider } from "@/contexts/FinanceContext";
-import { Index } from "@/pages/Index";
+import Index from "@/pages/Index";
 import { PaymentSource } from "@/pages/PaymentSource";
 
 export const ProtectedRoutes = () => {
