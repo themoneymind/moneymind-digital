@@ -85,16 +85,16 @@ export const PaymentSource = () => {
 
     addPaymentSource(newSource);
     
-    // Save to localStorage
+    // Save to localStorage and remove first-time user flag
     const existingSources = JSON.parse(localStorage.getItem("paymentSources") || "[]");
     localStorage.setItem("paymentSources", JSON.stringify([...existingSources, newSource]));
+    localStorage.removeItem("isFirstTimeUser");
 
     toast({
       title: "Success",
       description: "Payment source added successfully",
     });
 
-    // Navigate to dashboard after adding first payment source
     navigate("/dashboard");
   };
 

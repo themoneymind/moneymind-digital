@@ -36,6 +36,7 @@ export const SignUp = () => {
 
     // In a real app, this would create a user in the backend
     localStorage.setItem("isAuthenticated", "true");
+    localStorage.setItem("isFirstTimeUser", "true"); // Set first-time user flag
     toast({
       title: "Success",
       description: "Account created successfully",

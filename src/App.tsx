@@ -23,13 +23,17 @@ const hasPaymentSources = () => {
   return sources && JSON.parse(sources).length > 0;
 };
 
+const isFirstTimeUser = () => {
+  return localStorage.getItem("isFirstTimeUser") === "true";
+};
+
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   if (!isAuthenticated()) {
     return <Navigate to="/" replace />;
   }
 
-  // If authenticated but no payment sources, redirect to payment source page
-  if (!hasPaymentSources() && window.location.pathname !== "/payment-source") {
+  // Only redirect to payment source page for first-time users
+  if (isFirstTimeUser() && !hasPaymentSources() && window.location.pathname !== "/payment-source") {
     return <Navigate to="/payment-source" replace />;
   }
 
