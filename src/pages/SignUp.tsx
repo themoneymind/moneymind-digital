@@ -4,16 +4,18 @@ import { Link, useNavigate } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 export const SignUp = () => {
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!fullName || !email || !password || !confirmPassword) {
@@ -34,14 +36,50 @@ export const SignUp = () => {
       return;
     }
 
-    // In a real app, this would create a user in the backend
-    localStorage.setItem("isAuthenticated", "true");
-    localStorage.setItem("isFirstTimeUser", "true"); // Set first-time user flag
-    toast({
-      title: "Success",
-      description: "Account created successfully",
-    });
-    navigate("/payment-source");
+    setIsLoading(true);
+
+    try {
+      // Split full name into first and last name
+      const [firstName, ...lastNameParts] = fullName.trim().split(" ");
+      const lastName = lastNameParts.join(" ");
+
+      const { error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: {
+            first_name: firstName,
+            last_name: lastName || null,
+          },
+        },
+      });
+
+      if (error) {
+        toast({
+          title: "Error",
+          description: error.message,
+          variant: "destructive",
+        });
+        return;
+      }
+
+      localStorage.setItem("isFirstTimeUser", "true");
+      
+      toast({
+        title: "Success",
+        description: "Account created successfully. Please check your email to verify your account.",
+      });
+      
+      navigate("/payment-source");
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "An unexpected error occurred",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -65,6 +103,8 @@ export const SignUp = () => {
             value={fullName}
             onChange={(e) => setFullName(e.target.value)}
             className="h-14 rounded-[12px]"
+            disabled={isLoading}
+            required
           />
           <Input
             type="email"
@@ -72,6 +112,8 @@ export const SignUp = () => {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             className="h-14 rounded-[12px]"
+            disabled={isLoading}
+            required
           />
           <Input
             type="password"
@@ -79,6 +121,8 @@ export const SignUp = () => {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             className="h-14 rounded-[12px]"
+            disabled={isLoading}
+            required
           />
           <Input
             type="password"
@@ -86,9 +130,15 @@ export const SignUp = () => {
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
             className="h-14 rounded-[12px]"
+            disabled={isLoading}
+            required
           />
-          <Button type="submit" className="w-full h-14 rounded-[12px] text-base">
-            Create Account
+          <Button 
+            type="submit" 
+            className="w-full h-14 rounded-[12px] text-base"
+            disabled={isLoading}
+          >
+            {isLoading ? "Creating Account..." : "Create Account"}
           </Button>
         </form>
 

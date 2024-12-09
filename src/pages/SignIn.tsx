@@ -4,30 +4,47 @@ import { Link, useNavigate } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 export const SignIn = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsLoading(true);
     
-    // In a real app, this would validate against a backend
-    if (email && password) {
-      localStorage.setItem("isAuthenticated", "true");
+    try {
+      const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (error) {
+        toast({
+          title: "Error",
+          description: error.message,
+          variant: "destructive",
+        });
+        return;
+      }
+
       toast({
         title: "Success",
         description: "Successfully signed in",
       });
       navigate("/dashboard");
-    } else {
+    } catch (error) {
       toast({
         title: "Error",
-        description: "Please fill in all fields",
+        description: "An unexpected error occurred",
         variant: "destructive",
       });
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -52,6 +69,8 @@ export const SignIn = () => {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             className="h-14 rounded-[12px]"
+            disabled={isLoading}
+            required
           />
           <Input
             type="password"
@@ -59,6 +78,8 @@ export const SignIn = () => {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             className="h-14 rounded-[12px]"
+            disabled={isLoading}
+            required
           />
           <Link
             to="/forgot-password"
@@ -66,8 +87,12 @@ export const SignIn = () => {
           >
             Forgot Password?
           </Link>
-          <Button type="submit" className="w-full h-14 rounded-[12px] text-base">
-            Sign In
+          <Button 
+            type="submit" 
+            className="w-full h-14 rounded-[12px] text-base"
+            disabled={isLoading}
+          >
+            {isLoading ? "Signing in..." : "Sign In"}
           </Button>
         </form>
 
