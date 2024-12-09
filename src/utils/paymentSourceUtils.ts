@@ -8,9 +8,8 @@ const validateUUID = (id: string): boolean => {
 };
 
 export const getBaseSourceId = (sourceId: string): string => {
-  // Split by hyphen to handle UPI sources (e.g., "uuid-gpay")
-  const parts = sourceId.split("-");
-  const baseId = parts[0];
+  // For UPI sources, extract the base UUID part (before any UPI app suffix)
+  const baseId = sourceId.split('-').slice(0, 5).join('-');
   
   // Validate the base UUID part
   if (!validateUUID(baseId)) {
@@ -99,5 +98,5 @@ export const isUpiSource = (sourceId: string): boolean => {
 
 export const getUpiApp = (sourceId: string): string | null => {
   const parts = sourceId.split("-");
-  return parts.length > 1 ? parts[1] : null;
+  return parts.length > 5 ? parts.slice(5).join("-") : null;
 };
