@@ -71,6 +71,42 @@ export const FinanceProvider = ({ children }: { children: React.ReactNode }) => 
   useEffect(() => {
     if (!user) return;
     refreshData();
+
+    // Subscribe to real-time changes
+    const transactionsSubscription = supabase
+      .channel('transactions_changes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'transactions'
+        },
+        () => {
+          refreshData();
+        }
+      )
+      .subscribe();
+
+    const sourcesSubscription = supabase
+      .channel('sources_changes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'payment_sources'
+        },
+        () => {
+          refreshData();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      transactionsSubscription.unsubscribe();
+      sourcesSubscription.unsubscribe();
+    };
   }, [user]);
 
   const loadPaymentSources = async () => {
