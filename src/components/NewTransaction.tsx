@@ -43,27 +43,39 @@ export const NewTransaction = () => {
       return;
     }
 
-    // Extract the base payment source ID by removing any UPI app suffix
+    // Extract the base payment source ID by removing any UPI app suffix and ensuring it's a valid UUID
     const baseSourceId = source.split("-")[0];
+    
+    // Add some logging to help debug
+    console.log("Submitting transaction with source:", baseSourceId);
 
-    addTransaction({
-      type,
-      amount: Number(amount),
-      category,
-      source: baseSourceId,
-      description,
-    });
+    try {
+      addTransaction({
+        type,
+        amount: Number(amount),
+        category,
+        source: baseSourceId,
+        description,
+      });
 
-    // Reset form after successful submission
-    setAmount("");
-    setCategory("");
-    setSource("");
-    setDescription("");
+      // Reset form after successful submission
+      setAmount("");
+      setCategory("");
+      setSource("");
+      setDescription("");
 
-    toast({
-      title: "Success",
-      description: "Transaction added successfully",
-    });
+      toast({
+        title: "Success",
+        description: "Transaction added successfully",
+      });
+    } catch (error) {
+      console.error("Error adding transaction:", error);
+      toast({
+        title: "Error",
+        description: "Failed to add transaction. Please try again.",
+        variant: "destructive",
+      });
+    }
   };
 
   return (
