@@ -107,7 +107,7 @@ export const PaymentSourceCard = ({ source }: PaymentSourceCardProps) => {
               <Button
                 variant="ghost"
                 size="icon"
-                className="h-7 w-7 hover:bg-gray-100 rounded-[8px]"
+                className="h-7 w-7 hover:bg-gray-100 rounded-[8px] -mr-2"
               >
                 <MoreVertical className="w-3.5 h-3.5 text-gray-500" />
               </Button>

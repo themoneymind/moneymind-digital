@@ -1,6 +1,12 @@
 import { ArrowLeft, Bell, LogOut } from "lucide-react";
 
 export const Header = () => {
+  const handleLogout = () => {
+    localStorage.removeItem("isAuthenticated");
+    localStorage.removeItem("isFirstTimeUser");
+    window.location.href = "/";
+  };
+
   return (
     <header className="flex flex-col space-y-4 p-4 bg-background">
       <div className="flex items-center justify-between">
@@ -14,8 +20,11 @@ export const Header = () => {
           <button className="p-2 hover:bg-gray-100 rounded-full">
             <Bell className="w-5 h-5 text-gray-700" />
           </button>
-          <button className="p-2 hover:bg-gray-100 rounded-full">
-            <LogOut className="w-5 h-5 text-gray-700" />
+          <button 
+            onClick={handleLogout}
+            className="p-2 hover:bg-red-100 rounded-full"
+          >
+            <LogOut className="w-5 h-5 text-red-600" />
           </button>
         </div>
       </div>
