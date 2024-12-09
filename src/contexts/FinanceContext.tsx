@@ -90,8 +90,8 @@ export const FinanceProvider = ({ children }: { children: React.ReactNode }) => 
         name: source.name
       });
 
-      if (source.linked && source.upiApps && source.upiApps.length > 0) {
-        source.upiApps.forEach(upiApp => {
+      if (source.linked && source.upi_apps && source.upi_apps.length > 0) {
+        source.upi_apps.forEach(upiApp => {
           formattedSources.push({
             id: `${source.id}-${upiApp.toLowerCase()}`,
             name: `${source.name} ${upiApp}`
