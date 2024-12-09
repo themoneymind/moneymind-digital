@@ -41,26 +41,36 @@ export const useTransactionValidation = () => {
       return null;
     }
 
-    const baseSourceId = getBaseSourceId(source);
-    console.log("Validating payment source:", {
-      sourceId: source,
-      baseSourceId,
-      availableSources: paymentSources.map(s => ({ id: s.id, name: s.name }))
-    });
-    
-    const baseSource = paymentSources.find(s => s.id === baseSourceId);
-    console.log("Found base source:", baseSource);
-    
-    if (!baseSource) {
+    try {
+      const baseSourceId = getBaseSourceId(source);
+      console.log("Validating payment source:", {
+        sourceId: source,
+        baseSourceId,
+        availableSources: paymentSources.map(s => ({ id: s.id, name: s.name }))
+      });
+      
+      const baseSource = paymentSources.find(s => s.id === baseSourceId);
+      console.log("Found base source:", baseSource);
+      
+      if (!baseSource) {
+        toast({
+          title: "Error",
+          description: "Selected payment source not found",
+          variant: "destructive",
+        });
+        return null;
+      }
+
+      return { baseSourceId, baseSource };
+    } catch (error) {
+      console.error("Error validating payment source:", error);
       toast({
         title: "Error",
-        description: "Selected payment source not found",
+        description: "Invalid payment source format",
         variant: "destructive",
       });
       return null;
     }
-
-    return { baseSourceId, baseSource };
   };
 
   const validateExpenseBalance = (

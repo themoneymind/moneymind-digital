@@ -8,8 +8,17 @@ const validateUUID = (id: string): boolean => {
 };
 
 export const getBaseSourceId = (sourceId: string): string => {
-  // Extract the base payment source ID (everything before any "-" if it exists)
-  return sourceId.split("-")[0];
+  // If it's already a valid UUID, return it as is
+  if (validateUUID(sourceId)) {
+    return sourceId;
+  }
+  
+  // If it contains a hyphen, get the part before it and validate
+  const baseId = sourceId.split("-")[0];
+  if (!validateUUID(baseId)) {
+    throw new Error("Invalid payment source ID format");
+  }
+  return baseId;
 };
 
 export const updatePaymentSourceAmount = async (
@@ -17,12 +26,10 @@ export const updatePaymentSourceAmount = async (
   amount: number,
   isAddition: boolean
 ) => {
-  if (!validateUUID(sourceId)) {
+  const baseSourceId = getBaseSourceId(sourceId);
+  if (!validateUUID(baseSourceId)) {
     throw new Error("Invalid payment source ID format");
   }
-
-  // Always use the base source ID for amount updates
-  const baseSourceId = getBaseSourceId(sourceId);
 
   const { data: source, error: fetchError } = await supabase
     .from("payment_sources")
@@ -58,14 +65,12 @@ export const validateExpenseAmount = (
   sourceId: string,
   amount: number
 ): boolean => {
-  if (!validateUUID(getBaseSourceId(sourceId))) {
+  const baseSourceId = getBaseSourceId(sourceId);
+  if (!validateUUID(baseSourceId)) {
     throw new Error("Invalid payment source ID format");
   }
 
-  // Get the base source ID to check balance
-  const baseSourceId = getBaseSourceId(sourceId);
   const source = paymentSources.find(s => s.id === baseSourceId);
-  
   if (!source) {
     throw new Error("Payment source not found");
   }
