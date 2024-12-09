@@ -54,9 +54,12 @@ export const NewTransaction = () => {
         return;
       }
 
+      // Extract the base payment source ID (everything before any "-" if it exists)
+      const baseSourceId = source.split("-")[0];
+      
       // For expenses, check if there's enough balance in the payment source
       if (type === "expense") {
-        const selectedSource = paymentSources.find(s => s.id === source.split("-")[0]);
+        const selectedSource = paymentSources.find(s => s.id === baseSourceId);
         if (!selectedSource) {
           toast({
             title: "Error",
@@ -75,9 +78,6 @@ export const NewTransaction = () => {
           return;
         }
       }
-
-      // Extract the base payment source ID by removing any UPI app suffix
-      const baseSourceId = source.split("-")[0];
 
       await addTransaction({
         type,

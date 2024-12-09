@@ -62,7 +62,7 @@ export const TransactionEditDialog = ({
       ? transaction.amount + numAmount 
       : transaction.amount - numAmount;
 
-    // Extract the base payment source ID by removing any UPI app suffix
+    // Extract the base payment source ID (everything before any "-" if it exists)
     const baseSourceId = selectedSource.split("-")[0];
 
     editTransaction(transaction.id, {
