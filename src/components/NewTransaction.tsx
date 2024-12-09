@@ -55,11 +55,14 @@ export const NewTransaction = () => {
         return;
       }
 
-      // Extract the base payment source ID (bank account without UPI app)
+      // Extract the base source ID (bank account without UPI app)
       const baseSourceId = getBaseSourceId(source);
+      console.log("Base source ID:", baseSourceId);
       
       // Find the base payment source for validation
       const baseSource = paymentSources.find(s => s.id === baseSourceId);
+      console.log("Found base source:", baseSource);
+      
       if (!baseSource) {
         toast({
           title: "Error",
@@ -86,7 +89,7 @@ export const NewTransaction = () => {
         type,
         amount: numAmount,
         category,
-        source, // Use the full source ID to preserve UPI app information
+        source: baseSourceId, // Use the base source ID for the transaction
         description,
       });
 
