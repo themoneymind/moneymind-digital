@@ -2,23 +2,21 @@ import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Link } from "react-router-dom";
-import { useFinance } from "@/contexts/FinanceContext";
 
 type PaymentSourceSelectorProps = {
-  value: string;
-  onChange: (source: string) => void;
+  source: string;
+  onSourceChange: (source: string) => void;
+  formattedSources: { id: string; name: string }[];
 };
 
 export const PaymentSourceSelector = ({
-  value,
-  onChange,
+  source,
+  onSourceChange,
+  formattedSources,
 }: PaymentSourceSelectorProps) => {
-  const { getFormattedPaymentSources } = useFinance();
-  const formattedSources = getFormattedPaymentSources();
-
   return (
     <div className="flex gap-2">
-      <Select value={value} onValueChange={onChange}>
+      <Select value={source} onValueChange={onSourceChange}>
         <SelectTrigger className="w-full h-14 border-gray-200 rounded-[12px]">
           <SelectValue placeholder="Select payment source" />
         </SelectTrigger>

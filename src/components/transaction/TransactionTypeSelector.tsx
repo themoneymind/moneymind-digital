@@ -3,21 +3,21 @@ import { Button } from "@/components/ui/button";
 import { TransactionType } from "@/types/finance";
 
 type TransactionTypeSelectorProps = {
-  value: TransactionType;
-  onChange: (type: TransactionType) => void;
+  type: TransactionType;
+  onTypeChange: (type: TransactionType) => void;
 };
 
-export const TransactionTypeSelector = ({ value, onChange }: TransactionTypeSelectorProps) => {
+export const TransactionTypeSelector = ({ type, onTypeChange }: TransactionTypeSelectorProps) => {
   return (
     <div className="flex gap-2 mb-6">
       <Button
         variant="outline"
         className={`flex-1 rounded-[12px] h-14 gap-2 ${
-          value === "expense"
+          type === "expense"
             ? "bg-red-50 text-red-500 border-red-100 hover:bg-red-50"
             : "bg-white hover:bg-gray-50"
         }`}
-        onClick={() => onChange("expense")}
+        onClick={() => onTypeChange("expense")}
       >
         <ArrowUp className="w-4 h-4" />
         Expense
@@ -25,11 +25,11 @@ export const TransactionTypeSelector = ({ value, onChange }: TransactionTypeSele
       <Button
         variant="outline"
         className={`flex-1 rounded-[12px] h-14 gap-2 ${
-          value === "income"
+          type === "income"
             ? "bg-green-50 text-green-500 border-green-100 hover:bg-green-50"
             : "bg-white hover:bg-gray-50"
         }`}
-        onClick={() => onChange("income")}
+        onClick={() => onTypeChange("income")}
       >
         <ArrowDown className="w-4 h-4" />
         Income
