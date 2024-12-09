@@ -58,18 +58,19 @@ export const NewTransaction = () => {
       // Extract the base payment source ID
       const baseSourceId = getBaseSourceId(source);
       
-      // For expenses, check if there's enough balance in the payment source
-      if (type === "expense") {
-        const selectedSource = paymentSources.find(s => s.id === baseSourceId);
-        if (!selectedSource) {
-          toast({
-            title: "Error",
-            description: "Selected payment source not found",
-            variant: "destructive",
-          });
-          return;
-        }
+      // Find the base payment source for validation
+      const selectedSource = paymentSources.find(s => s.id === baseSourceId);
+      if (!selectedSource) {
+        toast({
+          title: "Error",
+          description: "Selected payment source not found",
+          variant: "destructive",
+        });
+        return;
+      }
 
+      // For expenses, check if there's enough balance in the base payment source
+      if (type === "expense") {
         if (Number(selectedSource.amount) < numAmount) {
           toast({
             title: "Error",
@@ -80,11 +81,12 @@ export const NewTransaction = () => {
         }
       }
 
+      // Use the original source ID (including UPI app if present) for the transaction
       await addTransaction({
         type,
         amount: numAmount,
         category,
-        source: baseSourceId,
+        source, // Use the full source ID to preserve UPI app information
         description,
       });
 
