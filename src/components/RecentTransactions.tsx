@@ -102,14 +102,14 @@ export const RecentTransactions = () => {
               <div className="flex items-center justify-between py-3 px-4">
                 <div className="flex items-center gap-3 flex-1 min-w-0">
                   <div
-                    className={`w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 ${
+                    className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
                       transaction.type === "expense"
                         ? "bg-red-50"
                         : "bg-green-50"
                     }`}
                   >
                     <IconComponent
-                      className={`w-4 h-4 ${
+                      className={`w-3.5 h-3.5 ${
                         transaction.type === "expense"
                           ? "text-red-500"
                           : "text-green-500"
@@ -130,7 +130,7 @@ export const RecentTransactions = () => {
                     </p>
                   </div>
                 </div>
-                <div className="flex items-center justify-end gap-2 ml-auto pr-0">
+                <div className="flex items-center justify-end gap-4 ml-auto pr-1">
                   <span
                     className={`text-sm font-medium whitespace-nowrap ${
                       transaction.type === "expense" ? "text-red-500" : "text-green-500"
@@ -144,7 +144,7 @@ export const RecentTransactions = () => {
                       <Button
                         variant="ghost"
                         size="icon"
-                        className="h-8 w-8 hover:bg-gray-100 rounded-[8px]"
+                        className="h-8 w-8 hover:bg-transparent rounded-[8px]"
                       >
                         <MoreVertical className="w-4 h-4 text-gray-500" />
                       </Button>
