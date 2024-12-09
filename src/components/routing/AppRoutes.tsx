@@ -1,17 +1,12 @@
 import { Routes, Route } from "react-router-dom";
-import { PublicRoutes } from "./PublicRoutes";
 import { ProtectedRoutes } from "./ProtectedRoutes";
-import Index from "@/pages/Index";
-import { PaymentSource } from "@/pages/PaymentSource";
+import { PublicRoutes } from "./PublicRoutes";
 
 export const AppRoutes = () => {
   return (
     <Routes>
-      {PublicRoutes()}
-      <Route element={<ProtectedRoutes />}>
-        <Route path="/dashboard" element={<Index />} />
-        <Route path="/payment-source" element={<PaymentSource />} />
-      </Route>
+      <Route path="/*" element={<PublicRoutes />} />
+      <Route path="/app/*" element={<ProtectedRoutes />} />
     </Routes>
   );
 };

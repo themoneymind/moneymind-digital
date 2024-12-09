@@ -1,27 +1,28 @@
-import { Route } from "react-router-dom";
-import { Onboarding } from "@/pages/Onboarding";
-import { SignUp } from "@/pages/SignUp";
-import { SignIn } from "@/pages/SignIn";
-import { ForgotPassword } from "@/pages/ForgotPassword";
-import { Navigate } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
+import { SignIn } from "@/pages/SignIn";
+import { SignUp } from "@/pages/SignUp";
+import { ForgotPassword } from "@/pages/ForgotPassword";
+import { Onboarding } from "@/pages/Onboarding";
 
 export const PublicRoutes = () => {
-  const { session } = useAuth();
-  
+  const { user } = useAuth();
+  const isFirstTimeUser = localStorage.getItem("isFirstTimeUser") === "true";
+
+  if (user) {
+    if (isFirstTimeUser) {
+      return <Navigate to="/onboarding" />;
+    }
+    return <Navigate to="/app" />;
+  }
+
   return (
-    <>
-      <Route 
-        path="/" 
-        element={
-          session ? 
-            <Navigate to="/dashboard" replace /> : 
-            <Onboarding />
-        } 
-      />
-      <Route path="/signup" element={<SignUp />} />
+    <Routes>
       <Route path="/signin" element={<SignIn />} />
+      <Route path="/signup" element={<SignUp />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
-    </>
+      <Route path="/onboarding" element={<Onboarding />} />
+      <Route path="*" element={<Navigate to="/signin" />} />
+    </Routes>
   );
 };
