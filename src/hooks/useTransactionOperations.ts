@@ -53,6 +53,7 @@ export const useTransactionOperations = (
       }
     }
 
+    // Store the original source ID (including UPI app if present) in the transaction
     const { error } = await supabase
       .from("transactions")
       .insert({
@@ -63,8 +64,9 @@ export const useTransactionOperations = (
 
     if (error) throw error;
 
+    // Always update the base source (bank account) amount
     await handleTransactionEffect(
-      baseSourceId, // Use base source ID for amount update
+      baseSourceId,
       Number(transaction.amount),
       transaction.type
     );
