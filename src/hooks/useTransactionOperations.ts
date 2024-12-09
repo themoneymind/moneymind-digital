@@ -1,26 +1,28 @@
-import { Transaction, TransactionType, NewTransaction } from "@/types/transactions";
+import { Transaction, TransactionType } from "@/types/transactions";
 import { PaymentSource } from "@/types/finance";
 import { updatePaymentSourceAmount, validateExpenseAmount } from "@/utils/paymentSourceUtils";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
 
 export const useTransactionOperations = (
   paymentSources: PaymentSource[],
   refreshData: () => Promise<void>
 ) => {
+  const { user } = useAuth();
+
   const handleTransactionEffect = async (
     sourceId: string,
     amount: number,
     type: TransactionType,
     isReverse: boolean = false
   ) => {
-    // When reversing, we do the opposite of the transaction type
-    // For expense: reverse means add the amount back
-    // For income: reverse means subtract the amount
     const shouldAdd = isReverse ? type === "expense" : type === "income";
     await updatePaymentSourceAmount(sourceId, amount, shouldAdd);
   };
 
-  const addTransaction = async (transaction: NewTransaction) => {
+  const addTransaction = async (transaction: Omit<Transaction, "id" | "date" | "user_id" | "created_at" | "updated_at">) => {
+    if (!user) throw new Error("User not authenticated");
+
     if (transaction.type === "expense") {
       const hasEnoughBalance = validateExpenseAmount(
         paymentSources,
@@ -34,10 +36,11 @@ export const useTransactionOperations = (
 
     const { error } = await supabase
       .from("transactions")
-      .insert([{
+      .insert({
         ...transaction,
+        user_id: user.id,
         date: new Date().toISOString()
-      }]);
+      });
 
     if (error) throw error;
 
@@ -53,6 +56,8 @@ export const useTransactionOperations = (
     id: string,
     updates: Partial<Omit<Transaction, "id" | "created_at" | "updated_at">>
   ) => {
+    if (!user) throw new Error("User not authenticated");
+
     const { data: originalTransaction } = await supabase
       .from("transactions")
       .select("*")
@@ -87,6 +92,12 @@ export const useTransactionOperations = (
       }
     }
 
+    // Format date to ISO string if it exists in updates
+    const formattedUpdates = {
+      ...updates,
+      date: updates.date ? updates.date.toISOString() : undefined
+    };
+
     // Apply new transaction effect
     await handleTransactionEffect(
       updates.source || originalTransaction.source,
@@ -96,7 +107,7 @@ export const useTransactionOperations = (
 
     const { error } = await supabase
       .from("transactions")
-      .update(updates)
+      .update(formattedUpdates)
       .eq("id", id);
 
     if (error) throw error;
