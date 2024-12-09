@@ -1,6 +1,12 @@
 import { Transaction, TransactionType } from "@/types/transactions";
 import { PaymentSource } from "@/types/finance";
-import { updatePaymentSourceAmount, validateExpenseAmount, getBaseSourceId } from "@/utils/paymentSourceUtils";
+import { 
+  updatePaymentSourceAmount, 
+  validateExpenseAmount, 
+  getBaseSourceId,
+  isUpiSource,
+  getUpiApp
+} from "@/utils/paymentSourceUtils";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 
@@ -45,7 +51,7 @@ export const useTransactionOperations = (
     if (transaction.type === "expense") {
       const hasEnoughBalance = validateExpenseAmount(
         paymentSources,
-        baseSourceId, // Use base source ID for balance check
+        baseSourceId,
         Number(transaction.amount)
       );
       if (!hasEnoughBalance) {

@@ -72,3 +72,12 @@ export const validateExpenseAmount = (
 
   return Number(source.amount) >= amount;
 };
+
+export const isUpiSource = (sourceId: string): boolean => {
+  return sourceId.includes("-");
+};
+
+export const getUpiApp = (sourceId: string): string | null => {
+  const parts = sourceId.split("-");
+  return parts.length > 1 ? parts[1] : null;
+};
