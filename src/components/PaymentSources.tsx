@@ -9,7 +9,7 @@ export const PaymentSources = () => {
   const navigate = useNavigate();
 
   const handleAddSource = () => {
-    navigate("/payment-source");
+    navigate("/app/payment-source");
   };
 
   return (
