@@ -56,40 +56,40 @@ export const PaymentSourceCard = ({ source }: PaymentSourceCardProps) => {
   };
 
   return (
-    <div className="border-b border-gray-100 last:border-0">
-      <div className="flex items-center justify-between py-4 px-4">
+    <div className="group bg-white rounded-[16px] border border-gray-100 hover:border-gray-200 transition-colors">
+      <div className="flex items-center justify-between py-3 px-4">
         <div className="flex items-center gap-3 flex-1 min-w-0">
-          <div className="w-7 h-7 bg-green-50 rounded-[8px] flex items-center justify-center flex-shrink-0">
-            <span className="text-green-500 text-[10px] font-medium">
+          <div className="w-8 h-8 bg-green-50 rounded-full flex items-center justify-center flex-shrink-0">
+            <span className="text-green-500 text-xs font-medium">
               {source.name[0].toUpperCase()}
             </span>
           </div>
           <div className="min-w-0 flex-1">
             <div className="flex flex-col justify-center">
-              <p className="text-xs font-medium text-gray-900 truncate leading-5">
+              <p className="text-sm font-medium text-gray-900 truncate">
                 {source.name}
               </p>
-              <span className="text-[10px] text-gray-500 leading-4">{source.type}</span>
+              <span className="text-xs text-gray-500">{source.type}</span>
               {source.linked && source.upi_apps && source.upi_apps.length > 0 && (
                 <button
                   onClick={() => setShowUpiList(!showUpiList)}
-                  className="flex items-center gap-0.5 text-[10px] text-blue-600 w-fit leading-4 mt-0.5"
+                  className="flex items-center gap-0.5 text-xs text-blue-600 w-fit mt-0.5"
                 >
                   {source.upi_apps.length} UPI linked
                   {showUpiList ? (
-                    <ChevronUp className="w-2.5 h-2.5" />
+                    <ChevronUp className="w-3 h-3" />
                   ) : (
-                    <ChevronDown className="w-2.5 h-2.5" />
+                    <ChevronDown className="w-3 h-3" />
                   )}
                 </button>
               )}
             </div>
             {showUpiList && source.upi_apps && (
-              <div className="space-y-0.5 mt-1">
+              <div className="space-y-1 mt-2">
                 {source.upi_apps.map((app) => (
                   <div
                     key={app}
-                    className="text-[10px] text-gray-600 pl-2 leading-4"
+                    className="text-xs text-gray-600 pl-2"
                   >
                     {app}
                   </div>
@@ -99,7 +99,7 @@ export const PaymentSourceCard = ({ source }: PaymentSourceCardProps) => {
           </div>
         </div>
         <div className="flex items-center gap-4 ml-auto">
-          <span className="text-xs font-medium text-gray-900 whitespace-nowrap">
+          <span className="text-sm font-medium text-gray-900 whitespace-nowrap">
             {formatCurrency(source.amount)}
           </span>
           <DropdownMenu>
@@ -107,22 +107,22 @@ export const PaymentSourceCard = ({ source }: PaymentSourceCardProps) => {
               <Button
                 variant="ghost"
                 size="icon"
-                className="h-6 w-6 hover:bg-transparent p-0"
+                className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity rounded-full hover:bg-gray-100"
               >
-                <MoreVertical className="w-3.5 h-3.5 text-gray-500" />
+                <MoreVertical className="w-4 h-4 text-gray-500" />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-32">
+            <DropdownMenuContent align="end" className="w-36">
               <DropdownMenuItem 
                 onClick={() => setShowEditDialog(true)}
-                className="gap-2 text-xs"
+                className="gap-2 text-sm cursor-pointer"
               >
                 Edit
               </DropdownMenuItem>
               <AlertDialog>
                 <AlertDialogTrigger asChild>
                   <DropdownMenuItem
-                    className="gap-2 text-xs text-red-500 focus:text-red-500"
+                    className="gap-2 text-sm text-red-500 focus:text-red-500 cursor-pointer"
                     onSelect={(e) => e.preventDefault()}
                   >
                     Delete
