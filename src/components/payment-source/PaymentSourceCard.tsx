@@ -57,7 +57,7 @@ export const PaymentSourceCard = ({ source }: PaymentSourceCardProps) => {
 
   return (
     <div className="border-b border-gray-100 last:border-0">
-      <div className="flex items-center justify-between py-2 px-3">
+      <div className="flex items-center justify-between py-2.5 px-3">
         <div className="flex items-center gap-2 flex-1 min-w-0">
           <div className="w-6 h-6 bg-green-50 rounded-[6px] flex items-center justify-center flex-shrink-0">
             <span className="text-green-500 text-[10px] font-medium">
@@ -65,7 +65,7 @@ export const PaymentSourceCard = ({ source }: PaymentSourceCardProps) => {
             </span>
           </div>
           <div className="min-w-0 flex-1">
-            <div className="flex flex-col">
+            <div className="flex flex-col gap-0.5">
               <p className="text-xs font-medium text-gray-900 truncate">
                 {source.name}
               </p>
@@ -73,7 +73,7 @@ export const PaymentSourceCard = ({ source }: PaymentSourceCardProps) => {
               {source.linked && source.upiApps && source.upiApps.length > 0 && (
                 <button
                   onClick={() => setShowUpiList(!showUpiList)}
-                  className="flex items-center gap-0.5 text-[10px] text-blue-600 mt-0.5 w-fit"
+                  className="flex items-center gap-0.5 text-[10px] text-blue-600 w-fit"
                 >
                   {source.upiApps.length} UPI linked
                   {showUpiList ? (
