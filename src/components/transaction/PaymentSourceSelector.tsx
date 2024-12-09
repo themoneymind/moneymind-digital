@@ -1,7 +1,7 @@
 import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 type PaymentSourceSelectorProps = {
   source: string;
@@ -14,6 +14,12 @@ export const PaymentSourceSelector = ({
   onSourceChange,
   formattedSources,
 }: PaymentSourceSelectorProps) => {
+  const navigate = useNavigate();
+
+  const handleAddSource = () => {
+    navigate("/payment-source");
+  };
+
   return (
     <div className="flex gap-2">
       <Select value={source} onValueChange={onSourceChange}>
@@ -28,11 +34,14 @@ export const PaymentSourceSelector = ({
           ))}
         </SelectContent>
       </Select>
-      <Link to="/payment-source">
-        <Button size="icon" variant="outline" className="h-14 w-14 border-gray-200 rounded-[12px]">
-          <Plus className="w-5 h-5" />
-        </Button>
-      </Link>
+      <Button 
+        size="icon" 
+        variant="outline" 
+        className="h-14 w-14 border-gray-200 rounded-[12px]"
+        onClick={handleAddSource}
+      >
+        <Plus className="w-5 h-5" />
+      </Button>
     </div>
   );
 };
