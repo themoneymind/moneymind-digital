@@ -55,12 +55,12 @@ export const NewTransaction = () => {
         return;
       }
 
-      // Extract the base payment source ID
+      // Extract the base payment source ID (bank account without UPI app)
       const baseSourceId = getBaseSourceId(source);
       
       // Find the base payment source for validation
-      const selectedSource = paymentSources.find(s => s.id === baseSourceId);
-      if (!selectedSource) {
+      const baseSource = paymentSources.find(s => s.id === baseSourceId);
+      if (!baseSource) {
         toast({
           title: "Error",
           description: "Selected payment source not found",
@@ -71,7 +71,7 @@ export const NewTransaction = () => {
 
       // For expenses, check if there's enough balance in the base payment source
       if (type === "expense") {
-        if (Number(selectedSource.amount) < numAmount) {
+        if (Number(baseSource.amount) < numAmount) {
           toast({
             title: "Error",
             description: "Insufficient balance in the selected payment source",
@@ -81,7 +81,7 @@ export const NewTransaction = () => {
         }
       }
 
-      // Use the original source ID (including UPI app if present) for the transaction
+      // Add the transaction using the full source ID (including UPI app if present)
       await addTransaction({
         type,
         amount: numAmount,
