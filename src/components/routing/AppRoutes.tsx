@@ -1,12 +1,12 @@
 import { Routes, Route } from "react-router-dom";
-import { ProtectedRoutes } from "./ProtectedRoutes";
 import { PublicRoutes } from "./PublicRoutes";
+import { ProtectedRoutes } from "./ProtectedRoutes";
 
 export const AppRoutes = () => {
   return (
     <Routes>
-      <Route path="/*" element={<PublicRoutes />} />
       <Route path="/app/*" element={<ProtectedRoutes />} />
+      <Route path="/*" element={<PublicRoutes />} />
     </Routes>
   );
 };
