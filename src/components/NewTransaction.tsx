@@ -9,7 +9,7 @@ import { CategorySelector } from "./transaction/CategorySelector";
 import { PaymentSourceSelector } from "./transaction/PaymentSourceSelector";
 
 export const NewTransaction = () => {
-  const { addTransaction, getFormattedPaymentSources } = useFinance();
+  const { addTransaction, getFormattedPaymentSources, paymentSources } = useFinance();
   const { toast } = useToast();
   const [type, setType] = useState<TransactionType>("expense");
   const [amount, setAmount] = useState("");
@@ -44,14 +44,46 @@ export const NewTransaction = () => {
     }
 
     try {
-      // Log for debugging
-      console.log("Submitting transaction with source:", source);
+      const numAmount = Number(amount);
+      if (isNaN(numAmount) || numAmount <= 0) {
+        toast({
+          title: "Error",
+          description: "Please enter a valid amount",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      // For expenses, check if there's enough balance in the payment source
+      if (type === "expense") {
+        const selectedSource = paymentSources.find(s => s.id === source.split("-")[0]);
+        if (!selectedSource) {
+          toast({
+            title: "Error",
+            description: "Selected payment source not found",
+            variant: "destructive",
+          });
+          return;
+        }
+
+        if (Number(selectedSource.amount) < numAmount) {
+          toast({
+            title: "Error",
+            description: "Insufficient balance in the selected payment source",
+            variant: "destructive",
+          });
+          return;
+        }
+      }
+
+      // Extract the base payment source ID by removing any UPI app suffix
+      const baseSourceId = source.split("-")[0];
 
       await addTransaction({
         type,
-        amount: Number(amount),
+        amount: numAmount,
         category,
-        source, // Use the full UUID directly
+        source: baseSourceId,
         description,
       });
 
@@ -69,7 +101,7 @@ export const NewTransaction = () => {
       console.error("Error adding transaction:", error);
       toast({
         title: "Error",
-        description: "Failed to add transaction. Please try again.",
+        description: error instanceof Error ? error.message : "Failed to add transaction. Please try again.",
         variant: "destructive",
       });
     }
