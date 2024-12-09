@@ -71,6 +71,10 @@ export const PaymentSourceDialog = ({
       : source.amount - numAmount;
 
     try {
+      // Create a transaction to track this payment source amount change
+      const transactionType = operation === "add" ? "income" : "expense";
+      const description = `${operation === "add" ? "Added to" : "Subtracted from"} ${name}`;
+      
       await editPaymentSource({
         ...source,
         amount: newAmount,

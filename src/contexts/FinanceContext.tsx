@@ -5,6 +5,7 @@ import { PaymentSource } from "@/types/finance";
 import { useTransactions } from "@/hooks/useTransactions";
 import { usePaymentSources } from "@/hooks/usePaymentSources";
 import { useTransactionOperations } from "@/hooks/useTransactionOperations";
+import { supabase } from "@/integrations/supabase/client";
 
 type FinanceContextType = {
   currentMonth: Date;
@@ -48,10 +49,18 @@ export const FinanceProvider = ({ children }: { children: React.ReactNode }) => 
   } = usePaymentSources();
 
   const refreshData = async () => {
-    await Promise.all([
-      loadTransactions(),
-      loadPaymentSources()
-    ]);
+    if (!user) return;
+    
+    try {
+      const [txns, sources] = await Promise.all([
+        fetchTransactions(),
+        fetchPaymentSources()
+      ]);
+      setTransactions(txns);
+      setPaymentSources(sources);
+    } catch (error) {
+      console.error("Error refreshing data:", error);
+    }
   };
 
   const { addTransaction, editTransaction } = useTransactionOperations(
@@ -61,37 +70,34 @@ export const FinanceProvider = ({ children }: { children: React.ReactNode }) => 
 
   useEffect(() => {
     if (!user) return;
-    loadPaymentSources();
-  }, [user]);
-
-  useEffect(() => {
-    if (!user) return;
-    loadTransactions();
+    refreshData();
   }, [user]);
 
   const loadPaymentSources = async () => {
+    if (!user) return;
     const sources = await fetchPaymentSources();
     setPaymentSources(sources);
   };
 
   const loadTransactions = async () => {
+    if (!user) return;
     const txns = await fetchTransactions();
     setTransactions(txns);
   };
 
   const addPaymentSource = async (source: Omit<PaymentSource, "id">) => {
     await addSource(source);
-    await loadPaymentSources();
+    await refreshData();
   };
 
   const editPaymentSource = async (source: PaymentSource) => {
     await editSource(source);
-    await loadPaymentSources();
+    await refreshData();
   };
 
   const deletePaymentSource = async (id: string) => {
     await deleteSource(id);
-    await loadPaymentSources();
+    await refreshData();
   };
 
   // Calculate totals based on transactions
