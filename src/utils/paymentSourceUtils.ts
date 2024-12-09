@@ -36,6 +36,10 @@ export const updatePaymentSourceAmount = async (
   const currentAmount = Number(source.amount) || 0;
   const newAmount = isAddition ? currentAmount + amount : currentAmount - amount;
 
+  if (newAmount < 0) {
+    throw new Error("Insufficient balance in the payment source");
+  }
+
   const updatedSource = {
     ...source,
     amount: newAmount
@@ -62,5 +66,9 @@ export const validateExpenseAmount = (
   const baseSourceId = getBaseSourceId(sourceId);
   const source = paymentSources.find(s => s.id === baseSourceId);
   
-  return source ? Number(source.amount) >= amount : false;
+  if (!source) {
+    throw new Error("Payment source not found");
+  }
+
+  return Number(source.amount) >= amount;
 };

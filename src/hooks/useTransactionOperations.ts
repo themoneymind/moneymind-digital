@@ -1,6 +1,6 @@
 import { Transaction, TransactionType } from "@/types/transactions";
 import { PaymentSource } from "@/types/finance";
-import { updatePaymentSourceAmount, validateExpenseAmount } from "@/utils/paymentSourceUtils";
+import { updatePaymentSourceAmount, validateExpenseAmount, getBaseSourceId } from "@/utils/paymentSourceUtils";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 
@@ -23,25 +23,29 @@ export const useTransactionOperations = (
     type: TransactionType,
     isReverse: boolean = false
   ) => {
-    if (!validateUUID(sourceId)) {
+    // Get the base source ID (bank account) for the transaction
+    const baseSourceId = getBaseSourceId(sourceId);
+    
+    if (!validateUUID(baseSourceId)) {
       throw new Error("Invalid payment source ID format");
     }
 
     const shouldAdd = isReverse ? type === "expense" : type === "income";
-    await updatePaymentSourceAmount(sourceId, amount, shouldAdd);
+    await updatePaymentSourceAmount(baseSourceId, amount, shouldAdd);
   };
 
   const addTransaction = async (transaction: Omit<Transaction, "id" | "date" | "user_id" | "created_at" | "updated_at">) => {
     if (!user) throw new Error("User not authenticated");
 
-    if (!validateUUID(transaction.source)) {
+    const baseSourceId = getBaseSourceId(transaction.source);
+    if (!validateUUID(baseSourceId)) {
       throw new Error("Invalid payment source ID format");
     }
 
     if (transaction.type === "expense") {
       const hasEnoughBalance = validateExpenseAmount(
         paymentSources,
-        transaction.source,
+        baseSourceId, // Use base source ID for balance check
         Number(transaction.amount)
       );
       if (!hasEnoughBalance) {
@@ -60,7 +64,7 @@ export const useTransactionOperations = (
     if (error) throw error;
 
     await handleTransactionEffect(
-      transaction.source,
+      baseSourceId, // Use base source ID for amount update
       Number(transaction.amount),
       transaction.type
     );
@@ -77,8 +81,11 @@ export const useTransactionOperations = (
       throw new Error("Invalid transaction ID format");
     }
 
-    if (updates.source && !validateUUID(updates.source)) {
-      throw new Error("Invalid payment source ID format");
+    if (updates.source) {
+      const baseSourceId = getBaseSourceId(updates.source);
+      if (!validateUUID(baseSourceId)) {
+        throw new Error("Invalid payment source ID format");
+      }
     }
 
     const { data: originalTransaction, error: fetchError } = await supabase
@@ -90,25 +97,27 @@ export const useTransactionOperations = (
     if (fetchError) throw fetchError;
     if (!originalTransaction) throw new Error("Transaction not found");
 
-    // Revert original transaction effect
+    // Revert original transaction effect on the base source
+    const originalBaseSourceId = getBaseSourceId(originalTransaction.source);
     await handleTransactionEffect(
-      originalTransaction.source,
+      originalBaseSourceId,
       originalTransaction.amount,
       originalTransaction.type as TransactionType,
       true
     );
 
-    // If it's an expense, validate new amount
+    // If it's an expense, validate new amount against base source
     if (originalTransaction.type === "expense" && updates.amount) {
+      const baseSourceId = getBaseSourceId(updates.source || originalTransaction.source);
       const hasEnoughBalance = validateExpenseAmount(
         paymentSources,
-        updates.source || originalTransaction.source,
+        baseSourceId,
         Number(updates.amount)
       );
       if (!hasEnoughBalance) {
         // Reapply original effect since we're failing
         await handleTransactionEffect(
-          originalTransaction.source,
+          originalBaseSourceId,
           originalTransaction.amount,
           originalTransaction.type as TransactionType
         );
@@ -122,9 +131,10 @@ export const useTransactionOperations = (
       date: updates.date ? updates.date.toISOString() : undefined
     };
 
-    // Apply new transaction effect
+    // Apply new transaction effect on the base source
+    const newBaseSourceId = getBaseSourceId(updates.source || originalTransaction.source);
     await handleTransactionEffect(
-      updates.source || originalTransaction.source,
+      newBaseSourceId,
       Number(updates.amount || originalTransaction.amount),
       updates.type as TransactionType || originalTransaction.type as TransactionType
     );
