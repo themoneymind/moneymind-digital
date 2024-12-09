@@ -54,6 +54,7 @@ export const NewTransaction = () => {
       description,
     });
 
+    // Reset form after successful submission
     setAmount("");
     setCategory("");
     setSource("");
