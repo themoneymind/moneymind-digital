@@ -1,5 +1,5 @@
 import { useAuth } from "@/contexts/AuthContext";
-import { HandWaving } from "lucide-react";
+import { Hand } from "lucide-react";
 
 export const Greeting = () => {
   const { user } = useAuth();
@@ -16,7 +16,7 @@ export const Greeting = () => {
     <div className="pl-2">
       <h1 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
         {getTimeBasedGreeting()}, {firstName}
-        <HandWaving className="h-4 w-4 text-primary animate-bounce" />
+        <Hand className="h-4 w-4 text-primary animate-bounce" />
       </h1>
     </div>
   );
