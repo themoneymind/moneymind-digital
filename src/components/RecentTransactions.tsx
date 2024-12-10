@@ -5,15 +5,16 @@ import { TransactionSearch } from "./transaction/TransactionSearch";
 import { TransactionFilters } from "./transaction/TransactionFilters";
 import { TransactionItem } from "./transaction/TransactionItem";
 import { startOfMonth, endOfMonth, isWithinInterval } from "date-fns";
+import { Loader2 } from "lucide-react";
 
 export const RecentTransactions = () => {
-  const { transactions, currentMonth, setCurrentMonth } = useFinance();
+  const { transactions, currentMonth, setCurrentMonth, isLoading } = useFinance();
   const [filter, setFilter] = useState<"all" | "income" | "expense" | "date">("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedTransaction, setSelectedTransaction] = useState<typeof transactions[0] | null>(null);
   const [showEditDialog, setShowEditDialog] = useState(false);
 
-  const filteredTransactions = transactions.filter((transaction) => {
+  const filteredTransactions = transactions?.filter((transaction) => {
     const matchesFilter =
       filter === "all" ? true : 
       filter === "date" ? 
@@ -28,7 +29,7 @@ export const RecentTransactions = () => {
       .includes(searchQuery.toLowerCase());
     
     return matchesFilter && matchesSearch;
-  });
+  }) || [];
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat("en-IN", {
@@ -51,6 +52,14 @@ export const RecentTransactions = () => {
     return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
   };
 
+  if (isLoading) {
+    return (
+      <div className="p-5 mx-4 bg-white rounded-apple shadow-sm min-h-[200px] flex items-center justify-center">
+        <Loader2 className="w-6 h-6 animate-spin text-primary" />
+      </div>
+    );
+  }
+
   return (
     <div className="p-5 mx-4 bg-white rounded-apple shadow-sm">
       <div className="flex items-center mb-6">
@@ -70,16 +79,22 @@ export const RecentTransactions = () => {
       />
       
       <div className="mt-4 space-y-2 overflow-hidden">
-        {filteredTransactions.map((transaction) => (
-          <TransactionItem
-            key={transaction.id}
-            transaction={transaction}
-            onEdit={handleEditClick}
-            onDelete={handleDeleteClick}
-            formatCurrency={formatCurrency}
-            toSentenceCase={toSentenceCase}
-          />
-        ))}
+        {filteredTransactions.length === 0 ? (
+          <div className="text-center py-8 text-gray-500">
+            No transactions found
+          </div>
+        ) : (
+          filteredTransactions.map((transaction) => (
+            <TransactionItem
+              key={transaction.id}
+              transaction={transaction}
+              onEdit={handleEditClick}
+              onDelete={handleDeleteClick}
+              formatCurrency={formatCurrency}
+              toSentenceCase={toSentenceCase}
+            />
+          ))
+        )}
       </div>
 
       {selectedTransaction && (
