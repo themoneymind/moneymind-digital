@@ -45,11 +45,10 @@ export const PaymentSourceCard = ({ source }: PaymentSourceCardProps) => {
     setShowEditDialog(true);
   }, []);
 
-  const handleEditDialogClose = useCallback(() => {
-    // Use RAF to ensure state updates are properly batched
-    requestAnimationFrame(() => {
+  const handleEditDialogClose = useCallback((open: boolean) => {
+    if (!open) {
       setShowEditDialog(false);
-    });
+    }
   }, []);
 
   return (

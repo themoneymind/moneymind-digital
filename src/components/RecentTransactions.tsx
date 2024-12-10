@@ -41,12 +41,11 @@ export const RecentTransactions = () => {
     setShowEditDialog(true);
   }, []);
 
-  const handleEditDialogClose = useCallback(() => {
-    setShowEditDialog(false);
-    // Use RAF to ensure state updates are properly batched
-    requestAnimationFrame(() => {
+  const handleEditDialogClose = useCallback((open: boolean) => {
+    if (!open) {
       setSelectedTransaction(null);
-    });
+      setShowEditDialog(false);
+    }
   }, []);
 
   const handleDeleteClick = (transactionId: string) => {
