@@ -88,7 +88,6 @@ export const useTransactionOperations = (
 
     // If it's an expense, validate the new amount
     if (type === "expense") {
-      // For expenses, we need to check if the source has enough balance
       const baseSourceId = getBaseSourceId(sourceId);
       const source = paymentSources.find(s => s.id === baseSourceId);
       

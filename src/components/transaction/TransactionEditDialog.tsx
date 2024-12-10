@@ -74,8 +74,7 @@ export const TransactionEditDialog = ({
         description: "Transaction updated successfully",
       });
 
-      setAmount("");
-      onOpenChange(false);
+      handleDialogClose(false);
     } catch (error) {
       console.error("Error updating transaction:", error);
       toast({
