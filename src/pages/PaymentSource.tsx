@@ -114,8 +114,6 @@ export const PaymentSource = () => {
           </p>
         </div>
 
-        <PaymentSourceNote />
-
         <PaymentSourceTypeSelector
           selectedType={selectedType}
           onTypeChange={setSelectedType}
@@ -185,6 +183,11 @@ export const PaymentSource = () => {
             className="h-14 rounded-[12px] bg-white"
           />
         )}
+
+        <div className="mt-8">
+          <h2 className="text-xl font-semibold mb-4">Important Information</h2>
+          <PaymentSourceNote />
+        </div>
 
         <div className="fixed bottom-0 left-0 right-0 p-6 bg-white border-t">
           <Button
