@@ -13,19 +13,19 @@ export const PaymentSources = () => {
   };
 
   return (
-    <div className="p-6 mx-4 bg-white rounded-[20px]">
+    <div className="p-6 mx-4 bg-white rounded-apple shadow-sm">
       <div className="flex items-center justify-between mb-6">
-        <h2 className="text-lg font-semibold">Payment Sources</h2>
+        <h2 className="text-lg font-semibold text-gray-900">Payment Sources</h2>
         <Button
           size="icon"
           variant="ghost"
-          className="hover:bg-gray-100 rounded-[12px]"
+          className="hover:bg-gray-100 rounded-[12px] w-8 h-8"
           onClick={handleAddSource}
         >
           <Plus className="w-5 h-5 text-gray-700" />
         </Button>
       </div>
-      <div className="space-y-6">
+      <div className="space-y-4">
         {paymentSources.map((source) => (
           <PaymentSourceCard key={source.id} source={source} />
         ))}

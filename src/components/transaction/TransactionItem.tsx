@@ -34,37 +34,37 @@ export const TransactionItem = ({
   const IconComponent = getCategoryIcon(transaction.category);
 
   return (
-    <div className="border-b border-gray-100 last:border-0">
-      <div className="flex items-center justify-between py-2 px-3">
-        <div className="flex items-center gap-2.5 flex-1 min-w-0">
+    <div className="group bg-white rounded-[16px] border border-gray-100 hover:border-gray-200 transition-colors">
+      <div className="flex items-center justify-between py-3 px-4">
+        <div className="flex items-center gap-3 flex-1 min-w-0">
           <div
-            className={`w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 ${
+            className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
               transaction.type === "expense" ? "bg-red-50" : "bg-green-50"
             }`}
           >
             <IconComponent
-              className={`w-3 h-3 ${
+              className={`w-4 h-4 ${
                 transaction.type === "expense" ? "text-red-500" : "text-green-500"
               }`}
             />
           </div>
           <div className="min-w-0 flex-1">
-            <p className="text-xs font-medium text-gray-900">
+            <p className="text-sm font-medium text-gray-900">
               {toSentenceCase(transaction.category)}
             </p>
             {transaction.description && (
-              <p className="text-[11px] text-gray-500 truncate mt-0.5">
+              <p className="text-xs text-gray-500 truncate mt-0.5">
                 {transaction.description}
               </p>
             )}
-            <p className="text-[10px] text-gray-400 mt-0.5">
+            <p className="text-[11px] text-gray-400 mt-0.5">
               {format(transaction.date, "MMM d, h:mm a")}
             </p>
           </div>
         </div>
-        <div className="flex items-center justify-end gap-5 ml-auto pr-0">
+        <div className="flex items-center justify-end gap-4 ml-auto">
           <span
-            className={`text-xs font-medium whitespace-nowrap ${
+            className={`text-sm font-medium whitespace-nowrap ${
               transaction.type === "expense" ? "text-red-500" : "text-green-500"
             }`}
           >
@@ -76,24 +76,24 @@ export const TransactionItem = ({
               <Button
                 variant="ghost"
                 size="icon"
-                className="h-6 w-6 hover:bg-transparent rounded-[8px]"
+                className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity rounded-full hover:bg-gray-100"
               >
-                <MoreVertical className="w-3.5 h-3.5 text-gray-500" />
+                <MoreVertical className="w-4 h-4 text-gray-500" />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-32">
+            <DropdownMenuContent align="end" className="w-36">
               <DropdownMenuItem 
                 onClick={() => onEdit(transaction)}
-                className="gap-2 text-xs"
+                className="gap-2 text-sm cursor-pointer"
               >
-                <Pencil className="w-3.5 h-3.5" />
+                <Pencil className="w-4 h-4" />
                 Edit
               </DropdownMenuItem>
               <DropdownMenuItem 
                 onClick={() => onDelete(transaction.id)}
-                className="gap-2 text-xs text-red-500 focus:text-red-500"
+                className="gap-2 text-sm text-red-500 focus:text-red-500 cursor-pointer"
               >
-                <Trash className="w-3.5 h-3.5" />
+                <Trash className="w-4 h-4" />
                 Delete
               </DropdownMenuItem>
             </DropdownMenuContent>

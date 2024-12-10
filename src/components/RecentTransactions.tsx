@@ -35,7 +35,6 @@ export const RecentTransactions = () => {
   };
 
   const handleDeleteClick = (transactionId: string) => {
-    // TODO: Implement delete functionality when backend is ready
     console.log("Delete transaction:", transactionId);
   };
 
@@ -44,9 +43,9 @@ export const RecentTransactions = () => {
   };
 
   return (
-    <div className="p-5 mx-4 bg-white rounded-apple">
-      <div className="flex items-center mb-4">
-        <h2 className="text-base font-semibold">Recent Transactions</h2>
+    <div className="p-5 mx-4 bg-white rounded-apple shadow-sm">
+      <div className="flex items-center mb-6">
+        <h2 className="text-lg font-semibold text-gray-900">Recent Transactions</h2>
       </div>
       
       <TransactionSearch 
@@ -59,7 +58,7 @@ export const RecentTransactions = () => {
         setFilter={setFilter}
       />
       
-      <div className="space-y-0.5">
+      <div className="mt-4 space-y-2 overflow-hidden">
         {filteredTransactions.map((transaction) => (
           <TransactionItem
             key={transaction.id}
