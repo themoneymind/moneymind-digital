@@ -15,6 +15,7 @@ type FinanceContextType = {
   expense: number;
   transactions: Transaction[];
   paymentSources: PaymentSource[];
+  isLoading: boolean;
   addTransaction: (transaction: Omit<Transaction, "id" | "date" | "user_id" | "created_at" | "updated_at">) => Promise<void>;
   editTransaction: (id: string, updates: Partial<Omit<Transaction, "id" | "created_at" | "updated_at">>) => Promise<void>;
   addPaymentSource: (source: Omit<PaymentSource, "id">) => Promise<void>;
@@ -39,6 +40,7 @@ export const FinanceProvider = ({ children }: { children: React.ReactNode }) => 
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [paymentSources, setPaymentSources] = useState<PaymentSource[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
   
   const { fetchTransactions } = useTransactions();
   const { 
@@ -52,6 +54,7 @@ export const FinanceProvider = ({ children }: { children: React.ReactNode }) => 
     if (!user) return;
     
     try {
+      setIsLoading(true);
       const [txns, sources] = await Promise.all([
         fetchTransactions(),
         fetchPaymentSources()
@@ -60,6 +63,8 @@ export const FinanceProvider = ({ children }: { children: React.ReactNode }) => 
       setPaymentSources(sources);
     } catch (error) {
       console.error("Error refreshing data:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -185,6 +190,7 @@ export const FinanceProvider = ({ children }: { children: React.ReactNode }) => 
         expense,
         transactions,
         paymentSources,
+        isLoading,
         addTransaction,
         editTransaction,
         addPaymentSource,
