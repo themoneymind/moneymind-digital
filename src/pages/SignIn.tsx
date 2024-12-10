@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
@@ -10,7 +10,6 @@ export const SignIn = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const navigate = useNavigate();
   const { toast } = useToast();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -18,38 +17,15 @@ export const SignIn = () => {
     setIsLoading(true);
     
     try {
-      const { data: { user }, error } = await supabase.auth.signInWithPassword({
+      const { error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
 
       if (error) {
-        if (error.message.includes("Invalid login credentials")) {
-          toast({
-            title: "Error",
-            description: "Invalid email or password. Please try again.",
-            variant: "destructive",
-          });
-        } else if (error.message.includes("Email not confirmed")) {
-          toast({
-            title: "Error",
-            description: "Please confirm your email address before signing in.",
-            variant: "destructive",
-          });
-        } else {
-          toast({
-            title: "Error",
-            description: error.message,
-            variant: "destructive",
-          });
-        }
-        return;
-      }
-
-      if (!user) {
         toast({
           title: "Error",
-          description: "No user found with these credentials",
+          description: "Invalid email or password. Please try again.",
           variant: "destructive",
         });
         return;
@@ -60,7 +36,7 @@ export const SignIn = () => {
         description: "Successfully signed in",
       });
       
-      // Don't navigate here - let the AuthContext handle navigation
+      // AuthContext will handle navigation based on auth state
     } catch (error) {
       toast({
         title: "Error",
