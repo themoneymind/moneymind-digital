@@ -68,12 +68,22 @@ export const SignUpForm = () => {
       });
 
       if (error) {
+        console.error("Signup error:", error);
+        
+        if (error.status === 429) {
+          toast({
+            title: "Too Many Attempts",
+            description: "Please wait a few minutes before trying again",
+            variant: "destructive",
+          });
+          return;
+        }
+        
         if (error.message.includes('sending confirmation email')) {
           console.error("Email confirmation error:", error);
-          // Still allow signup but inform user about email issue
           toast({
             title: "Account Created",
-            description: "Your account was created, but there was an issue sending the confirmation email. You can still proceed to login.",
+            description: "Your account was created, but there was an issue sending the confirmation email. Please try signing in.",
           });
           navigate("/signin");
         } else {
@@ -92,6 +102,11 @@ export const SignUpForm = () => {
         title: "Success",
         description: "Account created successfully. Please check your email to verify your account.",
       });
+      
+      // Add a delay before redirecting
+      setTimeout(() => {
+        navigate("/signin");
+      }, 2000);
       
     } catch (error) {
       toast({
