@@ -18,6 +18,7 @@ type FinanceContextType = {
   transactions: Transaction[];
   paymentSources: PaymentSource[];
   isLoading: boolean;
+  refreshData: () => Promise<void>;
   addTransaction: (transaction: Omit<Transaction, "id" | "date" | "user_id" | "created_at" | "updated_at">) => Promise<void>;
   editTransaction: (id: string, updates: Partial<Omit<Transaction, "id" | "created_at" | "updated_at">>) => Promise<void>;
   addPaymentSource: (source: Omit<PaymentSource, "id">) => Promise<void>;
@@ -106,6 +107,7 @@ export const FinanceProvider = ({ children }: { children: React.ReactNode }) => 
         transactions,
         paymentSources,
         isLoading,
+        refreshData,
         addTransaction,
         editTransaction,
         addPaymentSource,

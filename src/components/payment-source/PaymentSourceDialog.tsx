@@ -23,7 +23,7 @@ export const PaymentSourceDialog = ({
   onOpenChange,
   source,
 }: PaymentSourceDialogProps) => {
-  const { editPaymentSource } = useFinance();
+  const { editPaymentSource, refreshData } = useFinance();
   const { toast } = useToast();
   const [name, setName] = useState(source?.name || "");
   const [selectedUpiApps, setSelectedUpiApps] = useState<string[]>(
@@ -75,6 +75,9 @@ export const PaymentSourceDialog = ({
         linked: selectedUpiApps.length > 0,
         upi_apps: selectedUpiApps.length > 0 ? selectedUpiApps : undefined,
       });
+
+      // Refresh data to update all components
+      await refreshData();
 
       toast({
         title: "Success",
