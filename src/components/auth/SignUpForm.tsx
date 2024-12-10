@@ -45,16 +45,23 @@ export const SignUpForm = () => {
       if (error) {
         console.error("Signup error:", error);
         
-        const errorBody = error.message && JSON.parse(error.message);
-        if (error.status === 429 || (errorBody && errorBody.code === "over_email_send_rate_limit")) {
-          toast({
-            title: "Email Rate Limit Exceeded",
-            description: "Too many signup attempts. Please wait a few minutes before trying again.",
-            variant: "destructive",
-          });
-          return;
+        // Check if the error is a rate limit error
+        try {
+          const errorBody = error.message && JSON.parse(error.message);
+          if (error.status === 429 || (errorBody && errorBody.code === "over_email_send_rate_limit")) {
+            toast({
+              title: "Too Many Attempts",
+              description: "Please wait a few minutes before trying to sign up again.",
+              variant: "destructive",
+            });
+            return;
+          }
+        } catch (parseError) {
+          // If error message isn't JSON, handle it normally
+          console.error("Error parsing error message:", parseError);
         }
         
+        // Handle other types of errors
         if (error.message.includes('sending confirmation email')) {
           console.error("Email confirmation error:", error);
           toast({
@@ -84,9 +91,10 @@ export const SignUpForm = () => {
       }, 2000);
       
     } catch (error) {
+      console.error("Unexpected error during signup:", error);
       toast({
         title: "Error",
-        description: "An unexpected error occurred",
+        description: "An unexpected error occurred. Please try again later.",
         variant: "destructive",
       });
     } finally {
