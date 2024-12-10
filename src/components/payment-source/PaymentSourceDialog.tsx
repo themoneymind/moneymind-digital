@@ -25,7 +25,7 @@ export const PaymentSourceDialog = ({
   onOpenChange,
   source,
 }: PaymentSourceDialogProps) => {
-  const { editPaymentSource } = useFinance();
+  const { editPaymentSource, addTransaction } = useFinance();
   const { toast } = useToast();
   const [name, setName] = useState(source?.name || "");
   const [selectedUpiApps, setSelectedUpiApps] = useState<string[]>(
@@ -71,20 +71,34 @@ export const PaymentSourceDialog = ({
       : source.amount - numAmount;
 
     try {
-      await editPaymentSource({
-        ...source,
-        amount: newAmount,
-        name: name.trim(),
-        linked: selectedUpiApps.length > 0,
-        upi_apps: selectedUpiApps.length > 0 ? selectedUpiApps : undefined,
-      });
+      // Create a transaction to track this payment source amount change
+      const transactionType = operation === "add" ? "income" : "expense";
+      const description = `${operation === "add" ? "Added to" : "Subtracted from"} ${name}`;
+      
+      await Promise.all([
+        editPaymentSource({
+          ...source,
+          amount: newAmount,
+          name: name.trim(),
+          linked: selectedUpiApps.length > 0,
+          upi_apps: selectedUpiApps.length > 0 ? selectedUpiApps : undefined,
+        }),
+        addTransaction({
+          type: transactionType,
+          amount: numAmount,
+          category: "Transfer",
+          source: source.id,
+          description: description,
+        })
+      ]);
 
       toast({
         title: "Success",
         description: `Amount ${operation}ed ${operation === 'add' ? 'to' : 'from'} ${name}`,
       });
 
-      handleDialogClose();
+      setAmount("");
+      onOpenChange(false);
     } catch (error) {
       console.error("Error updating payment source:", error);
       toast({
@@ -97,9 +111,6 @@ export const PaymentSourceDialog = ({
 
   const handleDialogClose = () => {
     setAmount("");
-    setOperation("add");
-    setName(source?.name || "");
-    setSelectedUpiApps(source?.upi_apps || []);
     onOpenChange(false);
   };
 
