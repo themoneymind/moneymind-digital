@@ -25,7 +25,7 @@ export const PaymentSourceDialog = ({
   onOpenChange,
   source,
 }: PaymentSourceDialogProps) => {
-  const { editPaymentSource, addTransaction } = useFinance();
+  const { editPaymentSource } = useFinance();
   const { toast } = useToast();
   const [name, setName] = useState(source?.name || "");
   const [selectedUpiApps, setSelectedUpiApps] = useState<string[]>(
@@ -56,7 +56,6 @@ export const PaymentSourceDialog = ({
     }
 
     const numAmount = Number(amount);
-
     if (operation === "subtract" && numAmount > source.amount) {
       toast({
         title: "Error",
@@ -71,26 +70,13 @@ export const PaymentSourceDialog = ({
       : source.amount - numAmount;
 
     try {
-      // Create a transaction to track this payment source amount change
-      const transactionType = operation === "add" ? "income" : "expense";
-      const description = `${operation === "add" ? "Added to" : "Subtracted from"} ${name}`;
-      
-      await Promise.all([
-        editPaymentSource({
-          ...source,
-          amount: newAmount,
-          name: name.trim(),
-          linked: selectedUpiApps.length > 0,
-          upi_apps: selectedUpiApps.length > 0 ? selectedUpiApps : undefined,
-        }),
-        addTransaction({
-          type: transactionType,
-          amount: numAmount,
-          category: "Transfer",
-          source: source.id,
-          description: description,
-        })
-      ]);
+      await editPaymentSource({
+        ...source,
+        amount: newAmount,
+        name: name.trim(),
+        linked: selectedUpiApps.length > 0,
+        upi_apps: selectedUpiApps.length > 0 ? selectedUpiApps : undefined,
+      });
 
       toast({
         title: "Success",
@@ -109,9 +95,14 @@ export const PaymentSourceDialog = ({
     }
   };
 
-  const handleDialogClose = () => {
-    setAmount("");
-    onOpenChange(false);
+  const handleDialogClose = (open: boolean) => {
+    if (!open) {
+      setAmount("");
+      setOperation("add");
+      setName(source?.name || "");
+      setSelectedUpiApps(source?.upi_apps || []);
+    }
+    onOpenChange(open);
   };
 
   return (

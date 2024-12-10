@@ -67,7 +67,7 @@ export const TransactionEditDialog = ({
     try {
       await editTransaction(transaction.id, {
         amount: finalAmount,
-        source: selectedSource.split('-')[0], // Get base source ID
+        source: selectedSource,
         description,
       });
 
