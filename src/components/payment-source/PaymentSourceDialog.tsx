@@ -31,14 +31,7 @@ export const PaymentSourceDialog = ({
   );
   const [amount, setAmount] = useState("");
   const [operation, setOperation] = useState<"add" | "subtract">("add");
-
-  const handleUpiToggle = (upiApp: string) => {
-    setSelectedUpiApps((prev) =>
-      prev.includes(upiApp)
-        ? prev.filter((app) => app !== upiApp)
-        : [...prev, upiApp]
-    );
-  };
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleAmountChange = async (e: React.MouseEvent) => {
     e.preventDefault();
@@ -63,11 +56,13 @@ export const PaymentSourceDialog = ({
       return;
     }
 
-    const newAmount = operation === "add" 
-      ? source.amount + numAmount 
-      : source.amount - numAmount;
+    setIsSubmitting(true);
 
     try {
+      const newAmount = operation === "add" 
+        ? source.amount + numAmount 
+        : source.amount - numAmount;
+
       await editPaymentSource({
         ...source,
         amount: newAmount,
@@ -76,7 +71,7 @@ export const PaymentSourceDialog = ({
         upi_apps: selectedUpiApps.length > 0 ? selectedUpiApps : undefined,
       });
 
-      // Refresh data immediately after the update
+      // Force a complete data refresh
       await refreshData();
 
       toast({
@@ -92,6 +87,8 @@ export const PaymentSourceDialog = ({
         description: "Failed to update payment source",
         variant: "destructive",
       });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -115,15 +112,25 @@ export const PaymentSourceDialog = ({
           name={name}
           setName={setName}
           selectedUpiApps={selectedUpiApps}
-          onUpiToggle={handleUpiToggle}
+          onUpiToggle={(app) => {
+            setSelectedUpiApps(prev =>
+              prev.includes(app)
+                ? prev.filter(a => a !== app)
+                : [...prev, app]
+            );
+          }}
           operation={operation}
           setOperation={setOperation}
           amount={amount}
           setAmount={setAmount}
           sourceType={source?.type}
         />
-        <Button onClick={handleAmountChange} className="h-12 rounded-[12px] mt-2">
-          Save Changes
+        <Button 
+          onClick={handleAmountChange} 
+          className="h-12 rounded-[12px] mt-2"
+          disabled={isSubmitting}
+        >
+          {isSubmitting ? "Saving..." : "Save Changes"}
         </Button>
       </DialogContent>
     </Dialog>
