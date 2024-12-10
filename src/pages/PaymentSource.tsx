@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { useNavigate, Link } from "react-router-dom";
-import { ArrowLeft, Search } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -22,6 +22,8 @@ import {
 } from "@/components/ui/command";
 import { useFinance } from "@/contexts/FinanceContext";
 import { useToast } from "@/hooks/use-toast";
+import { PaymentSourceNote } from "@/components/payment-source/PaymentSourceNote";
+import { PaymentSourceTypeSelector } from "@/components/payment-source/PaymentSourceTypeSelector";
 
 const UPI_APPS = ["GPay", "PhonePe", "Cred", "IppoPay"];
 const INDIAN_BANKS = [
@@ -60,7 +62,7 @@ export const PaymentSource = () => {
     );
   };
 
-  const handleAddPaymentSource = async () => {
+  const handleComplete = async () => {
     if (!selectedBank && selectedType === "bank") {
       toast({
         title: "Error",
@@ -92,7 +94,7 @@ export const PaymentSource = () => {
         description: "Payment source added successfully",
       });
 
-      navigate("/dashboard");
+      navigate("/app");
     } catch (error) {
       console.error("Error adding payment source:", error);
       toast({
@@ -105,10 +107,6 @@ export const PaymentSource = () => {
 
   return (
     <div className="min-h-screen bg-background p-6">
-      <Link to="/dashboard" className="inline-block mb-8">
-        <ArrowLeft className="h-6 w-6" />
-      </Link>
-
       <div className="space-y-6">
         <div className="space-y-2">
           <h1 className="text-2xl font-semibold">Add Payment Source</h1>
@@ -117,30 +115,12 @@ export const PaymentSource = () => {
           </p>
         </div>
 
-        <div className="flex gap-2 mb-6">
-          <Button
-            variant="outline"
-            className={`flex-1 h-14 rounded-[12px] ${
-              selectedType === "bank"
-                ? "bg-primary text-primary-foreground hover:bg-primary/90"
-                : ""
-            }`}
-            onClick={() => setSelectedType("bank")}
-          >
-            Bank Account
-          </Button>
-          <Button
-            variant="outline"
-            className={`flex-1 h-14 rounded-[12px] ${
-              selectedType === "credit"
-                ? "bg-primary text-primary-foreground hover:bg-primary/90"
-                : ""
-            }`}
-            onClick={() => setSelectedType("credit")}
-          >
-            Credit Card
-          </Button>
-        </div>
+        <PaymentSourceNote />
+
+        <PaymentSourceTypeSelector
+          selectedType={selectedType}
+          onTypeChange={setSelectedType}
+        />
 
         {selectedType === "bank" && (
           <div className="space-y-4">
@@ -226,12 +206,14 @@ export const PaymentSource = () => {
           />
         )}
 
-        <Button
-          className="w-full h-14 rounded-[12px]"
-          onClick={handleAddPaymentSource}
-        >
-          Add Payment Source
-        </Button>
+        <div className="fixed bottom-0 left-0 right-0 p-6 bg-white border-t">
+          <Button
+            className="w-full h-14 rounded-[12px]"
+            onClick={handleComplete}
+          >
+            Complete
+          </Button>
+        </div>
       </div>
     </div>
   );
