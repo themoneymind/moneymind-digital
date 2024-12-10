@@ -76,7 +76,7 @@ export const PaymentSourceDialog = ({
         upi_apps: selectedUpiApps.length > 0 ? selectedUpiApps : undefined,
       });
 
-      // Refresh data to update all components
+      // Refresh data immediately after the update
       await refreshData();
 
       toast({
