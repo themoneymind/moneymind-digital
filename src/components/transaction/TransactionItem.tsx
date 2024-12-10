@@ -35,36 +35,36 @@ export const TransactionItem = ({
 
   return (
     <div className="group bg-white rounded-[16px] border border-gray-100 hover:border-gray-200 transition-colors">
-      <div className="flex items-center justify-between py-4 px-4">
-        <div className="flex items-start gap-3 flex-1 min-w-0">
+      <div className="flex items-center justify-between py-3 px-4">
+        <div className="flex items-center gap-3 flex-1 min-w-0">
           <div
-            className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${
+            className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
               transaction.type === "expense" ? "bg-red-50" : "bg-green-50"
             }`}
           >
             <IconComponent
-              className={`w-5 h-5 ${
+              className={`w-4 h-4 ${
                 transaction.type === "expense" ? "text-red-500" : "text-green-500"
               }`}
             />
           </div>
           <div className="min-w-0 flex-1">
-            <p className="text-base font-medium text-gray-900 mb-0.5">
+            <p className="text-sm font-medium text-gray-900">
               {toSentenceCase(transaction.category)}
             </p>
             {transaction.description && (
-              <p className="text-sm text-gray-500 truncate mb-1">
+              <p className="text-xs text-gray-500 truncate mt-0.5">
                 {transaction.description}
               </p>
             )}
-            <p className="text-xs text-gray-400">
+            <p className="text-[11px] text-gray-400 mt-0.5">
               {format(transaction.date, "MMM d, h:mm a")}
             </p>
           </div>
         </div>
-        <div className="flex items-center gap-3 ml-4">
+        <div className="flex items-center justify-end gap-4 ml-auto">
           <span
-            className={`text-base font-medium whitespace-nowrap ${
+            className={`text-sm font-medium whitespace-nowrap ${
               transaction.type === "expense" ? "text-red-500" : "text-green-500"
             }`}
           >
