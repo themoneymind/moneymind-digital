@@ -34,17 +34,41 @@ export const useSignUp = () => {
       });
 
       if (error) {
-        handleSignUpError(error);
+        if (error.status === 429) {
+          toast({
+            title: "Too many attempts",
+            description: "Please wait a few minutes before trying again.",
+            variant: "destructive",
+          });
+          return false;
+        }
+        
+        toast({
+          title: "Error",
+          description: error.message,
+          variant: "destructive",
+        });
         return false;
       }
 
       if (data?.user) {
-        handleSignUpSuccess();
+        localStorage.setItem("isFirstTimeUser", "true");
+        
+        toast({
+          title: "Success!",
+          description: "Please check your email to verify your account. Then you can sign in.",
+        });
+        
+        // Give user time to read the success message
+        setTimeout(() => {
+          navigate("/signin");
+        }, 3000);
+        
         return true;
       }
 
       return false;
-    } catch (error) {
+    } catch (error: any) {
       console.error("Unexpected error during signup:", error);
       toast({
         title: "Error",
@@ -55,38 +79,6 @@ export const useSignUp = () => {
     } finally {
       setIsLoading(false);
     }
-  };
-
-  const handleSignUpError = (error: any) => {
-    console.error("Signup error:", error);
-    
-    if (error.status === 429) {
-      toast({
-        title: "Please wait",
-        description: "Too many signup attempts. Please try again in a few minutes.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    toast({
-      title: "Error",
-      description: error.message,
-      variant: "destructive",
-    });
-  };
-
-  const handleSignUpSuccess = () => {
-    localStorage.setItem("isFirstTimeUser", "true");
-    
-    toast({
-      title: "Success!",
-      description: "Please check your email to verify your account. Then you can sign in.",
-    });
-    
-    setTimeout(() => {
-      navigate("/signin");
-    }, 3000);
   };
 
   return {
