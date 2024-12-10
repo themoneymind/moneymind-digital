@@ -17,6 +17,13 @@ export const TransactionFilters = ({
   currentMonth,
   setCurrentMonth,
 }: TransactionFiltersProps) => {
+  const handleDateSelect = (date: Date | undefined) => {
+    if (date) {
+      setCurrentMonth(date);
+      setFilter("date");
+    }
+  };
+
   return (
     <div className="flex gap-2 mb-4 flex-nowrap overflow-visible">
       <Button
@@ -62,12 +69,7 @@ export const TransactionFilters = ({
           <Calendar
             mode="single"
             selected={currentMonth}
-            onSelect={(date) => {
-              if (date) {
-                setCurrentMonth(date);
-                setFilter("date");
-              }
-            }}
+            onSelect={handleDateSelect}
             initialFocus
           />
         </PopoverContent>
