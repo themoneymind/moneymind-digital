@@ -41,6 +41,32 @@ export const TransactionForm = ({
   onAddCustomCategory,
   formattedSources,
 }: TransactionFormProps) => {
+  const defaultExpenseCategories = [
+    "Food",
+    "Transport",
+    "Shopping",
+    "Bills",
+    "Entertainment",
+    "Healthcare",
+    "Education",
+    "Groceries",
+    "Rent",
+    "Travel",
+    "Other"
+  ];
+
+  const defaultIncomeCategories = [
+    "Salary",
+    "Freelance",
+    "Investment",
+    "Business",
+    "Rental",
+    "Dividends",
+    "Commission",
+    "Bonus",
+    "Other"
+  ];
+
   return (
     <div className="space-y-4">
       <TransactionTypeSelector type={type} onTypeChange={onTypeChange} />
@@ -58,7 +84,10 @@ export const TransactionForm = ({
         type={type}
         category={category}
         onCategoryChange={onCategoryChange}
-        customCategories={customCategories}
+        customCategories={{
+          expense: [...defaultExpenseCategories, ...customCategories.expense],
+          income: [...defaultIncomeCategories, ...customCategories.income],
+        }}
         onAddCustomCategory={onAddCustomCategory}
       />
       <PaymentSourceSelector

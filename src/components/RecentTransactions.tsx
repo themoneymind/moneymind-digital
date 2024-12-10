@@ -4,20 +4,29 @@ import { TransactionEditDialog } from "./transaction/TransactionEditDialog";
 import { TransactionSearch } from "./transaction/TransactionSearch";
 import { TransactionFilters } from "./transaction/TransactionFilters";
 import { TransactionItem } from "./transaction/TransactionItem";
+import { startOfMonth, endOfMonth, isWithinInterval } from "date-fns";
 
 export const RecentTransactions = () => {
-  const { transactions } = useFinance();
-  const [filter, setFilter] = useState<"all" | "income" | "expense">("all");
+  const { transactions, currentMonth, setCurrentMonth } = useFinance();
+  const [filter, setFilter] = useState<"all" | "income" | "expense" | "date">("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedTransaction, setSelectedTransaction] = useState<typeof transactions[0] | null>(null);
   const [showEditDialog, setShowEditDialog] = useState(false);
 
   const filteredTransactions = transactions.filter((transaction) => {
     const matchesFilter =
-      filter === "all" ? true : transaction.type === filter;
+      filter === "all" ? true : 
+      filter === "date" ? 
+        isWithinInterval(new Date(transaction.date), {
+          start: startOfMonth(currentMonth),
+          end: endOfMonth(currentMonth)
+        }) :
+        transaction.type === filter;
+    
     const matchesSearch = transaction.category
       .toLowerCase()
       .includes(searchQuery.toLowerCase());
+    
     return matchesFilter && matchesSearch;
   });
 
@@ -56,6 +65,8 @@ export const RecentTransactions = () => {
       <TransactionFilters 
         filter={filter}
         setFilter={setFilter}
+        currentMonth={currentMonth}
+        setCurrentMonth={setCurrentMonth}
       />
       
       <div className="mt-4 space-y-2 overflow-hidden">
