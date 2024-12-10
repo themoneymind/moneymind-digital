@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
-import { Input } from "@/components/ui/input";
 import { useFinance } from "@/contexts/FinanceContext";
 import { useToast } from "@/hooks/use-toast";
 import { PaymentSourceNote } from "@/components/payment-source/PaymentSourceNote";
@@ -92,12 +91,12 @@ export const PaymentSource = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background p-6">
-      <div className="space-y-6">
+    <div className="min-h-screen bg-background p-6 overflow-y-auto">
+      <div className="space-y-6 max-w-md mx-auto pb-20">
         <div className="space-y-2">
           <h1 className="text-2xl font-semibold">Add Payment Source</h1>
           <p className="text-sm text-muted-foreground">
-            Add all your bank accounts, UPI, and credit cards (these are just tracking sources, not actual bank account links)
+            Add all your bank accounts, UPI, and credit cards (these are reference sources to manage your expenses, not linked to actual bank accounts)
           </p>
         </div>
 
@@ -148,6 +147,17 @@ export const PaymentSource = () => {
             setCustomBankName={setCustomBankName}
           />
         )}
+
+        <Button
+          className="w-full h-14 rounded-[12px]"
+          onClick={handleComplete}
+          disabled={!selectedBank && !customBankName}
+        >
+          Add Payment Source
+        </Button>
+        <p className="text-sm text-muted-foreground text-center">
+          After adding payment sources, click 'Complete' to proceed
+        </p>
 
         <PaymentSourceNote />
 

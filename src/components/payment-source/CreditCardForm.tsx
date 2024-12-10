@@ -31,7 +31,7 @@ export const CreditCardForm = ({
       />
       {!selectedBank && (
         <Input
-          placeholder="Or enter your bank name manually"
+          placeholder="Enter your credit card name"
           value={customBankName}
           onChange={(e) => setCustomBankName(e.target.value)}
           className="h-14 rounded-[12px] bg-white"
