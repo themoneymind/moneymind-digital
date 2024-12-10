@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { useFinance } from "@/contexts/FinanceContext";
 import { TransactionEditDialog } from "./transaction/TransactionEditDialog";
 import { TransactionSearch } from "./transaction/TransactionSearch";
@@ -36,17 +36,22 @@ export const RecentTransactions = () => {
     }).format(amount);
   };
 
-  const handleEditClick = (transaction: typeof transactions[0]) => {
+  const handleEditClick = useCallback((transaction: typeof transactions[0]) => {
     setSelectedTransaction(transaction);
     setShowEditDialog(true);
-  };
+  }, []);
 
-  const handleEditDialogClose = (open: boolean) => {
-    setShowEditDialog(open);
+  const handleEditDialogClose = useCallback((open: boolean) => {
     if (!open) {
-      setSelectedTransaction(null);
+      // Add a small delay to ensure proper cleanup
+      setTimeout(() => {
+        setShowEditDialog(false);
+        setSelectedTransaction(null);
+      }, 0);
+    } else {
+      setShowEditDialog(true);
     }
-  };
+  }, []);
 
   const handleDeleteClick = (transactionId: string) => {
     console.log("Delete transaction:", transactionId);
