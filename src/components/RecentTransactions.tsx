@@ -14,18 +14,20 @@ export const RecentTransactions = () => {
   const [selectedTransaction, setSelectedTransaction] = useState<typeof transactions[0] | null>(null);
   const [showEditDialog, setShowEditDialog] = useState(false);
 
-  const filteredTransactions = transactions?.filter((transaction) => {
+  // First, filter transactions by the selected month
+  const monthlyTransactions = transactions.filter((transaction) => {
     const transactionDate = new Date(transaction.date);
-    
-    // First, filter by month
-    const isInSelectedMonth = isWithinInterval(transactionDate, {
+    return isWithinInterval(transactionDate, {
       start: startOfMonth(currentMonth),
       end: endOfMonth(currentMonth)
     });
+  });
 
-    if (!isInSelectedMonth) return false;
-
-    // Then apply additional filters
+  // Then apply additional filters (type and search)
+  const filteredTransactions = monthlyTransactions.filter((transaction) => {
+    const transactionDate = new Date(transaction.date);
+    
+    // Apply type filter
     const matchesFilter =
       filter === "all" ? true : 
       filter === "date" ? 
@@ -35,12 +37,13 @@ export const RecentTransactions = () => {
         }) :
         transaction.type === filter;
     
+    // Apply search filter
     const matchesSearch = transaction.category
       .toLowerCase()
       .includes(searchQuery.toLowerCase());
     
     return matchesFilter && matchesSearch;
-  }) || [];
+  });
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat("en-IN", {

@@ -6,25 +6,28 @@ export const BalanceCard = () => {
   const { transactions, currentMonth, paymentSources } = useFinance();
 
   // Filter transactions for the current month
-  const filteredTransactions = transactions.filter(transaction => {
+  const monthlyTransactions = transactions.filter(transaction => {
     const transactionDate = new Date(transaction.date);
+    const monthStart = startOfMonth(currentMonth);
+    const monthEnd = endOfMonth(currentMonth);
+    
     return isWithinInterval(transactionDate, {
-      start: startOfMonth(currentMonth),
-      end: endOfMonth(currentMonth)
+      start: monthStart,
+      end: monthEnd
     });
   });
 
-  // Calculate total balance from payment sources
-  const totalBalance = paymentSources.reduce((acc, curr) => acc + Number(curr.amount), 0);
-
-  // Calculate income and expense only for the filtered transactions
-  const income = filteredTransactions.reduce((acc, curr) => {
+  // Calculate monthly income and expense
+  const monthlyIncome = monthlyTransactions.reduce((acc, curr) => {
     return curr.type === "income" ? acc + Number(curr.amount) : acc;
   }, 0);
 
-  const expense = filteredTransactions.reduce((acc, curr) => {
+  const monthlyExpense = monthlyTransactions.reduce((acc, curr) => {
     return curr.type === "expense" ? acc + Number(curr.amount) : acc;
   }, 0);
+
+  // Calculate total balance (should reflect current balances from payment sources)
+  const totalBalance = paymentSources.reduce((acc, curr) => acc + Number(curr.amount), 0);
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat("en-IN", {
@@ -46,7 +49,7 @@ export const BalanceCard = () => {
           </div>
           <div>
             <p className="text-sm opacity-90">Income</p>
-            <p className="text-lg font-semibold">{formatCurrency(income)}</p>
+            <p className="text-lg font-semibold">{formatCurrency(monthlyIncome)}</p>
           </div>
         </div>
         <div className="w-px h-12 bg-white/20" />
@@ -56,7 +59,7 @@ export const BalanceCard = () => {
           </div>
           <div>
             <p className="text-sm opacity-90">Expense</p>
-            <p className="text-lg font-semibold">{formatCurrency(expense)}</p>
+            <p className="text-lg font-semibold">{formatCurrency(monthlyExpense)}</p>
           </div>
         </div>
       </div>
