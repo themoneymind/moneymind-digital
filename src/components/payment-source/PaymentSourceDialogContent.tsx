@@ -28,19 +28,20 @@ export const PaymentSourceDialogContent = ({
   onSave,
   isSubmitting,
 }: PaymentSourceDialogContentProps) => {
+  const handleUpiToggle = (app: string) => {
+    const newApps = selectedUpiApps.includes(app)
+      ? selectedUpiApps.filter(a => a !== app)
+      : [...selectedUpiApps, app];
+    setSelectedUpiApps(newApps);
+  };
+
   return (
     <div className="space-y-4">
       <PaymentSourceDialogForm
         name={name}
         setName={setName}
         selectedUpiApps={selectedUpiApps}
-        onUpiToggle={(app) => {
-          setSelectedUpiApps(prev =>
-            prev.includes(app)
-              ? prev.filter(a => a !== app)
-              : [...prev, app]
-          );
-        }}
+        onUpiToggle={handleUpiToggle}
         operation={operation}
         setOperation={setOperation}
         amount={amount}
