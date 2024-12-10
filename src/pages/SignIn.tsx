@@ -14,18 +14,48 @@ export const SignIn = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!email || !password) {
+      toast({
+        title: "Error",
+        description: "Please fill in all fields",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setIsLoading(true);
+    console.log("Attempting to sign in with:", email);
     
     try {
-      const { error } = await supabase.auth.signInWithPassword({
+      const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
 
+      console.log("Sign in response:", { data, error });
+
       if (error) {
+        let errorMessage = "Invalid email or password. Please try again.";
+        
+        if (error.message.includes("Email not confirmed")) {
+          errorMessage = "Please confirm your email address before signing in.";
+        } else if (error.message.includes("Invalid credentials")) {
+          errorMessage = "Invalid email or password. Please try again.";
+        }
+
         toast({
           title: "Error",
-          description: "Invalid email or password. Please try again.",
+          description: errorMessage,
+          variant: "destructive",
+        });
+        return;
+      }
+
+      if (!data.user) {
+        toast({
+          title: "Error",
+          description: "No user found with these credentials",
           variant: "destructive",
         });
         return;
@@ -38,6 +68,7 @@ export const SignIn = () => {
       
       // AuthContext will handle navigation based on auth state
     } catch (error) {
+      console.error("Unexpected error during sign in:", error);
       toast({
         title: "Error",
         description: "An unexpected error occurred",
