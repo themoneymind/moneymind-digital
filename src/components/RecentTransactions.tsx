@@ -4,7 +4,7 @@ import { TransactionEditDialog } from "./transaction/TransactionEditDialog";
 import { TransactionSearch } from "./transaction/TransactionSearch";
 import { TransactionFilters } from "./transaction/TransactionFilters";
 import { TransactionList } from "./transaction/TransactionList";
-import { startOfMonth, endOfMonth, isWithinInterval, startOfDay, endOfDay } from "date-fns";
+import { startOfMonth, endOfMonth, isWithinInterval } from "date-fns";
 import { Loader2 } from "lucide-react";
 
 export const RecentTransactions = () => {
@@ -14,7 +14,6 @@ export const RecentTransactions = () => {
   const [selectedTransaction, setSelectedTransaction] = useState<typeof transactions[0] | null>(null);
   const [showEditDialog, setShowEditDialog] = useState(false);
 
-  // First, filter transactions by the selected month
   const monthlyTransactions = transactions.filter((transaction) => {
     const transactionDate = new Date(transaction.date);
     return isWithinInterval(transactionDate, {
@@ -23,25 +22,9 @@ export const RecentTransactions = () => {
     });
   });
 
-  // Then apply additional filters (type and search)
   const filteredTransactions = monthlyTransactions.filter((transaction) => {
-    const transactionDate = new Date(transaction.date);
-    
-    // Apply type filter
-    const matchesFilter =
-      filter === "all" ? true : 
-      filter === "date" ? 
-        isWithinInterval(transactionDate, {
-          start: startOfDay(currentMonth),
-          end: endOfDay(currentMonth)
-        }) :
-        transaction.type === filter;
-    
-    // Apply search filter
-    const matchesSearch = transaction.category
-      .toLowerCase()
-      .includes(searchQuery.toLowerCase());
-    
+    const matchesFilter = filter === "all" ? true : transaction.type === filter;
+    const matchesSearch = transaction.category.toLowerCase().includes(searchQuery.toLowerCase());
     return matchesFilter && matchesSearch;
   });
 
