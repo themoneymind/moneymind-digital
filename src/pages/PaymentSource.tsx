@@ -1,28 +1,14 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
-import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "@/components/ui/command";
 import { useFinance } from "@/contexts/FinanceContext";
 import { useToast } from "@/hooks/use-toast";
 import { PaymentSourceNote } from "@/components/payment-source/PaymentSourceNote";
 import { PaymentSourceTypeSelector } from "@/components/payment-source/PaymentSourceTypeSelector";
 import { UpiAppsSelector } from "@/components/payment-source/UpiAppsSelector";
+import { BankSelectionDialog } from "@/components/payment-source/BankSelectionDialog";
+import { CreditCardForm } from "@/components/payment-source/CreditCardForm";
 
 const INDIAN_BANKS = [
   "HDFC Bank",
@@ -43,6 +29,7 @@ export const PaymentSource = () => {
   const navigate = useNavigate();
   const [selectedType, setSelectedType] = useState<"bank" | "credit">("bank");
   const [selectedBank, setSelectedBank] = useState("");
+  const [customBankName, setCustomBankName] = useState("");
   const [customUpi, setCustomUpi] = useState("");
   const [selectedUpiApps, setSelectedUpiApps] = useState<string[]>([]);
   const [showBankSearch, setShowBankSearch] = useState(false);
@@ -61,27 +48,28 @@ export const PaymentSource = () => {
   };
 
   const handleComplete = async () => {
-    if (!selectedBank && selectedType === "bank") {
+    const bankName = selectedBank || customBankName;
+    
+    if (!bankName) {
       toast({
         title: "Error",
-        description: "Please select a bank",
+        description: "Please select or enter a bank name",
         variant: "destructive",
       });
       return;
     }
 
-    const upiDetails = selectedUpiApps.slice();
-    if (customUpi.trim()) {
-      upiDetails.push(customUpi.trim());
-    }
-
     try {
+      const sourceName = selectedType === "credit" 
+        ? `${bankName} Credit Card`
+        : bankName;
+
       const newSource = {
-        name: selectedBank || "Credit Card",
+        name: sourceName,
         type: selectedType === "bank" ? "Bank" : "Credit Card",
         amount: 0,
-        linked: upiDetails.length > 0,
-        upi_apps: upiDetails.length > 0 ? upiDetails : undefined,
+        linked: selectedUpiApps.length > 0,
+        upi_apps: selectedUpiApps.length > 0 ? selectedUpiApps : undefined,
       };
 
       await addPaymentSource(newSource);
@@ -109,7 +97,7 @@ export const PaymentSource = () => {
         <div className="space-y-2">
           <h1 className="text-2xl font-semibold">Add Payment Source</h1>
           <p className="text-sm text-muted-foreground">
-            Add your all bank accounts, upi and credit cards (these are just tracking sources, not actual bank accounts linking)
+            Add all your bank accounts, UPI, and credit cards (these are just tracking sources, not actual bank account links)
           </p>
         </div>
 
@@ -120,38 +108,13 @@ export const PaymentSource = () => {
 
         {selectedType === "bank" && (
           <div className="space-y-4">
-            <Dialog open={showBankSearch} onOpenChange={setShowBankSearch}>
-              <DialogTrigger asChild>
-                <Button
-                  variant="outline"
-                  className="w-full h-14 rounded-[12px] justify-between bg-white"
-                >
-                  {selectedBank || "Select Bank"}
-                  <Search className="h-4 w-4" />
-                </Button>
-              </DialogTrigger>
-              <DialogContent className="sm:max-w-[425px]">
-                <DialogHeader>
-                  <DialogTitle>Select Bank</DialogTitle>
-                </DialogHeader>
-                <Command className="rounded-lg border shadow-md">
-                  <CommandInput placeholder="Search banks..." />
-                  <CommandList>
-                    <CommandEmpty>No banks found.</CommandEmpty>
-                    <CommandGroup>
-                      {INDIAN_BANKS.map((bank) => (
-                        <CommandItem
-                          key={bank}
-                          onSelect={() => handleBankSelect(bank)}
-                        >
-                          {bank}
-                        </CommandItem>
-                      ))}
-                    </CommandGroup>
-                  </CommandList>
-                </Command>
-              </DialogContent>
-            </Dialog>
+            <BankSelectionDialog
+              selectedBank={selectedBank}
+              onBankSelect={handleBankSelect}
+              showBankSearch={showBankSearch}
+              setShowBankSearch={setShowBankSearch}
+              banks={INDIAN_BANKS}
+            />
 
             {selectedBank && (
               <div className="space-y-4">
@@ -175,24 +138,24 @@ export const PaymentSource = () => {
         )}
 
         {selectedType === "credit" && (
-          <Input
-            placeholder="Enter credit card name"
-            value={selectedBank}
-            onChange={(e) => setSelectedBank(e.target.value)}
-            className="h-14 rounded-[12px] bg-white"
+          <CreditCardForm
+            selectedBank={selectedBank}
+            onBankSelect={handleBankSelect}
+            showBankSearch={showBankSearch}
+            setShowBankSearch={setShowBankSearch}
+            banks={INDIAN_BANKS}
+            customBankName={customBankName}
+            setCustomBankName={setCustomBankName}
           />
         )}
 
-        <div className="mt-8">
-          <h2 className="text-base font-medium mb-4">Important Information</h2>
-          <PaymentSourceNote />
-        </div>
+        <PaymentSourceNote />
 
         <div className="fixed bottom-0 left-0 right-0 p-6 bg-white border-t">
           <Button
             className="w-full h-14 rounded-[12px]"
             onClick={handleComplete}
-            disabled={!selectedBank}
+            disabled={!selectedBank && !customBankName}
           >
             Complete
           </Button>
