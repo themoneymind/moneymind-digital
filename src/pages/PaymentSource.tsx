@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
 import { Input } from "@/components/ui/input";
 import { useFinance } from "@/contexts/FinanceContext";
 import { useToast } from "@/hooks/use-toast";
@@ -25,6 +26,7 @@ export const PaymentSource = () => {
   const { addPaymentSource, paymentSources } = useFinance();
   const { toast } = useToast();
   const navigate = useNavigate();
+  
   const [selectedType, setSelectedType] = useState<"bank" | "credit">("bank");
   const [selectedBank, setSelectedBank] = useState("");
   const [customBankName, setCustomBankName] = useState("");
