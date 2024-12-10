@@ -41,16 +41,12 @@ export const RecentTransactions = () => {
     setShowEditDialog(true);
   }, []);
 
-  const handleEditDialogClose = useCallback((open: boolean) => {
-    if (!open) {
-      // Add a small delay to ensure proper cleanup
-      setTimeout(() => {
-        setShowEditDialog(false);
-        setSelectedTransaction(null);
-      }, 0);
-    } else {
-      setShowEditDialog(true);
-    }
+  const handleEditDialogClose = useCallback(() => {
+    setShowEditDialog(false);
+    // Use RAF to ensure state updates are properly batched
+    requestAnimationFrame(() => {
+      setSelectedTransaction(null);
+    });
   }, []);
 
   const handleDeleteClick = (transactionId: string) => {

@@ -45,15 +45,11 @@ export const PaymentSourceCard = ({ source }: PaymentSourceCardProps) => {
     setShowEditDialog(true);
   }, []);
 
-  const handleEditDialogClose = useCallback((open: boolean) => {
-    if (!open) {
-      // Add a small delay to ensure proper cleanup
-      setTimeout(() => {
-        setShowEditDialog(false);
-      }, 0);
-    } else {
-      setShowEditDialog(true);
-    }
+  const handleEditDialogClose = useCallback(() => {
+    // Use RAF to ensure state updates are properly batched
+    requestAnimationFrame(() => {
+      setShowEditDialog(false);
+    });
   }, []);
 
   return (
