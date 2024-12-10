@@ -17,6 +17,15 @@ export const RecentTransactions = () => {
   const filteredTransactions = transactions?.filter((transaction) => {
     const transactionDate = new Date(transaction.date);
     
+    // First, filter by month
+    const isInSelectedMonth = isWithinInterval(transactionDate, {
+      start: startOfMonth(currentMonth),
+      end: endOfMonth(currentMonth)
+    });
+
+    if (!isInSelectedMonth) return false;
+
+    // Then apply additional filters
     const matchesFilter =
       filter === "all" ? true : 
       filter === "date" ? 

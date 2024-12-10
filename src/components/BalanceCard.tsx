@@ -1,8 +1,29 @@
 import { ArrowDown, ArrowUp } from "lucide-react";
 import { useFinance } from "@/contexts/FinanceContext";
+import { startOfMonth, endOfMonth, isWithinInterval } from "date-fns";
 
 export const BalanceCard = () => {
-  const { balance, income, expense } = useFinance();
+  const { transactions, currentMonth } = useFinance();
+
+  const filteredTransactions = transactions.filter(transaction => {
+    const transactionDate = new Date(transaction.date);
+    return isWithinInterval(transactionDate, {
+      start: startOfMonth(currentMonth),
+      end: endOfMonth(currentMonth)
+    });
+  });
+
+  const balance = filteredTransactions.reduce((acc, curr) => {
+    return curr.type === "income" ? acc + Number(curr.amount) : acc - Number(curr.amount);
+  }, 0);
+
+  const income = filteredTransactions.reduce((acc, curr) => {
+    return curr.type === "income" ? acc + Number(curr.amount) : acc;
+  }, 0);
+
+  const expense = filteredTransactions.reduce((acc, curr) => {
+    return curr.type === "expense" ? acc + Number(curr.amount) : acc;
+  }, 0);
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat("en-IN", {
