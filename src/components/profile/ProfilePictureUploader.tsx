@@ -15,7 +15,7 @@ export const ProfilePictureUploader = ({ imageUrl, onFileSelect }: ProfilePictur
   return (
     <>
       <Avatar 
-        className="w-16 h-16 cursor-pointer hover:opacity-90 transition-opacity"
+        className="w-8 h-8 cursor-pointer hover:opacity-90 transition-opacity"
         onClick={() => fileInputRef.current?.click()}
       >
         <AvatarImage 
