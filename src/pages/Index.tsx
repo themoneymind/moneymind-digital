@@ -9,6 +9,7 @@ import { ProfilePicture } from "@/components/ProfilePicture";
 import { useAuth } from "@/contexts/AuthContext";
 import { Navigate } from "react-router-dom";
 import { useState, useEffect } from "react";
+import { supabase } from "@/integrations/supabase/client";
 
 const quotes = [
   "Building wealth together",
@@ -20,6 +21,7 @@ const quotes = [
 const Index = () => {
   const { user } = useAuth();
   const [currentQuote, setCurrentQuote] = useState(quotes[0]);
+  const [userName, setUserName] = useState("");
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -32,6 +34,30 @@ const Index = () => {
     return () => clearInterval(interval);
   }, []);
 
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      if (!user) return;
+      
+      const { data: profile, error } = await supabase
+        .from('profiles')
+        .select('first_name, last_name')
+        .eq('id', user.id)
+        .single();
+
+      if (error) {
+        console.error('Error fetching user profile:', error);
+        return;
+      }
+
+      if (profile) {
+        const fullName = [profile.first_name, profile.last_name].filter(Boolean).join(' ');
+        setUserName(fullName);
+      }
+    };
+
+    fetchUserProfile();
+  }, [user]);
+
   if (!user) {
     return <Navigate to="/signin" />;
   }
@@ -42,7 +68,7 @@ const Index = () => {
       <div className="space-y-6 py-4">
         <div className="flex items-center justify-between px-4">
           <div className="flex flex-col items-start">
-            <h1 className="text-xl font-semibold">Elumalai Ravi 👋</h1>
+            <h1 className="text-xl font-semibold">{userName} 👋</h1>
             <p className="text-sm text-gray-500">{currentQuote}</p>
           </div>
           <ProfilePicture />

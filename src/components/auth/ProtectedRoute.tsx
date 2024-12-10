@@ -24,13 +24,18 @@ export const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   }, [session]);
 
   if (!session) {
-    return <Navigate to="/" replace />;
+    return <Navigate to="/signin" replace />;
+  }
+
+  // Check if email is verified
+  if (!session.user.email_confirmed_at) {
+    return <Navigate to="/signup" replace />;
   }
 
   const isFirstTimeUser = localStorage.getItem("isFirstTimeUser") === "true";
 
-  if (isFirstTimeUser && window.location.pathname !== "/payment-source") {
-    return <Navigate to="/payment-source" replace />;
+  if (isFirstTimeUser && window.location.pathname !== "/app/payment-source") {
+    return <Navigate to="/app/payment-source" replace />;
   }
 
   return children;
