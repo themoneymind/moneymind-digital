@@ -3,7 +3,7 @@ import { useFinance } from "@/contexts/FinanceContext";
 import { TransactionEditDialog } from "./transaction/TransactionEditDialog";
 import { TransactionSearch } from "./transaction/TransactionSearch";
 import { TransactionFilters } from "./transaction/TransactionFilters";
-import { TransactionItem } from "./transaction/TransactionItem";
+import { TransactionList } from "./transaction/TransactionList";
 import { startOfMonth, endOfMonth, isWithinInterval, startOfDay, endOfDay } from "date-fns";
 import { Loader2 } from "lucide-react";
 
@@ -92,24 +92,13 @@ export const RecentTransactions = () => {
         setCurrentMonth={setCurrentMonth}
       />
       
-      <div className="mt-4 space-y-2 overflow-hidden">
-        {filteredTransactions.length === 0 ? (
-          <div className="text-center py-8 text-gray-500">
-            No transactions found
-          </div>
-        ) : (
-          filteredTransactions.map((transaction) => (
-            <TransactionItem
-              key={transaction.id}
-              transaction={transaction}
-              onEdit={handleEditClick}
-              onDelete={handleDeleteClick}
-              formatCurrency={formatCurrency}
-              toSentenceCase={toSentenceCase}
-            />
-          ))
-        )}
-      </div>
+      <TransactionList
+        transactions={filteredTransactions}
+        onEdit={handleEditClick}
+        onDelete={handleDeleteClick}
+        formatCurrency={formatCurrency}
+        toSentenceCase={toSentenceCase}
+      />
 
       {selectedTransaction && (
         <TransactionEditDialog
