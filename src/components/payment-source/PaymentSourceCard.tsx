@@ -39,6 +39,7 @@ export const PaymentSourceCard = ({ source }: PaymentSourceCardProps) => {
   const { toast } = useToast();
   const [showEditDialog, setShowEditDialog] = useState(false);
   const [showUpiList, setShowUpiList] = useState(false);
+  const [isAlertOpen, setIsAlertOpen] = useState(false);
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat("en-IN", {
@@ -50,10 +51,19 @@ export const PaymentSourceCard = ({ source }: PaymentSourceCardProps) => {
 
   const handleDelete = () => {
     deletePaymentSource(source.id);
+    setIsAlertOpen(false);
     toast({
       title: "Success",
       description: "Payment source deleted successfully",
     });
+  };
+
+  const handleEditClick = () => {
+    setShowEditDialog(true);
+  };
+
+  const handleEditDialogClose = (open: boolean) => {
+    setShowEditDialog(open);
   };
 
   return (
@@ -115,13 +125,13 @@ export const PaymentSourceCard = ({ source }: PaymentSourceCardProps) => {
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-36 bg-white border border-gray-200 shadow-lg rounded-[12px] p-1">
               <DropdownMenuItem 
-                onClick={() => setShowEditDialog(true)}
+                onClick={handleEditClick}
                 className="gap-2 text-sm cursor-pointer hover:bg-gray-50 rounded-[8px]"
               >
                 <Pencil className="w-4 h-4" />
                 Edit
               </DropdownMenuItem>
-              <AlertDialog>
+              <AlertDialog open={isAlertOpen} onOpenChange={setIsAlertOpen}>
                 <AlertDialogTrigger asChild>
                   <DropdownMenuItem
                     className="gap-2 text-sm text-red-500 focus:text-red-500 cursor-pointer hover:bg-gray-50 rounded-[8px]"
@@ -158,7 +168,7 @@ export const PaymentSourceCard = ({ source }: PaymentSourceCardProps) => {
 
       <PaymentSourceDialog
         open={showEditDialog}
-        onOpenChange={setShowEditDialog}
+        onOpenChange={handleEditDialogClose}
         source={source}
       />
     </>

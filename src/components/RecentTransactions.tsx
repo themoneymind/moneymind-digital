@@ -41,6 +41,13 @@ export const RecentTransactions = () => {
     setShowEditDialog(true);
   };
 
+  const handleEditDialogClose = (open: boolean) => {
+    setShowEditDialog(open);
+    if (!open) {
+      setSelectedTransaction(null);
+    }
+  };
+
   const handleDeleteClick = (transactionId: string) => {
     console.log("Delete transaction:", transactionId);
   };
@@ -86,7 +93,7 @@ export const RecentTransactions = () => {
       {selectedTransaction && (
         <TransactionEditDialog
           open={showEditDialog}
-          onOpenChange={setShowEditDialog}
+          onOpenChange={handleEditDialogClose}
           transaction={selectedTransaction}
         />
       )}
