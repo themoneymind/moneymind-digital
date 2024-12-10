@@ -8,30 +8,14 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import { Download, FileSpreadsheet, FilePdf } from "lucide-react";
+import { Download, FileText, File } from "lucide-react";
 import { BottomNav } from "@/components/BottomNav";
-import { useTransactions } from "@/hooks/useTransactions";
-import { useFinance } from "@/contexts/FinanceContext";
+import { useReport } from "@/hooks/useReport";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
-import { Line, LineChart, XAxis, YAxis, ResponsiveContainer } from "recharts";
+import { Line, LineChart, XAxis, YAxis } from "recharts";
 
 const Report = () => {
-  const [timeframe, setTimeframe] = useState("monthly");
-  const { transactions } = useTransactions();
-  const { currentMonth } = useFinance();
-
-  const prepareChartData = () => {
-    // Simple data transformation for demo
-    return transactions.map(t => ({
-      date: format(new Date(t.date), "MMM dd"),
-      amount: t.type === 'expense' ? -t.amount : t.amount
-    }));
-  };
-
-  const handleDownload = async (format: 'excel' | 'pdf') => {
-    // Implementation for download functionality would go here
-    console.log(`Downloading ${format} report...`);
-  };
+  const { timeframe, setTimeframe, prepareChartData, downloadReport, transactions, isLoading } = useReport();
 
   return (
     <div className="min-h-screen bg-gray-50 pb-24">
@@ -59,63 +43,69 @@ const Report = () => {
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => handleDownload('excel')}
+                onClick={() => downloadReport('excel')}
               >
-                <FileSpreadsheet className="w-4 h-4 mr-2" />
+                <FileText className="w-4 h-4 mr-2" />
                 Excel
               </Button>
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => handleDownload('pdf')}
+                onClick={() => downloadReport('pdf')}
               >
-                <FilePdf className="w-4 h-4 mr-2" />
+                <File className="w-4 h-4 mr-2" />
                 PDF
               </Button>
             </div>
           </div>
 
           <div className="h-[300px] w-full">
-            <ChartContainer
-              config={{
-                expense: { color: "#ef4444" },
-                income: { color: "#22c55e" },
-              }}
-            >
-              <LineChart data={prepareChartData()}>
-                <XAxis
-                  dataKey="date"
-                  stroke="#888888"
-                  fontSize={12}
-                  tickLine={false}
-                  axisLine={false}
-                />
-                <YAxis
-                  stroke="#888888"
-                  fontSize={12}
-                  tickLine={false}
-                  axisLine={false}
-                  tickFormatter={(value) => `₹${value}`}
-                />
-                <ChartTooltip
-                  content={({ active, payload }) => {
-                    if (!active || !payload) return null;
-                    return (
-                      <ChartTooltipContent
-                        className="bg-white p-2 border rounded shadow-lg"
-                        payload={payload}
-                      />
-                    );
-                  }}
-                />
-                <Line
-                  type="monotone"
-                  dataKey="amount"
-                  strokeWidth={2}
-                  dot={false}
-                />
-              </LineChart>
-            </ChartContainer>
+            {isLoading ? (
+              <div className="flex items-center justify-center h-full">
+                <p>Loading...</p>
+              </div>
+            ) : (
+              <ChartContainer
+                config={{
+                  expense: { color: "#ef4444" },
+                  income: { color: "#22c55e" },
+                }}
+              >
+                <LineChart data={prepareChartData()}>
+                  <XAxis
+                    dataKey="date"
+                    stroke="#888888"
+                    fontSize={12}
+                    tickLine={false}
+                    axisLine={false}
+                  />
+                  <YAxis
+                    stroke="#888888"
+                    fontSize={12}
+                    tickLine={false}
+                    axisLine={false}
+                    tickFormatter={(value) => `₹${value}`}
+                  />
+                  <ChartTooltip
+                    content={({ active, payload }) => {
+                      if (!active || !payload) return null;
+                      return (
+                        <ChartTooltipContent
+                          className="bg-white p-2 border rounded shadow-lg"
+                          payload={payload}
+                        />
+                      );
+                    }}
+                  />
+                  <Line
+                    type="monotone"
+                    dataKey="amount"
+                    strokeWidth={2}
+                    dot={false}
+                  />
+                </LineChart>
+              </ChartContainer>
+            )}
           </div>
         </div>
 
