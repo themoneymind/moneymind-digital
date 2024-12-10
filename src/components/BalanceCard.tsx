@@ -5,6 +5,7 @@ import { startOfMonth, endOfMonth, isWithinInterval } from "date-fns";
 export const BalanceCard = () => {
   const { transactions, currentMonth, paymentSources } = useFinance();
 
+  // Filter transactions for the current month
   const filteredTransactions = transactions.filter(transaction => {
     const transactionDate = new Date(transaction.date);
     return isWithinInterval(transactionDate, {
@@ -16,6 +17,7 @@ export const BalanceCard = () => {
   // Calculate total balance from payment sources
   const totalBalance = paymentSources.reduce((acc, curr) => acc + Number(curr.amount), 0);
 
+  // Calculate income and expense only for the filtered transactions
   const income = filteredTransactions.reduce((acc, curr) => {
     return curr.type === "income" ? acc + Number(curr.amount) : acc;
   }, 0);
