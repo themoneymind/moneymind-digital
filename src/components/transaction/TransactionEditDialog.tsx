@@ -58,26 +58,26 @@ export const TransactionEditDialog = ({
       return;
     }
 
-    const finalAmount = amount 
-      ? (operation === "add" 
-          ? transaction.amount + numAmount 
-          : transaction.amount - numAmount)
-      : transaction.amount;
-
     try {
-      await editTransaction(transaction.id, {
-        amount: finalAmount,
-        source: selectedSource.split('-')[0], // Get base source ID
+      const updates = {
+        source: selectedSource.split('-')[0],
         description,
-      });
+      } as Partial<Transaction>;
+
+      if (amount) {
+        updates.amount = operation === "add" 
+          ? transaction.amount + numAmount 
+          : transaction.amount - numAmount;
+      }
+
+      await editTransaction(transaction.id, updates);
 
       toast({
         title: "Success",
         description: "Transaction updated successfully",
       });
 
-      setAmount("");
-      onOpenChange(false);
+      handleDialogClose();
     } catch (error) {
       console.error("Error updating transaction:", error);
       toast({
@@ -88,14 +88,12 @@ export const TransactionEditDialog = ({
     }
   };
 
-  const handleDialogClose = (open: boolean) => {
-    if (!open) {
-      setAmount("");
-      setOperation("add");
-      setDescription(transaction.description || "");
-      setSelectedSource(transaction.source);
-    }
-    onOpenChange(open);
+  const handleDialogClose = () => {
+    setAmount("");
+    setOperation("add");
+    setDescription(transaction.description || "");
+    setSelectedSource(transaction.source);
+    onOpenChange(false);
   };
 
   return (
