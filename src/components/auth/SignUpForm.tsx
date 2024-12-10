@@ -30,7 +30,7 @@ export const SignUpForm = () => {
       const [firstName, ...lastNameParts] = fullName.trim().split(" ");
       const lastName = lastNameParts.join(" ");
 
-      const { error } = await supabase.auth.signUp({
+      const { data, error } = await supabase.auth.signUp({
         email,
         password,
         options: {
@@ -39,62 +39,51 @@ export const SignUpForm = () => {
             last_name: lastName || null,
             phone_number: phoneNumber,
           },
+          emailRedirectTo: `${window.location.origin}/signin`,
         },
       });
 
       if (error) {
         console.error("Signup error:", error);
         
-        // Check if the error is a rate limit error
-        try {
-          const errorBody = error.message && JSON.parse(error.message);
-          if (error.status === 429 || (errorBody && errorBody.code === "over_email_send_rate_limit")) {
-            toast({
-              title: "Too Many Attempts",
-              description: "Please wait a few minutes before trying to sign up again.",
-              variant: "destructive",
-            });
-            return;
-          }
-        } catch (parseError) {
-          // If error message isn't JSON, handle it normally
-          console.error("Error parsing error message:", parseError);
-        }
-        
-        // Handle other types of errors
-        if (error.message.includes('sending confirmation email')) {
-          console.error("Email confirmation error:", error);
+        // Handle rate limit errors
+        if (error.status === 429) {
           toast({
-            title: "Account Created",
-            description: "Your account was created, but there was an issue sending the confirmation email. Please try signing in.",
-          });
-          navigate("/signin");
-        } else {
-          toast({
-            title: "Error",
-            description: error.message,
+            title: "Please wait",
+            description: "Too many signup attempts. Please try again in a few minutes.",
             variant: "destructive",
           });
+          return;
         }
+
+        // Handle other errors
+        toast({
+          title: "Error",
+          description: error.message,
+          variant: "destructive",
+        });
         return;
       }
 
-      localStorage.setItem("isFirstTimeUser", "true");
-      
-      toast({
-        title: "Success",
-        description: "Account created successfully. Please check your email to verify your account.",
-      });
-      
-      setTimeout(() => {
-        navigate("/signin");
-      }, 2000);
+      if (data?.user) {
+        localStorage.setItem("isFirstTimeUser", "true");
+        
+        toast({
+          title: "Success!",
+          description: "Please check your email to verify your account. Then you can sign in.",
+        });
+        
+        // Give user time to read the success message
+        setTimeout(() => {
+          navigate("/signin");
+        }, 3000);
+      }
       
     } catch (error) {
       console.error("Unexpected error during signup:", error);
       toast({
         title: "Error",
-        description: "An unexpected error occurred. Please try again later.",
+        description: "An unexpected error occurred. Please try again.",
         variant: "destructive",
       });
     } finally {
