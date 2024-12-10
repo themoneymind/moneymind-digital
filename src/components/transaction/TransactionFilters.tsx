@@ -60,7 +60,6 @@ export const TransactionFilters = ({
               filter === "date" ? "bg-blue-600 text-white" : "bg-gray-100 text-gray-600"
             }`}
             variant={filter === "date" ? "default" : "outline"}
-            onClick={() => setFilter("date")}
           >
             <CalendarIcon className="h-4 w-4" />
           </Button>

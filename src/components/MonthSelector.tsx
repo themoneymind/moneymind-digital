@@ -1,9 +1,9 @@
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useFinance } from "@/contexts/FinanceContext";
-import { format, addMonths, subMonths, startOfMonth, endOfMonth } from "date-fns";
+import { format, addMonths, subMonths } from "date-fns";
 
 export const MonthSelector = () => {
-  const { currentMonth, setCurrentMonth, transactions } = useFinance();
+  const { currentMonth, setCurrentMonth } = useFinance();
 
   const handlePrevMonth = () => {
     const newDate = subMonths(currentMonth, 1);
@@ -14,20 +14,6 @@ export const MonthSelector = () => {
     const newDate = addMonths(currentMonth, 1);
     setCurrentMonth(newDate);
   };
-
-  const filteredTransactions = transactions.filter(transaction => {
-    const transactionDate = new Date(transaction.date);
-    return transactionDate >= startOfMonth(currentMonth) && 
-           transactionDate <= endOfMonth(currentMonth);
-  });
-
-  const monthlyIncome = filteredTransactions
-    .filter(t => t.type === 'income')
-    .reduce((sum, t) => sum + t.amount, 0);
-
-  const monthlyExpense = filteredTransactions
-    .filter(t => t.type === 'expense')
-    .reduce((sum, t) => sum + t.amount, 0);
 
   return (
     <div className="flex items-center justify-between p-4 mx-4 bg-white rounded-apple shadow-sm">
