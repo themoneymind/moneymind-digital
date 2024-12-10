@@ -22,6 +22,7 @@ export const PaymentSourceButtons = ({ onAddSource, onComplete }: PaymentSourceB
         className="w-full h-14 rounded-[12px]"
         onClick={onComplete}
         disabled={paymentSources.length === 0}
+        variant={paymentSources.length === 0 ? "outline" : "default"}
       >
         Complete
       </Button>
