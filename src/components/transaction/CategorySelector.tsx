@@ -31,9 +31,10 @@ export const CategorySelector = ({
   const defaultExpenseCategories = ["Food", "Transport", "Shopping"];
   const defaultIncomeCategories = ["Salary", "Freelance", "Investment"];
 
+  // Put custom categories first, then default categories
   const categories = type === "expense" 
-    ? [...defaultExpenseCategories, ...customCategories.expense]
-    : [...defaultIncomeCategories, ...customCategories.income];
+    ? [...customCategories.expense, ...defaultExpenseCategories]
+    : [...customCategories.income, ...defaultIncomeCategories];
 
   const handleAddCategory = () => {
     if (!newCategory.trim()) {

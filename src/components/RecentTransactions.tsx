@@ -4,7 +4,7 @@ import { TransactionEditDialog } from "./transaction/TransactionEditDialog";
 import { TransactionSearch } from "./transaction/TransactionSearch";
 import { TransactionFilters } from "./transaction/TransactionFilters";
 import { TransactionItem } from "./transaction/TransactionItem";
-import { startOfMonth, endOfMonth, isWithinInterval } from "date-fns";
+import { startOfMonth, endOfMonth, isWithinInterval, startOfDay, endOfDay } from "date-fns";
 import { Loader2 } from "lucide-react";
 
 export const RecentTransactions = () => {
@@ -15,12 +15,14 @@ export const RecentTransactions = () => {
   const [showEditDialog, setShowEditDialog] = useState(false);
 
   const filteredTransactions = transactions?.filter((transaction) => {
+    const transactionDate = new Date(transaction.date);
+    
     const matchesFilter =
       filter === "all" ? true : 
       filter === "date" ? 
-        isWithinInterval(new Date(transaction.date), {
-          start: startOfMonth(currentMonth),
-          end: endOfMonth(currentMonth)
+        isWithinInterval(transactionDate, {
+          start: startOfDay(currentMonth),
+          end: endOfDay(currentMonth)
         }) :
         transaction.type === filter;
     
