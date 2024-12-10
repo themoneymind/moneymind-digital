@@ -40,12 +40,12 @@ const Index = () => {
     <div className="min-h-screen bg-gray-50 pb-24 max-w-md mx-auto font-sans">
       <Header />
       <div className="space-y-6 py-4">
-        <div className="flex items-center gap-3 px-4">
-          <ProfilePicture />
+        <div className="flex items-center justify-between px-4">
           <div className="flex flex-col items-start">
-            <h1 className="text-xl font-semibold">Elumalai Ravi</h1>
+            <h1 className="text-xl font-semibold">Elumalai Ravi 👋</h1>
             <p className="text-sm text-gray-500">{currentQuote}</p>
           </div>
+          <ProfilePicture />
         </div>
         <MonthSelector />
         <BalanceCard />
