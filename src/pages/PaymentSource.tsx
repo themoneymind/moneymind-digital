@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { useNavigate } from "react-router-dom";
 import { Input } from "@/components/ui/input";
 import { useFinance } from "@/contexts/FinanceContext";
 import { useToast } from "@/hooks/use-toast";
@@ -23,7 +22,7 @@ const INDIAN_BANKS = [
 ];
 
 export const PaymentSource = () => {
-  const { addPaymentSource } = useFinance();
+  const { addPaymentSource, paymentSources } = useFinance();
   const { toast } = useToast();
   const navigate = useNavigate();
   const [selectedType, setSelectedType] = useState<"bank" | "credit">("bank");
@@ -53,6 +52,10 @@ export const PaymentSource = () => {
     );
   };
 
+  const checkDuplicateSource = (sourceName: string) => {
+    return paymentSources.some(source => source.name === sourceName);
+  };
+
   const handleAddSource = async () => {
     const bankName = selectedBank || customBankName;
     
@@ -65,11 +68,20 @@ export const PaymentSource = () => {
       return;
     }
 
-    try {
-      const sourceName = selectedType === "credit" 
-        ? `${bankName} Credit Card`
-        : bankName;
+    const sourceName = selectedType === "credit" 
+      ? `${bankName} Credit Card`
+      : bankName;
 
+    if (checkDuplicateSource(sourceName)) {
+      toast({
+        title: "Error",
+        description: "The selected payment source has already been added",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
       const newSource = {
         name: sourceName,
         type: selectedType === "bank" ? "Bank" : "Credit Card",
@@ -101,6 +113,14 @@ export const PaymentSource = () => {
   };
 
   const handleComplete = () => {
+    if (paymentSources.length === 0) {
+      toast({
+        title: "Error",
+        description: "Add payment source to complete",
+        variant: "destructive",
+      });
+      return;
+    }
     localStorage.removeItem("isFirstTimeUser");
     navigate("/app");
   };
@@ -111,7 +131,7 @@ export const PaymentSource = () => {
         <div className="space-y-2">
           <h1 className="text-2xl font-semibold">Add Payment Source</h1>
           <p className="text-sm text-muted-foreground">
-            Add all your bank accounts, UPIs, and credit cards (these are reference sources to manage your expenses, not linked to actual bank accounts)
+            Add all your bank accounts, UPI, and credit cards (these are reference sources to manage your expenses, not linked to actual bank accounts)
           </p>
         </div>
 
@@ -166,22 +186,21 @@ export const PaymentSource = () => {
         <Button
           className="w-full h-14 rounded-[12px]"
           onClick={handleAddSource}
-          disabled={!selectedBank && !customBankName}
         >
           Add Payment Source
         </Button>
+
+        <Button
+          className="w-full h-14 rounded-[12px]"
+          onClick={handleComplete}
+          disabled={paymentSources.length === 0}
+        >
+          Complete
+        </Button>
+
         <p className="text-xs text-muted-foreground text-center">
           After adding payment sources, click 'Complete' to proceed
         </p>
-
-        <div className="fixed bottom-0 left-0 right-0 p-6 bg-white border-t">
-          <Button
-            className="w-full h-14 rounded-[12px]"
-            onClick={handleComplete}
-          >
-            Complete
-          </Button>
-        </div>
       </div>
     </div>
   );
