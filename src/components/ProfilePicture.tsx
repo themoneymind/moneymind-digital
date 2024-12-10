@@ -1,6 +1,4 @@
-import { useState, useRef } from "react";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
+import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -10,17 +8,24 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { ProfilePictureUploader } from "./profile/ProfilePictureUploader";
+import { ProfilePictureEditor } from "./profile/ProfilePictureEditor";
 
 export const ProfilePicture = () => {
   const [scale, setScale] = useState(1);
-  const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
   const { user } = useAuth();
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
-  // Fetch profile picture on component mount
+  useEffect(() => {
+    if (user) {
+      fetchProfilePicture();
+    }
+  }, [user]);
+
   const fetchProfilePicture = async () => {
     if (!user) return;
     
@@ -34,10 +39,6 @@ export const ProfilePicture = () => {
       setImageUrl(profile.avatar_url);
     }
   };
-
-  useState(() => {
-    fetchProfilePicture();
-  }, [user]);
 
   const compressImage = async (file: File): Promise<Blob> => {
     return new Promise((resolve) => {
@@ -82,9 +83,10 @@ export const ProfilePicture = () => {
     });
   };
 
-  const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
+      setSelectedFile(file);
       const reader = new FileReader();
       reader.onload = (e) => {
         setImageUrl(e.target?.result as string);
@@ -94,20 +96,13 @@ export const ProfilePicture = () => {
     }
   };
 
-  const handleScaleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setScale(Number(event.target.value));
-  };
-
   const handleSave = async () => {
-    if (!user || !imageUrl) return;
+    if (!user || !selectedFile) return;
     
     setIsLoading(true);
     try {
-      const file = fileInputRef.current?.files?.[0];
-      if (!file) return;
-
-      const compressedBlob = await compressImage(file);
-      const compressedFile = new File([compressedBlob], file.name, { type: 'image/jpeg' });
+      const compressedBlob = await compressImage(selectedFile);
+      const compressedFile = new File([compressedBlob], selectedFile.name, { type: 'image/jpeg' });
       
       const filePath = `${user.id}/${crypto.randomUUID()}.jpg`;
       const { error: uploadError } = await supabase.storage
@@ -142,31 +137,15 @@ export const ProfilePicture = () => {
     } finally {
       setIsLoading(false);
       setIsOpen(false);
+      setSelectedFile(null);
     }
   };
 
   return (
     <>
-      <Avatar 
-        className="w-16 h-16 cursor-pointer hover:opacity-90 transition-opacity"
-        onClick={() => fileInputRef.current?.click()}
-      >
-        <AvatarImage 
-          src={imageUrl || "/placeholder.svg"} 
-          alt="Profile" 
-          className="object-cover"
-          style={{ transform: `scale(${scale})` }}
-        />
-        <AvatarFallback>
-          {user?.email?.charAt(0).toUpperCase() || 'U'}
-        </AvatarFallback>
-      </Avatar>
-      <input
-        type="file"
-        ref={fileInputRef}
-        className="hidden"
-        accept="image/*"
-        onChange={handleFileChange}
+      <ProfilePictureUploader 
+        imageUrl={imageUrl}
+        onFileSelect={handleFileChange}
       />
 
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
@@ -174,34 +153,13 @@ export const ProfilePicture = () => {
           <DialogHeader>
             <DialogTitle>Adjust Profile Picture</DialogTitle>
           </DialogHeader>
-          <div className="flex flex-col items-center gap-4 py-4">
-            <Avatar className="w-24 h-24">
-              <AvatarImage 
-                src={imageUrl || "/placeholder.svg"}
-                alt="Profile" 
-                className="object-cover"
-                style={{ transform: `scale(${scale})` }}
-              />
-              <AvatarFallback>
-                {user?.email?.charAt(0).toUpperCase() || 'U'}
-              </AvatarFallback>
-            </Avatar>
-            <div className="w-full max-w-xs space-y-2">
-              <label className="text-sm text-gray-500">Scale</label>
-              <input
-                type="range"
-                min="0.5"
-                max="1.5"
-                step="0.1"
-                value={scale}
-                onChange={handleScaleChange}
-                className="w-full"
-              />
-            </div>
-            <Button onClick={handleSave} disabled={isLoading}>
-              {isLoading ? "Saving..." : "Save Changes"}
-            </Button>
-          </div>
+          <ProfilePictureEditor
+            imageUrl={imageUrl}
+            scale={scale}
+            onScaleChange={(e) => setScale(Number(e.target.value))}
+            onSave={handleSave}
+            isLoading={isLoading}
+          />
         </DialogContent>
       </Dialog>
     </>
