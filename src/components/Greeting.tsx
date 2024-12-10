@@ -1,4 +1,5 @@
 import { useAuth } from "@/contexts/AuthContext";
+import { Wave } from "lucide-react";
 
 export const Greeting = () => {
   const { user } = useAuth();
@@ -13,8 +14,9 @@ export const Greeting = () => {
 
   return (
     <div className="pl-4">
-      <h1 className="text-2xl font-semibold text-gray-900">
+      <h1 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
         {getTimeBasedGreeting()}, {firstName}
+        <Wave className="h-4 w-4 text-primary animate-bounce" />
       </h1>
     </div>
   );
