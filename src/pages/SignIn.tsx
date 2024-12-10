@@ -18,15 +18,38 @@ export const SignIn = () => {
     setIsLoading(true);
     
     try {
-      const { error } = await supabase.auth.signInWithPassword({
+      const { data: { user }, error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
 
       if (error) {
+        if (error.message.includes("Invalid login credentials")) {
+          toast({
+            title: "Error",
+            description: "Invalid email or password. Please try again.",
+            variant: "destructive",
+          });
+        } else if (error.message.includes("Email not confirmed")) {
+          toast({
+            title: "Error",
+            description: "Please confirm your email address before signing in.",
+            variant: "destructive",
+          });
+        } else {
+          toast({
+            title: "Error",
+            description: error.message,
+            variant: "destructive",
+          });
+        }
+        return;
+      }
+
+      if (!user) {
         toast({
           title: "Error",
-          description: error.message,
+          description: "No user found with these credentials",
           variant: "destructive",
         });
         return;
@@ -36,7 +59,8 @@ export const SignIn = () => {
         title: "Success",
         description: "Successfully signed in",
       });
-      navigate("/dashboard");
+      
+      // Don't navigate here - let the AuthContext handle navigation
     } catch (error) {
       toast({
         title: "Error",
