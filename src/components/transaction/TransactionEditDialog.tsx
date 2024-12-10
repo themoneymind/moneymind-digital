@@ -1,11 +1,9 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useFinance } from "@/contexts/FinanceContext";
 import { useToast } from "@/hooks/use-toast";
 import { useState } from "react";
-import { TransactionAmountOperations } from "./TransactionAmountOperations";
+import { TransactionEditDialogForm } from "./TransactionEditDialogForm";
 
 type Transaction = {
   id: string;
@@ -104,46 +102,20 @@ export const TransactionEditDialog = ({
         <DialogHeader>
           <DialogTitle className="text-xl font-semibold">Edit Transaction</DialogTitle>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <TransactionAmountOperations
+        <form onSubmit={handleSubmit}>
+          <TransactionEditDialogForm
             currentAmount={transaction.amount}
             operation={operation}
             setOperation={setOperation}
             amount={amount}
             setAmount={setAmount}
+            selectedSource={selectedSource}
+            setSelectedSource={setSelectedSource}
+            description={description}
+            setDescription={setDescription}
+            formattedSources={formattedSources}
           />
-
-          <div className="space-y-2">
-            <label htmlFor="source" className="text-sm font-medium">
-              Payment Source
-            </label>
-            <Select value={selectedSource} onValueChange={setSelectedSource}>
-              <SelectTrigger className="h-12 rounded-[12px]">
-                <SelectValue placeholder="Select payment source" />
-              </SelectTrigger>
-              <SelectContent>
-                {formattedSources.map((source) => (
-                  <SelectItem key={source.id} value={source.id}>
-                    {source.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div className="space-y-2">
-            <label htmlFor="description" className="text-sm font-medium">
-              Description
-            </label>
-            <Input
-              id="description"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              className="h-12 rounded-[12px]"
-            />
-          </div>
-
-          <Button type="submit" className="w-full h-12 rounded-[12px]">
+          <Button type="submit" className="w-full h-12 rounded-[12px] mt-6">
             Save Changes
           </Button>
         </form>

@@ -1,11 +1,9 @@
-import { useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { useFinance } from "@/contexts/FinanceContext";
 import { useToast } from "@/hooks/use-toast";
-import { UpiAppsSelector } from "./UpiAppsSelector";
-import { AmountOperations } from "./AmountOperations";
+import { useState } from "react";
+import { PaymentSourceDialogForm } from "./PaymentSourceDialogForm";
 
 type PaymentSourceDialogProps = {
   open: boolean;
@@ -111,31 +109,20 @@ export const PaymentSourceDialog = ({
         <DialogHeader>
           <DialogTitle className="text-lg">Edit Payment Source</DialogTitle>
         </DialogHeader>
-        <div className="grid gap-4 py-4">
-          <div className="space-y-2">
-            <Input
-              placeholder="Enter name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              className="h-12 rounded-[12px] text-base"
-            />
-          </div>
-          {source?.type === "Bank" && (
-            <UpiAppsSelector
-              selectedUpiApps={selectedUpiApps}
-              onUpiToggle={handleUpiToggle}
-            />
-          )}
-          <AmountOperations
-            operation={operation}
-            setOperation={setOperation}
-            amount={amount}
-            setAmount={setAmount}
-          />
-          <Button onClick={handleAmountChange} className="h-12 rounded-[12px] mt-2">
-            Save Changes
-          </Button>
-        </div>
+        <PaymentSourceDialogForm
+          name={name}
+          setName={setName}
+          selectedUpiApps={selectedUpiApps}
+          onUpiToggle={handleUpiToggle}
+          operation={operation}
+          setOperation={setOperation}
+          amount={amount}
+          setAmount={setAmount}
+          sourceType={source?.type}
+        />
+        <Button onClick={handleAmountChange} className="h-12 rounded-[12px] mt-2">
+          Save Changes
+        </Button>
       </DialogContent>
     </Dialog>
   );
