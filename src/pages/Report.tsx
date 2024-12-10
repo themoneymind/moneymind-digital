@@ -26,7 +26,7 @@ const Report = () => {
           <div className="flex justify-between items-center mb-4">
             <Select
               value={timeframe}
-              onValueChange={(value) => setTimeframe(value)}
+              onValueChange={(value: "daily" | "weekly" | "monthly" | "yearly") => setTimeframe(value)}
             >
               <SelectTrigger className="w-[180px]">
                 <SelectValue placeholder="Select timeframe" />

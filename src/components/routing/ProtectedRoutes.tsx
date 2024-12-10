@@ -4,6 +4,7 @@ import { FinanceProvider } from "@/contexts/FinanceContext";
 import Index from "@/pages/Index";
 import { PaymentSource } from "@/pages/PaymentSource";
 import Settings from "@/pages/Settings";
+import Report from "@/pages/Report";
 
 export const ProtectedRoutes = () => {
   const { user } = useAuth();
@@ -18,6 +19,7 @@ export const ProtectedRoutes = () => {
         <Route path="/" element={<Index />} />
         <Route path="/payment-source" element={<PaymentSource />} />
         <Route path="/settings" element={<Settings />} />
+        <Route path="/report" element={<Report />} />
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
     </FinanceProvider>
