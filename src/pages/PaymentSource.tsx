@@ -1,24 +1,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
-import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import {
-  Command,
-  CommandDialog,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "@/components/ui/command";
 import { useFinance } from "@/contexts/FinanceContext";
 import { useToast } from "@/hooks/use-toast";
 import { PaymentSourceNote } from "@/components/payment-source/PaymentSourceNote";
@@ -109,8 +92,8 @@ export const PaymentSource = () => {
       <div className="space-y-6">
         <div className="space-y-2">
           <h1 className="text-2xl font-semibold">Add Payment Source</h1>
-          <p className="text-muted-foreground">
-            Add your bank accounts and credit cards
+          <p className="text-sm text-muted-foreground">
+            Add your all bank accounts, upi and credit cards (these are just tracking sources, not actual bank accounts linking)
           </p>
         </div>
 
@@ -185,7 +168,7 @@ export const PaymentSource = () => {
         )}
 
         <div className="mt-8">
-          <h2 className="text-xl font-semibold mb-4">Important Information</h2>
+          <h2 className="text-base font-medium mb-4">Important Information</h2>
           <PaymentSourceNote />
         </div>
 
@@ -193,6 +176,7 @@ export const PaymentSource = () => {
           <Button
             className="w-full h-14 rounded-[12px]"
             onClick={handleComplete}
+            disabled={!selectedBank}
           >
             Complete
           </Button>
