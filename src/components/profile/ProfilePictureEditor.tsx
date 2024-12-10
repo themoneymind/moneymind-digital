@@ -21,7 +21,7 @@ export const ProfilePictureEditor = ({
 
   return (
     <div className="flex flex-col items-center gap-4 py-4">
-      <Avatar className="w-24 h-24">
+      <Avatar className="w-32 h-32">
         <AvatarImage 
           src={imageUrl || "/placeholder.svg"}
           alt="Profile" 

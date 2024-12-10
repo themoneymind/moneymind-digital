@@ -16,7 +16,7 @@ export const Greeting = () => {
     <div className="pl-2">
       <h1 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
         {getTimeBasedGreeting()}, {firstName}
-        <Hand className="h-4 w-4 text-primary animate-bounce" />
+        <span className="animate-bounce text-lg">👋</span>
       </h1>
     </div>
   );
