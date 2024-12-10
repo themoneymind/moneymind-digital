@@ -84,8 +84,7 @@ export const PaymentSourceDialog = ({
         description: `Amount ${operation}ed ${operation === 'add' ? 'to' : 'from'} ${name}`,
       });
 
-      setAmount("");
-      onOpenChange(false);
+      handleDialogClose();
     } catch (error) {
       console.error("Error updating payment source:", error);
       toast({
