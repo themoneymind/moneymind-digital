@@ -25,7 +25,7 @@ export const PaymentSources = () => {
           <Plus className="w-5 h-5 text-gray-700" />
         </Button>
       </div>
-      <div className="space-y-3">
+      <div className="space-y-4">
         {paymentSources.map((source) => (
           <PaymentSourceCard key={source.id} source={source} />
         ))}

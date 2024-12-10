@@ -58,7 +58,7 @@ export const RecentTransactions = () => {
         setFilter={setFilter}
       />
       
-      <div className="mt-6 space-y-3">
+      <div className="mt-4 space-y-2 overflow-hidden">
         {filteredTransactions.map((transaction) => (
           <TransactionItem
             key={transaction.id}

@@ -57,37 +57,39 @@ export const PaymentSourceCard = ({ source }: PaymentSourceCardProps) => {
 
   return (
     <div className="group bg-white rounded-[16px] border border-gray-100 hover:border-gray-200 transition-colors">
-      <div className="flex items-start justify-between py-4 px-4">
-        <div className="flex items-start gap-3 flex-1 min-w-0">
-          <div className="w-10 h-10 bg-green-50 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-            <span className="text-green-500 text-sm font-medium">
+      <div className="flex items-center justify-between py-3 px-4">
+        <div className="flex items-center gap-3 flex-1 min-w-0">
+          <div className="w-8 h-8 bg-green-50 rounded-full flex items-center justify-center flex-shrink-0">
+            <span className="text-green-500 text-xs font-medium">
               {source.name[0].toUpperCase()}
             </span>
           </div>
-          <div className="min-w-0 flex-1 pt-1">
-            <p className="text-base font-medium text-gray-900 leading-none mb-1">
-              {source.name}
-            </p>
-            <span className="text-sm text-gray-500 block mb-1">{source.type}</span>
-            {source.linked && source.upi_apps && source.upi_apps.length > 0 && (
-              <button
-                onClick={() => setShowUpiList(!showUpiList)}
-                className="flex items-center gap-1 text-sm text-blue-600 w-fit"
-              >
-                {source.upi_apps.length} UPI linked
-                {showUpiList ? (
-                  <ChevronUp className="w-4 h-4" />
-                ) : (
-                  <ChevronDown className="w-4 h-4" />
-                )}
-              </button>
-            )}
+          <div className="min-w-0 flex-1">
+            <div className="flex flex-col justify-center">
+              <p className="text-sm font-medium text-gray-900 truncate">
+                {source.name}
+              </p>
+              <span className="text-xs text-gray-500">{source.type}</span>
+              {source.linked && source.upi_apps && source.upi_apps.length > 0 && (
+                <button
+                  onClick={() => setShowUpiList(!showUpiList)}
+                  className="flex items-center gap-0.5 text-xs text-blue-600 w-fit mt-0.5"
+                >
+                  {source.upi_apps.length} UPI linked
+                  {showUpiList ? (
+                    <ChevronUp className="w-3 h-3" />
+                  ) : (
+                    <ChevronDown className="w-3 h-3" />
+                  )}
+                </button>
+              )}
+            </div>
             {showUpiList && source.upi_apps && (
-              <div className="space-y-1.5 mt-2">
+              <div className="space-y-1 mt-2">
                 {source.upi_apps.map((app) => (
                   <div
                     key={app}
-                    className="text-sm text-gray-600 pl-2"
+                    className="text-xs text-gray-600 pl-2"
                   >
                     {app}
                   </div>
@@ -96,8 +98,8 @@ export const PaymentSourceCard = ({ source }: PaymentSourceCardProps) => {
             )}
           </div>
         </div>
-        <div className="flex items-start gap-3 ml-4 pt-1">
-          <span className="text-base font-medium text-gray-900 whitespace-nowrap">
+        <div className="flex items-center gap-4 ml-auto">
+          <span className="text-sm font-medium text-gray-900 whitespace-nowrap">
             {formatCurrency(source.amount)}
           </span>
           <DropdownMenu>
