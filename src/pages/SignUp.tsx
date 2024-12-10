@@ -142,12 +142,21 @@ export const SignUp = () => {
           </Button>
         </form>
 
-        <p className="text-center text-muted-foreground">
-          Already have an account?{" "}
-          <Link to="/signin" className="text-primary font-medium">
-            Sign In
-          </Link>
-        </p>
+        <div className="space-y-4">
+          <p className="text-center text-muted-foreground">
+            Already have an account?{" "}
+            <Link to="/signin" className="text-primary font-medium">
+              Sign In
+            </Link>
+          </p>
+
+          <p className="text-center text-sm text-muted-foreground">
+            By creating an account, you agree to our{" "}
+            <Link to="/terms" className="text-primary underline hover:text-primary/90">
+              Terms and Conditions
+            </Link>
+          </p>
+        </div>
       </div>
     </div>
   );

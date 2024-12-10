@@ -36,17 +36,9 @@ export const SignIn = () => {
       console.log("Sign in response:", { data, error });
 
       if (error) {
-        let errorMessage = "Invalid email or password. Please try again.";
-        
-        if (error.message.includes("Email not confirmed")) {
-          errorMessage = "Please confirm your email address before signing in.";
-        } else if (error.message.includes("Invalid credentials")) {
-          errorMessage = "Invalid email or password. Please try again.";
-        }
-
         toast({
           title: "Error",
-          description: errorMessage,
+          description: "Wrong login credentials.",
           variant: "destructive",
         });
         return;
@@ -55,7 +47,7 @@ export const SignIn = () => {
       if (!data.user) {
         toast({
           title: "Error",
-          description: "No user found with these credentials",
+          description: "Wrong login credentials.",
           variant: "destructive",
         });
         return;
@@ -127,12 +119,21 @@ export const SignIn = () => {
           </Button>
         </form>
 
-        <p className="text-center text-muted-foreground">
-          Don't have an account?{" "}
-          <Link to="/signup" className="text-primary font-medium">
-            Sign Up
-          </Link>
-        </p>
+        <div className="space-y-4">
+          <p className="text-center text-muted-foreground">
+            Don't have an account?{" "}
+            <Link to="/signup" className="text-primary font-medium">
+              Sign Up
+            </Link>
+          </p>
+          
+          <p className="text-center text-sm text-muted-foreground">
+            By signing in, you agree to our{" "}
+            <Link to="/terms" className="text-primary underline hover:text-primary/90">
+              Terms and Conditions
+            </Link>
+          </p>
+        </div>
       </div>
     </div>
   );
