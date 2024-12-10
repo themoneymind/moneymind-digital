@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
@@ -18,35 +18,67 @@ import {
   TabsTrigger,
 } from "@/components/ui/tabs";
 import { ProfilePicture } from "@/components/ProfilePicture";
-import { Bell, Lock, UserCircle } from "lucide-react";
 
 const Settings = () => {
   const { user } = useAuth();
   const { toast } = useToast();
-  const [notificationTime, setNotificationTime] = useState("09:00");
   const [isUpdating, setIsUpdating] = useState(false);
   const [email, setEmail] = useState(user?.email || "");
   const [phone, setPhone] = useState("");
   const [dob, setDob] = useState("");
+  const [notificationTime, setNotificationTime] = useState("09:00");
+  const [profile, setProfile] = useState<any>(null);
 
-  const handleNotificationUpdate = async () => {
+  useEffect(() => {
+    if (user) {
+      fetchProfile();
+    }
+  }, [user]);
+
+  const fetchProfile = async () => {
+    try {
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("*")
+        .eq("id", user?.id)
+        .single();
+
+      if (error) throw error;
+
+      if (data) {
+        setProfile(data);
+        setPhone(data.phone_number || "");
+        setDob(data.date_of_birth || "");
+        setNotificationTime(data.notification_time || "09:00");
+      }
+    } catch (error) {
+      console.error("Error fetching profile:", error);
+    }
+  };
+
+  const handleProfileUpdate = async () => {
     setIsUpdating(true);
     try {
       const { error } = await supabase
         .from("profiles")
-        .update({ notification_time: notificationTime })
+        .update({
+          phone_number: phone,
+          date_of_birth: dob,
+          notification_time: notificationTime,
+        })
         .eq("id", user?.id);
 
       if (error) throw error;
 
       toast({
         title: "Success",
-        description: "Notification settings updated successfully",
+        description: "Profile updated successfully",
       });
     } catch (error) {
+      console.error("Error updating profile:", error);
       toast({
         title: "Error",
-        description: "Failed to update notification settings",
+        description: "Failed to update profile",
         variant: "destructive",
       });
     } finally {
@@ -74,7 +106,7 @@ const Settings = () => {
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="flex justify-center mb-6">
+              <div className="flex justify-end mb-6">
                 <ProfilePicture />
               </div>
               <div className="space-y-2">
@@ -84,6 +116,7 @@ const Settings = () => {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="your@email.com"
+                  disabled
                 />
               </div>
               <div className="space-y-2">
@@ -103,7 +136,13 @@ const Settings = () => {
                   onChange={(e) => setDob(e.target.value)}
                 />
               </div>
-              <Button className="w-full">Save Changes</Button>
+              <Button 
+                className="w-full"
+                onClick={handleProfileUpdate}
+                disabled={isUpdating}
+              >
+                {isUpdating ? "Saving..." : "Save Changes"}
+              </Button>
             </CardContent>
           </Card>
         </TabsContent>
@@ -126,11 +165,11 @@ const Settings = () => {
                 />
               </div>
               <Button
-                onClick={handleNotificationUpdate}
+                onClick={handleProfileUpdate}
                 disabled={isUpdating}
                 className="w-full"
               >
-                {isUpdating ? "Updating..." : "Save Notification Settings"}
+                {isUpdating ? "Saving..." : "Save Notification Settings"}
               </Button>
             </CardContent>
           </Card>
@@ -150,7 +189,6 @@ const Settings = () => {
                   variant="outline"
                   className="w-full"
                   onClick={() => {
-                    // Implement password change logic
                     toast({
                       title: "Coming Soon",
                       description: "Password change feature will be available soon",
