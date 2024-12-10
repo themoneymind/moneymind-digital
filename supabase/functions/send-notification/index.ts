@@ -32,16 +32,27 @@ serve(async (req) => {
       hour12: false 
     });
 
-    const { data: profiles } = await supabase
+    // Fetch all profiles that have notification time set
+    const { data: profiles, error } = await supabase
       .from('profiles')
       .select('*')
       .not('notification_time', 'is', null);
 
+    if (error) throw error;
+
     for (const profile of profiles) {
       if (profile.notification_time === currentTime) {
         const randomMessage = motivationalMessages[Math.floor(Math.random() * motivationalMessages.length)];
-        // Here you would integrate with a notification service (e.g., Firebase, OneSignal)
-        console.log(`Sending notification to user ${profile.id}: ${randomMessage}`);
+        
+        // Send notification using Supabase's built-in notification system
+        await supabase.from('notifications').insert({
+          user_id: profile.id,
+          message: randomMessage,
+          type: 'daily_reminder',
+          read: false
+        });
+
+        console.log(`Notification sent to user ${profile.id}: ${randomMessage}`);
       }
     }
 
@@ -49,6 +60,7 @@ serve(async (req) => {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
   } catch (error) {
+    console.error('Error in send-notification function:', error);
     return new Response(JSON.stringify({ error: error.message }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
