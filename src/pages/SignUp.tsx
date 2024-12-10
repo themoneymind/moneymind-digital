@@ -9,8 +9,8 @@ import { supabase } from "@/integrations/supabase/client";
 export const SignUp = () => {
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
   const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -18,7 +18,7 @@ export const SignUp = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!fullName || !email || !password || !confirmPassword) {
+    if (!fullName || !email || !password || !phoneNumber) {
       toast({
         title: "Error",
         description: "Please fill in all fields",
@@ -27,10 +27,23 @@ export const SignUp = () => {
       return;
     }
 
-    if (password !== confirmPassword) {
+    // Validate phone number format (basic validation)
+    const phoneRegex = /^\+?[\d\s-]{10,}$/;
+    if (!phoneRegex.test(phoneNumber)) {
       toast({
         title: "Error",
-        description: "Passwords do not match",
+        description: "Please enter a valid phone number",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Password requirements validation
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/;
+    if (!passwordRegex.test(password)) {
+      toast({
+        title: "Error",
+        description: "Password must contain at least 8 characters, including uppercase, lowercase, number, and special character",
         variant: "destructive",
       });
       return;
@@ -50,16 +63,27 @@ export const SignUp = () => {
           data: {
             first_name: firstName,
             last_name: lastName || null,
+            phone_number: phoneNumber,
           },
         },
       });
 
       if (error) {
-        toast({
-          title: "Error",
-          description: error.message,
-          variant: "destructive",
-        });
+        if (error.message.includes('sending confirmation email')) {
+          console.error("Email confirmation error:", error);
+          // Still allow signup but inform user about email issue
+          toast({
+            title: "Account Created",
+            description: "Your account was created, but there was an issue sending the confirmation email. You can still proceed to login.",
+          });
+          navigate("/signin");
+        } else {
+          toast({
+            title: "Error",
+            description: error.message,
+            variant: "destructive",
+          });
+        }
         return;
       }
 
@@ -88,69 +112,94 @@ export const SignUp = () => {
         <ArrowLeft className="h-6 w-6" />
       </Link>
 
-      <div className="space-y-6">
-        <div className="space-y-2">
-          <h1 className="text-2xl font-semibold">Create Account</h1>
-          <p className="text-muted-foreground">
-            Sign up to start managing your finances
-          </p>
+      <div className="space-y-6 max-w-md mx-auto">
+        <div className="space-y-2 text-center">
+          <h1 className="text-3xl font-bold text-primary">MoneyMind</h1>
+          <p className="text-xl font-medium text-gray-600">Create your account</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <Input
             type="text"
-            placeholder="Full Name"
+            placeholder="Enter your name"
             value={fullName}
             onChange={(e) => setFullName(e.target.value)}
-            className="h-14 rounded-[12px]"
+            className="h-14 rounded-[12px] bg-gray-50"
             disabled={isLoading}
             required
           />
           <Input
             type="email"
-            placeholder="Email"
+            placeholder="Enter your email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="h-14 rounded-[12px]"
+            className="h-14 rounded-[12px] bg-gray-50"
             disabled={isLoading}
             required
           />
           <Input
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="h-14 rounded-[12px]"
+            type="tel"
+            placeholder="Enter your mobile number"
+            value={phoneNumber}
+            onChange={(e) => setPhoneNumber(e.target.value)}
+            className="h-14 rounded-[12px] bg-gray-50"
             disabled={isLoading}
             required
           />
-          <Input
-            type="password"
-            placeholder="Confirm Password"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-            className="h-14 rounded-[12px]"
-            disabled={isLoading}
-            required
-          />
+          <div className="space-y-2">
+            <Input
+              type="password"
+              placeholder="Enter your password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="h-14 rounded-[12px] bg-gray-50"
+              disabled={isLoading}
+              required
+            />
+            <div className="space-y-1">
+              <p className="text-sm text-gray-500">Requirements:</p>
+              <div className="grid grid-cols-2 gap-2 text-sm text-gray-500">
+                <div className="flex items-center gap-1">
+                  <span className={password.length >= 8 ? "text-green-500" : ""}>✓</span>
+                  8+ characters
+                </div>
+                <div className="flex items-center gap-1">
+                  <span className={/[A-Z]/.test(password) ? "text-green-500" : ""}>✓</span>
+                  1 uppercase
+                </div>
+                <div className="flex items-center gap-1">
+                  <span className={/[a-z]/.test(password) ? "text-green-500" : ""}>✓</span>
+                  1 lowercase
+                </div>
+                <div className="flex items-center gap-1">
+                  <span className={/[0-9]/.test(password) ? "text-green-500" : ""}>✓</span>
+                  1 number
+                </div>
+                <div className="flex items-center gap-1">
+                  <span className={/[!@#$%^&*]/.test(password) ? "text-green-500" : ""}>✓</span>
+                  1 special char
+                </div>
+              </div>
+            </div>
+          </div>
           <Button 
             type="submit" 
-            className="w-full h-14 rounded-[12px] text-base"
+            className="w-full h-14 rounded-[12px] text-base bg-primary hover:bg-primary/90"
             disabled={isLoading}
           >
-            {isLoading ? "Creating Account..." : "Create Account"}
+            {isLoading ? "Creating Account..." : "Sign Up"}
           </Button>
         </form>
 
         <div className="space-y-4">
-          <p className="text-center text-muted-foreground">
+          <p className="text-center text-gray-600">
             Already have an account?{" "}
             <Link to="/signin" className="text-primary font-medium">
-              Sign In
+              Sign in
             </Link>
           </p>
 
-          <p className="text-center text-sm text-muted-foreground">
+          <p className="text-center text-sm text-gray-500">
             By creating an account, you agree to our{" "}
             <Link to="/terms" className="text-primary underline hover:text-primary/90">
               Terms and Conditions
