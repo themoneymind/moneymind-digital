@@ -1,11 +1,13 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, { createContext, useContext, useEffect } from "react";
 import { useAuth } from "./AuthContext";
-import { Transaction, TransactionType } from "@/types/transactions";
+import { Transaction } from "@/types/transactions";
 import { PaymentSource } from "@/types/finance";
-import { useTransactions } from "@/hooks/useTransactions";
-import { usePaymentSources } from "@/hooks/usePaymentSources";
+import { useFinanceState } from "@/hooks/useFinanceState";
+import { useFinanceCalculations } from "@/hooks/useFinanceCalculations";
+import { useFinanceDataSync } from "@/hooks/useFinanceDataSync";
+import { useFinanceUtils } from "@/hooks/useFinanceUtils";
 import { useTransactionOperations } from "@/hooks/useTransactionOperations";
-import { supabase } from "@/integrations/supabase/client";
+import { usePaymentSources } from "@/hooks/usePaymentSources";
 
 type FinanceContextType = {
   currentMonth: Date;
@@ -37,94 +39,40 @@ export const useFinance = () => {
 
 export const FinanceProvider = ({ children }: { children: React.ReactNode }) => {
   const { user } = useAuth();
-  const [currentMonth, setCurrentMonth] = useState(new Date());
-  const [transactions, setTransactions] = useState<Transaction[]>([]);
-  const [paymentSources, setPaymentSources] = useState<PaymentSource[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-  
-  const { fetchTransactions } = useTransactions();
-  const { 
-    fetchPaymentSources, 
-    addPaymentSource: addSource, 
-    editPaymentSource: editSource, 
-    deletePaymentSource: deleteSource 
-  } = usePaymentSources();
+  const {
+    currentMonth,
+    setCurrentMonth,
+    transactions,
+    setTransactions,
+    paymentSources,
+    setPaymentSources,
+    isLoading,
+    setIsLoading,
+  } = useFinanceState();
 
-  const refreshData = async () => {
-    if (!user) return;
-    
-    try {
-      setIsLoading(true);
-      const [txns, sources] = await Promise.all([
-        fetchTransactions(),
-        fetchPaymentSources()
-      ]);
-      setTransactions(txns);
-      setPaymentSources(sources);
-    } catch (error) {
-      console.error("Error refreshing data:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  const { balance, income, expense } = useFinanceCalculations(transactions);
+  
+  const { refreshData, setupSubscriptions } = useFinanceDataSync({
+    setTransactions,
+    setPaymentSources,
+    setIsLoading,
+  });
+
+  const { getFormattedPaymentSources, getTransactionsBySource } = useFinanceUtils(
+    paymentSources,
+    transactions
+  );
 
   const { addTransaction, editTransaction } = useTransactionOperations(
     paymentSources,
     refreshData
   );
 
-  useEffect(() => {
-    if (!user) return;
-    refreshData();
-
-    // Subscribe to real-time changes
-    const transactionsSubscription = supabase
-      .channel('transactions_changes')
-      .on(
-        'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
-          table: 'transactions'
-        },
-        () => {
-          refreshData();
-        }
-      )
-      .subscribe();
-
-    const sourcesSubscription = supabase
-      .channel('sources_changes')
-      .on(
-        'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
-          table: 'payment_sources'
-        },
-        () => {
-          refreshData();
-        }
-      )
-      .subscribe();
-
-    return () => {
-      transactionsSubscription.unsubscribe();
-      sourcesSubscription.unsubscribe();
-    };
-  }, [user]);
-
-  const loadPaymentSources = async () => {
-    if (!user) return;
-    const sources = await fetchPaymentSources();
-    setPaymentSources(sources);
-  };
-
-  const loadTransactions = async () => {
-    if (!user) return;
-    const txns = await fetchTransactions();
-    setTransactions(txns);
-  };
+  const { 
+    addPaymentSource: addSource, 
+    editPaymentSource: editSource, 
+    deletePaymentSource: deleteSource 
+  } = usePaymentSources();
 
   const addPaymentSource = async (source: Omit<PaymentSource, "id">) => {
     await addSource(source);
@@ -141,44 +89,11 @@ export const FinanceProvider = ({ children }: { children: React.ReactNode }) => 
     await refreshData();
   };
 
-  // Calculate totals based on transactions
-  const balance = transactions.reduce((acc, curr) => {
-    return curr.type === "income" ? acc + Number(curr.amount) : acc - Number(curr.amount);
-  }, 0);
-
-  const income = transactions.reduce((acc, curr) => {
-    return curr.type === "income" ? acc + Number(curr.amount) : acc;
-  }, 0);
-
-  const expense = transactions.reduce((acc, curr) => {
-    return curr.type === "expense" ? acc + Number(curr.amount) : acc;
-  }, 0);
-
-  const getFormattedPaymentSources = () => {
-    const formattedSources: { id: string; name: string }[] = [];
-    
-    paymentSources.forEach(source => {
-      formattedSources.push({
-        id: source.id,
-        name: source.name
-      });
-
-      if (source.linked && source.upi_apps && source.upi_apps.length > 0) {
-        source.upi_apps.forEach(upiApp => {
-          formattedSources.push({
-            id: `${source.id}-${upiApp.toLowerCase()}`,
-            name: `${source.name} ${upiApp}`
-          });
-        });
-      }
-    });
-
-    return formattedSources;
-  };
-
-  const getTransactionsBySource = (sourceId: string) => {
-    return transactions.filter(transaction => transaction.source === sourceId);
-  };
+  useEffect(() => {
+    if (!user) return;
+    refreshData();
+    return setupSubscriptions();
+  }, [user]);
 
   return (
     <FinanceContext.Provider
