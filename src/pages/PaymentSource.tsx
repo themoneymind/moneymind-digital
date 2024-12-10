@@ -3,7 +3,6 @@ import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { Checkbox } from "@/components/ui/checkbox";
 import {
   Dialog,
   DialogContent,
@@ -24,8 +23,8 @@ import { useFinance } from "@/contexts/FinanceContext";
 import { useToast } from "@/hooks/use-toast";
 import { PaymentSourceNote } from "@/components/payment-source/PaymentSourceNote";
 import { PaymentSourceTypeSelector } from "@/components/payment-source/PaymentSourceTypeSelector";
+import { UpiAppsSelector } from "@/components/payment-source/UpiAppsSelector";
 
-const UPI_APPS = ["GPay", "PhonePe", "Cred", "IppoPay"];
 const INDIAN_BANKS = [
   "HDFC Bank",
   "ICICI Bank",
@@ -159,29 +158,10 @@ export const PaymentSource = () => {
 
             {selectedBank && (
               <div className="space-y-4">
-                <div className="space-y-2">
-                  <h3 className="font-medium">Select UPI Apps</h3>
-                  <div className="grid grid-cols-2 gap-4">
-                    {UPI_APPS.map((app) => (
-                      <div
-                        key={app}
-                        className="flex items-center space-x-2 bg-white p-4 rounded-[12px] border"
-                      >
-                        <Checkbox
-                          id={app}
-                          checked={selectedUpiApps.includes(app)}
-                          onCheckedChange={() => handleUpiToggle(app)}
-                        />
-                        <label
-                          htmlFor={app}
-                          className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                        >
-                          {app}
-                        </label>
-                      </div>
-                    ))}
-                  </div>
-                </div>
+                <UpiAppsSelector
+                  selectedUpiApps={selectedUpiApps}
+                  onUpiToggle={handleUpiToggle}
+                />
 
                 <div className="space-y-2">
                   <h3 className="font-medium">Add Custom UPI App</h3>
