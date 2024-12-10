@@ -1,5 +1,8 @@
 import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
 import { format } from "date-fns";
+import { Calendar as CalendarIcon } from "lucide-react";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
 type TransactionFiltersProps = {
   filter: "all" | "income" | "expense" | "date";
@@ -12,11 +15,12 @@ export const TransactionFilters = ({
   filter, 
   setFilter,
   currentMonth,
+  setCurrentMonth,
 }: TransactionFiltersProps) => {
   return (
-    <div className="flex gap-2 mb-4 overflow-x-auto pb-2">
+    <div className="flex gap-2 mb-4">
       <Button
-        className={`rounded-apple px-4 py-1.5 text-sm whitespace-nowrap ${
+        className={`rounded-full px-4 py-1.5 text-xs ${
           filter === "all" ? "bg-blue-600 text-white" : "bg-gray-100 text-gray-600"
         }`}
         variant={filter === "all" ? "default" : "outline"}
@@ -25,7 +29,7 @@ export const TransactionFilters = ({
         All
       </Button>
       <Button
-        className={`rounded-apple px-4 py-1.5 text-sm whitespace-nowrap ${
+        className={`rounded-full px-4 py-1.5 text-xs ${
           filter === "income" ? "bg-blue-600 text-white" : "bg-gray-100 text-gray-600"
         }`}
         variant={filter === "income" ? "default" : "outline"}
@@ -34,7 +38,7 @@ export const TransactionFilters = ({
         Income
       </Button>
       <Button
-        className={`rounded-apple px-4 py-1.5 text-sm whitespace-nowrap ${
+        className={`rounded-full px-4 py-1.5 text-xs ${
           filter === "expense" ? "bg-blue-600 text-white" : "bg-gray-100 text-gray-600"
         }`}
         variant={filter === "expense" ? "default" : "outline"}
@@ -42,15 +46,33 @@ export const TransactionFilters = ({
       >
         Expense
       </Button>
-      <Button
-        className={`rounded-apple px-4 py-1.5 text-sm whitespace-nowrap ${
-          filter === "date" ? "bg-blue-600 text-white" : "bg-gray-100 text-gray-600"
-        }`}
-        variant={filter === "date" ? "default" : "outline"}
-        onClick={() => setFilter("date")}
-      >
-        {format(currentMonth, "MMM yyyy")}
-      </Button>
+      <Popover>
+        <PopoverTrigger asChild>
+          <Button
+            className={`rounded-full px-4 py-1.5 text-xs ${
+              filter === "date" ? "bg-blue-600 text-white" : "bg-gray-100 text-gray-600"
+            }`}
+            variant={filter === "date" ? "default" : "outline"}
+            onClick={() => setFilter("date")}
+          >
+            <CalendarIcon className="mr-2 h-3 w-3" />
+            {format(currentMonth, "MMM yyyy")}
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent className="w-auto p-0" align="start">
+          <Calendar
+            mode="single"
+            selected={currentMonth}
+            onSelect={(date) => {
+              if (date) {
+                setCurrentMonth(date);
+                setFilter("date");
+              }
+            }}
+            initialFocus
+          />
+        </PopoverContent>
+      </Popover>
     </div>
   );
 };

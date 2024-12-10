@@ -81,17 +81,17 @@ export const TransactionItem = ({
                 <MoreVertical className="w-4 h-4 text-gray-500" />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-36">
+            <DropdownMenuContent align="end" className="w-36 bg-white border border-gray-200 shadow-lg rounded-[12px] p-1">
               <DropdownMenuItem 
                 onClick={() => onEdit(transaction)}
-                className="gap-2 text-sm cursor-pointer"
+                className="gap-2 text-sm cursor-pointer hover:bg-gray-50 rounded-[8px]"
               >
                 <Pencil className="w-4 h-4" />
                 Edit
               </DropdownMenuItem>
               <DropdownMenuItem 
                 onClick={() => onDelete(transaction.id)}
-                className="gap-2 text-sm text-red-500 focus:text-red-500 cursor-pointer"
+                className="gap-2 text-sm text-red-500 focus:text-red-500 cursor-pointer hover:bg-gray-50 rounded-[8px]"
               >
                 <Trash className="w-4 h-4" />
                 Delete
