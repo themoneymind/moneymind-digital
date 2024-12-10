@@ -47,7 +47,7 @@ export const PaymentSource = () => {
     );
   };
 
-  const handleComplete = async () => {
+  const handleAddSource = async () => {
     const bankName = selectedBank || customBankName;
     
     if (!bankName) {
@@ -73,14 +73,17 @@ export const PaymentSource = () => {
       };
 
       await addPaymentSource(newSource);
-      localStorage.removeItem("isFirstTimeUser");
 
       toast({
         title: "Success",
         description: "Payment source added successfully",
       });
 
-      navigate("/app");
+      // Reset form after successful addition
+      setSelectedBank("");
+      setCustomBankName("");
+      setCustomUpi("");
+      setSelectedUpiApps([]);
     } catch (error) {
       console.error("Error adding payment source:", error);
       toast({
@@ -89,6 +92,11 @@ export const PaymentSource = () => {
         variant: "destructive",
       });
     }
+  };
+
+  const handleComplete = () => {
+    localStorage.removeItem("isFirstTimeUser");
+    navigate("/app");
   };
 
   return (
@@ -151,12 +159,12 @@ export const PaymentSource = () => {
 
         <Button
           className="w-full h-14 rounded-[12px]"
-          onClick={handleComplete}
+          onClick={handleAddSource}
           disabled={!selectedBank && !customBankName}
         >
           Add Payment Source
         </Button>
-        <p className="text-sm text-muted-foreground text-center">
+        <p className="text-xs text-muted-foreground text-center">
           After adding payment sources, click 'Complete' to proceed
         </p>
 
@@ -166,7 +174,6 @@ export const PaymentSource = () => {
           <Button
             className="w-full h-14 rounded-[12px]"
             onClick={handleComplete}
-            disabled={!selectedBank && !customBankName}
           >
             Complete
           </Button>

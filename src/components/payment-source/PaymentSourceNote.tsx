@@ -2,7 +2,7 @@ import { CircleCheck } from "lucide-react";
 
 export const PaymentSourceNote = () => {
   return (
-    <div className="space-y-4 bg-blue-50 p-4 rounded-[12px]">
+    <div className="space-y-3 bg-blue-50 p-4 rounded-[12px]">
       <h3 className="text-xs font-medium text-blue-900">Important Note</h3>
       <div className="space-y-2">
         <div className="flex items-start gap-2">
