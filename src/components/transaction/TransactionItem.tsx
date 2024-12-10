@@ -36,7 +36,7 @@ export const TransactionItem = ({
 
   return (
     <>
-      <div className="flex items-center justify-between py-4 px-4 hover:bg-gray-50 transition-colors group">
+      <div className="flex items-center justify-between py-2.5 px-4 hover:bg-gray-50 transition-colors group">
         <div className="flex items-center gap-3 flex-1 min-w-0">
           <div
             className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
@@ -50,15 +50,15 @@ export const TransactionItem = ({
             />
           </div>
           <div className="min-w-0 flex-1">
-            <p className="text-sm font-medium text-gray-900">
+            <p className="text-sm font-medium text-gray-900 leading-tight">
               {toSentenceCase(transaction.category)}
             </p>
             {transaction.description && (
-              <p className="text-xs text-gray-500 truncate mt-0.5">
+              <p className="text-xs text-gray-500 truncate mt-0.5 leading-tight">
                 {transaction.description}
               </p>
             )}
-            <p className="text-[11px] text-gray-400 mt-0.5">
+            <p className="text-[11px] text-gray-400 mt-0.5 leading-tight">
               {format(transaction.date, "MMM d, h:mm a")}
             </p>
           </div>

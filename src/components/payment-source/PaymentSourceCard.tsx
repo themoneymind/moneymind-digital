@@ -58,7 +58,7 @@ export const PaymentSourceCard = ({ source }: PaymentSourceCardProps) => {
 
   return (
     <>
-      <div className="flex items-center justify-between py-4 px-4 hover:bg-gray-50 transition-colors group">
+      <div className="flex items-center justify-between py-2.5 px-4 hover:bg-gray-50 transition-colors group">
         <div className="flex items-center gap-3 flex-1 min-w-0">
           <div className="w-8 h-8 bg-green-50 rounded-full flex items-center justify-center flex-shrink-0">
             <span className="text-green-500 text-xs font-medium">
@@ -67,10 +67,10 @@ export const PaymentSourceCard = ({ source }: PaymentSourceCardProps) => {
           </div>
           <div className="min-w-0 flex-1">
             <div className="flex flex-col justify-center">
-              <p className="text-sm font-medium text-gray-900 truncate">
+              <p className="text-sm font-medium text-gray-900 leading-tight">
                 {source.name}
               </p>
-              <span className="text-xs text-gray-500">{source.type}</span>
+              <span className="text-xs text-gray-500 leading-tight">{source.type}</span>
               {source.linked && source.upi_apps && source.upi_apps.length > 0 && (
                 <button
                   onClick={() => setShowUpiList(!showUpiList)}
@@ -86,11 +86,11 @@ export const PaymentSourceCard = ({ source }: PaymentSourceCardProps) => {
               )}
             </div>
             {showUpiList && source.upi_apps && (
-              <div className="space-y-1 mt-2">
+              <div className="space-y-0.5 mt-1">
                 {source.upi_apps.map((app) => (
                   <div
                     key={app}
-                    className="text-xs text-gray-600 pl-2"
+                    className="text-xs text-gray-600 pl-2 leading-tight"
                   >
                     {app}
                   </div>
