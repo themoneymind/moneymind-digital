@@ -1,26 +1,10 @@
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
-import { Input } from "@/components/ui/input";
 import { useFinance } from "@/contexts/FinanceContext";
 import { useToast } from "@/hooks/use-toast";
-import { PaymentSourceTypeSelector } from "@/components/payment-source/PaymentSourceTypeSelector";
-import { UpiAppsSelector } from "@/components/payment-source/UpiAppsSelector";
-import { BankSelectionDialog } from "@/components/payment-source/BankSelectionDialog";
-import { CreditCardForm } from "@/components/payment-source/CreditCardForm";
-
-const INDIAN_BANKS = [
-  "HDFC Bank",
-  "ICICI Bank",
-  "State Bank of India",
-  "Axis Bank",
-  "Kotak Mahindra Bank",
-  "Yes Bank",
-  "Punjab National Bank",
-  "Bank of Baroda",
-  "Canara Bank",
-  "IndusInd Bank",
-];
+import { PaymentSourceHeader } from "@/components/payment-source/PaymentSourceHeader";
+import { PaymentSourceForm } from "@/components/payment-source/PaymentSourceForm";
+import { PaymentSourceButtons } from "@/components/payment-source/PaymentSourceButtons";
 
 export const PaymentSource = () => {
   const { addPaymentSource, paymentSources } = useFinance();
@@ -36,7 +20,6 @@ export const PaymentSource = () => {
 
   const handleTypeChange = (type: "bank" | "credit") => {
     setSelectedType(type);
-    // Reset selections when switching types
     setSelectedBank("");
     setCustomBankName("");
   };
@@ -99,7 +82,6 @@ export const PaymentSource = () => {
         description: "Payment source added successfully",
       });
 
-      // Reset form after successful addition
       setSelectedBank("");
       setCustomBankName("");
       setCustomUpi("");
@@ -130,79 +112,27 @@ export const PaymentSource = () => {
   return (
     <div className="min-h-screen bg-background p-6 overflow-y-auto">
       <div className="space-y-6 max-w-md mx-auto pb-20">
-        <div className="space-y-2">
-          <h1 className="text-2xl font-semibold">Add Payment Source</h1>
-          <p className="text-sm text-muted-foreground">
-            Add all your bank accounts, UPI, and credit cards (these are reference sources to manage your expenses, not linked to actual bank accounts)
-          </p>
-        </div>
-
-        <PaymentSourceTypeSelector
+        <PaymentSourceHeader />
+        
+        <PaymentSourceForm
           selectedType={selectedType}
+          selectedBank={selectedBank}
+          customBankName={customBankName}
+          customUpi={customUpi}
+          selectedUpiApps={selectedUpiApps}
           onTypeChange={handleTypeChange}
+          onBankSelect={handleBankSelect}
+          setCustomBankName={setCustomBankName}
+          setCustomUpi={setCustomUpi}
+          onUpiToggle={handleUpiToggle}
+          showBankSearch={showBankSearch}
+          setShowBankSearch={setShowBankSearch}
         />
 
-        {selectedType === "bank" && (
-          <div className="space-y-4">
-            <BankSelectionDialog
-              selectedBank={selectedBank}
-              onBankSelect={handleBankSelect}
-              showBankSearch={showBankSearch}
-              setShowBankSearch={setShowBankSearch}
-              banks={INDIAN_BANKS}
-            />
-
-            {selectedBank && (
-              <div className="space-y-4">
-                <UpiAppsSelector
-                  selectedUpiApps={selectedUpiApps}
-                  onUpiToggle={handleUpiToggle}
-                />
-
-                <div className="space-y-2">
-                  <h3 className="font-medium">Add Custom UPI App</h3>
-                  <Input
-                    placeholder="Enter UPI app name"
-                    value={customUpi}
-                    onChange={(e) => setCustomUpi(e.target.value)}
-                    className="h-14 rounded-[12px] bg-white"
-                  />
-                </div>
-              </div>
-            )}
-          </div>
-        )}
-
-        {selectedType === "credit" && (
-          <CreditCardForm
-            selectedBank={selectedBank}
-            onBankSelect={handleBankSelect}
-            showBankSearch={showBankSearch}
-            setShowBankSearch={setShowBankSearch}
-            banks={INDIAN_BANKS}
-            customBankName={customBankName}
-            setCustomBankName={setCustomBankName}
-          />
-        )}
-
-        <Button
-          className="w-full h-14 rounded-[12px]"
-          onClick={handleAddSource}
-        >
-          Add Payment Source
-        </Button>
-
-        <Button
-          className="w-full h-14 rounded-[12px]"
-          onClick={handleComplete}
-          disabled={paymentSources.length === 0}
-        >
-          Complete
-        </Button>
-
-        <p className="text-xs text-muted-foreground text-center">
-          After adding payment sources, click 'Complete' to proceed
-        </p>
+        <PaymentSourceButtons
+          onAddSource={handleAddSource}
+          onComplete={handleComplete}
+        />
       </div>
     </div>
   );
