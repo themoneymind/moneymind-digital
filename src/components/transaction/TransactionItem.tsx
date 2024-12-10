@@ -63,7 +63,7 @@ export const TransactionItem = ({
             </p>
           </div>
         </div>
-        <div className="flex items-center justify-end gap-4 ml-auto">
+        <div className="flex items-center gap-6 ml-4">
           <span
             className={`text-sm font-medium whitespace-nowrap ${
               transaction.type === "expense" ? "text-red-500" : "text-green-500"

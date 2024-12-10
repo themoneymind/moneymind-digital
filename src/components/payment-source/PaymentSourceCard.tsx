@@ -99,7 +99,7 @@ export const PaymentSourceCard = ({ source }: PaymentSourceCardProps) => {
             )}
           </div>
         </div>
-        <div className="flex items-center gap-4 ml-auto">
+        <div className="flex items-center gap-6 ml-4">
           <span className="text-sm font-medium text-gray-900 whitespace-nowrap">
             {formatCurrency(source.amount)}
           </span>
