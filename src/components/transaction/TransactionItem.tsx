@@ -1,6 +1,7 @@
 import { format } from "date-fns";
 import { MoreVertical, Pencil, Trash } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -34,8 +35,8 @@ export const TransactionItem = ({
   const IconComponent = getCategoryIcon(transaction.category);
 
   return (
-    <div className="group bg-white rounded-[16px] border border-gray-100 hover:border-gray-200 transition-colors">
-      <div className="flex items-center justify-between py-3 px-4">
+    <>
+      <div className="flex items-center justify-between py-4 px-4 hover:bg-gray-50 transition-colors group">
         <div className="flex items-center gap-3 flex-1 min-w-0">
           <div
             className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
@@ -100,6 +101,7 @@ export const TransactionItem = ({
           </DropdownMenu>
         </div>
       </div>
-    </div>
+      <Separator className="last:hidden" />
+    </>
   );
 };
