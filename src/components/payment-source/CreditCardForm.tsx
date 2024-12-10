@@ -29,14 +29,12 @@ export const CreditCardForm = ({
         setShowBankSearch={setShowBankSearch}
         banks={banks}
       />
-      {!selectedBank && (
-        <Input
-          placeholder="Enter your credit card name"
-          value={customBankName}
-          onChange={(e) => setCustomBankName(e.target.value)}
-          className="h-14 rounded-[12px] bg-white"
-        />
-      )}
+      <Input
+        placeholder="Enter your credit card name"
+        value={customBankName}
+        onChange={(e) => setCustomBankName(e.target.value)}
+        className="h-14 rounded-[12px] bg-white"
+      />
     </div>
   );
 };

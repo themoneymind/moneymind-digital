@@ -4,7 +4,6 @@ import { useNavigate } from "react-router-dom";
 import { Input } from "@/components/ui/input";
 import { useFinance } from "@/contexts/FinanceContext";
 import { useToast } from "@/hooks/use-toast";
-import { PaymentSourceNote } from "@/components/payment-source/PaymentSourceNote";
 import { PaymentSourceTypeSelector } from "@/components/payment-source/PaymentSourceTypeSelector";
 import { UpiAppsSelector } from "@/components/payment-source/UpiAppsSelector";
 import { BankSelectionDialog } from "@/components/payment-source/BankSelectionDialog";
@@ -33,6 +32,13 @@ export const PaymentSource = () => {
   const [customUpi, setCustomUpi] = useState("");
   const [selectedUpiApps, setSelectedUpiApps] = useState<string[]>([]);
   const [showBankSearch, setShowBankSearch] = useState(false);
+
+  const handleTypeChange = (type: "bank" | "credit") => {
+    setSelectedType(type);
+    // Reset selections when switching types
+    setSelectedBank("");
+    setCustomBankName("");
+  };
 
   const handleBankSelect = (bank: string) => {
     setSelectedBank(bank);
@@ -105,13 +111,13 @@ export const PaymentSource = () => {
         <div className="space-y-2">
           <h1 className="text-2xl font-semibold">Add Payment Source</h1>
           <p className="text-sm text-muted-foreground">
-            Add all your bank accounts, UPI, and credit cards (these are reference sources to manage your expenses, not linked to actual bank accounts)
+            Add all your bank accounts, UPIs, and credit cards (these are reference sources to manage your expenses, not linked to actual bank accounts)
           </p>
         </div>
 
         <PaymentSourceTypeSelector
           selectedType={selectedType}
-          onTypeChange={setSelectedType}
+          onTypeChange={handleTypeChange}
         />
 
         {selectedType === "bank" && (
@@ -167,8 +173,6 @@ export const PaymentSource = () => {
         <p className="text-xs text-muted-foreground text-center">
           After adding payment sources, click 'Complete' to proceed
         </p>
-
-        <PaymentSourceNote />
 
         <div className="fixed bottom-0 left-0 right-0 p-6 bg-white border-t">
           <Button
