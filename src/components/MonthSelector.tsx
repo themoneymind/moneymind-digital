@@ -6,13 +6,11 @@ export const MonthSelector = () => {
   const { currentMonth, setCurrentMonth } = useFinance();
 
   const handlePrevMonth = () => {
-    const newDate = subMonths(currentMonth, 1);
-    setCurrentMonth(newDate);
+    setCurrentMonth(subMonths(currentMonth, 1));
   };
 
   const handleNextMonth = () => {
-    const newDate = addMonths(currentMonth, 1);
-    setCurrentMonth(newDate);
+    setCurrentMonth(addMonths(currentMonth, 1));
   };
 
   return (
