@@ -70,10 +70,12 @@ export const SignUpForm = () => {
       if (error) {
         console.error("Signup error:", error);
         
-        if (error.status === 429) {
+        // Check for rate limit error in both status and error body
+        const errorBody = error.message && JSON.parse(error.message);
+        if (error.status === 429 || (errorBody && errorBody.code === "over_email_send_rate_limit")) {
           toast({
-            title: "Too Many Attempts",
-            description: "Please wait a few minutes before trying again",
+            title: "Email Rate Limit Exceeded",
+            description: "Too many signup attempts. Please wait a few minutes before trying again.",
             variant: "destructive",
           });
           return;
