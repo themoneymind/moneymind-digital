@@ -24,7 +24,11 @@ export const MonthSelector = () => {
       }
     };
 
-    const interval = setInterval(checkMonthChange, 60000); // Check every minute
+    // Initial check
+    checkMonthChange();
+
+    // Set up interval to check every minute
+    const interval = setInterval(checkMonthChange, 60000);
     return () => clearInterval(interval);
   }, [currentMonth, setCurrentMonth]);
 
