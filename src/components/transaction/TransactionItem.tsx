@@ -26,15 +26,15 @@ export const TransactionItem = ({
   return (
     <div className="flex items-center justify-between p-4 hover:bg-gray-50 transition-colors rounded-xl border border-gray-100">
       <div className="flex items-center gap-3">
-        <div className={`w-7 h-7 rounded-full flex items-center justify-center ${
+        <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
           transaction.type === "expense" 
             ? "bg-red-50" 
             : "bg-green-50"
         }`}>
           {transaction.type === "expense" ? (
-            <ArrowUpRight className="w-3.5 h-3.5 text-red-500" />
+            <ArrowUpRight className="w-5 h-5 text-red-500" />
           ) : (
-            <ArrowDownLeft className="w-3.5 h-3.5 text-green-500" />
+            <ArrowDownLeft className="w-5 h-5 text-green-500" />
           )}
         </div>
         <div className="flex flex-col">
@@ -44,11 +44,6 @@ export const TransactionItem = ({
           <span className="text-xs text-gray-500">
             {format(new Date(transaction.date), "MMM d, yyyy")}
           </span>
-          {transaction.description && (
-            <span className="text-xs text-gray-500 mt-0.5">
-              {transaction.description}
-            </span>
-          )}
         </div>
       </div>
       <div className="flex items-center gap-3">
@@ -61,19 +56,16 @@ export const TransactionItem = ({
           {formatCurrency(Number(transaction.amount))}
         </span>
         <DropdownMenu>
-          <DropdownMenuTrigger className="h-8 w-8 flex items-center justify-center rounded-full hover:bg-gray-100">
-            <MoreHorizontal className="w-4 h-4 text-gray-400" />
+          <DropdownMenuTrigger className="focus:outline-none">
+            <MoreHorizontal className="w-4 h-4 text-gray-500" />
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-36 bg-white border border-gray-200 shadow-lg rounded-[12px] p-1">
-            <DropdownMenuItem 
-              onClick={() => onEdit(transaction)}
-              className="gap-2 text-sm cursor-pointer hover:bg-gray-50 rounded-[8px]"
-            >
+          <DropdownMenuContent align="end" className="w-36">
+            <DropdownMenuItem onClick={() => onEdit(transaction)}>
               Edit
             </DropdownMenuItem>
             <DropdownMenuItem 
               onClick={() => onDelete(transaction.id)}
-              className="gap-2 text-sm text-red-500 cursor-pointer hover:bg-gray-50 rounded-[8px]"
+              className="text-red-600"
             >
               Delete
             </DropdownMenuItem>
