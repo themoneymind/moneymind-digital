@@ -24,18 +24,13 @@ export const TransactionFilters = ({
   currentMonth,
   setCurrentMonth,
 }: TransactionFiltersProps) => {
-  const { paymentSources, transactions, setTransactions } = useFinance();
+  const { paymentSources } = useFinance();
 
   const handleDateSelect = (date: Date | undefined) => {
     if (date) {
       setCurrentMonth(date);
       setFilter("date");
     }
-  };
-
-  const handleSourceSelect = (sourceId: string) => {
-    const filteredTransactions = transactions.filter(t => t.source === sourceId);
-    setTransactions(filteredTransactions);
   };
 
   const getSourcesByType = () => {
@@ -120,7 +115,7 @@ export const TransactionFilters = ({
                 <DropdownMenuItem
                   key={source.id}
                   className="flex items-center justify-between px-3 py-2 text-sm cursor-pointer hover:bg-gray-50 rounded-[8px]"
-                  onClick={() => handleSourceSelect(source.id)}
+                  onClick={() => setFilter("all")}
                 >
                   <span>{source.name}</span>
                 </DropdownMenuItem>
