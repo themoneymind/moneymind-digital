@@ -1,8 +1,14 @@
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
-import { format } from "date-fns";
-import { Calendar as CalendarIcon } from "lucide-react";
+import { IndianRupee, Calendar as CalendarIcon } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { useFinance } from "@/contexts/FinanceContext";
 
 type TransactionFiltersProps = {
   filter: "all" | "income" | "expense" | "date";
@@ -17,6 +23,8 @@ export const TransactionFilters = ({
   currentMonth,
   setCurrentMonth,
 }: TransactionFiltersProps) => {
+  const { paymentSources } = useFinance();
+
   const handleDateSelect = (date: Date | undefined) => {
     if (date) {
       setCurrentMonth(date);
@@ -73,6 +81,33 @@ export const TransactionFilters = ({
           />
         </PopoverContent>
       </Popover>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button
+            className="rounded-full w-9 h-9 p-0 bg-gray-100 text-gray-600 hover:bg-gray-200"
+            variant="outline"
+          >
+            <IndianRupee className="h-4 w-4" />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end" className="w-56 bg-white border border-gray-200 shadow-lg rounded-[12px] p-1">
+          {paymentSources.map((source) => (
+            <DropdownMenuItem
+              key={source.id}
+              className="flex items-center justify-between px-3 py-2 text-sm cursor-pointer hover:bg-gray-50 rounded-[8px]"
+            >
+              <span>{source.name}</span>
+              <span className="text-gray-500">
+                {new Intl.NumberFormat("en-IN", {
+                  style: "currency",
+                  currency: "INR",
+                  maximumFractionDigits: 0,
+                }).format(source.amount)}
+              </span>
+            </DropdownMenuItem>
+          ))}
+        </DropdownMenuContent>
+      </DropdownMenu>
     </div>
   );
 };
