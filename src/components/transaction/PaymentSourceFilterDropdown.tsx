@@ -17,17 +17,6 @@ export const PaymentSourceFilterDropdown = ({
 }: PaymentSourceFilterDropdownProps) => {
   const { paymentSources } = useFinance();
 
-  const getSourcesByType = () => {
-    const sourceTypes = {
-      bank: paymentSources.filter(source => source.type === 'bank'),
-      upi: paymentSources.filter(source => source.type === 'upi'),
-      credit_card: paymentSources.filter(source => source.type === 'credit_card'),
-    };
-    return sourceTypes;
-  };
-
-  const sourceTypes = getSourcesByType();
-
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -45,21 +34,14 @@ export const PaymentSourceFilterDropdown = ({
         >
           All Sources
         </DropdownMenuItem>
-        {Object.entries(sourceTypes).map(([type, sources]) => (
-          <div key={type}>
-            <div className="px-3 py-1 text-xs text-gray-500 capitalize">
-              {type.replace('_', ' ')}
-            </div>
-            {sources.map((source) => (
-              <DropdownMenuItem
-                key={source.id}
-                className="flex items-center justify-between px-3 py-2 text-sm cursor-pointer hover:bg-gray-50 rounded-[8px]"
-                onClick={() => onSourceSelect(source.id)}
-              >
-                <span>{source.name}</span>
-              </DropdownMenuItem>
-            ))}
-          </div>
+        {paymentSources.map((source) => (
+          <DropdownMenuItem
+            key={source.id}
+            className="flex items-center justify-between px-3 py-2 text-sm cursor-pointer hover:bg-gray-50 rounded-[8px]"
+            onClick={() => onSourceSelect(source.id)}
+          >
+            <span>{source.name}</span>
+          </DropdownMenuItem>
         ))}
       </DropdownMenuContent>
     </DropdownMenu>
