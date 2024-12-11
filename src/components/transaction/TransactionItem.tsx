@@ -1,5 +1,5 @@
 import { Transaction } from "@/types/transactions";
-import { MoreHorizontal, ArrowUpRight, ArrowDownLeft, ShoppingBag, Utensils, Bus, Briefcase, Wallet, CreditCard, Building2, DollarSign } from "lucide-react";
+import { MoreHorizontal, ArrowUpRight, ArrowDownLeft, IndianRupee } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -7,6 +7,15 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { format } from "date-fns";
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { useState } from "react";
+import { useFinance } from "@/contexts/FinanceContext";
 
 type TransactionItemProps = {
   transaction: Transaction;
@@ -16,22 +25,6 @@ type TransactionItemProps = {
   toSentenceCase: (str: string) => string;
 };
 
-const getCategoryIcon = (category: string) => {
-  const categoryMap: { [key: string]: any } = {
-    shopping: ShoppingBag,
-    food: Utensils,
-    transport: Bus,
-    salary: Briefcase,
-    freelance: Wallet,
-    credit: CreditCard,
-    bank: Building2,
-    upi: DollarSign,
-  };
-
-  const Icon = categoryMap[category.toLowerCase()] || Wallet;
-  return Icon;
-};
-
 export const TransactionItem = ({
   transaction,
   onEdit,
@@ -39,57 +32,98 @@ export const TransactionItem = ({
   formatCurrency,
   toSentenceCase,
 }: TransactionItemProps) => {
-  const Icon = getCategoryIcon(transaction.category);
+  const [showSourceDialog, setShowSourceDialog] = useState(false);
+  const { paymentSources } = useFinance();
+  
+  const source = paymentSources.find(s => s.id === transaction.source);
 
   return (
-    <div className="flex items-center justify-between p-4 hover:bg-gray-50 transition-colors rounded-xl border border-gray-100">
-      <div className="flex items-center gap-3">
-        <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
-          transaction.type === "expense" 
-            ? "bg-red-50" 
-            : "bg-green-50"
-        }`}>
-          <Icon className={`w-5 h-5 ${
+    <>
+      <div className="flex items-center justify-between p-4 hover:bg-gray-50 transition-colors rounded-xl border border-gray-100">
+        <div className="flex items-center gap-3">
+          <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
             transaction.type === "expense" 
-              ? "text-red-500" 
-              : "text-green-500"
-          }`} />
+              ? "bg-red-50" 
+              : "bg-green-50"
+          }`}>
+            {transaction.type === "expense" ? (
+              <ArrowUpRight className="w-5 h-5 text-red-500" />
+            ) : (
+              <ArrowDownLeft className="w-5 h-5 text-green-500" />
+            )}
+          </div>
+          <div className="flex flex-col">
+            <span className="text-sm font-medium text-gray-900">
+              {toSentenceCase(transaction.category)}
+            </span>
+            <span className="text-xs text-gray-500">
+              {format(new Date(transaction.date), "MMM d, yyyy")}
+            </span>
+            {transaction.description && (
+              <span className="text-xs text-gray-600 mt-0.5">
+                {transaction.description}
+              </span>
+            )}
+          </div>
         </div>
-        <div className="flex flex-col">
-          <span className="text-sm font-medium text-gray-900">
-            {toSentenceCase(transaction.category)}
+        <div className="flex items-center gap-3">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-8 w-8 rounded-full hover:bg-gray-100"
+            onClick={() => setShowSourceDialog(true)}
+          >
+            <IndianRupee className="w-4 h-4 text-gray-500" />
+          </Button>
+          <span
+            className={`text-sm font-medium ${
+              transaction.type === "expense" ? "text-red-600" : "text-green-600"
+            }`}
+          >
+            {transaction.type === "expense" ? "-" : "+"}
+            {formatCurrency(Number(transaction.amount))}
           </span>
-          <span className="text-xs text-gray-500">
-            {format(new Date(transaction.date), "MMM d, yyyy")}
-          </span>
+          <DropdownMenu>
+            <DropdownMenuTrigger>
+              <MoreHorizontal className="w-4 h-4 text-gray-500" />
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-36">
+              <DropdownMenuItem onClick={() => onEdit(transaction)}>
+                Edit
+              </DropdownMenuItem>
+              <DropdownMenuItem 
+                onClick={() => onDelete(transaction.id)}
+                className="text-red-600"
+              >
+                Delete
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </div>
-      <div className="flex items-center gap-3">
-        <span
-          className={`text-sm font-medium ${
-            transaction.type === "expense" ? "text-red-600" : "text-green-600"
-          }`}
-        >
-          {transaction.type === "expense" ? "-" : "+"}
-          {formatCurrency(Number(transaction.amount))}
-        </span>
-        <DropdownMenu>
-          <DropdownMenuTrigger className="focus:outline-none">
-            <MoreHorizontal className="w-4 h-4 text-gray-500" />
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-36">
-            <DropdownMenuItem onClick={() => onEdit(transaction)}>
-              Edit
-            </DropdownMenuItem>
-            <DropdownMenuItem 
-              onClick={() => onDelete(transaction.id)}
-              className="text-red-600"
-            >
-              Delete
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </div>
-    </div>
+
+      <Dialog open={showSourceDialog} onOpenChange={setShowSourceDialog}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Payment Source Details</DialogTitle>
+          </DialogHeader>
+          <div className="py-4">
+            {source ? (
+              <div className="space-y-2">
+                <p className="text-sm font-medium text-gray-900">{source.name}</p>
+                <p className="text-sm text-gray-500">{source.type}</p>
+                {source.linked && source.upi_apps && source.upi_apps.length > 0 && (
+                  <div className="text-sm text-gray-500">
+                    UPI Apps: {source.upi_apps.join(", ")}
+                  </div>
+                )}
+              </div>
+            ) : (
+              <p className="text-sm text-gray-500">Source details not found</p>
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 };
