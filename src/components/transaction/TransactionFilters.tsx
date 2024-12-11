@@ -9,6 +9,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useFinance } from "@/contexts/FinanceContext";
+import { Separator } from "@/components/ui/separator";
 
 type TransactionFiltersProps = {
   filter: "all" | "income" | "expense" | "date";
@@ -23,13 +24,26 @@ export const TransactionFilters = ({
   currentMonth,
   setCurrentMonth,
 }: TransactionFiltersProps) => {
-  const { paymentSources } = useFinance();
+  const { paymentSources, transactions } = useFinance();
 
   const handleDateSelect = (date: Date | undefined) => {
     if (date) {
       setCurrentMonth(date);
       setFilter("date");
     }
+  };
+
+  const calculateTotalsByType = (type: string) => {
+    return transactions
+      .filter(t => t.type === type)
+      .reduce((acc, t) => acc + Number(t.amount), 0);
+  };
+
+  const totalIncome = calculateTotalsByType("income");
+  const totalExpense = calculateTotalsByType("expense");
+
+  const getSourcesByType = (type: string) => {
+    return paymentSources.filter(source => source.type === type);
   };
 
   return (
@@ -90,22 +104,80 @@ export const TransactionFilters = ({
             <IndianRupee className="h-4 w-4" />
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="w-56 bg-white border border-gray-200 shadow-lg rounded-[12px] p-1">
-          {paymentSources.map((source) => (
-            <DropdownMenuItem
-              key={source.id}
-              className="flex items-center justify-between px-3 py-2 text-sm cursor-pointer hover:bg-gray-50 rounded-[8px]"
-            >
-              <span>{source.name}</span>
-              <span className="text-gray-500">
-                {new Intl.NumberFormat("en-IN", {
-                  style: "currency",
-                  currency: "INR",
-                  maximumFractionDigits: 0,
-                }).format(source.amount)}
-              </span>
-            </DropdownMenuItem>
-          ))}
+        <DropdownMenuContent align="end" className="w-64 bg-white border border-gray-200 shadow-lg rounded-[12px] p-2">
+          <div className="flex justify-between mb-2 px-2">
+            <div className="text-sm text-green-600">
+              Income: {new Intl.NumberFormat("en-IN", {
+                style: "currency",
+                currency: "INR",
+                maximumFractionDigits: 0,
+              }).format(totalIncome)}
+            </div>
+            <div className="text-sm text-red-600">
+              Expense: {new Intl.NumberFormat("en-IN", {
+                style: "currency",
+                currency: "INR",
+                maximumFractionDigits: 0,
+              }).format(totalExpense)}
+            </div>
+          </div>
+          <Separator className="my-2" />
+          <div className="space-y-2">
+            <div className="px-2 py-1">
+              <h3 className="text-sm font-medium text-gray-900">Bank Accounts</h3>
+              {getSourcesByType("bank").map((source) => (
+                <DropdownMenuItem
+                  key={source.id}
+                  className="flex items-center justify-between px-2 py-1 text-sm cursor-pointer hover:bg-gray-50 rounded-[8px]"
+                >
+                  <span>{source.name}</span>
+                  <span className="text-gray-500">
+                    {new Intl.NumberFormat("en-IN", {
+                      style: "currency",
+                      currency: "INR",
+                      maximumFractionDigits: 0,
+                    }).format(source.amount)}
+                  </span>
+                </DropdownMenuItem>
+              ))}
+            </div>
+            <div className="px-2 py-1">
+              <h3 className="text-sm font-medium text-gray-900">Credit Cards</h3>
+              {getSourcesByType("credit").map((source) => (
+                <DropdownMenuItem
+                  key={source.id}
+                  className="flex items-center justify-between px-2 py-1 text-sm cursor-pointer hover:bg-gray-50 rounded-[8px]"
+                >
+                  <span>{source.name}</span>
+                  <span className="text-gray-500">
+                    {new Intl.NumberFormat("en-IN", {
+                      style: "currency",
+                      currency: "INR",
+                      maximumFractionDigits: 0,
+                    }).format(source.amount)}
+                  </span>
+                </DropdownMenuItem>
+              ))}
+            </div>
+            <div className="px-2 py-1">
+              <h3 className="text-sm font-medium text-gray-900">UPI</h3>
+              {getSourcesByType("upi").map((source) => (
+                <DropdownMenuItem
+                  key={source.id}
+                  className="flex items-center justify-between px-2 py-1 text-sm cursor-pointer hover:bg-gray-50 rounded-[8px]"
+                >
+                  <span>{source.name}</span>
+                  <span className="text-gray-500">
+                    {new Intl.NumberFormat("en-IN", {
+                      style: "currency",
+                      currency: "INR",
+                      maximumFractionDigits: 0,
+                    }).format(source.amount)}
+                  </span>
+                </DropdownMenuItem>
+              ))}
+            </div>
+          </div>
         </DropdownMenuContent>
       </DropdownMenu>
     </div>
