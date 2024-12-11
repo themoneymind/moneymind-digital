@@ -1,36 +1,34 @@
+import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { TransactionAmountOperations } from "./TransactionAmountOperations";
+import { Transaction } from "@/types/finance";
+import { useFinance } from "@/contexts/FinanceContext";
 
 interface TransactionEditDialogFormProps {
-  currentAmount: number;
-  operation: "add" | "subtract";
-  setOperation: (op: "add" | "subtract") => void;
-  amount: string;
-  setAmount: (amount: string) => void;
-  selectedSource: string;
-  setSelectedSource: (source: string) => void;
-  description: string;
-  setDescription: (description: string) => void;
-  formattedSources: { id: string; name: string }[];
+  transaction: Transaction;
+  onClose: () => void;
 }
 
 export const TransactionEditDialogForm = ({
-  currentAmount,
-  operation,
-  setOperation,
-  amount,
-  setAmount,
-  selectedSource,
-  setSelectedSource,
-  description,
-  setDescription,
-  formattedSources,
+  transaction,
+  onClose
 }: TransactionEditDialogFormProps) => {
+  const { paymentSources } = useFinance();
+  const [operation, setOperation] = useState<"add" | "subtract">("add");
+  const [amount, setAmount] = useState(transaction.amount.toString());
+  const [selectedSource, setSelectedSource] = useState(transaction.source);
+  const [description, setDescription] = useState(transaction.description || "");
+
+  const formattedSources = paymentSources.map(source => ({
+    id: source.id,
+    name: source.name
+  }));
+
   return (
     <div className="space-y-6">
       <TransactionAmountOperations
-        currentAmount={currentAmount}
+        currentAmount={transaction.amount}
         operation={operation}
         setOperation={setOperation}
         amount={amount}

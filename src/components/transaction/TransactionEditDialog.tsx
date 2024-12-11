@@ -15,7 +15,6 @@ export const TransactionEditDialog = ({
   transaction,
 }: TransactionEditDialogProps) => {
   const handleOpenChange = useCallback((open: boolean) => {
-    // Add a small delay before closing to ensure state updates are processed
     if (!open) {
       setTimeout(() => {
         onOpenChange(open);
@@ -25,10 +24,17 @@ export const TransactionEditDialog = ({
     }
   }, [onOpenChange]);
 
+  const handleClose = useCallback(() => {
+    handleOpenChange(false);
+  }, [handleOpenChange]);
+
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent className="sm:max-w-[425px] p-0 gap-0 bg-white rounded-[20px]">
-        <TransactionEditDialogForm transaction={transaction} onClose={() => handleOpenChange(false)} />
+        <TransactionEditDialogForm 
+          transaction={transaction} 
+          onClose={handleClose}
+        />
       </DialogContent>
     </Dialog>
   );
