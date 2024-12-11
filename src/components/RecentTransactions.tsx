@@ -1,10 +1,10 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { useFinance } from "@/contexts/FinanceContext";
 import { TransactionEditDialog } from "./transaction/TransactionEditDialog";
 import { TransactionSearch } from "./transaction/TransactionSearch";
 import { TransactionFilters } from "./transaction/TransactionFilters";
 import { TransactionList } from "./transaction/TransactionList";
-import { startOfDay, endOfDay, isWithinInterval } from "date-fns";
+import { startOfMonth, endOfMonth, isWithinInterval } from "date-fns";
 import { Loader2 } from "lucide-react";
 
 export const RecentTransactions = () => {
@@ -26,20 +26,24 @@ export const RecentTransactions = () => {
     const matchesSource = selectedSourceId ? transaction.source === selectedSourceId : true;
     
     // Date filter
-    let matchesDate = true;
-    if (currentMonth) {
-      const transactionDate = new Date(transaction.date);
-      const monthStart = startOfDay(currentMonth);
-      const monthEnd = endOfDay(currentMonth);
-      
-      matchesDate = isWithinInterval(transactionDate, {
-        start: monthStart,
-        end: monthEnd
-      });
-    }
+    const transactionDate = new Date(transaction.date);
+    const monthStart = startOfMonth(currentMonth);
+    const monthEnd = endOfMonth(currentMonth);
+    
+    const matchesDate = isWithinInterval(transactionDate, {
+      start: monthStart,
+      end: monthEnd
+    });
 
     return matchesFilter && matchesSearch && matchesSource && matchesDate;
   });
+
+  // Reset filters when month changes
+  useEffect(() => {
+    setSearchQuery("");
+    setSelectedSourceId(null);
+    setFilter("all");
+  }, [currentMonth]);
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat("en-IN", {
