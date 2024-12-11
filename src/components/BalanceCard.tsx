@@ -34,8 +34,11 @@ export const BalanceCard = () => {
     return curr.type === "expense" ? acc + Number(curr.amount) : acc;
   }, 0);
 
-  // Calculate total balance from payment sources
-  const totalBalance = paymentSources.reduce((acc, curr) => acc + Number(curr.amount), 0);
+  // Calculate total income from payment sources
+  const totalIncome = paymentSources.reduce((acc, curr) => acc + Number(curr.amount), 0);
+
+  // Calculate total balance as Income - Expense
+  const totalBalance = totalIncome - monthlyExpense;
 
   // Calculate last month's balance
   const lastMonthIncome = lastMonthTransactions.reduce((acc, curr) => {
@@ -69,7 +72,7 @@ export const BalanceCard = () => {
           </div>
           <div>
             <p className="text-sm opacity-90">Income</p>
-            <p className="text-lg font-semibold">{formatCurrency(totalBalance)}</p>
+            <p className="text-lg font-semibold">{formatCurrency(totalIncome)}</p>
           </div>
         </div>
         <div className="w-px h-12 bg-white/20" />
