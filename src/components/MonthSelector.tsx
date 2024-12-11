@@ -7,11 +7,15 @@ export const MonthSelector = () => {
   const { currentMonth, setCurrentMonth } = useFinance();
 
   const handlePrevMonth = () => {
-    setCurrentMonth(subMonths(currentMonth, 1));
+    const prevMonth = subMonths(currentMonth, 1);
+    prevMonth.setHours(0, 0, 0, 0);
+    setCurrentMonth(prevMonth);
   };
 
   const handleNextMonth = () => {
-    setCurrentMonth(addMonths(currentMonth, 1));
+    const nextMonth = addMonths(currentMonth, 1);
+    nextMonth.setHours(0, 0, 0, 0);
+    setCurrentMonth(nextMonth);
   };
 
   // Check for month change every minute
