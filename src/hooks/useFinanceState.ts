@@ -3,7 +3,10 @@ import { Transaction } from "@/types/transactions";
 import { PaymentSource } from "@/types/finance";
 
 export const useFinanceState = () => {
-  const [currentMonth, setCurrentMonth] = useState(new Date());
+  const initialDate = new Date();
+  initialDate.setHours(0, 0, 0, 0);
+  
+  const [currentMonth, setCurrentMonth] = useState(initialDate);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [paymentSources, setPaymentSources] = useState<PaymentSource[]>([]);
   const [isLoading, setIsLoading] = useState(false);
