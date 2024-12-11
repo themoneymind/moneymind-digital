@@ -32,6 +32,17 @@ export const TransactionFilters = ({
     }
   };
 
+  const getSourcesByType = () => {
+    const sourceTypes = {
+      bank: paymentSources.filter(source => source.type === 'bank'),
+      upi: paymentSources.filter(source => source.type === 'upi'),
+      credit_card: paymentSources.filter(source => source.type === 'credit_card'),
+    };
+    return sourceTypes;
+  };
+
+  const sourceTypes = getSourcesByType();
+
   return (
     <div className="flex gap-2 mb-4 flex-nowrap overflow-visible">
       <Button
@@ -91,20 +102,24 @@ export const TransactionFilters = ({
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-56 bg-white border border-gray-200 shadow-lg rounded-[12px] p-1">
-          {paymentSources.map((source) => (
-            <DropdownMenuItem
-              key={source.id}
-              className="flex items-center justify-between px-3 py-2 text-sm cursor-pointer hover:bg-gray-50 rounded-[8px]"
-            >
-              <span>{source.name}</span>
-              <span className="text-gray-500">
-                {new Intl.NumberFormat("en-IN", {
-                  style: "currency",
-                  currency: "INR",
-                  maximumFractionDigits: 0,
-                }).format(source.amount)}
-              </span>
-            </DropdownMenuItem>
+          <DropdownMenuItem className="px-3 py-2 text-sm font-medium text-gray-900">
+            Payment Sources
+          </DropdownMenuItem>
+          {Object.entries(sourceTypes).map(([type, sources]) => (
+            <div key={type}>
+              <div className="px-3 py-1 text-xs text-gray-500 capitalize">
+                {type.replace('_', ' ')}
+              </div>
+              {sources.map((source) => (
+                <DropdownMenuItem
+                  key={source.id}
+                  className="flex items-center justify-between px-3 py-2 text-sm cursor-pointer hover:bg-gray-50 rounded-[8px]"
+                  onClick={() => console.log('Selected source:', source.id)}
+                >
+                  <span>{source.name}</span>
+                </DropdownMenuItem>
+              ))}
+            </div>
           ))}
         </DropdownMenuContent>
       </DropdownMenu>

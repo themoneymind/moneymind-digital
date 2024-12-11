@@ -1,4 +1,4 @@
-import { MoreVertical, Pencil, Trash } from "lucide-react";
+import { MoreHorizontal, Pencil, Trash } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -39,7 +39,7 @@ export const PaymentSourceActions = ({
           size="icon"
           className="h-8 w-8 rounded-full hover:bg-gray-100"
         >
-          <MoreVertical className="w-4 h-4 text-gray-500" />
+          <MoreHorizontal className="w-4 h-4 text-gray-500" />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-36 bg-white border border-gray-200 shadow-lg rounded-[12px] p-1">

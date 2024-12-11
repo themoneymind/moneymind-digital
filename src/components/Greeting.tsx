@@ -16,7 +16,7 @@ export const Greeting = () => {
   }, []);
 
   const getGreeting = () => {
-    const greetings = ["Hi", "Hello", "Welcome back"];
+    const greetings = ["Hi", "Hello"];
     return greetings[Math.floor(Math.random() * greetings.length)];
   };
 
