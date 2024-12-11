@@ -10,7 +10,10 @@ export const useFinanceState = () => {
 
   const handleSetCurrentMonth = useCallback((date: Date) => {
     console.log("Setting new month:", date);
-    setCurrentMonth(new Date(date));
+    // Ensure we're working with a new Date object and set time to start of day
+    const newDate = new Date(date);
+    newDate.setHours(0, 0, 0, 0);
+    setCurrentMonth(newDate);
   }, []);
 
   return {

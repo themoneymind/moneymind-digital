@@ -7,16 +7,20 @@ export const MonthSelector = () => {
   const { currentMonth, setCurrentMonth } = useFinance();
 
   const handlePrevMonth = () => {
-    console.log("Previous month clicked, current:", currentMonth);
     const newDate = subMonths(currentMonth, 1);
-    console.log("New date will be:", newDate);
+    console.log("Previous month clicked:", { 
+      current: format(currentMonth, 'yyyy-MM-dd'),
+      new: format(newDate, 'yyyy-MM-dd')
+    });
     setCurrentMonth(newDate);
   };
 
   const handleNextMonth = () => {
-    console.log("Next month clicked, current:", currentMonth);
     const newDate = addMonths(currentMonth, 1);
-    console.log("New date will be:", newDate);
+    console.log("Next month clicked:", {
+      current: format(currentMonth, 'yyyy-MM-dd'),
+      new: format(newDate, 'yyyy-MM-dd')
+    });
     setCurrentMonth(newDate);
   };
 
@@ -24,9 +28,16 @@ export const MonthSelector = () => {
   useEffect(() => {
     const checkMonthChange = () => {
       const now = new Date();
-      if (now.getMonth() !== currentMonth.getMonth() || 
-          now.getFullYear() !== currentMonth.getFullYear()) {
-        console.log("Month changed automatically", { now, currentMonth });
+      now.setHours(0, 0, 0, 0); // Set to start of day for comparison
+      const currentDate = new Date(currentMonth);
+      currentDate.setHours(0, 0, 0, 0);
+
+      if (now.getMonth() !== currentDate.getMonth() || 
+          now.getFullYear() !== currentDate.getFullYear()) {
+        console.log("Month changed automatically", {
+          now: format(now, 'yyyy-MM-dd'),
+          current: format(currentDate, 'yyyy-MM-dd')
+        });
         setCurrentMonth(now);
       }
     };
