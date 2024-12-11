@@ -19,7 +19,13 @@ export const TransactionFilters = ({
 }: TransactionFiltersProps) => {
   const handleDateSelect = (date: Date | undefined) => {
     if (date) {
-      setCurrentMonth(date);
+      const newDate = new Date(date);
+      newDate.setHours(0, 0, 0, 0);
+      console.log("Date filter selected:", {
+        date: newDate.toISOString(),
+        filter: "date"
+      });
+      setCurrentMonth(newDate);
       setFilter("date");
     }
   };

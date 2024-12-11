@@ -7,7 +7,7 @@ export const MonthSelector = () => {
   const { currentMonth, setCurrentMonth } = useFinance();
 
   const handlePrevMonth = () => {
-    const newDate = subMonths(currentMonth, 1);
+    const newDate = subMonths(new Date(currentMonth), 1);
     console.log("Previous month clicked:", { 
       current: format(currentMonth, 'yyyy-MM-dd'),
       new: format(newDate, 'yyyy-MM-dd')
@@ -16,7 +16,7 @@ export const MonthSelector = () => {
   };
 
   const handleNextMonth = () => {
-    const newDate = addMonths(currentMonth, 1);
+    const newDate = addMonths(new Date(currentMonth), 1);
     console.log("Next month clicked:", {
       current: format(currentMonth, 'yyyy-MM-dd'),
       new: format(newDate, 'yyyy-MM-dd')
@@ -60,7 +60,7 @@ export const MonthSelector = () => {
         <ChevronLeft className="w-4 h-4 text-gray-600" />
       </button>
       <span className="text-sm font-medium text-gray-900">
-        {format(currentMonth, "MMMM yyyy")}
+        {format(new Date(currentMonth), "MMMM yyyy")}
       </span>
       <button 
         className="p-2 hover:bg-gray-50 rounded-full transition-colors" 
