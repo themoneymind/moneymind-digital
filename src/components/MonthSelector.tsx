@@ -1,31 +1,26 @@
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useFinance } from "@/contexts/FinanceContext";
-import { format, addMonths, subMonths } from "date-fns";
+import { format, addMonths, subMonths, startOfMonth } from "date-fns";
 import { useEffect } from "react";
 
 export const MonthSelector = () => {
   const { currentMonth, setCurrentMonth } = useFinance();
 
   const handlePrevMonth = () => {
-    const prevMonth = subMonths(currentMonth, 1);
-    prevMonth.setHours(0, 0, 0, 0);
+    const prevMonth = startOfMonth(subMonths(currentMonth, 1));
     setCurrentMonth(prevMonth);
   };
 
   const handleNextMonth = () => {
-    const nextMonth = addMonths(currentMonth, 1);
-    nextMonth.setHours(0, 0, 0, 0);
+    const nextMonth = startOfMonth(addMonths(currentMonth, 1));
     setCurrentMonth(nextMonth);
   };
 
   // Check for month change every minute
   useEffect(() => {
     const checkMonthChange = () => {
-      const now = new Date();
-      now.setHours(0, 0, 0, 0);
-      
-      if (now.getMonth() !== currentMonth.getMonth() || 
-          now.getFullYear() !== currentMonth.getFullYear()) {
+      const now = startOfMonth(new Date());
+      if (now.getTime() !== startOfMonth(currentMonth).getTime()) {
         setCurrentMonth(now);
       }
     };
