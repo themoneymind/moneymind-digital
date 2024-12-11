@@ -26,8 +26,8 @@ export const BalanceCard = () => {
     return curr.type === "expense" ? acc + Number(curr.amount) : acc;
   }, 0);
 
-  // Calculate monthly balance
-  const monthlyBalance = monthlyIncome - monthlyExpense;
+  // Calculate total balance from payment sources
+  const totalBalance = paymentSources.reduce((acc, curr) => acc + Number(curr.amount), 0);
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat("en-IN", {
@@ -39,8 +39,8 @@ export const BalanceCard = () => {
 
   return (
     <div className="p-6 mx-4 rounded-apple bg-gradient-to-br from-primary-gradient-from to-primary-gradient-to text-white shadow-lg">
-      <h2 className="mb-2 text-sm font-medium opacity-90">Monthly Balance</h2>
-      <p className="mb-6 text-4xl font-bold">{formatCurrency(monthlyBalance)}</p>
+      <h2 className="mb-2 text-sm font-medium opacity-90">Total Balance</h2>
+      <p className="mb-6 text-4xl font-bold">{formatCurrency(totalBalance)}</p>
       <div className="h-px bg-white/20 mb-4" />
       <div className="flex justify-between">
         <div className="flex items-center gap-3">

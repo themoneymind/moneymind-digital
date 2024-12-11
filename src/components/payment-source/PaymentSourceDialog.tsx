@@ -44,6 +44,9 @@ export const PaymentSourceDialog = ({
   );
 
   const handleSave = async () => {
+    if (!amount || isNaN(Number(amount))) {
+      return;
+    }
     await handleAmountChange(operation, amount, name, selectedUpiApps);
   };
 

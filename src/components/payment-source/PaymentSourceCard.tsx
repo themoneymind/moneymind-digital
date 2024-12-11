@@ -18,7 +18,7 @@ type PaymentSourceCardProps = {
 };
 
 export const PaymentSourceCard = ({ source }: PaymentSourceCardProps) => {
-  const { deletePaymentSource } = useFinance();
+  const { deletePaymentSource, refreshData } = useFinance();
   const { toast } = useToast();
   const [showEditDialog, setShowEditDialog] = useState(false);
   const [showUpiList, setShowUpiList] = useState(false);
@@ -32,14 +32,24 @@ export const PaymentSourceCard = ({ source }: PaymentSourceCardProps) => {
     }).format(amount);
   };
 
-  const handleDelete = useCallback(() => {
-    deletePaymentSource(source.id);
-    setIsAlertOpen(false);
-    toast({
-      title: "Success",
-      description: "Payment source deleted successfully",
-    });
-  }, [deletePaymentSource, source.id, toast]);
+  const handleDelete = useCallback(async () => {
+    try {
+      await deletePaymentSource(source.id);
+      setIsAlertOpen(false);
+      await refreshData();
+      toast({
+        title: "Success",
+        description: "Payment source deleted successfully",
+      });
+    } catch (error) {
+      console.error("Error deleting payment source:", error);
+      toast({
+        title: "Error",
+        description: "Failed to delete payment source",
+        variant: "destructive",
+      });
+    }
+  }, [deletePaymentSource, source.id, toast, refreshData]);
 
   const handleEditClick = useCallback(() => {
     setShowEditDialog(true);
@@ -48,8 +58,9 @@ export const PaymentSourceCard = ({ source }: PaymentSourceCardProps) => {
   const handleEditDialogClose = useCallback((open: boolean) => {
     if (!open) {
       setShowEditDialog(false);
+      refreshData();
     }
-  }, []);
+  }, [refreshData]);
 
   return (
     <>
