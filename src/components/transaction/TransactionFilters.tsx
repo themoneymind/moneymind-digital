@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { format } from "date-fns";
-import { Calendar as CalendarIcon } from "lucide-react";
+import { Calendar as CalendarIcon, IndianRupee } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
 type TransactionFiltersProps = {
@@ -73,6 +73,12 @@ export const TransactionFilters = ({
           />
         </PopoverContent>
       </Popover>
+      <Button
+        className="rounded-full w-9 h-9 p-0 bg-gray-100 text-gray-600 hover:bg-gray-200"
+        variant="outline"
+      >
+        <IndianRupee className="h-4 w-4" />
+      </Button>
     </div>
   );
 };

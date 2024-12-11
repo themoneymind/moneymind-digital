@@ -1,5 +1,5 @@
 import { Transaction } from "@/types/transactions";
-import { MoreHorizontal, ArrowUpRight, ArrowDownLeft, IndianRupee } from "lucide-react";
+import { MoreHorizontal, ArrowUpRight, ArrowDownLeft } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -67,14 +67,6 @@ export const TransactionItem = ({
           </div>
         </div>
         <div className="flex items-center gap-3">
-          <Button
-            variant="ghost"
-            size="icon"
-            className="h-8 w-8 rounded-full hover:bg-gray-100"
-            onClick={() => setShowSourceDialog(true)}
-          >
-            <IndianRupee className="w-4 h-4 text-gray-500" />
-          </Button>
           <span
             className={`text-sm font-medium ${
               transaction.type === "expense" ? "text-red-600" : "text-green-600"
