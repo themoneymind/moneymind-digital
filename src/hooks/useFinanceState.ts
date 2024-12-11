@@ -9,12 +9,14 @@ export const useFinanceState = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSetCurrentMonth = useCallback((date: Date) => {
-    console.log("Setting new month:", date.toISOString());
-    // Ensure we're working with a new Date object and set time to start of day
     const newDate = new Date(date);
     newDate.setHours(0, 0, 0, 0);
+    console.log("Setting new month:", {
+      oldDate: currentMonth.toISOString(),
+      newDate: newDate.toISOString()
+    });
     setCurrentMonth(newDate);
-  }, []);
+  }, [currentMonth]);
 
   return {
     currentMonth,
