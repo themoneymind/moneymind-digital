@@ -27,11 +27,14 @@ export const RecentTransactions = () => {
     
     // Date filter
     let matchesDate = true;
-    if (filter === "date" && currentMonth) {
+    if (currentMonth) {
       const transactionDate = new Date(transaction.date);
+      const monthStart = startOfDay(currentMonth);
+      const monthEnd = endOfDay(currentMonth);
+      
       matchesDate = isWithinInterval(transactionDate, {
-        start: startOfDay(currentMonth),
-        end: endOfDay(currentMonth)
+        start: monthStart,
+        end: monthEnd
       });
     }
 

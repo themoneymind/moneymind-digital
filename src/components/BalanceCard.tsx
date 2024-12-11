@@ -17,9 +17,12 @@ export const BalanceCard = () => {
     });
   });
 
-  // Calculate monthly income and expense
+  // Calculate monthly income (including payment source changes) and expense
   const monthlyIncome = monthlyTransactions.reduce((acc, curr) => {
-    return curr.type === "income" ? acc + Number(curr.amount) : acc;
+    if (curr.type === "income") {
+      return acc + Number(curr.amount);
+    }
+    return acc;
   }, 0);
 
   const monthlyExpense = monthlyTransactions.reduce((acc, curr) => {
