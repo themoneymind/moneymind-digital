@@ -3,7 +3,7 @@ import { useFinance } from "@/contexts/FinanceContext";
 import { startOfMonth, endOfMonth, isWithinInterval, subMonths, endOfDay, isBefore } from "date-fns";
 
 export const BalanceCard = () => {
-  const { transactions, currentMonth, paymentSources } = useFinance();
+  const { transactions, currentMonth } = useFinance();
 
   // Filter transactions for the current month
   const monthlyTransactions = transactions.filter(transaction => {
@@ -17,7 +17,7 @@ export const BalanceCard = () => {
     });
   });
 
-  // Get all transactions before the current month
+  // Get all transactions before the current month for calculating previous balance
   const previousTransactions = transactions.filter(transaction => {
     const transactionDate = new Date(transaction.date);
     return isBefore(transactionDate, startOfMonth(currentMonth));
@@ -35,7 +35,7 @@ export const BalanceCard = () => {
     });
   });
 
-  // Calculate monthly income and expense
+  // Calculate current month's income and expense
   const monthlyIncome = monthlyTransactions.reduce((acc, curr) => {
     return curr.type === "income" ? acc + Number(curr.amount) : acc;
   }, 0);
@@ -44,12 +44,12 @@ export const BalanceCard = () => {
     return curr.type === "expense" ? acc + Number(curr.amount) : acc;
   }, 0);
 
-  // Calculate previous months' balance
+  // Calculate previous months' total balance (all transactions before current month)
   const previousBalance = previousTransactions.reduce((acc, curr) => {
     return curr.type === "income" ? acc + Number(curr.amount) : acc - Number(curr.amount);
   }, 0);
 
-  // Calculate last month's balance
+  // Calculate last month's balance for display
   const lastMonthIncome = lastMonthTransactions.reduce((acc, curr) => {
     return curr.type === "income" ? acc + Number(curr.amount) : acc;
   }, 0);
@@ -58,7 +58,7 @@ export const BalanceCard = () => {
     return curr.type === "expense" ? acc + Number(curr.amount) : acc;
   }, 0);
 
-  const lastMonthBalance = lastMonthIncome - lastMonthExpense;
+  const lastMonthBalance = previousTransactions.length > 0 ? previousBalance : 0;
 
   // Calculate total balance as Previous Balance + Current Month's (Income - Expense)
   const totalBalance = previousBalance + (monthlyIncome - monthlyExpense);
