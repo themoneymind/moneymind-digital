@@ -13,6 +13,7 @@ export const RecentTransactions = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedTransaction, setSelectedTransaction] = useState<typeof transactions[0] | null>(null);
   const [showEditDialog, setShowEditDialog] = useState(false);
+  const [selectedSourceId, setSelectedSourceId] = useState<string | null>(null);
 
   const monthlyTransactions = transactions.filter((transaction) => {
     const transactionDate = new Date(transaction.date);
@@ -25,7 +26,8 @@ export const RecentTransactions = () => {
   const filteredTransactions = monthlyTransactions.filter((transaction) => {
     const matchesFilter = filter === "all" ? true : transaction.type === filter;
     const matchesSearch = transaction.category.toLowerCase().includes(searchQuery.toLowerCase());
-    return matchesFilter && matchesSearch;
+    const matchesSource = selectedSourceId ? transaction.source === selectedSourceId : true;
+    return matchesFilter && matchesSearch && matchesSource;
   });
 
   const formatCurrency = (amount: number) => {
@@ -80,6 +82,7 @@ export const RecentTransactions = () => {
         setFilter={setFilter}
         currentMonth={currentMonth}
         setCurrentMonth={setCurrentMonth}
+        onSourceSelect={setSelectedSourceId}
       />
       
       <TransactionList
