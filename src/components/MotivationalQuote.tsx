@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 
 const quotes = [
-  "Save more",
-  "Spend wise",
-  "Plan ahead",
-  "Track daily",
-  "Budget smart",
-  "Think future"
+  "Invest in yourself",
+  "Small steps, big changes",
+  "Every penny counts",
+  "Save today, prosper tomorrow",
+  "Your future self will thank you",
+  "Smart spending, better living"
 ];
 
 export const MotivationalQuote = () => {
@@ -22,8 +22,8 @@ export const MotivationalQuote = () => {
   }, []);
 
   return (
-    <div className="pl-2 -mt-0.5">
-      <p className="text-sm text-gray-500">
+    <div className="pl-2 mt-0.5">
+      <p className="text-base text-gray-600">
         {quote}
       </p>
     </div>
