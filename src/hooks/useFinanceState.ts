@@ -14,12 +14,8 @@ export const useFinanceState = () => {
   const handleSetCurrentMonth = useCallback((date: Date) => {
     const newDate = new Date(date);
     newDate.setHours(0, 0, 0, 0);
-    console.log("Setting new month:", {
-      oldDate: currentMonth.toISOString(),
-      newDate: newDate.toISOString()
-    });
     setCurrentMonth(newDate);
-  }, [currentMonth]);
+  }, []);
 
   return {
     currentMonth,

@@ -7,23 +7,11 @@ export const MonthSelector = () => {
   const { currentMonth, setCurrentMonth } = useFinance();
 
   const handlePrevMonth = () => {
-    const newDate = subMonths(currentMonth, 1);
-    newDate.setHours(0, 0, 0, 0);
-    console.log("Previous month clicked:", { 
-      current: format(currentMonth, 'yyyy-MM-dd'),
-      new: format(newDate, 'yyyy-MM-dd')
-    });
-    setCurrentMonth(newDate);
+    setCurrentMonth(subMonths(currentMonth, 1));
   };
 
   const handleNextMonth = () => {
-    const newDate = addMonths(currentMonth, 1);
-    newDate.setHours(0, 0, 0, 0);
-    console.log("Next month clicked:", {
-      current: format(currentMonth, 'yyyy-MM-dd'),
-      new: format(newDate, 'yyyy-MM-dd')
-    });
-    setCurrentMonth(newDate);
+    setCurrentMonth(addMonths(currentMonth, 1));
   };
 
   // Check for month change every minute
@@ -34,10 +22,6 @@ export const MonthSelector = () => {
       
       if (now.getMonth() !== currentMonth.getMonth() || 
           now.getFullYear() !== currentMonth.getFullYear()) {
-        console.log("Month changed automatically", {
-          now: format(now, 'yyyy-MM-dd'),
-          current: format(currentMonth, 'yyyy-MM-dd')
-        });
         setCurrentMonth(now);
       }
     };
