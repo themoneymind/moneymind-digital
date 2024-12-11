@@ -1,6 +1,6 @@
 import { ArrowDown, ArrowUp } from "lucide-react";
 import { useFinance } from "@/contexts/FinanceContext";
-import { startOfMonth, endOfMonth, isWithinInterval, subMonths, endOfDay } from "date-fns";
+import { startOfMonth, endOfMonth, isWithinInterval, subMonths, endOfDay, isBefore } from "date-fns";
 
 export const BalanceCard = () => {
   const { transactions, currentMonth, paymentSources } = useFinance();
@@ -17,6 +17,12 @@ export const BalanceCard = () => {
     });
   });
 
+  // Get all transactions before the current month
+  const previousTransactions = transactions.filter(transaction => {
+    const transactionDate = new Date(transaction.date);
+    return isBefore(transactionDate, startOfMonth(currentMonth));
+  });
+
   // Filter transactions for the last month
   const lastMonthTransactions = transactions.filter(transaction => {
     const transactionDate = new Date(transaction.date);
@@ -29,16 +35,19 @@ export const BalanceCard = () => {
     });
   });
 
-  // Calculate monthly expense
+  // Calculate monthly income and expense
+  const monthlyIncome = monthlyTransactions.reduce((acc, curr) => {
+    return curr.type === "income" ? acc + Number(curr.amount) : acc;
+  }, 0);
+
   const monthlyExpense = monthlyTransactions.reduce((acc, curr) => {
     return curr.type === "expense" ? acc + Number(curr.amount) : acc;
   }, 0);
 
-  // Calculate total income from payment sources
-  const totalIncome = paymentSources.reduce((acc, curr) => acc + Number(curr.amount), 0);
-
-  // Calculate total balance as Income - Expense
-  const totalBalance = totalIncome - monthlyExpense;
+  // Calculate previous months' balance
+  const previousBalance = previousTransactions.reduce((acc, curr) => {
+    return curr.type === "income" ? acc + Number(curr.amount) : acc - Number(curr.amount);
+  }, 0);
 
   // Calculate last month's balance
   const lastMonthIncome = lastMonthTransactions.reduce((acc, curr) => {
@@ -50,6 +59,9 @@ export const BalanceCard = () => {
   }, 0);
 
   const lastMonthBalance = lastMonthIncome - lastMonthExpense;
+
+  // Calculate total balance as Previous Balance + Current Month's (Income - Expense)
+  const totalBalance = previousBalance + (monthlyIncome - monthlyExpense);
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat("en-IN", {
@@ -72,7 +84,7 @@ export const BalanceCard = () => {
           </div>
           <div>
             <p className="text-sm opacity-90">Income</p>
-            <p className="text-lg font-semibold">{formatCurrency(totalIncome)}</p>
+            <p className="text-lg font-semibold">{formatCurrency(monthlyIncome)}</p>
           </div>
         </div>
         <div className="w-px h-12 bg-white/20" />
