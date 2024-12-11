@@ -1,5 +1,5 @@
 import { Transaction } from "@/types/transactions";
-import { MoreHorizontal } from "lucide-react";
+import { MoreHorizontal, ArrowUpRight, ArrowDownLeft } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -24,8 +24,19 @@ export const TransactionItem = ({
   toSentenceCase,
 }: TransactionItemProps) => {
   return (
-    <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+    <div className="flex items-center justify-between p-4 hover:bg-gray-50 transition-colors rounded-xl border border-gray-100">
       <div className="flex items-center gap-3">
+        <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
+          transaction.type === "expense" 
+            ? "bg-red-50" 
+            : "bg-green-50"
+        }`}>
+          {transaction.type === "expense" ? (
+            <ArrowUpRight className="w-5 h-5 text-red-500" />
+          ) : (
+            <ArrowDownLeft className="w-5 h-5 text-green-500" />
+          )}
+        </div>
         <div className="flex flex-col">
           <span className="text-sm font-medium text-gray-900">
             {toSentenceCase(transaction.category)}
@@ -48,7 +59,7 @@ export const TransactionItem = ({
           <DropdownMenuTrigger className="focus:outline-none">
             <MoreHorizontal className="w-4 h-4 text-gray-500" />
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
+          <DropdownMenuContent align="end" className="w-36">
             <DropdownMenuItem onClick={() => onEdit(transaction)}>
               Edit
             </DropdownMenuItem>

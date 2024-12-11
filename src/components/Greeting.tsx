@@ -1,21 +1,18 @@
 import { useAuth } from "@/contexts/AuthContext";
-import { Hand } from "lucide-react";
 
 export const Greeting = () => {
   const { user } = useAuth();
   const firstName = user?.user_metadata?.first_name || 'there';
 
-  const getTimeBasedGreeting = () => {
-    const hour = new Date().getHours();
-    if (hour < 12) return "Good morning";
-    if (hour < 17) return "Good afternoon";
-    return "Good evening";
+  const getGreeting = () => {
+    const greetings = ["Hi", "Hello", "Welcome back"];
+    return greetings[Math.floor(Math.random() * greetings.length)];
   };
 
   return (
     <div className="pl-2">
-      <h1 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
-        {getTimeBasedGreeting()}, {firstName}
+      <h1 className="text-xl font-semibold text-gray-900 flex items-center gap-2">
+        {getGreeting()}, {firstName}
         <span className="animate-bounce text-lg">👋</span>
       </h1>
     </div>

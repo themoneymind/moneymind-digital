@@ -1,10 +1,10 @@
 import { useState, useCallback } from "react";
-import { Separator } from "@/components/ui/separator";
 import { PaymentSourceDialog } from "./PaymentSourceDialog";
 import { useFinance } from "@/contexts/FinanceContext";
 import { useToast } from "@/hooks/use-toast";
 import { PaymentSourceInfo } from "./PaymentSourceInfo";
 import { PaymentSourceActions } from "./PaymentSourceActions";
+import { Wallet } from "lucide-react";
 
 type PaymentSourceCardProps = {
   source: {
@@ -53,12 +53,10 @@ export const PaymentSourceCard = ({ source }: PaymentSourceCardProps) => {
 
   return (
     <>
-      <div className="flex items-center justify-between py-2.5 px-4 hover:bg-gray-50 transition-colors group">
+      <div className="flex items-center justify-between p-4 hover:bg-gray-50 transition-colors rounded-xl border border-gray-100">
         <div className="flex items-center gap-3 flex-1 min-w-0">
-          <div className="w-8 h-8 bg-green-50 rounded-full flex items-center justify-center flex-shrink-0">
-            <span className="text-green-500 text-xs font-medium">
-              {source.name[0].toUpperCase()}
-            </span>
+          <div className="w-10 h-10 bg-primary-gradient-from/10 rounded-full flex items-center justify-center flex-shrink-0">
+            <Wallet className="w-5 h-5 text-primary" />
           </div>
           
           <PaymentSourceInfo
@@ -83,7 +81,6 @@ export const PaymentSourceCard = ({ source }: PaymentSourceCardProps) => {
           />
         </div>
       </div>
-      <Separator className="last:hidden" />
 
       <PaymentSourceDialog
         open={showEditDialog}
