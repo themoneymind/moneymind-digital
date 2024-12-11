@@ -7,12 +7,16 @@ export const MonthSelector = () => {
   const { currentMonth, setCurrentMonth } = useFinance();
 
   const handlePrevMonth = () => {
+    console.log("Previous month clicked, current:", currentMonth);
     const newDate = subMonths(currentMonth, 1);
+    console.log("New date will be:", newDate);
     setCurrentMonth(newDate);
   };
 
   const handleNextMonth = () => {
+    console.log("Next month clicked, current:", currentMonth);
     const newDate = addMonths(currentMonth, 1);
+    console.log("New date will be:", newDate);
     setCurrentMonth(newDate);
   };
 
@@ -22,6 +26,7 @@ export const MonthSelector = () => {
       const now = new Date();
       if (now.getMonth() !== currentMonth.getMonth() || 
           now.getFullYear() !== currentMonth.getFullYear()) {
+        console.log("Month changed automatically", { now, currentMonth });
         setCurrentMonth(now);
       }
     };
@@ -37,7 +42,7 @@ export const MonthSelector = () => {
   return (
     <div className="flex items-center justify-between p-4 mx-4 bg-white rounded-apple shadow-sm">
       <button 
-        className="p-2 hover:bg-gray-50 rounded-full" 
+        className="p-2 hover:bg-gray-50 rounded-full transition-colors" 
         onClick={handlePrevMonth}
         aria-label="Previous month"
       >
@@ -47,7 +52,7 @@ export const MonthSelector = () => {
         {format(currentMonth, "MMMM yyyy")}
       </span>
       <button 
-        className="p-2 hover:bg-gray-50 rounded-full" 
+        className="p-2 hover:bg-gray-50 rounded-full transition-colors" 
         onClick={handleNextMonth}
         aria-label="Next month"
       >

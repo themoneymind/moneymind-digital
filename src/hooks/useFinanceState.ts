@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { Transaction } from "@/types/transactions";
 import { PaymentSource } from "@/types/finance";
 
@@ -8,9 +8,14 @@ export const useFinanceState = () => {
   const [paymentSources, setPaymentSources] = useState<PaymentSource[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
+  const handleSetCurrentMonth = useCallback((date: Date) => {
+    console.log("Setting new month:", date);
+    setCurrentMonth(new Date(date));
+  }, []);
+
   return {
     currentMonth,
-    setCurrentMonth,
+    setCurrentMonth: handleSetCurrentMonth,
     transactions,
     setTransactions,
     paymentSources,
