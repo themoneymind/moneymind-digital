@@ -4,7 +4,7 @@ import { TransactionEditDialog } from "./transaction/TransactionEditDialog";
 import { TransactionSearch } from "./transaction/TransactionSearch";
 import { TransactionFilters } from "./transaction/TransactionFilters";
 import { TransactionList } from "./transaction/TransactionList";
-import { startOfDay, endOfDay, isWithinInterval } from "date-fns";
+import { startOfDay, endOfDay, isWithinInterval, startOfMonth, endOfMonth } from "date-fns";
 import { Loader2 } from "lucide-react";
 
 export const RecentTransactions = () => {
@@ -27,10 +27,10 @@ export const RecentTransactions = () => {
     
     // Date filter
     let matchesDate = true;
-    if (currentMonth) {
+    if (filter === "date" && currentMonth) {
       const transactionDate = new Date(transaction.date);
-      const monthStart = startOfDay(currentMonth);
-      const monthEnd = endOfDay(currentMonth);
+      const monthStart = startOfMonth(currentMonth);
+      const monthEnd = endOfMonth(currentMonth);
       
       matchesDate = isWithinInterval(transactionDate, {
         start: monthStart,

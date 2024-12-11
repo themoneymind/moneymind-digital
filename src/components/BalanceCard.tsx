@@ -17,7 +17,7 @@ export const BalanceCard = () => {
     });
   });
 
-  // Calculate monthly income (including payment source changes) and expense
+  // Calculate monthly income and expense
   const monthlyIncome = monthlyTransactions.reduce((acc, curr) => {
     if (curr.type === "income") {
       return acc + Number(curr.amount);
@@ -52,7 +52,7 @@ export const BalanceCard = () => {
           </div>
           <div>
             <p className="text-sm opacity-90">Income</p>
-            <p className="text-lg font-semibold">{formatCurrency(monthlyIncome)}</p>
+            <p className="text-lg font-semibold">{formatCurrency(totalBalance)}</p>
           </div>
         </div>
         <div className="w-px h-12 bg-white/20" />
