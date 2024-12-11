@@ -26,15 +26,15 @@ export const TransactionItem = ({
   return (
     <div className="flex items-center justify-between p-4 hover:bg-gray-50 transition-colors rounded-xl border border-gray-100">
       <div className="flex items-center gap-3">
-        <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
+        <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
           transaction.type === "expense" 
             ? "bg-red-50" 
             : "bg-green-50"
         }`}>
           {transaction.type === "expense" ? (
-            <ArrowUpRight className="w-5 h-5 text-red-500" />
+            <ArrowUpRight className="w-4 h-4 text-red-500" />
           ) : (
-            <ArrowDownLeft className="w-5 h-5 text-green-500" />
+            <ArrowDownLeft className="w-4 h-4 text-green-500" />
           )}
         </div>
         <div className="flex flex-col">
@@ -57,7 +57,7 @@ export const TransactionItem = ({
         </span>
         <DropdownMenu>
           <DropdownMenuTrigger className="focus:outline-none">
-            <MoreHorizontal className="w-4 h-4 text-gray-500" />
+            <MoreHorizontal className="w-3.5 h-3.5 text-gray-500" />
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-36">
             <DropdownMenuItem onClick={() => onEdit(transaction)}>

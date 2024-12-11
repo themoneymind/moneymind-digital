@@ -9,6 +9,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useFinance } from "@/contexts/FinanceContext";
+import { startOfDay, endOfDay } from "date-fns";
 
 type TransactionFiltersProps = {
   filter: "all" | "income" | "expense" | "date";
@@ -23,13 +24,18 @@ export const TransactionFilters = ({
   currentMonth,
   setCurrentMonth,
 }: TransactionFiltersProps) => {
-  const { paymentSources } = useFinance();
+  const { paymentSources, transactions, setTransactions } = useFinance();
 
   const handleDateSelect = (date: Date | undefined) => {
     if (date) {
       setCurrentMonth(date);
       setFilter("date");
     }
+  };
+
+  const handleSourceSelect = (sourceId: string) => {
+    const filteredTransactions = transactions.filter(t => t.source === sourceId);
+    setTransactions(filteredTransactions);
   };
 
   const getSourcesByType = () => {
@@ -114,7 +120,7 @@ export const TransactionFilters = ({
                 <DropdownMenuItem
                   key={source.id}
                   className="flex items-center justify-between px-3 py-2 text-sm cursor-pointer hover:bg-gray-50 rounded-[8px]"
-                  onClick={() => console.log('Selected source:', source.id)}
+                  onClick={() => handleSourceSelect(source.id)}
                 >
                   <span>{source.name}</span>
                 </DropdownMenuItem>
