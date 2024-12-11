@@ -1,5 +1,5 @@
 import { Transaction } from "@/types/transactions";
-import { MoreHorizontal, ArrowUpRight, ArrowDownLeft } from "lucide-react";
+import { MoreHorizontal, ArrowUpRight, ArrowDownLeft, ShoppingBag, Utensils, Bus, Briefcase, Wallet, CreditCard, Building2, DollarSign } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -16,6 +16,22 @@ type TransactionItemProps = {
   toSentenceCase: (str: string) => string;
 };
 
+const getCategoryIcon = (category: string) => {
+  const categoryMap: { [key: string]: any } = {
+    shopping: ShoppingBag,
+    food: Utensils,
+    transport: Bus,
+    salary: Briefcase,
+    freelance: Wallet,
+    credit: CreditCard,
+    bank: Building2,
+    upi: DollarSign,
+  };
+
+  const Icon = categoryMap[category.toLowerCase()] || Wallet;
+  return Icon;
+};
+
 export const TransactionItem = ({
   transaction,
   onEdit,
@@ -23,6 +39,8 @@ export const TransactionItem = ({
   formatCurrency,
   toSentenceCase,
 }: TransactionItemProps) => {
+  const Icon = getCategoryIcon(transaction.category);
+
   return (
     <div className="flex items-center justify-between p-4 hover:bg-gray-50 transition-colors rounded-xl border border-gray-100">
       <div className="flex items-center gap-3">
@@ -31,11 +49,11 @@ export const TransactionItem = ({
             ? "bg-red-50" 
             : "bg-green-50"
         }`}>
-          {transaction.type === "expense" ? (
-            <ArrowUpRight className="w-5 h-5 text-red-500" />
-          ) : (
-            <ArrowDownLeft className="w-5 h-5 text-green-500" />
-          )}
+          <Icon className={`w-5 h-5 ${
+            transaction.type === "expense" 
+              ? "text-red-500" 
+              : "text-green-500"
+          }`} />
         </div>
         <div className="flex flex-col">
           <span className="text-sm font-medium text-gray-900">
