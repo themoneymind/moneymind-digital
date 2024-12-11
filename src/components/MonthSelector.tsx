@@ -7,11 +7,13 @@ export const MonthSelector = () => {
   const { currentMonth, setCurrentMonth } = useFinance();
 
   const handlePrevMonth = () => {
-    setCurrentMonth(subMonths(currentMonth, 1));
+    const newDate = subMonths(currentMonth, 1);
+    setCurrentMonth(newDate);
   };
 
   const handleNextMonth = () => {
-    setCurrentMonth(addMonths(currentMonth, 1));
+    const newDate = addMonths(currentMonth, 1);
+    setCurrentMonth(newDate);
   };
 
   // Check for month change every minute
@@ -37,6 +39,7 @@ export const MonthSelector = () => {
       <button 
         className="p-2 hover:bg-gray-50 rounded-full" 
         onClick={handlePrevMonth}
+        aria-label="Previous month"
       >
         <ChevronLeft className="w-4 h-4 text-gray-600" />
       </button>
@@ -46,6 +49,7 @@ export const MonthSelector = () => {
       <button 
         className="p-2 hover:bg-gray-50 rounded-full" 
         onClick={handleNextMonth}
+        aria-label="Next month"
       >
         <ChevronRight className="w-4 h-4 text-gray-600" />
       </button>
