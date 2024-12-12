@@ -29,35 +29,51 @@ export const BalanceCard = () => {
     });
   });
 
-  // Calculate monthly income (from income transactions)
-  const monthlyIncomeFromTransactions = monthlyTransactions.reduce((acc, curr) => {
-    return curr.type === "income" ? acc + Number(curr.amount) : acc;
-  }, 0);
-
-  // Calculate monthly expense
-  const monthlyExpense = monthlyTransactions.reduce((acc, curr) => {
-    return curr.type === "expense" ? acc + Number(curr.amount) : acc;
-  }, 0);
-
   // Calculate last month's income and expense
   const lastMonthIncome = lastMonthTransactions.reduce((acc, curr) => {
-    return curr.type === "income" ? acc + Number(curr.amount) : acc;
+    if (curr.type === "income") {
+      // For income transactions, add the amount
+      return acc + Number(curr.amount);
+    }
+    return acc;
   }, 0);
 
   const lastMonthExpense = lastMonthTransactions.reduce((acc, curr) => {
-    return curr.type === "expense" ? acc + Number(curr.amount) : acc;
+    if (curr.type === "expense") {
+      // For expense transactions, add the amount
+      return acc + Number(curr.amount);
+    }
+    return acc;
   }, 0);
 
   // Calculate last month's balance
   const lastMonthBalance = lastMonthIncome - lastMonthExpense;
 
-  // Calculate total income from payment sources
-  const totalIncomeFromSources = paymentSources.reduce((acc, curr) => acc + Number(curr.amount), 0);
+  // Calculate current month's income from transactions
+  const currentMonthIncomeFromTransactions = monthlyTransactions.reduce((acc, curr) => {
+    if (curr.type === "income") {
+      return acc + Number(curr.amount);
+    }
+    return acc;
+  }, 0);
 
-  // Total income is the sum of payment sources and monthly income transactions
-  const totalIncome = totalIncomeFromSources + monthlyIncomeFromTransactions;
+  // Calculate current month's expense
+  const monthlyExpense = monthlyTransactions.reduce((acc, curr) => {
+    if (curr.type === "expense") {
+      return acc + Number(curr.amount);
+    }
+    return acc;
+  }, 0);
 
-  // Calculate total balance as Last Month's Balance + Current Month's Income - Current Month's Expense
+  // Get current total from payment sources
+  const currentPaymentSourcesTotal = paymentSources.reduce((acc, curr) => {
+    return acc + Number(curr.amount);
+  }, 0);
+
+  // Total income for current month is payment sources total + income transactions
+  const totalIncome = currentPaymentSourcesTotal + currentMonthIncomeFromTransactions;
+
+  // Calculate total balance: Last Month's Balance + Current Month's Total Income - Current Month's Expenses
   const totalBalance = lastMonthBalance + totalIncome - monthlyExpense;
 
   const formatCurrency = (amount: number) => {
