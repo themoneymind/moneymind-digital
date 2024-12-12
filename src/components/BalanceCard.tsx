@@ -68,11 +68,11 @@ export const BalanceCard = () => {
     return acc + Number(curr.amount);
   }, 0);
 
-  // Total income for current month is payment sources total + income transactions
-  const totalIncome = currentPaymentSourcesTotal + currentMonthIncomeFromTransactions;
+  // Total income is current payment sources total (this represents the current available balance)
+  const totalIncome = currentPaymentSourcesTotal;
 
-  // Calculate total balance: Last Month's Balance + Current Month's Total Income - Current Month's Expenses
-  const totalBalance = lastMonthBalance + totalIncome - monthlyExpense;
+  // Calculate total balance: Current Payment Sources Total + Current Month's Income - Current Month's Expenses
+  const totalBalance = currentPaymentSourcesTotal + currentMonthIncomeFromTransactions - monthlyExpense;
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat("en-IN", {
