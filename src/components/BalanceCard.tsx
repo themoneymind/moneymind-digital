@@ -32,7 +32,6 @@ export const BalanceCard = () => {
   // Calculate last month's income and expense
   const lastMonthIncome = lastMonthTransactions.reduce((acc, curr) => {
     if (curr.type === "income") {
-      // For income transactions, add the amount
       return acc + Number(curr.amount);
     }
     return acc;
@@ -40,7 +39,6 @@ export const BalanceCard = () => {
 
   const lastMonthExpense = lastMonthTransactions.reduce((acc, curr) => {
     if (curr.type === "expense") {
-      // For expense transactions, add the amount
       return acc + Number(curr.amount);
     }
     return acc;
@@ -49,8 +47,8 @@ export const BalanceCard = () => {
   // Calculate last month's balance
   const lastMonthBalance = lastMonthIncome - lastMonthExpense;
 
-  // Calculate current month's income from transactions
-  const currentMonthIncomeFromTransactions = monthlyTransactions.reduce((acc, curr) => {
+  // Calculate current month's income (only from income transactions)
+  const currentMonthIncome = monthlyTransactions.reduce((acc, curr) => {
     if (curr.type === "income") {
       return acc + Number(curr.amount);
     }
@@ -70,11 +68,11 @@ export const BalanceCard = () => {
     return acc + Number(curr.amount);
   }, 0);
 
-  // Total income for current month is payment sources total + income transactions
-  const totalIncome = currentPaymentSourcesTotal + currentMonthIncomeFromTransactions;
+  // Total income is just from income transactions for the current month
+  const totalIncome = currentMonthIncome;
 
-  // Calculate total balance: Last Month's Balance + Current Month's Total Income - Current Month's Expenses
-  const totalBalance = lastMonthBalance + totalIncome - monthlyExpense;
+  // Calculate total balance: Last Month's Balance + Current Payment Sources + Current Month's Income - Current Month's Expenses
+  const totalBalance = lastMonthBalance + currentPaymentSourcesTotal + currentMonthIncome - monthlyExpense;
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat("en-IN", {
