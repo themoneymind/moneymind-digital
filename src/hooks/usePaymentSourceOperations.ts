@@ -2,12 +2,14 @@ import { useState } from "react";
 import { useFinance } from "@/contexts/FinanceContext";
 import { useToast } from "@/hooks/use-toast";
 import { PaymentSource } from "@/types/finance";
+import { useTransactions } from "@/hooks/useTransactions";
 
 export const usePaymentSourceOperations = (
   source: PaymentSource | undefined,
   onClose: () => void
 ) => {
   const { editPaymentSource, refreshData } = useFinance();
+  const { addTransaction } = useTransactions();
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -43,12 +45,22 @@ export const usePaymentSourceOperations = (
         ? source.amount + numAmount 
         : source.amount - numAmount;
 
+      // First update the payment source
       await editPaymentSource({
         ...source,
         amount: newAmount,
         name: name.trim(),
         linked: selectedUpiApps.length > 0,
         upi_apps: selectedUpiApps.length > 0 ? selectedUpiApps : undefined,
+      });
+
+      // Then create a transaction record
+      await addTransaction({
+        type: "income",
+        amount: numAmount,
+        category: "Bank Transfer",
+        source: source.id,
+        description: `${operation === 'add' ? 'Added' : 'Subtracted'} ${amount} ${operation === 'add' ? 'to' : 'from'} ${name}`,
       });
 
       await refreshData();

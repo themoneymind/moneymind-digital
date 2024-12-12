@@ -28,6 +28,23 @@ export const BalanceCard = () => {
     });
   });
 
+  // Get last month's transactions
+  const lastMonthStart = startOfMonth(subMonths(currentMonth, 1));
+  const lastMonthEnd = endOfMonth(subMonths(currentMonth, 1));
+  
+  const lastMonthTransactions = transactions.filter(transaction => {
+    const transactionDate = new Date(transaction.date);
+    return isWithinInterval(transactionDate, {
+      start: lastMonthStart,
+      end: lastMonthEnd
+    });
+  });
+
+  // Calculate last month's closing balance
+  const lastMonthClosingBalance = isBeforeFirstTransaction ? 0 : lastMonthTransactions.reduce((acc, curr) => {
+    return curr.type === "income" ? acc + Number(curr.amount) : acc - Number(curr.amount);
+  }, 0);
+
   // Calculate monthly income from income transactions
   const monthlyIncome = (isCurrentMonthFuture || isBeforeFirstTransaction) ? 0 : monthlyTransactions.reduce((acc, curr) => {
     return curr.type === "income" ? acc + Number(curr.amount) : acc;
@@ -53,6 +70,11 @@ export const BalanceCard = () => {
     <div className="p-6 mx-4 rounded-apple bg-gradient-to-br from-primary-gradient-from to-primary-gradient-to text-white shadow-lg">
       <h2 className="mb-2 text-sm font-medium opacity-90">Total Balance</h2>
       <p className="mb-2 text-4xl font-bold">{formatCurrency(totalBalance)}</p>
+      {!isBeforeFirstTransaction && !isCurrentMonthFuture && (
+        <p className="mb-2 text-sm opacity-75">
+          Last month's closing balance: {formatCurrency(lastMonthClosingBalance)}
+        </p>
+      )}
       <div className="h-px bg-white/20 mb-4" />
       <div className="flex justify-between">
         <div className="flex items-center gap-3">
