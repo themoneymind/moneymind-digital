@@ -29,18 +29,17 @@ export const BalanceCard = () => {
     });
   });
 
+  // Calculate monthly income (from income transactions)
+  const monthlyIncomeFromTransactions = monthlyTransactions.reduce((acc, curr) => {
+    return curr.type === "income" ? acc + Number(curr.amount) : acc;
+  }, 0);
+
   // Calculate monthly expense
   const monthlyExpense = monthlyTransactions.reduce((acc, curr) => {
     return curr.type === "expense" ? acc + Number(curr.amount) : acc;
   }, 0);
 
-  // Calculate total income from payment sources
-  const totalIncome = paymentSources.reduce((acc, curr) => acc + Number(curr.amount), 0);
-
-  // Calculate total balance as Income - Expense
-  const totalBalance = totalIncome - monthlyExpense;
-
-  // Calculate last month's balance
+  // Calculate last month's income and expense
   const lastMonthIncome = lastMonthTransactions.reduce((acc, curr) => {
     return curr.type === "income" ? acc + Number(curr.amount) : acc;
   }, 0);
@@ -49,7 +48,17 @@ export const BalanceCard = () => {
     return curr.type === "expense" ? acc + Number(curr.amount) : acc;
   }, 0);
 
+  // Calculate last month's balance
   const lastMonthBalance = lastMonthIncome - lastMonthExpense;
+
+  // Calculate total income from payment sources
+  const totalIncomeFromSources = paymentSources.reduce((acc, curr) => acc + Number(curr.amount), 0);
+
+  // Total income is the sum of payment sources and monthly income transactions
+  const totalIncome = totalIncomeFromSources + monthlyIncomeFromTransactions;
+
+  // Calculate total balance as Last Month's Balance + Current Month's Income - Current Month's Expense
+  const totalBalance = lastMonthBalance + totalIncome - monthlyExpense;
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat("en-IN", {
