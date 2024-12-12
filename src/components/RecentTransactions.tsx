@@ -6,17 +6,14 @@ import { TransactionFilters } from "./transaction/TransactionFilters";
 import { TransactionList } from "./transaction/TransactionList";
 import { startOfMonth, endOfMonth, isWithinInterval } from "date-fns";
 import { Loader2 } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
-import { supabase } from "@/integrations/supabase/client";
 
 export const RecentTransactions = () => {
-  const { transactions, currentMonth, setCurrentMonth, isLoading, refreshData } = useFinance();
+  const { transactions, currentMonth, setCurrentMonth, isLoading } = useFinance();
   const [filter, setFilter] = useState<"all" | "income" | "expense" | "date">("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedTransaction, setSelectedTransaction] = useState<typeof transactions[0] | null>(null);
   const [showEditDialog, setShowEditDialog] = useState(false);
   const [selectedSourceId, setSelectedSourceId] = useState<string | null>(null);
-  const { toast } = useToast();
 
   const filteredTransactions = transactions.filter((transaction) => {
     // Type filter
@@ -68,29 +65,8 @@ export const RecentTransactions = () => {
     }
   }, []);
 
-  const handleDeleteClick = async (transactionId: string) => {
-    try {
-      const { error } = await supabase
-        .from("transactions")
-        .delete()
-        .eq("id", transactionId);
-
-      if (error) throw error;
-
-      toast({
-        title: "Success",
-        description: "Transaction deleted successfully",
-      });
-
-      refreshData();
-    } catch (error) {
-      console.error("Error deleting transaction:", error);
-      toast({
-        title: "Error",
-        description: "Failed to delete transaction",
-        variant: "destructive",
-      });
-    }
+  const handleDeleteClick = (transactionId: string) => {
+    console.log("Delete transaction:", transactionId);
   };
 
   const toSentenceCase = (str: string) => {

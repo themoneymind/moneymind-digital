@@ -18,14 +18,14 @@ export const TransactionList = ({
 }: TransactionListProps) => {
   if (transactions.length === 0) {
     return (
-      <div className="text-center py-8 text-gray-500 bg-white rounded-xl">
+      <div className="text-center py-8 text-gray-500">
         No transactions found
       </div>
     );
   }
 
   return (
-    <div className="mt-4 space-y-2 overflow-hidden bg-white rounded-xl p-4">
+    <div className="mt-4 space-y-2 overflow-hidden">
       {transactions.map((transaction) => (
         <TransactionItem
           key={transaction.id}
