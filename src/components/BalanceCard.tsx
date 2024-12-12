@@ -28,45 +28,18 @@ export const BalanceCard = () => {
     });
   });
 
-  // Filter transactions for the last month
-  const lastMonthTransactions = transactions.filter(transaction => {
-    const transactionDate = new Date(transaction.date);
-    const lastMonthStart = startOfMonth(subMonths(currentMonth, 1));
-    const lastMonthEnd = endOfDay(endOfMonth(subMonths(currentMonth, 1)));
-    
-    return isWithinInterval(transactionDate, {
-      start: lastMonthStart,
-      end: lastMonthEnd
-    });
-  });
+  // Calculate monthly income from income transactions
+  const monthlyIncome = (isCurrentMonthFuture || isBeforeFirstTransaction) ? 0 : monthlyTransactions.reduce((acc, curr) => {
+    return curr.type === "income" ? acc + Number(curr.amount) : acc;
+  }, 0);
 
-  // Calculate monthly expense (0 for future months or months before first transaction)
+  // Calculate monthly expense
   const monthlyExpense = (isCurrentMonthFuture || isBeforeFirstTransaction) ? 0 : monthlyTransactions.reduce((acc, curr) => {
     return curr.type === "expense" ? acc + Number(curr.amount) : acc;
   }, 0);
 
-  // Calculate total income from payment sources (0 for future months or months before first transaction)
-  const totalIncome = (isCurrentMonthFuture || isBeforeFirstTransaction) ? 0 : paymentSources.reduce((acc, curr) => acc + Number(curr.amount), 0);
-
-  // Calculate last month's balance
-  const lastMonthIncome = lastMonthTransactions.reduce((acc, curr) => {
-    return curr.type === "income" ? acc + Number(curr.amount) : acc;
-  }, 0);
-
-  const lastMonthExpense = lastMonthTransactions.reduce((acc, curr) => {
-    return curr.type === "expense" ? acc + Number(curr.amount) : acc;
-  }, 0);
-
-  const lastMonthBalance = lastMonthIncome - lastMonthExpense;
-
-  // For future months, total balance is just the last month's balance
-  // For months before first transaction, total balance is 0
-  // For current or past months within app usage, calculate normally
-  const totalBalance = isBeforeFirstTransaction 
-    ? 0 
-    : isCurrentMonthFuture 
-      ? lastMonthBalance 
-      : totalIncome - monthlyExpense;
+  // Calculate total balance as sum of all payment source balances
+  const totalBalance = paymentSources.reduce((acc, curr) => acc + Number(curr.amount), 0);
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat("en-IN", {
@@ -80,7 +53,6 @@ export const BalanceCard = () => {
     <div className="p-6 mx-4 rounded-apple bg-gradient-to-br from-primary-gradient-from to-primary-gradient-to text-white shadow-lg">
       <h2 className="mb-2 text-sm font-medium opacity-90">Total Balance</h2>
       <p className="mb-2 text-4xl font-bold">{formatCurrency(totalBalance)}</p>
-      <p className="text-xs opacity-75 mb-4">Last month's balance: {formatCurrency(lastMonthBalance)}</p>
       <div className="h-px bg-white/20 mb-4" />
       <div className="flex justify-between">
         <div className="flex items-center gap-3">
@@ -89,7 +61,7 @@ export const BalanceCard = () => {
           </div>
           <div>
             <p className="text-sm opacity-90">Income</p>
-            <p className="text-lg font-semibold">{formatCurrency(totalIncome)}</p>
+            <p className="text-lg font-semibold">{formatCurrency(monthlyIncome)}</p>
           </div>
         </div>
         <div className="w-px h-12 bg-white/20" />
