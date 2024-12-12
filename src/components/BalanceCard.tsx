@@ -1,12 +1,20 @@
 import { ArrowDown, ArrowUp } from "lucide-react";
 import { useFinance } from "@/contexts/FinanceContext";
-import { startOfMonth, endOfMonth, isWithinInterval, subMonths, endOfDay, isFuture, isAfter } from "date-fns";
+import { startOfMonth, endOfMonth, isWithinInterval, subMonths, endOfDay, isFuture, isAfter, isBefore } from "date-fns";
 
 export const BalanceCard = () => {
   const { transactions, currentMonth, paymentSources } = useFinance();
 
+  // Get the earliest transaction date to determine when the user started using the app
+  const earliestTransaction = transactions.length > 0 
+    ? new Date(Math.min(...transactions.map(t => new Date(t.date).getTime())))
+    : new Date();
+
   // Check if current selected month is in the future
   const isCurrentMonthFuture = isAfter(startOfMonth(currentMonth), startOfMonth(new Date()));
+
+  // Check if current selected month is before the user started using the app
+  const isBeforeFirstTransaction = isBefore(startOfMonth(currentMonth), startOfMonth(earliestTransaction));
 
   // Filter transactions for the current month
   const monthlyTransactions = transactions.filter(transaction => {
@@ -32,13 +40,13 @@ export const BalanceCard = () => {
     });
   });
 
-  // Calculate monthly expense (0 for future months)
-  const monthlyExpense = isCurrentMonthFuture ? 0 : monthlyTransactions.reduce((acc, curr) => {
+  // Calculate monthly expense (0 for future months or months before first transaction)
+  const monthlyExpense = (isCurrentMonthFuture || isBeforeFirstTransaction) ? 0 : monthlyTransactions.reduce((acc, curr) => {
     return curr.type === "expense" ? acc + Number(curr.amount) : acc;
   }, 0);
 
-  // Calculate total income from payment sources (0 for future months)
-  const totalIncome = isCurrentMonthFuture ? 0 : paymentSources.reduce((acc, curr) => acc + Number(curr.amount), 0);
+  // Calculate total income from payment sources (0 for future months or months before first transaction)
+  const totalIncome = (isCurrentMonthFuture || isBeforeFirstTransaction) ? 0 : paymentSources.reduce((acc, curr) => acc + Number(curr.amount), 0);
 
   // Calculate last month's balance
   const lastMonthIncome = lastMonthTransactions.reduce((acc, curr) => {
@@ -52,10 +60,13 @@ export const BalanceCard = () => {
   const lastMonthBalance = lastMonthIncome - lastMonthExpense;
 
   // For future months, total balance is just the last month's balance
-  // For current or past months, calculate normally
-  const totalBalance = isCurrentMonthFuture 
-    ? lastMonthBalance 
-    : totalIncome - monthlyExpense;
+  // For months before first transaction, total balance is 0
+  // For current or past months within app usage, calculate normally
+  const totalBalance = isBeforeFirstTransaction 
+    ? 0 
+    : isCurrentMonthFuture 
+      ? lastMonthBalance 
+      : totalIncome - monthlyExpense;
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat("en-IN", {
