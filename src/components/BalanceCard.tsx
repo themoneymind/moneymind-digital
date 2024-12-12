@@ -1,6 +1,6 @@
 import { ArrowDown, ArrowUp } from "lucide-react";
 import { useFinance } from "@/contexts/FinanceContext";
-import { startOfMonth, endOfMonth, isWithinInterval, subMonths, isFuture, isAfter, isBefore } from "date-fns";
+import { startOfMonth, endOfMonth, isWithinInterval, subMonths, isFuture, isAfter, isBefore, isEqual } from "date-fns";
 
 export const BalanceCard = () => {
   const { transactions, currentMonth, paymentSources } = useFinance();
