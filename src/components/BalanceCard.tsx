@@ -29,50 +29,27 @@ export const BalanceCard = () => {
     });
   });
 
-  // Calculate last month's income and expense
+  // Calculate monthly expense
+  const monthlyExpense = monthlyTransactions.reduce((acc, curr) => {
+    return curr.type === "expense" ? acc + Number(curr.amount) : acc;
+  }, 0);
+
+  // Calculate total income from payment sources
+  const totalIncome = paymentSources.reduce((acc, curr) => acc + Number(curr.amount), 0);
+
+  // Calculate total balance as Income - Expense
+  const totalBalance = totalIncome - monthlyExpense;
+
+  // Calculate last month's balance
   const lastMonthIncome = lastMonthTransactions.reduce((acc, curr) => {
-    if (curr.type === "income") {
-      return acc + Number(curr.amount);
-    }
-    return acc;
+    return curr.type === "income" ? acc + Number(curr.amount) : acc;
   }, 0);
 
   const lastMonthExpense = lastMonthTransactions.reduce((acc, curr) => {
-    if (curr.type === "expense") {
-      return acc + Number(curr.amount);
-    }
-    return acc;
+    return curr.type === "expense" ? acc + Number(curr.amount) : acc;
   }, 0);
 
-  // Calculate last month's balance
   const lastMonthBalance = lastMonthIncome - lastMonthExpense;
-
-  // Calculate current month's income from transactions
-  const currentMonthIncomeFromTransactions = monthlyTransactions.reduce((acc, curr) => {
-    if (curr.type === "income") {
-      return acc + Number(curr.amount);
-    }
-    return acc;
-  }, 0);
-
-  // Calculate current month's expense
-  const monthlyExpense = monthlyTransactions.reduce((acc, curr) => {
-    if (curr.type === "expense") {
-      return acc + Number(curr.amount);
-    }
-    return acc;
-  }, 0);
-
-  // Get current total from payment sources
-  const currentPaymentSourcesTotal = paymentSources.reduce((acc, curr) => {
-    return acc + Number(curr.amount);
-  }, 0);
-
-  // Total income includes both payment sources and income transactions
-  const totalIncome = currentPaymentSourcesTotal + currentMonthIncomeFromTransactions;
-
-  // Calculate total balance: Last Month's Balance + Total Income - Current Month's Expenses
-  const totalBalance = lastMonthBalance + totalIncome - monthlyExpense;
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat("en-IN", {
