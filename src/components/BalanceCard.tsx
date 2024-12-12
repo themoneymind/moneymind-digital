@@ -1,9 +1,12 @@
 import { ArrowDown, ArrowUp } from "lucide-react";
 import { useFinance } from "@/contexts/FinanceContext";
-import { startOfMonth, endOfMonth, isWithinInterval, subMonths, endOfDay } from "date-fns";
+import { startOfMonth, endOfMonth, isWithinInterval, subMonths, endOfDay, isFuture, isAfter } from "date-fns";
 
 export const BalanceCard = () => {
   const { transactions, currentMonth, paymentSources } = useFinance();
+
+  // Check if current selected month is in the future
+  const isCurrentMonthFuture = isAfter(startOfMonth(currentMonth), startOfMonth(new Date()));
 
   // Filter transactions for the current month
   const monthlyTransactions = transactions.filter(transaction => {
@@ -29,16 +32,13 @@ export const BalanceCard = () => {
     });
   });
 
-  // Calculate monthly expense
-  const monthlyExpense = monthlyTransactions.reduce((acc, curr) => {
+  // Calculate monthly expense (0 for future months)
+  const monthlyExpense = isCurrentMonthFuture ? 0 : monthlyTransactions.reduce((acc, curr) => {
     return curr.type === "expense" ? acc + Number(curr.amount) : acc;
   }, 0);
 
-  // Calculate total income from payment sources
-  const totalIncome = paymentSources.reduce((acc, curr) => acc + Number(curr.amount), 0);
-
-  // Calculate total balance as Income - Expense
-  const totalBalance = totalIncome - monthlyExpense;
+  // Calculate total income from payment sources (0 for future months)
+  const totalIncome = isCurrentMonthFuture ? 0 : paymentSources.reduce((acc, curr) => acc + Number(curr.amount), 0);
 
   // Calculate last month's balance
   const lastMonthIncome = lastMonthTransactions.reduce((acc, curr) => {
@@ -50,6 +50,12 @@ export const BalanceCard = () => {
   }, 0);
 
   const lastMonthBalance = lastMonthIncome - lastMonthExpense;
+
+  // For future months, total balance is just the last month's balance
+  // For current or past months, calculate normally
+  const totalBalance = isCurrentMonthFuture 
+    ? lastMonthBalance 
+    : totalIncome - monthlyExpense;
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat("en-IN", {
