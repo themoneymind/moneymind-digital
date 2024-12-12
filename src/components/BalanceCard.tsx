@@ -1,6 +1,15 @@
 import { ArrowDown, ArrowUp } from "lucide-react";
 import { useFinance } from "@/contexts/FinanceContext";
-import { startOfMonth, endOfMonth, isWithinInterval, subMonths, isFuture, isAfter, isBefore, isEqual } from "date-fns";
+import { 
+  startOfMonth, 
+  endOfMonth, 
+  isWithinInterval, 
+  subMonths, 
+  isFuture, 
+  isAfter, 
+  isBefore, 
+  isEqual 
+} from "date-fns";
 
 export const BalanceCard = () => {
   const { transactions, currentMonth, paymentSources } = useFinance();
@@ -12,6 +21,10 @@ export const BalanceCard = () => {
 
   // Check if current selected month is in the future
   const isCurrentMonthFuture = isAfter(startOfMonth(currentMonth), startOfMonth(new Date()));
+  const isCurrentMonth = isEqual(startOfMonth(currentMonth), startOfMonth(new Date()));
+
+  // Calculate current total balance from payment sources
+  const currentTotalBalance = paymentSources.reduce((acc, curr) => acc + Number(curr.amount), 0);
 
   // Filter transactions up to the current month
   const transactionsUpToMonth = transactions.filter(transaction => {
@@ -19,8 +32,8 @@ export const BalanceCard = () => {
     return isBefore(transactionDate, endOfMonth(currentMonth));
   });
 
-  // Calculate total balance up to the selected month
-  const totalBalance = transactionsUpToMonth.reduce((acc, curr) => {
+  // Calculate historical balance up to the selected month
+  const historicalBalance = transactionsUpToMonth.reduce((acc, curr) => {
     return curr.type === "income" ? acc + Number(curr.amount) : acc - Number(curr.amount);
   }, 0);
 
@@ -71,12 +84,10 @@ export const BalanceCard = () => {
     }).format(amount);
   };
 
-  // Use current total for current month, historical balance for past months
-  const displayBalance = isAfter(startOfMonth(currentMonth), startOfMonth(new Date()))
-    ? 0 // Future month
-    : isEqual(startOfMonth(currentMonth), startOfMonth(new Date()))
-    ? paymentSources.reduce((acc, curr) => acc + Number(curr.amount), 0) // Current month
-    : totalBalance; // Past month
+  // Determine which balance to display based on the month
+  const displayBalance = isCurrentMonth || isCurrentMonthFuture
+    ? currentTotalBalance  // Show current balance for present and future months
+    : historicalBalance;   // Show historical balance for past months
 
   return (
     <div className="p-6 mx-4 rounded-apple bg-gradient-to-br from-primary-gradient-from to-primary-gradient-to text-white shadow-lg">
