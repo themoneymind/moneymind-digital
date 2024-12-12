@@ -28,42 +28,56 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     // Get initial session
-    supabase.auth.getSession().then(({ data: { session }, error }) => {
-      if (error) {
-        console.error("Error getting session:", error);
-        return;
+    const initializeAuth = async () => {
+      try {
+        const { data: { session: initialSession }, error } = await supabase.auth.getSession();
+        if (error) {
+          console.error("Error getting initial session:", error);
+          return;
+        }
+        
+        if (initialSession) {
+          setSession(initialSession);
+          setUser(initialSession.user);
+        }
+      } catch (error) {
+        console.error("Unexpected error during initialization:", error);
       }
-      setSession(session);
-      setUser(session?.user ?? null);
-    });
+    };
+
+    initializeAuth();
 
     // Listen for auth changes
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (event, session) => {
+    } = supabase.auth.onAuthStateChange(async (event, currentSession) => {
       console.log("Auth state changed:", event);
       
-      if (event === 'SIGNED_OUT') {
+      if (event === 'SIGNED_OUT' || event === 'USER_DELETED') {
         setSession(null);
         setUser(null);
+        localStorage.removeItem("isFirstTimeUser");
         navigate("/signin");
         return;
       }
 
       if (event === 'TOKEN_REFRESHED') {
         console.log('Token refreshed successfully');
+        if (currentSession) {
+          setSession(currentSession);
+          setUser(currentSession.user);
+        }
       }
 
       if (event === 'SIGNED_IN') {
-        if (!session) {
+        if (!currentSession) {
           console.error("No session after sign in");
           return;
         }
         console.log('Signed in successfully');
+        setSession(currentSession);
+        setUser(currentSession.user);
       }
-
-      setSession(session);
-      setUser(session?.user ?? null);
     });
 
     return () => {
@@ -84,6 +98,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         return;
       }
       
+      // Clear all auth-related state
+      setSession(null);
+      setUser(null);
       localStorage.removeItem("isFirstTimeUser");
       navigate("/signin");
     } catch (error) {
