@@ -12,8 +12,10 @@ export const CreditCardStack = () => {
   const [nextBtnEnabled, setNextBtnEnabled] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(0);
 
-  // Filter credit card sources
-  const creditCards = paymentSources.filter(source => source.type === "credit");
+  // Filter credit card sources - make case insensitive
+  const creditCards = paymentSources.filter(source => 
+    source.type.toLowerCase() === "credit"
+  );
   console.log("All payment sources:", paymentSources);
   console.log("Filtered credit cards:", creditCards);
   
