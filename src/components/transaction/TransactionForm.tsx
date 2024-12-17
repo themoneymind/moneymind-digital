@@ -45,25 +45,19 @@ export const TransactionForm = ({
 }: TransactionFormProps) => {
   const { paymentSources } = useFinance();
   const [selectedCreditCard, setSelectedCreditCard] = useState("");
-  const [creditCardSources, setCreditCardSources] = useState<{ id: string; name: string }[]>([]);
-  const [bankSources, setBankSources] = useState<{ id: string; name: string }[]>([]);
-
-  useEffect(() => {
-    // Filter sources based on type
-    const creditCards = formattedSources.filter(source => {
-      const originalSource = paymentSources.find(s => s.id === source.id);
-      return originalSource?.type === "credit";
-    });
-    const banks = formattedSources.filter(source => {
-      const originalSource = paymentSources.find(s => s.id === source.id);
-      return originalSource?.type !== "credit";
-    });
-
-    setCreditCardSources(creditCards);
-    setBankSources(banks);
-  }, [formattedSources, paymentSources]);
 
   const isCreditCardBill = category.toLowerCase() === "credit card bill";
+
+  // Filter sources based on type
+  const creditCardSources = formattedSources.filter(source => {
+    const originalSource = paymentSources.find(s => s.id === source.id);
+    return originalSource?.type === "credit";
+  });
+
+  const bankSources = formattedSources.filter(source => {
+    const originalSource = paymentSources.find(s => s.id === source.id);
+    return originalSource?.type !== "credit";
+  });
 
   const handleCreditCardSelect = (cardId: string) => {
     setSelectedCreditCard(cardId);
@@ -72,33 +66,6 @@ export const TransactionForm = ({
       onAmountChange(card.amount.toString());
     }
   };
-
-  const defaultExpenseCategories = [
-    "Food",
-    "Transport",
-    "Shopping",
-    "Bills",
-    "Entertainment",
-    "Healthcare",
-    "Education",
-    "Groceries",
-    "Rent",
-    "Travel",
-    "Credit Card Bill",
-    "Other"
-  ];
-
-  const defaultIncomeCategories = [
-    "Salary",
-    "Freelance",
-    "Investment",
-    "Business",
-    "Rental",
-    "Dividends",
-    "Commission",
-    "Bonus",
-    "Other"
-  ];
 
   return (
     <div className="space-y-4">
@@ -139,10 +106,7 @@ export const TransactionForm = ({
             type={type}
             category={category}
             onCategoryChange={onCategoryChange}
-            customCategories={{
-              expense: [...new Set([...defaultExpenseCategories, ...customCategories.expense])],
-              income: [...new Set([...defaultIncomeCategories, ...customCategories.income])],
-            }}
+            customCategories={customCategories}
             onAddCustomCategory={onAddCustomCategory}
           />
           <PaymentSourceSelector
