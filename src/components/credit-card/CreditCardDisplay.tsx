@@ -1,18 +1,9 @@
 import { formatCurrency } from "@/utils/formatCurrency";
 import { cn } from "@/lib/utils";
+import { CreditCardUsage } from "@/hooks/useCreditCardCalculations";
 
 type CreditCardDisplayProps = {
-  card: {
-    id: string;
-    name: string;
-    amount: number;
-    totalSpent: number;
-    totalPayments: number;
-    usedCredit: number;
-    availableCredit: number;
-    utilizationRate: number;
-    utilizationColor: string;
-  };
+  card: CreditCardUsage;
   isSelected: boolean;
 };
 
@@ -46,7 +37,7 @@ export const CreditCardDisplay = ({ card, isSelected }: CreditCardDisplayProps) 
           </div>
           <div>
             <p className="text-sm opacity-75">Credit Limit</p>
-            <p className="font-medium">{formatCurrency(card.amount)}</p>
+            <p className="font-medium">{formatCurrency(card.creditLimit)}</p>
           </div>
         </div>
 

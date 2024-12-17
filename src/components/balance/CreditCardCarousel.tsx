@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from "react";
+import { useState } from "react";
 import { CreditCardDisplay } from "../credit-card/CreditCardDisplay";
 import { CreditCardUsage } from "@/hooks/useCreditCardCalculations";
 import { CreditCardNavigation } from "../credit-card/CreditCardNavigation";
@@ -15,27 +15,23 @@ interface CreditCardCarouselProps {
 export const CreditCardCarousel = ({ creditCardUsage }: CreditCardCarouselProps) => {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [canScrollPrev, setCanScrollPrev] = useState(false);
-  const [canScrollNext, setCanScrollNext] = useState(false);
+  const [canScrollNext, setCanScrollNext] = useState(creditCardUsage.length > 1);
 
-  const scrollPrev = useCallback(() => {
+  const scrollPrev = () => {
     if (selectedIndex > 0) {
       setSelectedIndex(selectedIndex - 1);
       setCanScrollNext(true);
       setCanScrollPrev(selectedIndex - 1 > 0);
     }
-  }, [selectedIndex]);
+  };
 
-  const scrollNext = useCallback(() => {
+  const scrollNext = () => {
     if (selectedIndex < creditCardUsage.length - 1) {
       setSelectedIndex(selectedIndex + 1);
       setCanScrollPrev(true);
       setCanScrollNext(selectedIndex + 1 < creditCardUsage.length - 1);
     }
-  }, [selectedIndex, creditCardUsage.length]);
-
-  useEffect(() => {
-    setCanScrollNext(creditCardUsage.length > 1);
-  }, [creditCardUsage.length]);
+  };
 
   if (creditCardUsage.length === 0) return null;
 
@@ -62,14 +58,16 @@ export const CreditCardCarousel = ({ creditCardUsage }: CreditCardCarouselProps)
         </CarouselContent>
       </Carousel>
 
-      <CreditCardNavigation
-        prevBtnEnabled={canScrollPrev}
-        nextBtnEnabled={canScrollNext}
-        onPrevClick={scrollPrev}
-        onNextClick={scrollNext}
-        totalCards={creditCardUsage.length}
-        selectedIndex={selectedIndex}
-      />
+      {creditCardUsage.length > 1 && (
+        <CreditCardNavigation
+          prevBtnEnabled={canScrollPrev}
+          nextBtnEnabled={canScrollNext}
+          onPrevClick={scrollPrev}
+          onNextClick={scrollNext}
+          totalCards={creditCardUsage.length}
+          selectedIndex={selectedIndex}
+        />
+      )}
     </div>
   );
 };
