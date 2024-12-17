@@ -5,6 +5,7 @@ import { formatCurrency } from "@/utils/formatCurrency";
 import useEmblaCarousel from 'embla-carousel-react';
 import { useCallback, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 export const CreditCardStack = () => {
   const { paymentSources, transactions, currentMonth } = useFinance();
@@ -68,6 +69,14 @@ export const CreditCardStack = () => {
     const creditLimit = Number(card.amount);
     const usedCredit = totalSpent - totalPayments;
     const availableCredit = creditLimit - usedCredit;
+    const utilizationRate = (usedCredit / creditLimit) * 100;
+
+    // Determine utilization color
+    const getUtilizationColor = (rate: number) => {
+      if (rate <= 30) return "bg-green-500";
+      if (rate <= 70) return "bg-yellow-500";
+      return "bg-red-500";
+    };
 
     return {
       ...card,
@@ -75,7 +84,8 @@ export const CreditCardStack = () => {
       totalPayments,
       usedCredit,
       availableCredit,
-      utilizationRate: (usedCredit / creditLimit) * 100
+      utilizationRate,
+      utilizationColor: getUtilizationColor(utilizationRate)
     };
   });
 
@@ -114,8 +124,8 @@ export const CreditCardStack = () => {
 
                     <div className="h-2 bg-white/20 rounded-full overflow-hidden">
                       <div
-                        className="h-full bg-white/40 transition-all"
-                        style={{ width: `${Math.min(card.utilizationRate, 100)}%` }}
+                        className={cn("h-full transition-all", card.utilizationColor)}
+                        style={{ width: `${Math.min(card.utilizationRate, 100)}%`, opacity: 0.8 }}
                       />
                     </div>
 
