@@ -85,14 +85,6 @@ export const BalanceCard = () => {
     return curr.type === "expense" ? acc + Number(curr.amount) : acc;
   }, 0);
 
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat("en-IN", {
-      style: "currency",
-      currency: "INR",
-      maximumFractionDigits: 0,
-    }).format(amount);
-  };
-
   // Determine which balance to display based on the month
   const displayBalance = isCurrentMonth || isCurrentMonthFuture
     ? currentTotalBalance  // Show current balance for present and future months
@@ -109,7 +101,6 @@ export const BalanceCard = () => {
               lastMonthClosingBalance={lastMonthClosingBalance}
               monthlyIncome={monthlyIncome}
               monthlyExpense={monthlyExpense}
-              formatCurrency={formatCurrency}
             />
           </div>
         </div>

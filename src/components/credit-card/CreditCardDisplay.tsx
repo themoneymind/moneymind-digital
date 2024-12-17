@@ -1,4 +1,3 @@
-import { CreditCard } from "lucide-react";
 import { formatCurrency } from "@/utils/formatCurrency";
 import { cn } from "@/lib/utils";
 
