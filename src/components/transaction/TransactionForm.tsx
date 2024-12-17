@@ -52,6 +52,7 @@ export const TransactionForm = ({
     "Groceries",
     "Rent",
     "Travel",
+    "Credit Card Bill",
     "Other"
   ];
 
@@ -85,8 +86,8 @@ export const TransactionForm = ({
         category={category}
         onCategoryChange={onCategoryChange}
         customCategories={{
-          expense: [...defaultExpenseCategories, ...customCategories.expense],
-          income: [...defaultIncomeCategories, ...customCategories.income],
+          expense: [...new Set([...defaultExpenseCategories, ...customCategories.expense])],
+          income: [...new Set([...defaultIncomeCategories, ...customCategories.income])],
         }}
         onAddCustomCategory={onAddCustomCategory}
       />
