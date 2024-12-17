@@ -19,10 +19,10 @@ export const CreditCardStack = () => {
   const { activeIndex, setActiveIndex, isDragging, handlers } = useCardSwipe(creditCards.length);
 
   return (
-    <div className="mt-4">
+    <div className="mt-8">
       <div 
         ref={containerRef}
-        className="relative h-52 w-full select-none touch-pan-y mx-auto max-w-md"
+        className="relative h-52 w-full select-none touch-pan-y mx-auto max-w-md px-4"
         {...handlers}
       >
         {creditCards.map((card, index) => (

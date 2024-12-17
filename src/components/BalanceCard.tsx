@@ -7,13 +7,15 @@ import {
   subMonths, 
   isFuture, 
   isAfter, 
-  isBefore, 
   isEqual 
 } from "date-fns";
 import { CreditCardStack } from "./credit-card/CreditCardStack";
+import { TabSelector } from "./TabSelector";
+import { useState } from "react";
 
 export const BalanceCard = () => {
   const { transactions, currentMonth, paymentSources } = useFinance();
+  const [activeTab, setActiveTab] = useState("bank");
 
   // Get the earliest transaction date to determine when the user started using the app
   const earliestTransaction = transactions.length > 0 
@@ -24,8 +26,10 @@ export const BalanceCard = () => {
   const isCurrentMonthFuture = isAfter(startOfMonth(currentMonth), startOfMonth(new Date()));
   const isCurrentMonth = isEqual(startOfMonth(currentMonth), startOfMonth(new Date()));
 
-  // Calculate current total balance from payment sources
-  const currentTotalBalance = paymentSources.reduce((acc, curr) => acc + Number(curr.amount), 0);
+  // Calculate current total balance from payment sources based on active tab
+  const currentTotalBalance = paymentSources
+    .filter(source => activeTab === "bank" ? source.type === "bank" : source.type === "credit")
+    .reduce((acc, curr) => acc + Number(curr.amount), 0);
 
   // Filter transactions up to the current month
   const transactionsUpToMonth = transactions.filter(transaction => {
@@ -92,6 +96,9 @@ export const BalanceCard = () => {
 
   return (
     <div className="space-y-4">
+      <div className="mx-4 mb-6">
+        <TabSelector activeTab={activeTab} onTabChange={setActiveTab} />
+      </div>
       <div className="mx-4 p-6 rounded-apple bg-gradient-to-br from-primary-gradient-from to-primary-gradient-to text-white shadow-lg">
         <h2 className="mb-2 text-sm font-medium opacity-90">Total Balance</h2>
         <p className="mb-2 text-4xl font-bold">{formatCurrency(displayBalance)}</p>
@@ -122,8 +129,8 @@ export const BalanceCard = () => {
         </div>
       </div>
       
-      {/* Credit Card Stack */}
-      <CreditCardStack />
+      {/* Only show CreditCardStack when credit tab is active */}
+      {activeTab === "credit" && <CreditCardStack />}
     </div>
   );
 };

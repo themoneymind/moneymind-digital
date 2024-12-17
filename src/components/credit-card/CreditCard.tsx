@@ -25,14 +25,14 @@ export const CreditCard = ({ card, index, activeIndex, isDragging, onClick }: Cr
   return (
     <div
       className={cn(
-        "absolute inset-x-4 h-44 rounded-apple p-6 cursor-pointer",
+        "absolute inset-x-0 h-44 rounded-apple p-6 cursor-pointer",
         "bg-gradient-to-br from-violet-600 to-indigo-600",
         "transition-all duration-300 ease-out transform-gpu will-change-transform",
         isActive && "z-30 translate-y-0 opacity-100 scale-100",
-        isNext && "z-20 translate-y-4 opacity-90 scale-[0.97] blur-[1px]",
-        isNextNext && "z-10 translate-y-8 opacity-80 scale-[0.94] blur-[2px]",
+        isNext && "z-20 translate-y-3 opacity-90 scale-[0.98] blur-[1px]",
+        isNextNext && "z-10 translate-y-6 opacity-80 scale-[0.96] blur-[2px]",
         isPrevious && "-translate-y-4 opacity-0 scale-90 pointer-events-none",
-        isFuture && "translate-y-12 opacity-0 scale-85 pointer-events-none",
+        isFuture && "translate-y-8 opacity-0 scale-85 pointer-events-none",
         !isActive && "pointer-events-none"
       )}
       onClick={() => !isDragging && onClick()}
