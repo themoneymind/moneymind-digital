@@ -1,28 +1,19 @@
-import { ArrowDown, ArrowUp } from "lucide-react";
 import { useFinance } from "@/contexts/FinanceContext";
 import { 
   startOfMonth, 
   endOfMonth, 
   isWithinInterval, 
   subMonths, 
-  isFuture, 
   isAfter, 
   isBefore, 
   isEqual 
 } from "date-fns";
-import { CreditCardDisplay } from "./credit-card/CreditCardDisplay";
-import useEmblaCarousel from 'embla-carousel-react';
-import { useState, useCallback, useEffect } from "react";
 import { useCreditCardCalculations } from "@/hooks/useCreditCardCalculations";
+import { BalanceInfo } from "./balance/BalanceInfo";
+import { CreditCardCarousel } from "./balance/CreditCardCarousel";
 
 export const BalanceCard = () => {
   const { transactions, currentMonth, paymentSources } = useFinance();
-  const [emblaRef, emblaApi] = useEmblaCarousel({ 
-    loop: false,
-    align: 'center',
-    containScroll: 'trimSnaps'
-  });
-  const [selectedIndex, setSelectedIndex] = useState(0);
 
   // Get credit cards
   const creditCards = paymentSources.filter(source => 
@@ -31,18 +22,6 @@ export const BalanceCard = () => {
   
   const { calculateCreditCardUsage } = useCreditCardCalculations(creditCards, transactions, currentMonth);
   const creditCardUsage = calculateCreditCardUsage();
-
-  const onSelect = useCallback(() => {
-    if (!emblaApi) return;
-    setSelectedIndex(emblaApi.selectedScrollSnap());
-  }, [emblaApi]);
-
-  useEffect(() => {
-    if (!emblaApi) return;
-    onSelect();
-    emblaApi.on('select', onSelect);
-    emblaApi.on('reInit', onSelect);
-  }, [emblaApi, onSelect]);
 
   // Get the earliest transaction date to determine when the user started using the app
   const earliestTransaction = transactions.length > 0 
@@ -121,76 +100,27 @@ export const BalanceCard = () => {
 
   return (
     <div className="relative">
-      <div className="overflow-hidden" ref={emblaRef}>
+      <div className="overflow-hidden">
         <div className="flex">
           {/* Main Balance Card */}
           <div className="flex-[0_0_100%] min-w-0">
             <div className="p-6 mx-4 rounded-apple bg-gradient-to-br from-primary-gradient-from to-primary-gradient-to text-white shadow-lg">
-              <h2 className="mb-2 text-sm font-medium opacity-90">Total Balance</h2>
-              <p className="mb-2 text-4xl font-bold">{formatCurrency(displayBalance)}</p>
-              <p className="mb-2 text-xs opacity-75">
-                Last month's closing balance: {formatCurrency(lastMonthClosingBalance)}
-              </p>
-              <div className="h-px bg-white/20 mb-4" />
-              <div className="flex justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="bg-green-400/20 p-1.5 rounded-full">
-                    <ArrowDown className="w-4 h-4 text-green-400" />
-                  </div>
-                  <div>
-                    <p className="text-sm opacity-90">Income</p>
-                    <p className="text-lg font-semibold">{formatCurrency(monthlyIncome)}</p>
-                  </div>
-                </div>
-                <div className="w-px h-12 bg-white/20" />
-                <div className="flex items-center gap-3 mr-2">
-                  <div className="bg-red-400/20 p-1.5 rounded-full">
-                    <ArrowUp className="w-4 h-4 text-red-400" />
-                  </div>
-                  <div>
-                    <p className="text-sm opacity-90">Expense</p>
-                    <p className="text-lg font-semibold">{formatCurrency(monthlyExpense)}</p>
-                  </div>
-                </div>
-              </div>
+              <BalanceInfo 
+                displayBalance={displayBalance}
+                lastMonthClosingBalance={lastMonthClosingBalance}
+                monthlyIncome={monthlyIncome}
+                monthlyExpense={monthlyExpense}
+                formatCurrency={formatCurrency}
+              />
             </div>
           </div>
 
           {/* Credit Cards */}
-          {creditCardUsage.map((card, index) => (
-            <div
-              key={card.id}
-              className="flex-[0_0_100%] min-w-0"
-            >
-              <div className="mx-4">
-                <CreditCardDisplay 
-                  card={card}
-                  isSelected={selectedIndex === index}
-                />
-              </div>
-            </div>
-          ))}
+          {creditCardUsage.length > 0 && (
+            <CreditCardCarousel creditCardUsage={creditCardUsage} />
+          )}
         </div>
       </div>
-
-      {/* Scroll Dots */}
-      {creditCardUsage.length > 0 && (
-        <div className="flex justify-center gap-1.5 mt-4">
-          <div
-            className={`w-2 h-2 rounded-full transition-colors ${
-              selectedIndex === 0 ? 'bg-white' : 'bg-white/30'
-            }`}
-          />
-          {creditCardUsage.map((_, index) => (
-            <div
-              key={index}
-              className={`w-2 h-2 rounded-full transition-colors ${
-                selectedIndex === index + 1 ? 'bg-white' : 'bg-white/30'
-              }`}
-            />
-          ))}
-        </div>
-      )}
     </div>
   );
 };
