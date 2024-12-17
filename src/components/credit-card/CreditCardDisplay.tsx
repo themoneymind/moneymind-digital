@@ -1,4 +1,4 @@
-import { CreditCard, ArrowUp, ArrowDown } from "lucide-react";
+import { CreditCard } from "lucide-react";
 import { formatCurrency } from "@/utils/formatCurrency";
 import { cn } from "@/lib/utils";
 
@@ -20,10 +20,10 @@ type CreditCardDisplayProps = {
 export const CreditCardDisplay = ({ card, isSelected }: CreditCardDisplayProps) => {
   return (
     <div
-      className="p-6 bg-gradient-to-br from-violet-500 to-violet-600 rounded-apple text-white shadow-lg transform transition-transform duration-300"
-      style={{
-        transform: `scale(${isSelected ? 1 : 0.9})`,
-      }}
+      className={cn(
+        "p-6 bg-gradient-to-br from-violet-500 to-violet-600 rounded-apple text-white shadow-lg transform transition-all duration-300",
+        isSelected ? "scale-100" : "scale-95 opacity-75"
+      )}
     >
       <div className="flex items-center justify-between mb-6">
         <div className="w-12 h-8 bg-white/20 rounded-md flex items-center justify-center">
@@ -37,7 +37,7 @@ export const CreditCardDisplay = ({ card, isSelected }: CreditCardDisplayProps) 
 
       <div className="space-y-6">
         <p className="text-2xl font-mono tracking-widest">
-          5000 0000 0000 0000
+          •••• •••• •••• {card.id.slice(-4)}
         </p>
 
         <div className="flex justify-between items-end">
@@ -46,8 +46,21 @@ export const CreditCardDisplay = ({ card, isSelected }: CreditCardDisplayProps) 
             <p className="font-medium">{card.name}</p>
           </div>
           <div>
-            <p className="text-sm opacity-75">Expires</p>
-            <p className="font-medium">12/25</p>
+            <p className="text-sm opacity-75">Balance</p>
+            <p className="font-medium">{formatCurrency(card.amount)}</p>
+          </div>
+        </div>
+
+        <div className="mt-4">
+          <div className="flex justify-between text-sm mb-1">
+            <span>Credit Used</span>
+            <span>{Math.round(card.utilizationRate)}%</span>
+          </div>
+          <div className="h-2 bg-white/20 rounded-full overflow-hidden">
+            <div 
+              className={`h-full ${card.utilizationColor}`} 
+              style={{ width: `${Math.min(100, card.utilizationRate)}%` }}
+            />
           </div>
         </div>
       </div>

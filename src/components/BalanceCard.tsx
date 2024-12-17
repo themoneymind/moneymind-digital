@@ -99,27 +99,25 @@ export const BalanceCard = () => {
     : historicalBalance;   // Show historical balance for past months
 
   return (
-    <div className="relative">
-      <div className="overflow-hidden">
-        <div className="flex">
-          {/* Main Balance Card */}
-          <div className="flex-[0_0_100%] min-w-0">
-            <div className="p-6 mx-4 rounded-apple bg-gradient-to-br from-primary-gradient-from to-primary-gradient-to text-white shadow-lg">
-              <BalanceInfo 
-                displayBalance={displayBalance}
-                lastMonthClosingBalance={lastMonthClosingBalance}
-                monthlyIncome={monthlyIncome}
-                monthlyExpense={monthlyExpense}
-                formatCurrency={formatCurrency}
-              />
-            </div>
+    <div className="relative overflow-hidden">
+      <div className="flex flex-col gap-4">
+        {/* Main Balance Card */}
+        <div className="flex-[0_0_100%] min-w-0">
+          <div className="p-6 mx-4 rounded-apple bg-gradient-to-br from-primary-gradient-from to-primary-gradient-to text-white shadow-lg">
+            <BalanceInfo 
+              displayBalance={displayBalance}
+              lastMonthClosingBalance={lastMonthClosingBalance}
+              monthlyIncome={monthlyIncome}
+              monthlyExpense={monthlyExpense}
+              formatCurrency={formatCurrency}
+            />
           </div>
-
-          {/* Credit Cards */}
-          {creditCardUsage.length > 0 && (
-            <CreditCardCarousel creditCardUsage={creditCardUsage} />
-          )}
         </div>
+
+        {/* Credit Cards */}
+        {creditCardUsage.length > 0 && (
+          <CreditCardCarousel creditCardUsage={creditCardUsage} />
+        )}
       </div>
     </div>
   );
