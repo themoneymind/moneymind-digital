@@ -3,10 +3,12 @@ import { useFinance } from "@/contexts/FinanceContext";
 import { TransactionType } from "@/types/finance";
 import { TransactionForm } from "./transaction/TransactionForm";
 import { useTransactionValidation } from "@/hooks/useTransactionValidation";
+import { useToast } from "@/hooks/use-toast";
 
 export const NewTransaction = () => {
   const { addTransaction, getFormattedPaymentSources, paymentSources } = useFinance();
   const { validateAmount, validatePaymentSource, validateExpenseBalance } = useTransactionValidation();
+  const { toast } = useToast();
   
   const [type, setType] = useState<TransactionType>("expense");
   const [amount, setAmount] = useState("");
@@ -22,9 +24,6 @@ export const NewTransaction = () => {
   });
 
   const formattedSources = getFormattedPaymentSources();
-  console.log("Category selected:", category);
-  console.log("Available formatted sources:", formattedSources);
-  console.log("Raw payment sources:", paymentSources);
 
   const handleAddCustomCategory = (newCategory: string) => {
     setCustomCategories((prev) => ({
@@ -34,8 +33,7 @@ export const NewTransaction = () => {
   };
 
   const handleSubmit = async () => {
-    console.log("Submitting transaction with source:", source);
-    console.log("Transaction category:", category);
+    const isCreditCardBill = category.toLowerCase() === "credit card bill";
     
     const validAmount = validateAmount(amount);
     if (!validAmount) return;
@@ -45,7 +43,14 @@ export const NewTransaction = () => {
 
     const { baseSourceId, baseSource } = sourceValidation;
 
-    if (!validateExpenseBalance(baseSource, validAmount, type)) return;
+    if (!validateExpenseBalance(baseSource, validAmount, type)) {
+      toast({
+        title: "Error",
+        description: "Insufficient balance in the payment source",
+        variant: "destructive",
+      });
+      return;
+    }
 
     try {
       await addTransaction({
@@ -53,7 +58,9 @@ export const NewTransaction = () => {
         amount: validAmount,
         category,
         source: baseSourceId,
-        description,
+        description: isCreditCardBill 
+          ? `Credit card bill payment - ${description}` 
+          : description,
       });
 
       // Reset form after successful submission
@@ -61,8 +68,18 @@ export const NewTransaction = () => {
       setCategory("");
       setSource("");
       setDescription("");
+
+      toast({
+        title: "Success",
+        description: "Transaction added successfully",
+      });
     } catch (error) {
       console.error("Error adding transaction:", error);
+      toast({
+        title: "Error",
+        description: "Failed to add transaction",
+        variant: "destructive",
+      });
     }
   };
 
