@@ -1,11 +1,11 @@
 import { ArrowDown, ArrowUp } from "lucide-react";
+import { formatCurrency } from "@/utils/formatCurrency";
 
 interface BalanceInfoProps {
   displayBalance: number;
   lastMonthClosingBalance: number;
   monthlyIncome: number;
   monthlyExpense: number;
-  formatCurrency: (amount: number) => string;
 }
 
 export const BalanceInfo = ({
@@ -13,7 +13,6 @@ export const BalanceInfo = ({
   lastMonthClosingBalance,
   monthlyIncome,
   monthlyExpense,
-  formatCurrency,
 }: BalanceInfoProps) => {
   return (
     <>
