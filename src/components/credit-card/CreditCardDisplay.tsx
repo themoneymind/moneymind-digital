@@ -20,54 +20,34 @@ type CreditCardDisplayProps = {
 export const CreditCardDisplay = ({ card, isSelected }: CreditCardDisplayProps) => {
   return (
     <div
-      className="p-6 bg-gradient-to-br from-primary-gradient-from to-primary-gradient-to rounded-apple text-white shadow-lg transform transition-transform duration-300"
+      className="p-6 bg-gradient-to-br from-violet-500 to-violet-600 rounded-apple text-white shadow-lg transform transition-transform duration-300"
       style={{
         transform: `scale(${isSelected ? 1 : 0.9})`,
       }}
     >
-      <div className="flex items-center justify-between mb-4">
-        <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
-          <CreditCard className="w-6 h-6 text-white" />
+      <div className="flex items-center justify-between mb-6">
+        <div className="w-12 h-8 bg-white/20 rounded-md flex items-center justify-center">
+          <div className="w-6 h-4 bg-yellow-400/90 rounded-sm" />
         </div>
-        <p className="text-sm font-medium opacity-90">{card.name}</p>
+        <div className="flex space-x-1">
+          <div className="w-8 h-8 rounded-full bg-red-500/90" />
+          <div className="w-8 h-8 rounded-full bg-orange-500/90 -ml-4 mix-blend-multiply" />
+        </div>
       </div>
 
-      <div className="space-y-4">
-        <div>
-          <p className="text-sm opacity-75">Credit Limit</p>
-          <p className="text-2xl font-bold">{formatCurrency(card.amount)}</p>
-        </div>
+      <div className="space-y-6">
+        <p className="text-2xl font-mono tracking-widest">
+          5000 0000 0000 0000
+        </p>
 
-        <div className="h-2 bg-white/20 rounded-full overflow-hidden">
-          <div
-            className={cn("h-full transition-all", card.utilizationColor)}
-            style={{ width: `${Math.min(card.utilizationRate, 100)}%`, opacity: 0.8 }}
-          />
-        </div>
-
-        <div className="flex justify-between">
+        <div className="flex justify-between items-end">
           <div>
-            <div className="flex items-center gap-2">
-              <div className="p-1 bg-red-400/20 rounded-full">
-                <ArrowUp className="w-3 h-3 text-red-400" />
-              </div>
-              <p className="text-sm opacity-75">Used</p>
-            </div>
-            <p className="text-lg font-semibold mt-1">
-              {formatCurrency(card.usedCredit)}
-            </p>
+            <p className="text-sm opacity-75">Card Holder</p>
+            <p className="font-medium">{card.name}</p>
           </div>
-
           <div>
-            <div className="flex items-center gap-2">
-              <div className="p-1 bg-green-400/20 rounded-full">
-                <ArrowDown className="w-3 h-3 text-green-400" />
-              </div>
-              <p className="text-sm opacity-75">Available</p>
-            </div>
-            <p className="text-lg font-semibold mt-1">
-              {formatCurrency(card.availableCredit)}
-            </p>
+            <p className="text-sm opacity-75">Expires</p>
+            <p className="font-medium">12/25</p>
           </div>
         </div>
       </div>
