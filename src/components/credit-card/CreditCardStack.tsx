@@ -43,19 +43,37 @@ export const CreditCardStack = () => {
     <div className="p-6 mx-4 space-y-4">
       <h2 className="text-lg font-semibold text-gray-900">Credit Cards</h2>
       <div className="relative">
-        <div className="overflow-hidden" ref={emblaRef}>
-          <div className="flex">
-            {creditCardUsage.map((card, index) => (
-              <div
-                key={card.id}
-                className="flex-[0_0_100%] min-w-0 relative pl-2 pr-4"
-              >
-                <CreditCardDisplay 
-                  card={card}
-                  isSelected={selectedIndex === index}
-                />
-              </div>
-            ))}
+        {/* Stack effect container */}
+        <div className="relative h-[250px]">
+          {/* Background cards for stack effect */}
+          <div 
+            className="absolute top-4 left-1/2 -translate-x-1/2 w-[95%] opacity-20"
+            style={{ transform: 'translateX(-48%) rotate(-4deg)' }}
+          >
+            <div className="w-full h-48 bg-gray-300 rounded-apple" />
+          </div>
+          <div 
+            className="absolute top-2 left-1/2 -translate-x-1/2 w-[97%] opacity-40"
+            style={{ transform: 'translateX(-49%) rotate(-2deg)' }}
+          >
+            <div className="w-full h-48 bg-gray-400 rounded-apple" />
+          </div>
+          
+          {/* Main carousel */}
+          <div className="overflow-hidden relative" ref={emblaRef}>
+            <div className="flex">
+              {creditCardUsage.map((card, index) => (
+                <div
+                  key={card.id}
+                  className="flex-[0_0_100%] min-w-0 relative pl-2 pr-4"
+                >
+                  <CreditCardDisplay 
+                    card={card}
+                    isSelected={selectedIndex === index}
+                  />
+                </div>
+              ))}
+            </div>
           </div>
         </div>
 
