@@ -18,15 +18,13 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-gray-50 pb-24 font-sans">
       <Header />
-      <div className="max-w-md mx-auto">
-        <div className="-mt-6 relative z-10">
-          <div className="bg-white rounded-t-3xl px-4 pt-6 pb-4">
-            <MonthSelector />
-            <BalanceCard />
-            <NewTransaction />
-            <RecentTransactions />
-            <PaymentSources />
-          </div>
+      <div className="-mt-6 relative z-10">
+        <div className="bg-white rounded-t-3xl px-4 pt-6 pb-4">
+          <MonthSelector />
+          <BalanceCard />
+          <NewTransaction />
+          <RecentTransactions />
+          <PaymentSources />
         </div>
       </div>
       <BottomNav />
