@@ -10,6 +10,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Navigate } from "react-router-dom";
 import { Greeting } from "@/components/Greeting";
 import { MotivationalQuote } from "@/components/MotivationalQuote";
+import { CreditCardStack } from "@/components/credit-card/CreditCardStack";
 
 const Index = () => {
   const { user } = useAuth();
@@ -31,6 +32,7 @@ const Index = () => {
         </div>
         <MonthSelector />
         <BalanceCard />
+        <CreditCardStack />
         <NewTransaction />
         <RecentTransactions />
         <PaymentSources />
