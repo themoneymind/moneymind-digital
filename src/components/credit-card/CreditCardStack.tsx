@@ -89,7 +89,7 @@ export const CreditCardStack = () => {
       <div className="relative">
         <div className="overflow-hidden" ref={emblaRef}>
           <div className="flex">
-            {creditCardUsage.map((card, index) => (
+            {creditCards.map((card, index) => (
               <div
                 key={card.id}
                 className="flex-[0_0_100%] min-w-0 relative pl-2 pr-4"

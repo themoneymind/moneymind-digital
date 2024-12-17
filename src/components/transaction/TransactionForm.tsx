@@ -5,7 +5,7 @@ import { TransactionTypeSelector } from "./TransactionTypeSelector";
 import { CategorySelector } from "./CategorySelector";
 import { PaymentSourceSelector } from "./PaymentSourceSelector";
 import { useFinance } from "@/contexts/FinanceContext";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 type TransactionFormProps = {
   type: TransactionType;
@@ -67,6 +67,33 @@ export const TransactionForm = ({
     }
   };
 
+  const defaultExpenseCategories = [
+    "Food",
+    "Transport",
+    "Shopping",
+    "Bills",
+    "Entertainment",
+    "Healthcare",
+    "Education",
+    "Groceries",
+    "Rent",
+    "Travel",
+    "Credit Card Bill",
+    "Other"
+  ];
+
+  const defaultIncomeCategories = [
+    "Salary",
+    "Freelance",
+    "Investment",
+    "Business",
+    "Rental",
+    "Dividends",
+    "Commission",
+    "Bonus",
+    "Other"
+  ];
+
   return (
     <div className="space-y-4">
       <TransactionTypeSelector type={type} onTypeChange={onTypeChange} />
@@ -106,7 +133,10 @@ export const TransactionForm = ({
             type={type}
             category={category}
             onCategoryChange={onCategoryChange}
-            customCategories={customCategories}
+            customCategories={{
+              expense: [...new Set([...defaultExpenseCategories, ...customCategories.expense])],
+              income: [...new Set([...defaultIncomeCategories, ...customCategories.income])],
+            }}
             onAddCustomCategory={onAddCustomCategory}
           />
           <PaymentSourceSelector
