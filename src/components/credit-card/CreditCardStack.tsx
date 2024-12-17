@@ -14,7 +14,12 @@ export const CreditCardStack = () => {
   const [selectedIndex, setSelectedIndex] = useState(0);
 
   // Filter credit card sources
-  const creditCards = paymentSources.filter(source => source.type === "credit");
+  const creditCards = paymentSources.filter(source => {
+    console.log("Checking source:", source);
+    return source.type === "credit";
+  });
+  
+  console.log("Found credit cards:", creditCards);
 
   const scrollPrev = useCallback(() => emblaApi && emblaApi.scrollPrev(), [emblaApi]);
   const scrollNext = useCallback(() => emblaApi && emblaApi.scrollNext(), [emblaApi]);

@@ -22,7 +22,9 @@ export const NewTransaction = () => {
   });
 
   const formattedSources = getFormattedPaymentSources();
+  console.log("Category selected:", category);
   console.log("Available formatted sources:", formattedSources);
+  console.log("Raw payment sources:", paymentSources);
 
   const handleAddCustomCategory = (newCategory: string) => {
     setCustomCategories((prev) => ({
@@ -33,6 +35,7 @@ export const NewTransaction = () => {
 
   const handleSubmit = async () => {
     console.log("Submitting transaction with source:", source);
+    console.log("Transaction category:", category);
     
     const validAmount = validateAmount(amount);
     if (!validAmount) return;
