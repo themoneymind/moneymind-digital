@@ -9,6 +9,11 @@ export const CreditCardStack = () => {
   // Filter only credit type payment sources
   const creditCards = paymentSources.filter(source => source.type === "credit");
 
+  // If no credit cards, don't render anything
+  if (creditCards.length === 0) {
+    return null;
+  }
+
   const formatCardNumber = (name: string) => {
     return `•••• ${name.slice(-4)}`;
   };
@@ -47,18 +52,20 @@ export const CreditCardStack = () => {
         </div>
       ))}
       
-      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 flex gap-1">
-        {creditCards.map((_, index) => (
-          <button
-            key={index}
-            className={cn(
-              "w-1.5 h-1.5 rounded-full transition-all",
-              index === activeIndex ? "bg-white w-3" : "bg-white/50"
-            )}
-            onClick={() => setActiveIndex(index)}
-          />
-        ))}
-      </div>
+      {creditCards.length > 1 && (
+        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 flex gap-1">
+          {creditCards.map((_, index) => (
+            <button
+              key={index}
+              className={cn(
+                "w-1.5 h-1.5 rounded-full transition-all",
+                index === activeIndex ? "bg-white w-3" : "bg-white/50"
+              )}
+              onClick={() => setActiveIndex(index)}
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 };
