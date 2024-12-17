@@ -12,28 +12,30 @@ import { useCreditCardCalculations } from "@/hooks/useCreditCardCalculations";
 import { BalanceInfo } from "./balance/BalanceInfo";
 import { CreditCardCarousel } from "./balance/CreditCardCarousel";
 
-export const BalanceCard = () => {
+interface BalanceCardProps {
+  filterType?: "bank" | "credit";
+}
+
+export const BalanceCard = ({ filterType }: BalanceCardProps) => {
   const { transactions, currentMonth, paymentSources } = useFinance();
 
-  // Get credit cards
-  const creditCards = paymentSources.filter(source => 
-    source.type?.toLowerCase() === "credit"
-  );
+  // Filter payment sources based on type
+  const filteredSources = filterType 
+    ? paymentSources.filter(source => source.type?.toLowerCase() === filterType)
+    : paymentSources;
+  
+  // Get credit cards for the carousel
+  const creditCards = filterType === "credit" ? filteredSources : [];
   
   const { calculateCreditCardUsage } = useCreditCardCalculations(creditCards, transactions, currentMonth);
   const creditCardUsage = calculateCreditCardUsage();
-
-  // Get the earliest transaction date to determine when the user started using the app
-  const earliestTransaction = transactions.length > 0 
-    ? new Date(Math.min(...transactions.map(t => new Date(t.date).getTime())))
-    : new Date();
 
   // Check if current selected month is in the future
   const isCurrentMonthFuture = isAfter(startOfMonth(currentMonth), startOfMonth(new Date()));
   const isCurrentMonth = isEqual(startOfMonth(currentMonth), startOfMonth(new Date()));
 
-  // Calculate current total balance from payment sources
-  const currentTotalBalance = paymentSources.reduce((acc, curr) => acc + Number(curr.amount), 0);
+  // Calculate current total balance from filtered payment sources
+  const currentTotalBalance = filteredSources.reduce((acc, curr) => acc + Number(curr.amount), 0);
 
   // Filter transactions up to the current month
   const transactionsUpToMonth = transactions.filter(transaction => {
@@ -105,8 +107,8 @@ export const BalanceCard = () => {
           </div>
         </div>
 
-        {/* Credit Cards */}
-        {creditCardUsage.length > 0 && (
+        {/* Credit Cards Carousel - Only show for credit card tab */}
+        {filterType === "credit" && creditCardUsage.length > 0 && (
           <CreditCardCarousel creditCardUsage={creditCardUsage} />
         )}
       </div>
