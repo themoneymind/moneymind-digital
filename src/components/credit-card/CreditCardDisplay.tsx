@@ -45,7 +45,7 @@ export const CreditCardDisplay = ({ card, isSelected }: CreditCardDisplayProps) 
             <p className="font-medium">{card.name}</p>
           </div>
           <div>
-            <p className="text-sm opacity-75">Balance</p>
+            <p className="text-sm opacity-75">Credit Limit</p>
             <p className="font-medium">{formatCurrency(card.amount)}</p>
           </div>
         </div>
@@ -60,6 +60,10 @@ export const CreditCardDisplay = ({ card, isSelected }: CreditCardDisplayProps) 
               className={`h-full ${card.utilizationColor}`} 
               style={{ width: `${Math.min(100, card.utilizationRate)}%` }}
             />
+          </div>
+          <div className="flex justify-between mt-2 text-sm">
+            <span>Used: {formatCurrency(card.usedCredit)}</span>
+            <span>Available: {formatCurrency(card.availableCredit)}</span>
           </div>
         </div>
       </div>

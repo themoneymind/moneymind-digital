@@ -61,12 +61,14 @@ export const useCreditCardCalculations = (
       };
 
       return {
-        ...card,
+        id: card.id,
+        name: card.name,
+        amount: creditLimit,
         totalSpent,
         totalPayments,
-        usedCredit,
-        availableCredit,
-        utilizationRate,
+        usedCredit: Math.max(0, usedCredit), // Ensure it doesn't go negative
+        availableCredit: Math.max(0, availableCredit),
+        utilizationRate: Math.max(0, Math.min(100, utilizationRate)), // Keep between 0-100
         utilizationColor: getUtilizationColor(utilizationRate)
       };
     });
