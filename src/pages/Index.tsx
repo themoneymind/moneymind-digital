@@ -5,11 +5,8 @@ import { NewTransaction } from "@/components/NewTransaction";
 import { RecentTransactions } from "@/components/RecentTransactions";
 import { PaymentSources } from "@/components/PaymentSources";
 import { BottomNav } from "@/components/BottomNav";
-import { ProfilePicture } from "@/components/ProfilePicture";
 import { useAuth } from "@/contexts/AuthContext";
 import { Navigate } from "react-router-dom";
-import { Greeting } from "@/components/Greeting";
-import { MotivationalQuote } from "@/components/MotivationalQuote";
 
 const Index = () => {
   const { user } = useAuth();
@@ -21,19 +18,14 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-gray-50 pb-24 max-w-md mx-auto font-sans">
       <Header />
-      <div className="space-y-6 py-4">
-        <div className="flex items-center justify-between px-6">
-          <div className="flex flex-col items-start">
-            <Greeting />
-            <MotivationalQuote />
-          </div>
-          <ProfilePicture />
+      <div className="space-y-6 -mt-6 relative z-10">
+        <div className="bg-white rounded-t-3xl px-6 pt-6 pb-4">
+          <MonthSelector />
+          <BalanceCard />
+          <NewTransaction />
+          <RecentTransactions />
+          <PaymentSources />
         </div>
-        <MonthSelector />
-        <BalanceCard />
-        <NewTransaction />
-        <RecentTransactions />
-        <PaymentSources />
       </div>
       <BottomNav />
     </div>

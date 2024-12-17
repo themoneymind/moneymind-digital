@@ -21,11 +21,9 @@ export const Greeting = () => {
   };
 
   return (
-    <div className="pl-2">
-      <h1 className="text-xl font-semibold text-gray-900 flex items-center gap-2">
-        {getGreeting()}, {firstName}
-        <span className={showAnimation ? "animate-bounce text-lg" : "text-lg"}>👋</span>
-      </h1>
-    </div>
+    <h1 className="text-2xl font-semibold text-white flex items-center gap-2">
+      {getGreeting()}, {firstName}
+      <span className={showAnimation ? "animate-bounce text-lg" : "text-lg"}>👋</span>
+    </h1>
   );
 };
