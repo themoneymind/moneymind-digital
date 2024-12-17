@@ -12,10 +12,11 @@ export const CreditCardStack = () => {
   const [nextBtnEnabled, setNextBtnEnabled] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(0);
 
-  // Filter credit card sources - make case insensitive
+  // Filter credit card sources
   const creditCards = paymentSources.filter(source => 
-    source.type.toLowerCase() === "credit"
+    source.type && source.type.toLowerCase() === "credit"
   );
+  
   console.log("All payment sources:", paymentSources);
   console.log("Filtered credit cards:", creditCards);
   
@@ -39,9 +40,6 @@ export const CreditCardStack = () => {
     emblaApi.on('select', onSelect);
     emblaApi.on('reInit', onSelect);
   }, [emblaApi, onSelect]);
-
-  // Add debug log for visibility condition
-  console.log("Should show stack:", creditCards.length > 0);
   
   if (creditCards.length === 0) {
     console.log("No credit cards found, not rendering stack");
