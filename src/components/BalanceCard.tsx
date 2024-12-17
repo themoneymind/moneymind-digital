@@ -32,19 +32,25 @@ export const BalanceCard = () => {
     .filter(source => activeTab === "bank" ? source.type === "bank" : source.type === "credit")
     .reduce((acc, curr) => acc + Number(curr.amount), 0);
 
-  // Filter transactions up to the current month
-  const transactionsUpToMonth = transactions.filter(transaction => {
+  // Filter transactions for the active tab type
+  const filteredTransactions = transactions.filter(transaction => {
+    const source = paymentSources.find(s => s.id === transaction.source);
+    return source?.type === (activeTab === "bank" ? "bank" : "credit");
+  });
+
+  // Filter transactions up to the current month for the active tab
+  const transactionsUpToMonth = filteredTransactions.filter(transaction => {
     const transactionDate = new Date(transaction.date);
     return isBefore(transactionDate, endOfMonth(currentMonth));
   });
 
-  // Calculate historical balance up to the selected month
+  // Calculate historical balance up to the selected month for the active tab
   const historicalBalance = transactionsUpToMonth.reduce((acc, curr) => {
     return curr.type === "income" ? acc + Number(curr.amount) : acc - Number(curr.amount);
   }, 0);
 
-  // Filter transactions for the current month
-  const monthlyTransactions = transactions.filter(transaction => {
+  // Filter transactions for the current month and active tab
+  const monthlyTransactions = filteredTransactions.filter(transaction => {
     const transactionDate = new Date(transaction.date);
     const monthStart = startOfMonth(currentMonth);
     const monthEnd = endOfMonth(currentMonth);
@@ -55,11 +61,11 @@ export const BalanceCard = () => {
     });
   });
 
-  // Get last month's transactions
+  // Get last month's transactions for the active tab
   const lastMonthStart = startOfMonth(subMonths(currentMonth, 1));
   const lastMonthEnd = endOfMonth(subMonths(currentMonth, 1));
   
-  const lastMonthTransactions = transactions.filter(transaction => {
+  const lastMonthTransactions = filteredTransactions.filter(transaction => {
     const transactionDate = new Date(transaction.date);
     return isWithinInterval(transactionDate, {
       start: lastMonthStart,
@@ -67,17 +73,17 @@ export const BalanceCard = () => {
     });
   });
 
-  // Calculate last month's closing balance
+  // Calculate last month's closing balance for the active tab
   const lastMonthClosingBalance = lastMonthTransactions.reduce((acc, curr) => {
     return curr.type === "income" ? acc + Number(curr.amount) : acc - Number(curr.amount);
   }, 0);
 
-  // Calculate monthly income from income transactions
+  // Calculate monthly income from income transactions for the active tab
   const monthlyIncome = monthlyTransactions.reduce((acc, curr) => {
     return curr.type === "income" ? acc + Number(curr.amount) : acc;
   }, 0);
 
-  // Calculate monthly expense
+  // Calculate monthly expense for the active tab
   const monthlyExpense = monthlyTransactions.reduce((acc, curr) => {
     return curr.type === "expense" ? acc + Number(curr.amount) : acc;
   }, 0);
