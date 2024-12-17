@@ -12,22 +12,13 @@ export const CreditCardStack = () => {
   const [nextBtnEnabled, setNextBtnEnabled] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(0);
 
-  // Debug: Log all payment sources
-  console.log("DEBUG - All payment sources:", paymentSources);
-  
   // Filter credit card sources
   const creditCards = paymentSources.filter(source => {
-    console.log("DEBUG - Checking source:", source);
-    const isCredit = source.type && source.type.toLowerCase() === "credit";
-    console.log("DEBUG - Is credit card?", isCredit);
-    return isCredit;
+    return source.type?.toLowerCase() === "credit";
   });
-  
-  console.log("DEBUG - Filtered credit cards:", creditCards);
   
   const { calculateCreditCardUsage } = useCreditCardCalculations(creditCards, transactions, currentMonth);
   const creditCardUsage = calculateCreditCardUsage();
-  console.log("DEBUG - Credit card usage:", creditCardUsage);
 
   const scrollPrev = useCallback(() => emblaApi && emblaApi.scrollPrev(), [emblaApi]);
   const scrollNext = useCallback(() => emblaApi && emblaApi.scrollNext(), [emblaApi]);
@@ -45,17 +36,6 @@ export const CreditCardStack = () => {
     emblaApi.on('select', onSelect);
     emblaApi.on('reInit', onSelect);
   }, [emblaApi, onSelect]);
-  
-  console.log("DEBUG - Should render stack?", {
-    hasPaymentSources: paymentSources.length > 0,
-    hasCreditCards: creditCards.length > 0,
-    creditCardsCount: creditCards.length
-  });
-  
-  if (creditCards.length === 0) {
-    console.log("DEBUG - No credit cards found, not rendering stack");
-    return null;
-  }
 
   return (
     <div className="p-6 mx-4 space-y-4">
