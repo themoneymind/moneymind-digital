@@ -3,19 +3,16 @@ import { useFinance } from "@/contexts/FinanceContext";
 import { TransactionType } from "@/types/finance";
 import { TransactionForm } from "./transaction/TransactionForm";
 import { useTransactionValidation } from "@/hooks/useTransactionValidation";
-import { useToast } from "@/hooks/use-toast";
 
 export const NewTransaction = () => {
   const { addTransaction, getFormattedPaymentSources, paymentSources } = useFinance();
   const { validateAmount, validatePaymentSource, validateExpenseBalance } = useTransactionValidation();
-  const { toast } = useToast();
   
   const [type, setType] = useState<TransactionType>("expense");
   const [amount, setAmount] = useState("");
   const [category, setCategory] = useState("");
   const [source, setSource] = useState("");
   const [description, setDescription] = useState("");
-  const [targetCreditCard, setTargetCreditCard] = useState("");
   const [customCategories, setCustomCategories] = useState<{
     expense: string[];
     income: string[];
@@ -48,66 +45,21 @@ export const NewTransaction = () => {
     if (!validateExpenseBalance(baseSource, validAmount, type)) return;
 
     try {
-      // If this is a credit card bill payment
-      if (category === "Credit Card Bill") {
-        if (!targetCreditCard) {
-          toast({
-            title: "Error",
-            description: "Please select which credit card you're paying for",
-            variant: "destructive",
-          });
-          return;
-        }
-
-        // First record the bill payment from bank account
-        await addTransaction({
-          type,
-          amount: validAmount,
-          category,
-          source: baseSourceId,
-          description: `Credit card bill payment for ${targetCreditCard}`,
-        });
-
-        // Then update the credit card's available credit
-        const creditCard = paymentSources.find(s => s.id === targetCreditCard);
-        if (creditCard) {
-          await addTransaction({
-            type: "income",
-            amount: validAmount,
-            category: "Bill Payment",
-            source: targetCreditCard,
-            description: `Bill payment received from ${baseSource.name}`,
-          });
-        }
-      } else {
-        // Regular transaction
-        await addTransaction({
-          type,
-          amount: validAmount,
-          category,
-          source: baseSourceId,
-          description,
-        });
-      }
+      await addTransaction({
+        type,
+        amount: validAmount,
+        category,
+        source: baseSourceId,
+        description,
+      });
 
       // Reset form after successful submission
       setAmount("");
       setCategory("");
       setSource("");
       setDescription("");
-      setTargetCreditCard("");
-
-      toast({
-        title: "Success",
-        description: "Transaction added successfully",
-      });
     } catch (error) {
       console.error("Error adding transaction:", error);
-      toast({
-        title: "Error",
-        description: "Failed to add transaction",
-        variant: "destructive",
-      });
     }
   };
 
