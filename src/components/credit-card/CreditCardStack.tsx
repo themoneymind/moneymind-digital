@@ -19,27 +19,29 @@ export const CreditCardStack = () => {
   const { activeIndex, setActiveIndex, isDragging, handlers } = useCardSwipe(creditCards.length);
 
   return (
-    <div 
-      ref={containerRef}
-      className="relative h-48 w-full select-none touch-pan-y"
-      {...handlers}
-    >
-      {creditCards.map((card, index) => (
-        <CreditCard
-          key={card.id}
-          card={card}
-          index={index}
+    <div className="mt-4">
+      <div 
+        ref={containerRef}
+        className="relative h-52 w-full select-none touch-pan-y mx-auto max-w-md"
+        {...handlers}
+      >
+        {creditCards.map((card, index) => (
+          <CreditCard
+            key={card.id}
+            card={card}
+            index={index}
+            activeIndex={activeIndex}
+            isDragging={isDragging}
+            onClick={() => setActiveIndex(index)}
+          />
+        ))}
+        
+        <CardPagination 
+          cards={creditCards}
           activeIndex={activeIndex}
-          isDragging={isDragging}
-          onClick={() => setActiveIndex(index)}
+          onSelect={setActiveIndex}
         />
-      ))}
-      
-      <CardPagination 
-        cards={creditCards}
-        activeIndex={activeIndex}
-        onSelect={setActiveIndex}
-      />
+      </div>
     </div>
   );
 };
