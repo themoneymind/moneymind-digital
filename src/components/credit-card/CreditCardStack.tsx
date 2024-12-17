@@ -14,9 +14,12 @@ export const CreditCardStack = () => {
 
   // Filter credit card sources
   const creditCards = paymentSources.filter(source => source.type === "credit");
-  const { calculateCreditCardUsage } = useCreditCardCalculations(creditCards, transactions, currentMonth);
+  console.log("All payment sources:", paymentSources);
+  console.log("Filtered credit cards:", creditCards);
   
+  const { calculateCreditCardUsage } = useCreditCardCalculations(creditCards, transactions, currentMonth);
   const creditCardUsage = calculateCreditCardUsage();
+  console.log("Credit card usage:", creditCardUsage);
 
   const scrollPrev = useCallback(() => emblaApi && emblaApi.scrollPrev(), [emblaApi]);
   const scrollNext = useCallback(() => emblaApi && emblaApi.scrollNext(), [emblaApi]);
@@ -35,7 +38,11 @@ export const CreditCardStack = () => {
     emblaApi.on('reInit', onSelect);
   }, [emblaApi, onSelect]);
 
+  // Add debug log for visibility condition
+  console.log("Should show stack:", creditCards.length > 0);
+  
   if (creditCards.length === 0) {
+    console.log("No credit cards found, not rendering stack");
     return null;
   }
 
