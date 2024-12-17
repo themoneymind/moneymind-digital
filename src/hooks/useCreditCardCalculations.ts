@@ -2,6 +2,18 @@ import { PaymentSource } from "@/types/finance";
 import { Transaction } from "@/types/transactions";
 import { startOfMonth, endOfMonth, isWithinInterval, isBefore } from "date-fns";
 
+export type CreditCardUsage = {
+  id: string;
+  name: string;
+  amount: number;
+  totalSpent: number;
+  totalPayments: number;
+  usedCredit: number;
+  availableCredit: number;
+  utilizationRate: number;
+  utilizationColor: string;
+};
+
 export const useCreditCardCalculations = (
   creditCards: PaymentSource[],
   transactions: Transaction[],
