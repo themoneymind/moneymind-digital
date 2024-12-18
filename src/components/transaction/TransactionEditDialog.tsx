@@ -77,14 +77,14 @@ export const TransactionEditDialog = ({
     }
   };
 
-  const handleEscapeKeyDown = (e: React.KeyboardEvent) => {
+  const handleEscapeKeyDown = (event: KeyboardEvent) => {
     if (isSubmitting) {
-      e.preventDefault();
+      event.preventDefault();
       return;
     }
 
     if (isDropdownOpen) {
-      e.preventDefault();
+      event.preventDefault();
       setIsDropdownOpen(false);
       return;
     }
