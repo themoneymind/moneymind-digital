@@ -1,55 +1,42 @@
-import { Input } from "@/components/ui/input";
-import { UpiAppsSelector } from "./UpiAppsSelector";
-import { AmountOperations } from "./AmountOperations";
+import { DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { PaymentSourceDialogContent } from "./PaymentSourceDialogContent";
 
-interface PaymentSourceDialogFormProps {
+type PaymentSourceDialogFormProps = {
   name: string;
   setName: (name: string) => void;
   selectedUpiApps: string[];
-  onUpiToggle: (upiApp: string) => void;
-  operation: "add" | "subtract";
-  setOperation: (op: "add" | "subtract") => void;
-  amount: string;
-  setAmount: (amount: string) => void;
+  setSelectedUpiApps: (apps: string[]) => void;
   sourceType?: string;
-  currentAmount: number;
-}
+  onSave: () => void;
+  onDelete?: () => void;
+  isSubmitting: boolean;
+};
 
 export const PaymentSourceDialogForm = ({
   name,
   setName,
   selectedUpiApps,
-  onUpiToggle,
-  operation,
-  setOperation,
-  amount,
-  setAmount,
+  setSelectedUpiApps,
   sourceType,
-  currentAmount,
+  onSave,
+  onDelete,
+  isSubmitting,
 }: PaymentSourceDialogFormProps) => {
   return (
-    <div className="grid gap-4 py-4">
-      <div className="space-y-2">
-        <Input
-          placeholder="Enter name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          className="h-12 rounded-[12px] text-base"
-        />
-      </div>
-      {sourceType === "Bank" && (
-        <UpiAppsSelector
-          selectedUpiApps={selectedUpiApps}
-          onUpiToggle={onUpiToggle}
-        />
-      )}
-      <AmountOperations
-        operation={operation}
-        setOperation={setOperation}
-        amount={amount}
-        setAmount={setAmount}
-        currentAmount={currentAmount}
+    <>
+      <DialogHeader>
+        <DialogTitle className="text-lg">Edit Payment Source</DialogTitle>
+      </DialogHeader>
+      <PaymentSourceDialogContent
+        name={name}
+        setName={setName}
+        selectedUpiApps={selectedUpiApps}
+        setSelectedUpiApps={setSelectedUpiApps}
+        sourceType={sourceType}
+        onSave={onSave}
+        onDelete={onDelete}
+        isSubmitting={isSubmitting}
       />
-    </div>
+    </>
   );
 };

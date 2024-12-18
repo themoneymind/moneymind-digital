@@ -1,130 +1,120 @@
-import { Dialog, DialogContent } from "@/components/ui/dialog";
-import { useFinance } from "@/contexts/FinanceContext";
-import { useState, useEffect } from "react";
-import { Transaction } from "@/types/transactions";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { useState, useEffect, useCallback } from "react";
 import { useToast } from "@/hooks/use-toast";
-import { useTransactionEditForm } from "@/hooks/useTransactionEditForm";
-import { TransactionEditDialogContent } from "./TransactionEditDialogContent";
-import { useDialogState } from "@/hooks/useDialogState";
+import { Transaction } from "@/types/transactions";
+import { TransactionDialogContent } from "./TransactionDialogContent";
 
 type TransactionEditDialogProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  transaction: Transaction;
+  transaction?: Transaction;
+  onDelete?: () => void;
 };
 
 export const TransactionEditDialog = ({
   open,
   onOpenChange,
   transaction,
+  onDelete,
 }: TransactionEditDialogProps) => {
-  const { getFormattedPaymentSources, deleteTransaction } = useFinance();
+  const [description, setDescription] = useState("");
+  const [amount, setAmount] = useState(0);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
-  const formattedSources = getFormattedPaymentSources();
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [currentAmount, setCurrentAmount] = useState(transaction.amount);
-  const dialogState = useDialogState(onOpenChange);
 
-  const {
-    operation,
-    setOperation,
-    amount,
-    setAmount,
-    selectedSource,
-    setSelectedSource,
-    description,
-    setDescription,
-    handleSubmit: onSubmit,
-    resetForm,
-  } = useTransactionEditForm(transaction, () => {
-    toast({
-      title: "Success",
-      description: "Transaction updated successfully",
-    });
-    dialogState.initiateClose();
-  });
+  const resetState = useCallback(() => {
+    setDescription(transaction?.description || "");
+    setAmount(transaction?.amount || 0);
+    setIsSubmitting(false);
+  }, [transaction]);
 
   useEffect(() => {
     if (open) {
-      resetForm();
-      dialogState.reset();
-      setIsDropdownOpen(false);
-      setCurrentAmount(transaction.amount);
+      resetState();
     }
-  }, [open, resetForm, transaction.amount]);
+  }, [open, resetState]);
 
-  // Update current amount in real-time based on operation and amount
-  useEffect(() => {
-    const numAmount = Number(amount);
-    if (!isNaN(numAmount)) {
-      if (operation === "add") {
-        setCurrentAmount(transaction.amount + numAmount);
-      } else {
-        setCurrentAmount(transaction.amount - numAmount);
-      }
-    } else {
-      setCurrentAmount(transaction.amount);
-    }
-  }, [amount, operation, transaction.amount]);
-
-  const handleDelete = async () => {
-    try {
-      await deleteTransaction(transaction.id);
-      toast({
-        title: "Success",
-        description: "Transaction deleted successfully",
-      });
-      dialogState.initiateClose();
-      onOpenChange(false);
-    } catch (error) {
+  const handleSave = async () => {
+    if (!description.trim() || amount <= 0) {
       toast({
         title: "Error",
-        description: "Failed to delete transaction",
+        description: "Please enter valid description and amount",
         variant: "destructive",
       });
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      // Save transaction logic here
+      onOpenChange(false);
+    } catch (error) {
+      console.error("Error saving transaction:", error);
+      toast({
+        title: "Error",
+        description: "Failed to save transaction",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleDelete = async () => {
+    if (onDelete) {
+      setIsSubmitting(true);
+      try {
+        await onDelete();
+        onOpenChange(false);
+      } catch (error) {
+        console.error("Error deleting transaction:", error);
+        toast({
+          title: "Error",
+          description: "Failed to delete transaction",
+          variant: "destructive",
+        });
+      } finally {
+        setIsSubmitting(false);
+      }
     }
   };
 
   return (
-    <Dialog 
-      open={open} 
-      onOpenChange={(newOpen) => {
-        if (!newOpen && !dialogState.isSubmitting && !dialogState.isClosing) {
-          dialogState.initiateClose();
-          onOpenChange(false);
-        }
-      }}
-    >
+    <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent 
         className="sm:max-w-[425px]"
         onPointerDownOutside={(e) => {
-          if (dialogState.isSubmitting || dialogState.isClosing || isDropdownOpen) {
+          if (isSubmitting) {
             e.preventDefault();
           }
         }}
         onEscapeKeyDown={(e) => {
-          if (dialogState.isSubmitting || dialogState.isClosing || isDropdownOpen) {
+          if (isSubmitting) {
             e.preventDefault();
           }
         }}
       >
-        <TransactionEditDialogContent
-          transaction={transaction}
-          operation={operation}
-          setOperation={setOperation}
-          amount={amount}
-          setAmount={setAmount}
-          selectedSource={selectedSource}
-          setSelectedSource={setSelectedSource}
+        <DialogHeader>
+          <DialogTitle className="text-lg">Edit Transaction</DialogTitle>
+        </DialogHeader>
+        <TransactionDialogContent
           description={description}
           setDescription={setDescription}
-          formattedSources={formattedSources}
-          onSubmit={onSubmit}
-          isSubmitting={dialogState.isSubmitting}
-          onDropdownOpenChange={setIsDropdownOpen}
-          currentAmount={currentAmount}
+          amount={amount}
+          setAmount={setAmount}
+          onSave={handleSave}
           onDelete={handleDelete}
+          isSubmitting={isSubmitting}
         />
+        <AlertDialogFooter>
+          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogAction 
+            onClick={handleDelete}
+            className="bg-red-600 text-white hover:bg-red-700"
+          >
+            Delete
+          </AlertDialogAction>
+        </AlertDialogFooter>
       </DialogContent>
     </Dialog>
   );

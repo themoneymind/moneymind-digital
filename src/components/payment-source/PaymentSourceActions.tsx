@@ -49,7 +49,7 @@ export const PaymentSourceActions = ({
           </DropdownMenuItem>
           <DropdownMenuItem
             onClick={() => setIsAlertOpen(true)}
-            className="text-red-600"
+            className="text-red-600 focus:text-white focus:bg-red-600"
           >
             <Trash className="mr-2 h-3.5 w-3.5" />
             Delete
@@ -68,7 +68,12 @@ export const PaymentSourceActions = ({
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={onDelete}>Delete</AlertDialogAction>
+            <AlertDialogAction 
+              onClick={onDelete}
+              className="bg-red-600 text-white hover:bg-red-700"
+            >
+              Delete
+            </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
