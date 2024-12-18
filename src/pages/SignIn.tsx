@@ -75,8 +75,9 @@ export const SignIn = () => {
       });
 
       if (error) {
-        // Check specifically for email not confirmed error
-        if (error.message.includes("Email not confirmed")) {
+        // Check for specific error codes
+        const errorBody = error.message && JSON.parse(error.message);
+        if (errorBody?.code === "email_not_confirmed") {
           toast({
             title: "Email Not Verified",
             description: "Please check your email and verify your account before signing in.",
