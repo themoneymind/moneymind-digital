@@ -116,12 +116,16 @@ export const useTransactionOperations = (
         true // isDelete = true to reverse the effect
       );
 
-      // Then, apply the new transaction amount
+      // Then, apply the new transaction amount if it's being updated
       if (updates.amount !== undefined) {
+        const targetSource = updates.source || originalTransaction.source;
+        const targetType = (updates.type || originalTransaction.type) as "income" | "expense";
+        
         await updatePaymentSourceAmount(
-          updates.source || originalTransaction.source,
+          targetSource,
           Number(updates.amount),
-          (updates.type || originalTransaction.type) as "income" | "expense"
+          targetType,
+          false // Not a deletion, applying new amount
         );
       }
 
