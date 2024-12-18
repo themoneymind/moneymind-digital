@@ -43,8 +43,7 @@ export const useTransactionOperations = (
     const { error } = await supabase
       .from("payment_sources")
       .update({ amount: newAmount })
-      .eq("id", sourceId)
-      .eq("user_id", user?.id);
+      .eq("id", sourceId);
 
     if (error) throw error;
   };
@@ -55,6 +54,14 @@ export const useTransactionOperations = (
     if (!user) return;
 
     try {
+      // First, update the payment source
+      await updatePaymentSourceAmount(
+        transaction.source,
+        Number(transaction.amount),
+        transaction.type as "income" | "expense"
+      );
+
+      // Then, create the transaction record
       const { error: transactionError } = await supabase
         .from("transactions")
         .insert({
@@ -64,12 +71,6 @@ export const useTransactionOperations = (
         });
 
       if (transactionError) throw transactionError;
-
-      await updatePaymentSourceAmount(
-        transaction.source,
-        Number(transaction.amount),
-        transaction.type as "income" | "expense"
-      );
 
       await refreshData();
       toast.success("Transaction added successfully");
@@ -116,19 +117,19 @@ export const useTransactionOperations = (
       );
 
       // Then, apply the new transaction amount
-      await updatePaymentSourceAmount(
-        updates.source || originalTransaction.source,
-        Number(updates.amount || originalTransaction.amount),
-        (updates.type || originalTransaction.type) as "income" | "expense",
-        false // isDelete = false to apply the new amount
-      );
+      if (updates.amount !== undefined) {
+        await updatePaymentSourceAmount(
+          updates.source || originalTransaction.source,
+          Number(updates.amount),
+          (updates.type || originalTransaction.type) as "income" | "expense"
+        );
+      }
 
       // Update the transaction record
       const { error: updateError } = await supabase
         .from("transactions")
         .update(formattedUpdates)
-        .eq("id", id)
-        .eq("user_id", user.id);
+        .eq("id", id);
 
       if (updateError) throw updateError;
 
@@ -153,20 +154,21 @@ export const useTransactionOperations = (
 
       if (fetchError) throw fetchError;
 
-      const { error: deleteError } = await supabase
-        .from("transactions")
-        .delete()
-        .eq("id", id)
-        .eq("user_id", user.id);
-
-      if (deleteError) throw deleteError;
-
+      // First reverse the transaction's effect on the payment source
       await updatePaymentSourceAmount(
         transaction.source,
         Number(transaction.amount),
         transaction.type as "income" | "expense",
         true // isDelete = true to reverse the effect
       );
+
+      // Then delete the transaction
+      const { error: deleteError } = await supabase
+        .from("transactions")
+        .delete()
+        .eq("id", id);
+
+      if (deleteError) throw deleteError;
 
       await refreshData();
       toast.success("Transaction deleted successfully");
