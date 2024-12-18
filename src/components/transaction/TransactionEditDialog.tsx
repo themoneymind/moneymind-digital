@@ -1,6 +1,5 @@
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { useFinance } from "@/contexts/FinanceContext";
-import { useEffect, useState } from "react";
 import { Transaction } from "@/types/transactions";
 import { useToast } from "@/hooks/use-toast";
 import { useTransactionEditForm } from "@/hooks/useTransactionEditForm";
@@ -35,6 +34,7 @@ export const TransactionEditDialog = ({
     handleSubmit: onSubmit,
     resetForm,
   } = useTransactionEditForm(transaction, () => {
+    console.log("Transaction edit success callback");
     toast({
       title: "Success",
       description: "Transaction updated successfully",
@@ -43,6 +43,8 @@ export const TransactionEditDialog = ({
   });
 
   useEffect(() => {
+    console.log("Dialog open state changed:", open);
+    console.log("Current dropdown state:", isDropdownOpen);
     if (open) {
       resetForm();
       setIsSubmitting(false);
@@ -51,6 +53,9 @@ export const TransactionEditDialog = ({
   }, [open, resetForm]);
 
   const handleClose = () => {
+    console.log("Attempting to close dialog");
+    console.log("isSubmitting:", isSubmitting);
+    console.log("isDropdownOpen:", isDropdownOpen);
     if (!isSubmitting) {
       onOpenChange(false);
     }
@@ -77,6 +82,10 @@ export const TransactionEditDialog = ({
     <Dialog 
       open={open} 
       onOpenChange={(newOpen) => {
+        console.log("Dialog onOpenChange triggered");
+        console.log("newOpen:", newOpen);
+        console.log("isSubmitting:", isSubmitting);
+        console.log("isDropdownOpen:", isDropdownOpen);
         if (!newOpen && !isSubmitting && !isDropdownOpen) {
           handleClose();
         }
@@ -85,11 +94,17 @@ export const TransactionEditDialog = ({
       <DialogContent 
         className="sm:max-w-[425px]"
         onPointerDownOutside={(e) => {
+          console.log("Pointer down outside");
+          console.log("isSubmitting:", isSubmitting);
+          console.log("isDropdownOpen:", isDropdownOpen);
           if (isSubmitting || isDropdownOpen) {
             e.preventDefault();
           }
         }}
         onEscapeKeyDown={(e) => {
+          console.log("Escape key pressed");
+          console.log("isSubmitting:", isSubmitting);
+          console.log("isDropdownOpen:", isDropdownOpen);
           if (isSubmitting || isDropdownOpen) {
             e.preventDefault();
             if (isDropdownOpen) {
