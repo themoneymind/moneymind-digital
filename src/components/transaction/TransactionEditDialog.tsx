@@ -2,7 +2,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Button } from "@/components/ui/button";
 import { useFinance } from "@/contexts/FinanceContext";
 import { useToast } from "@/hooks/use-toast";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { TransactionEditDialogForm } from "./TransactionEditDialogForm";
 
 type Transaction = {
@@ -33,17 +33,31 @@ export const TransactionEditDialog = ({
   const [amount, setAmount] = useState("");
   const [selectedSource, setSelectedSource] = useState("");
   const [description, setDescription] = useState("");
+  const [isClosing, setIsClosing] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Only reset when dialog opens/closes
+  const resetState = useCallback(() => {
+    setAmount("");
+    setOperation("add");
+    setSelectedSource(transaction.source);
+    setDescription(transaction.description || "");
+    setIsClosing(false);
+    setIsSubmitting(false);
+  }, [transaction]);
+
+  // Reset state when dialog opens
   useEffect(() => {
     if (open) {
-      setAmount("");
-      setOperation("add");
-      // Set initial values from transaction
-      setSelectedSource(transaction.source);
-      setDescription(transaction.description || "");
+      resetState();
     }
-  }, [open]); // Remove transaction dependency
+  }, [open, resetState]);
+
+  const handleDialogChange = useCallback((newOpen: boolean) => {
+    if (!newOpen && !isClosing && !isSubmitting) {
+      setIsClosing(true);
+      onOpenChange(false);
+    }
+  }, [onOpenChange, isClosing, isSubmitting]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -67,13 +81,15 @@ export const TransactionEditDialog = ({
       return;
     }
 
-    const finalAmount = amount 
-      ? (operation === "add" 
-          ? transaction.amount + numAmount 
-          : transaction.amount - numAmount)
-      : transaction.amount;
+    setIsSubmitting(true);
 
     try {
+      const finalAmount = amount 
+        ? (operation === "add" 
+            ? transaction.amount + numAmount 
+            : transaction.amount - numAmount)
+        : transaction.amount;
+
       await editTransaction(transaction.id, {
         amount: finalAmount,
         source: selectedSource,
@@ -85,6 +101,7 @@ export const TransactionEditDialog = ({
         description: "Transaction updated successfully",
       });
 
+      setIsClosing(true);
       onOpenChange(false);
     } catch (error) {
       console.error("Error updating transaction:", error);
@@ -93,12 +110,17 @@ export const TransactionEditDialog = ({
         description: error instanceof Error ? error.message : "Failed to update transaction",
         variant: "destructive",
       });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[425px]">
+    <Dialog open={open} onOpenChange={handleDialogChange}>
+      <DialogContent 
+        className="sm:max-w-[425px]"
+        onPointerDownOutside={(e) => e.preventDefault()}
+      >
         <DialogHeader>
           <DialogTitle className="text-xl font-semibold">Edit Transaction</DialogTitle>
         </DialogHeader>
@@ -115,8 +137,12 @@ export const TransactionEditDialog = ({
             setDescription={setDescription}
             formattedSources={formattedSources}
           />
-          <Button type="submit" className="w-full h-12 rounded-[12px] mt-6">
-            Save Changes
+          <Button 
+            type="submit" 
+            className="w-full h-12 rounded-[12px] mt-6"
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? "Saving..." : "Save Changes"}
           </Button>
         </form>
       </DialogContent>

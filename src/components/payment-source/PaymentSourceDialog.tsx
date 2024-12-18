@@ -1,5 +1,5 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { PaymentSourceDialogContent } from "./PaymentSourceDialogContent";
 import { usePaymentSourceOperations } from "@/hooks/usePaymentSourceOperations";
 
@@ -25,22 +25,37 @@ export const PaymentSourceDialog = ({
   const [selectedUpiApps, setSelectedUpiApps] = useState<string[]>([]);
   const [amount, setAmount] = useState("");
   const [operation, setOperation] = useState<"add" | "subtract">("add");
+  const [isClosing, setIsClosing] = useState(false);
 
-  // Only reset when dialog opens/closes
+  const resetState = useCallback(() => {
+    setAmount("");
+    setOperation("add");
+    setName(source?.name || "");
+    setSelectedUpiApps(source?.upi_apps || []);
+    setIsClosing(false);
+  }, [source]);
+
+  // Reset state when dialog opens
   useEffect(() => {
     if (open) {
-      setAmount("");
-      setOperation("add");
-      // Set initial values from source
-      setName(source?.name || "");
-      setSelectedUpiApps(source?.upi_apps || []);
+      resetState();
     }
-  }, [open]); // Remove source dependency
+  }, [open, resetState]);
 
   const { isSubmitting, handleAmountChange } = usePaymentSourceOperations(
     source,
-    () => onOpenChange(false)
+    () => {
+      setIsClosing(true);
+      onOpenChange(false);
+    }
   );
+
+  const handleDialogChange = useCallback((newOpen: boolean) => {
+    if (!newOpen && !isClosing) {
+      setIsClosing(true);
+      onOpenChange(false);
+    }
+  }, [onOpenChange, isClosing]);
 
   const handleSave = async () => {
     if (!amount || isNaN(Number(amount))) {
@@ -50,8 +65,8 @@ export const PaymentSourceDialog = ({
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[425px]">
+    <Dialog open={open} onOpenChange={handleDialogChange}>
+      <DialogContent className="sm:max-w-[425px]" onPointerDownOutside={(e) => e.preventDefault()}>
         <DialogHeader>
           <DialogTitle className="text-lg">Edit Payment Source</DialogTitle>
         </DialogHeader>
