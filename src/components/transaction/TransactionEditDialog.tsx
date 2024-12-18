@@ -53,7 +53,6 @@ export const TransactionEditDialog = ({
     }
   }, [open, resetForm, transaction.amount]);
 
-  // Update current amount in real-time based on operation and amount
   useEffect(() => {
     const numAmount = Number(amount);
     if (!isNaN(numAmount)) {
