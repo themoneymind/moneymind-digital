@@ -4,17 +4,6 @@ import { useFinance } from "@/contexts/FinanceContext";
 import { useToast } from "@/hooks/use-toast";
 import { PaymentSourceInfo } from "./PaymentSourceInfo";
 import { ArrowDownLeft } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
 
 type PaymentSourceCardProps = {
   source: {
@@ -69,31 +58,29 @@ export const PaymentSourceCard = ({ source }: PaymentSourceCardProps) => {
   }, [refreshData]);
 
   return (
-    <>
-      <div 
-        className="flex items-center justify-between p-4 hover:bg-gray-50 transition-colors rounded-xl border border-gray-100 cursor-pointer"
-        onClick={() => setShowEditDialog(true)}
-      >
-        <div className="flex items-center gap-3 flex-1 min-w-0">
-          <div className="w-8 h-8 bg-green-50 rounded-full flex items-center justify-center flex-shrink-0">
-            <ArrowDownLeft className="w-4 h-4 text-green-500" />
-          </div>
-          
-          <PaymentSourceInfo
-            name={source.name}
-            type={source.type}
-            upiApps={source.upi_apps}
-            linked={source.linked}
-            showUpiList={showUpiList}
-            setShowUpiList={setShowUpiList}
-          />
+    <div 
+      className="flex items-center justify-between p-4 hover:bg-gray-50 transition-colors rounded-xl border border-gray-100 cursor-pointer space-y-0"
+      onClick={() => setShowEditDialog(true)}
+    >
+      <div className="flex items-center gap-3 flex-1 min-w-0">
+        <div className="w-8 h-8 bg-green-50 rounded-full flex items-center justify-center flex-shrink-0">
+          <ArrowDownLeft className="w-4 h-4 text-green-500" />
         </div>
         
-        <div className="flex items-center gap-4 ml-auto">
-          <span className="text-sm font-medium text-gray-900 whitespace-nowrap">
-            {formatCurrency(source.amount)}
-          </span>
-        </div>
+        <PaymentSourceInfo
+          name={source.name}
+          type={source.type}
+          upiApps={source.upi_apps}
+          linked={source.linked}
+          showUpiList={showUpiList}
+          setShowUpiList={setShowUpiList}
+        />
+      </div>
+      
+      <div className="flex items-center gap-4 ml-4">
+        <span className="text-sm font-medium text-gray-900 whitespace-nowrap">
+          {formatCurrency(source.amount)}
+        </span>
       </div>
 
       <PaymentSourceDialog
@@ -102,22 +89,6 @@ export const PaymentSourceCard = ({ source }: PaymentSourceCardProps) => {
         source={source}
         onDelete={() => setIsAlertOpen(true)}
       />
-
-      <AlertDialog open={isAlertOpen} onOpenChange={setIsAlertOpen}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-            <AlertDialogDescription>
-              This action cannot be undone. This will permanently delete the
-              payment source.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={handleDelete}>Delete</AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
-    </>
+    </div>
   );
 };

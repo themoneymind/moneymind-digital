@@ -34,6 +34,7 @@ export const TransactionEditDialog = ({
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isAlertOpen, setIsAlertOpen] = useState(false);
+  const [currentAmount, setCurrentAmount] = useState(transaction.amount);
 
   const {
     operation,
@@ -59,8 +60,18 @@ export const TransactionEditDialog = ({
       resetForm();
       setIsSubmitting(false);
       setIsDropdownOpen(false);
+      setCurrentAmount(transaction.amount);
     }
-  }, [open, resetForm]);
+  }, [open, resetForm, transaction.amount]);
+
+  useEffect(() => {
+    const numAmount = Number(amount);
+    if (!isNaN(numAmount)) {
+      setCurrentAmount(operation === "add" ? transaction.amount + numAmount : transaction.amount - numAmount);
+    } else {
+      setCurrentAmount(transaction.amount);
+    }
+  }, [amount, operation, transaction.amount]);
 
   const handleClose = () => {
     if (!isSubmitting) {
@@ -131,6 +142,7 @@ export const TransactionEditDialog = ({
             onSubmit={handleSubmit}
             isSubmitting={isSubmitting}
             onDropdownOpenChange={setIsDropdownOpen}
+            currentAmount={currentAmount}
           />
           <div className="mt-4 flex justify-end">
             <Button 

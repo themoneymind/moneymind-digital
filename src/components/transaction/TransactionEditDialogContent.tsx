@@ -17,6 +17,7 @@ interface TransactionEditDialogContentProps {
   onSubmit: (e: React.FormEvent) => Promise<void>;
   isSubmitting: boolean;
   onDropdownOpenChange: (open: boolean) => void;
+  currentAmount: number;
 }
 
 export const TransactionEditDialogContent = ({
@@ -33,15 +34,28 @@ export const TransactionEditDialogContent = ({
   onSubmit,
   isSubmitting,
   onDropdownOpenChange,
+  currentAmount,
 }: TransactionEditDialogContentProps) => {
+  const formatCurrency = (amount: number) => {
+    return new Intl.NumberFormat("en-IN", {
+      style: "currency",
+      currency: "INR",
+      maximumFractionDigits: 0,
+    }).format(amount);
+  };
+
   return (
     <>
       <DialogHeader>
         <DialogTitle className="text-xl font-semibold">Edit Transaction</DialogTitle>
       </DialogHeader>
+      <div className="p-4 bg-gray-50 rounded-[12px] border border-gray-100 mb-4">
+        <p className="text-sm text-gray-500 mb-1">Current Amount</p>
+        <p className="text-lg font-semibold">{formatCurrency(currentAmount)}</p>
+      </div>
       <form onSubmit={onSubmit}>
         <TransactionEditDialogForm
-          currentAmount={transaction.amount}
+          currentAmount={currentAmount}
           operation={operation}
           setOperation={setOperation}
           amount={amount}

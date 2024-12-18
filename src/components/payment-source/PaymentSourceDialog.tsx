@@ -2,6 +2,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { useState, useEffect, useCallback } from "react";
 import { PaymentSourceDialogContent } from "./PaymentSourceDialogContent";
 import { usePaymentSourceOperations } from "@/hooks/usePaymentSourceOperations";
+import { Button } from "@/components/ui/button";
+import { Trash } from "lucide-react";
 
 type PaymentSourceDialogProps = {
   open: boolean;
@@ -14,20 +16,21 @@ type PaymentSourceDialogProps = {
     linked?: boolean;
     upi_apps?: string[];
   };
-  onDelete?: () => void;  // Added this prop definition
+  onDelete?: () => void;
 };
 
 export const PaymentSourceDialog = ({
   open,
   onOpenChange,
   source,
-  onDelete,  // Added this to destructuring
+  onDelete,
 }: PaymentSourceDialogProps) => {
   const [name, setName] = useState("");
   const [selectedUpiApps, setSelectedUpiApps] = useState<string[]>([]);
   const [amount, setAmount] = useState("");
   const [operation, setOperation] = useState<"add" | "subtract">("add");
   const [isClosing, setIsClosing] = useState(false);
+  const [currentAmount, setCurrentAmount] = useState(source?.amount || 0);
 
   const resetState = useCallback(() => {
     setAmount("");
@@ -35,14 +38,23 @@ export const PaymentSourceDialog = ({
     setName(source?.name || "");
     setSelectedUpiApps(source?.upi_apps || []);
     setIsClosing(false);
+    setCurrentAmount(source?.amount || 0);
   }, [source]);
 
-  // Reset state when dialog opens
   useEffect(() => {
     if (open) {
       resetState();
     }
   }, [open, resetState]);
+
+  useEffect(() => {
+    const numAmount = Number(amount);
+    if (!isNaN(numAmount) && source) {
+      setCurrentAmount(operation === "add" ? source.amount + numAmount : source.amount - numAmount);
+    } else {
+      setCurrentAmount(source?.amount || 0);
+    }
+  }, [amount, operation, source]);
 
   const { isSubmitting, handleAmountChange } = usePaymentSourceOperations(
     source,
@@ -66,12 +78,37 @@ export const PaymentSourceDialog = ({
     await handleAmountChange(operation, amount, name, selectedUpiApps);
   };
 
+  const formatCurrency = (amount: number) => {
+    return new Intl.NumberFormat("en-IN", {
+      style: "currency",
+      currency: "INR",
+      maximumFractionDigits: 0,
+    }).format(amount);
+  };
+
   return (
     <Dialog open={open} onOpenChange={handleDialogChange}>
       <DialogContent className="sm:max-w-[425px]" onPointerDownOutside={(e) => e.preventDefault()}>
-        <DialogHeader>
+        <DialogHeader className="flex flex-row items-center justify-between">
           <DialogTitle className="text-lg">Edit Payment Source</DialogTitle>
+          {onDelete && (
+            <Button
+              variant="destructive"
+              size="icon"
+              className="h-8 w-8"
+              onClick={(e) => {
+                e.stopPropagation();
+                onDelete();
+              }}
+            >
+              <Trash className="h-4 w-4" />
+            </Button>
+          )}
         </DialogHeader>
+        <div className="p-4 bg-gray-50 rounded-[12px] border border-gray-100 mb-4">
+          <p className="text-sm text-gray-500 mb-1">Current Amount</p>
+          <p className="text-lg font-semibold">{formatCurrency(currentAmount)}</p>
+        </div>
         <PaymentSourceDialogContent
           name={name}
           setName={setName}
