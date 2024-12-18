@@ -16,21 +16,29 @@ export const useTransactionOperations = (
     type: "income" | "expense",
     isDelete: boolean = false
   ) => {
+    console.log("Updating payment source:", { sourceId, amount, type, isDelete });
     const source = paymentSources.find(s => s.id === sourceId);
     if (!source) return;
 
     let newAmount;
     if (isDelete) {
-      // When deleting, reverse the original transaction's effect
+      // When deleting or reversing, we subtract for income and add for expense
       newAmount = type === "income" 
         ? Number(source.amount) - Number(amount)
         : Number(source.amount) + Number(amount);
     } else {
-      // When adding, apply the transaction's effect
+      // When adding or updating, we add for income and subtract for expense
       newAmount = type === "income" 
         ? Number(source.amount) + Number(amount)
         : Number(source.amount) - Number(amount);
     }
+
+    console.log("New amount calculation:", {
+      currentAmount: source.amount,
+      operation: isDelete ? "reverse" : "apply",
+      change: amount,
+      result: newAmount
+    });
 
     const { error } = await supabase
       .from("payment_sources")
@@ -94,6 +102,11 @@ export const useTransactionOperations = (
         date: updates.date ? new Date(updates.date).toISOString() : undefined
       };
 
+      console.log("Transaction edit operation:", {
+        original: originalTransaction,
+        updates: formattedUpdates
+      });
+
       // First, reverse the effect of the original transaction
       await updatePaymentSourceAmount(
         originalTransaction.source,
@@ -106,7 +119,7 @@ export const useTransactionOperations = (
       await updatePaymentSourceAmount(
         updates.source || originalTransaction.source,
         Number(updates.amount || originalTransaction.amount),
-        originalTransaction.type as "income" | "expense",
+        (updates.type || originalTransaction.type) as "income" | "expense",
         false // isDelete = false to apply the new amount
       );
 
