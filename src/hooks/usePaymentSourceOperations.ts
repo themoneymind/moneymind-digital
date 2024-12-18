@@ -2,6 +2,7 @@ import { useState } from "react";
 import { PaymentSource } from "@/types/finance";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "./use-toast";
+import { useFinance } from "@/contexts/FinanceContext";
 
 export const usePaymentSourceOperations = (
   source: PaymentSource | undefined,
@@ -9,6 +10,7 @@ export const usePaymentSourceOperations = (
 ) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
+  const { refreshData } = useFinance();
 
   const handleAmountChange = async (
     operation: "add" | "subtract",
@@ -50,6 +52,9 @@ export const usePaymentSourceOperations = (
         .eq("id", source.id);
 
       if (error) throw error;
+
+      // Refresh data to update all components
+      await refreshData();
 
       toast({
         title: "Success",
