@@ -21,10 +21,12 @@ export const useTransactionOperations = (
 
     let newAmount;
     if (isDelete) {
+      // When deleting, reverse the original transaction's effect
       newAmount = type === "income" 
         ? Number(source.amount) - Number(amount)
         : Number(source.amount) + Number(amount);
     } else {
+      // When adding, apply the transaction's effect
       newAmount = type === "income" 
         ? Number(source.amount) + Number(amount)
         : Number(source.amount) - Number(amount);
@@ -77,6 +79,7 @@ export const useTransactionOperations = (
     if (!user) return;
 
     try {
+      // Fetch the original transaction first
       const { data: originalTransaction, error: fetchError } = await supabase
         .from("transactions")
         .select("*")
@@ -91,6 +94,23 @@ export const useTransactionOperations = (
         date: updates.date ? new Date(updates.date).toISOString() : undefined
       };
 
+      // First, reverse the effect of the original transaction
+      await updatePaymentSourceAmount(
+        originalTransaction.source,
+        Number(originalTransaction.amount),
+        originalTransaction.type as "income" | "expense",
+        true // isDelete = true to reverse the effect
+      );
+
+      // Then, apply the new transaction amount
+      await updatePaymentSourceAmount(
+        updates.source || originalTransaction.source,
+        Number(updates.amount || originalTransaction.amount),
+        originalTransaction.type as "income" | "expense",
+        false // isDelete = false to apply the new amount
+      );
+
+      // Update the transaction record
       const { error: updateError } = await supabase
         .from("transactions")
         .update(formattedUpdates)
@@ -98,36 +118,6 @@ export const useTransactionOperations = (
         .eq("user_id", user.id);
 
       if (updateError) throw updateError;
-
-      if (updates.amount !== undefined && updates.amount !== originalTransaction.amount) {
-        await updatePaymentSourceAmount(
-          originalTransaction.source,
-          Number(originalTransaction.amount),
-          originalTransaction.type as "income" | "expense",
-          true
-        );
-
-        await updatePaymentSourceAmount(
-          updates.source || originalTransaction.source,
-          Number(updates.amount),
-          originalTransaction.type as "income" | "expense"
-        );
-      }
-
-      if (updates.source && updates.source !== originalTransaction.source && updates.amount === undefined) {
-        await updatePaymentSourceAmount(
-          originalTransaction.source,
-          Number(originalTransaction.amount),
-          originalTransaction.type as "income" | "expense",
-          true
-        );
-
-        await updatePaymentSourceAmount(
-          updates.source,
-          Number(originalTransaction.amount),
-          originalTransaction.type as "income" | "expense"
-        );
-      }
 
       await refreshData();
       toast.success("Transaction updated successfully");
@@ -162,7 +152,7 @@ export const useTransactionOperations = (
         transaction.source,
         Number(transaction.amount),
         transaction.type as "income" | "expense",
-        true
+        true // isDelete = true to reverse the effect
       );
 
       await refreshData();
