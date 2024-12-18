@@ -73,19 +73,24 @@ export const BalanceCard = () => {
     }).format(amount);
   };
 
-  // Calculate the net balance (income - expense)
-  const netBalance = monthlyIncome - monthlyExpense;
-
-  // Use net balance as the display balance
-  const displayBalance = netBalance;
+  // Calculate the display balance based on the month
+  let displayBalance;
+  if (monthlyTransactions.length > 0) {
+    // If there are transactions in the current month, show income - expense
+    displayBalance = monthlyIncome - monthlyExpense;
+  } else {
+    // If no transactions in current month, show last month's closing balance
+    displayBalance = lastMonthClosingBalance;
+  }
 
   console.log("Balance calculation:", {
     monthlyIncome,
     monthlyExpense,
-    netBalance,
+    netBalance: monthlyIncome - monthlyExpense,
     displayBalance,
     currentTotalBalance,
-    lastMonthClosingBalance
+    lastMonthClosingBalance,
+    hasMonthlyTransactions: monthlyTransactions.length > 0
   });
 
   return (
