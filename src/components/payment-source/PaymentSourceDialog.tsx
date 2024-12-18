@@ -90,14 +90,6 @@ export const PaymentSourceDialog = ({
     }
   };
 
-  const handleUpiToggle = (app: string) => {
-    setSelectedUpiApps(prev => 
-      prev.includes(app) 
-        ? prev.filter(a => a !== app)
-        : [...prev, app]
-    );
-  };
-
   return (
     <Dialog 
       open={open} 
@@ -128,7 +120,7 @@ export const PaymentSourceDialog = ({
           name={name}
           setName={setName}
           selectedUpiApps={selectedUpiApps}
-          onUpiToggle={handleUpiToggle}
+          setSelectedUpiApps={setSelectedUpiApps}
           operation={operation}
           setOperation={setOperation}
           amount={amount}

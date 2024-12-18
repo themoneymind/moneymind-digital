@@ -14,6 +14,7 @@ interface PaymentSourceDialogContentProps {
   onSave: () => void;
   onDelete?: () => void;
   isSubmitting: boolean;
+  currentAmount: number;
 }
 
 export const PaymentSourceDialogContent = ({
@@ -29,6 +30,7 @@ export const PaymentSourceDialogContent = ({
   onSave,
   onDelete,
   isSubmitting,
+  currentAmount,
 }: PaymentSourceDialogContentProps) => {
   const handleUpiToggle = (app: string) => {
     const newApps = selectedUpiApps.includes(app)
@@ -49,6 +51,7 @@ export const PaymentSourceDialogContent = ({
         amount={amount}
         setAmount={setAmount}
         sourceType={sourceType}
+        currentAmount={currentAmount}
       />
       <div className="flex gap-2">
         <Button 

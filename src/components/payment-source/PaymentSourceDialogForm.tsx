@@ -12,6 +12,7 @@ interface PaymentSourceDialogFormProps {
   amount: string;
   setAmount: (amount: string) => void;
   sourceType?: string;
+  currentAmount: number;
 }
 
 export const PaymentSourceDialogForm = ({
@@ -24,6 +25,7 @@ export const PaymentSourceDialogForm = ({
   amount,
   setAmount,
   sourceType,
+  currentAmount,
 }: PaymentSourceDialogFormProps) => {
   return (
     <div className="grid gap-4 py-4">
@@ -46,6 +48,7 @@ export const PaymentSourceDialogForm = ({
         setOperation={setOperation}
         amount={amount}
         setAmount={setAmount}
+        currentAmount={currentAmount}
       />
     </div>
   );
