@@ -51,11 +51,11 @@ export const TransactionEditDialogContent = ({
       <DialogHeader>
         <DialogTitle className="text-xl font-semibold">Edit Transaction</DialogTitle>
       </DialogHeader>
-      <div className="p-4 bg-gray-50 rounded-[12px] border border-gray-100 mb-4">
-        <p className="text-sm text-gray-500 mb-1">Current Amount</p>
-        <p className="text-lg font-semibold">{formatCurrency(currentAmount)}</p>
-      </div>
-      <form onSubmit={onSubmit}>
+      <form onSubmit={onSubmit} className="space-y-4">
+        <div className="p-4 bg-gray-50 rounded-[12px] border border-gray-100">
+          <p className="text-sm text-gray-500 mb-1">Current Amount</p>
+          <p className="text-lg font-semibold">{formatCurrency(currentAmount)}</p>
+        </div>
         <TransactionEditDialogForm
           currentAmount={currentAmount}
           operation={operation}
@@ -69,7 +69,7 @@ export const TransactionEditDialogContent = ({
           formattedSources={formattedSources}
           onDropdownOpenChange={onDropdownOpenChange}
         />
-        <div className="flex gap-2 mt-6">
+        <div className="flex gap-2">
           <Button 
             type="submit" 
             className="flex-1 h-12 rounded-[12px]"
