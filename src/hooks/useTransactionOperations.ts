@@ -70,6 +70,7 @@ export const useTransactionOperations = (
     } catch (error) {
       console.error("Error adding transaction:", error);
       toast.error("Failed to add transaction");
+      throw error;
     }
   };
 
@@ -89,23 +90,17 @@ export const useTransactionOperations = (
 
       if (fetchError) throw fetchError;
 
-      // Convert Date object to ISO string if it exists
-      const formattedUpdates = {
-        ...updates,
-        date: updates.date ? new Date(updates.date).toISOString() : undefined
-      };
-
       // Update the transaction
       const { error: updateError } = await supabase
         .from("transactions")
-        .update(formattedUpdates)
+        .update(updates)
         .eq("id", id)
         .eq("user_id", user.id);
 
       if (updateError) throw updateError;
 
-      // If amount or type changed, update payment source
-      if (updates.amount || updates.type) {
+      // If amount changed, update payment source
+      if (updates.amount !== undefined && updates.amount !== originalTransaction.amount) {
         // First, reverse the original transaction's effect
         await updatePaymentSourceAmount(
           originalTransaction.source,
@@ -117,8 +112,26 @@ export const useTransactionOperations = (
         // Then apply the new transaction's effect
         await updatePaymentSourceAmount(
           updates.source || originalTransaction.source,
-          Number(updates.amount || originalTransaction.amount),
-          (updates.type as "income" | "expense") || originalTransaction.type
+          Number(updates.amount),
+          originalTransaction.type as "income" | "expense"
+        );
+      }
+
+      // If source changed but amount didn't, move the amount between sources
+      if (updates.source && updates.source !== originalTransaction.source && updates.amount === undefined) {
+        // Remove amount from old source
+        await updatePaymentSourceAmount(
+          originalTransaction.source,
+          Number(originalTransaction.amount),
+          originalTransaction.type as "income" | "expense",
+          true
+        );
+
+        // Add amount to new source
+        await updatePaymentSourceAmount(
+          updates.source,
+          Number(originalTransaction.amount),
+          originalTransaction.type as "income" | "expense"
         );
       }
 
@@ -127,6 +140,7 @@ export const useTransactionOperations = (
     } catch (error) {
       console.error("Error updating transaction:", error);
       toast.error("Failed to update transaction");
+      throw error;
     }
   };
 
@@ -165,6 +179,7 @@ export const useTransactionOperations = (
     } catch (error) {
       console.error("Error deleting transaction:", error);
       toast.error("Failed to delete transaction");
+      throw error;
     }
   };
 

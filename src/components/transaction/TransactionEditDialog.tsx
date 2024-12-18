@@ -57,7 +57,11 @@ export const TransactionEditDialog = ({
   useEffect(() => {
     const numAmount = Number(amount);
     if (!isNaN(numAmount)) {
-      setCurrentAmount(transaction.amount); // Reset to original amount first
+      if (operation === "add") {
+        setCurrentAmount(transaction.amount + numAmount);
+      } else {
+        setCurrentAmount(transaction.amount - numAmount);
+      }
     } else {
       setCurrentAmount(transaction.amount);
     }
