@@ -31,11 +31,8 @@ export const useTransactionEditForm = (
       throw new Error("Please enter a valid amount");
     }
 
-    const finalAmount = amount 
-      ? (operation === "add" 
-          ? transaction.amount + numAmount 
-          : transaction.amount - numAmount)
-      : transaction.amount;
+    // Use the original amount if no new amount is provided
+    const finalAmount = amount ? numAmount : transaction.amount;
 
     await editTransaction(transaction.id, {
       amount: finalAmount,

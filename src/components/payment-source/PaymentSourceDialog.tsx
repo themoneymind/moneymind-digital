@@ -4,7 +4,6 @@ import { PaymentSourceDialogContent } from "./PaymentSourceDialogContent";
 import { usePaymentSourceOperations } from "@/hooks/usePaymentSourceOperations";
 import { useToast } from "@/hooks/use-toast";
 import { useDialogState } from "@/hooks/useDialogState";
-import { formatCurrency } from "@/utils/formatters";
 
 type PaymentSourceDialogProps = {
   open: boolean;
@@ -85,10 +84,18 @@ export const PaymentSourceDialog = ({
 
   const handleDelete = async () => {
     if (onDelete) {
+      await onDelete();
       dialogState.initiateClose();
-      onDelete();
       onOpenChange(false);
     }
+  };
+
+  const handleUpiToggle = (app: string) => {
+    setSelectedUpiApps(prev => 
+      prev.includes(app) 
+        ? prev.filter(a => a !== app)
+        : [...prev, app]
+    );
   };
 
   return (
@@ -117,15 +124,11 @@ export const PaymentSourceDialog = ({
         <DialogHeader>
           <DialogTitle className="text-lg">Edit Payment Source</DialogTitle>
         </DialogHeader>
-        <div className="p-4 bg-gray-50 rounded-[12px] border border-gray-100 mb-2">
-          <p className="text-sm text-gray-500 mb-1">Current Amount</p>
-          <p className="text-lg font-semibold">{formatCurrency(currentAmount)}</p>
-        </div>
         <PaymentSourceDialogContent
           name={name}
           setName={setName}
           selectedUpiApps={selectedUpiApps}
-          setSelectedUpiApps={setSelectedUpiApps}
+          onUpiToggle={handleUpiToggle}
           operation={operation}
           setOperation={setOperation}
           amount={amount}
@@ -134,6 +137,7 @@ export const PaymentSourceDialog = ({
           onSave={handleSave}
           onDelete={handleDelete}
           isSubmitting={dialogState.isSubmitting}
+          currentAmount={currentAmount}
         />
       </DialogContent>
     </Dialog>

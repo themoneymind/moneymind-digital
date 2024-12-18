@@ -57,10 +57,7 @@ export const TransactionEditDialog = ({
   useEffect(() => {
     const numAmount = Number(amount);
     if (!isNaN(numAmount)) {
-      const newAmount = operation === "add" 
-        ? transaction.amount + numAmount 
-        : transaction.amount - numAmount;
-      setCurrentAmount(newAmount);
+      setCurrentAmount(transaction.amount); // Reset to original amount first
     } else {
       setCurrentAmount(transaction.amount);
     }
@@ -74,6 +71,7 @@ export const TransactionEditDialog = ({
         description: "Transaction deleted successfully",
       });
       dialogState.initiateClose();
+      onOpenChange(false);
     } catch (error) {
       toast({
         title: "Error",
