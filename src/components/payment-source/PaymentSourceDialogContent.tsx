@@ -1,20 +1,16 @@
 import { Button } from "@/components/ui/button";
-import { PaymentSourceDialogForm } from "./PaymentSourceDialogForm";
+import { Input } from "@/components/ui/input";
+import { UpiAppsSelector } from "./UpiAppsSelector";
 
 interface PaymentSourceDialogContentProps {
   name: string;
   setName: (name: string) => void;
   selectedUpiApps: string[];
   setSelectedUpiApps: (apps: string[]) => void;
-  operation: "add" | "subtract";
-  setOperation: (op: "add" | "subtract") => void;
-  amount: string;
-  setAmount: (amount: string) => void;
   sourceType?: string;
   onSave: () => void;
   onDelete?: () => void;
   isSubmitting: boolean;
-  currentAmount: number;
 }
 
 export const PaymentSourceDialogContent = ({
@@ -22,15 +18,10 @@ export const PaymentSourceDialogContent = ({
   setName,
   selectedUpiApps,
   setSelectedUpiApps,
-  operation,
-  setOperation,
-  amount,
-  setAmount,
   sourceType,
   onSave,
   onDelete,
   isSubmitting,
-  currentAmount,
 }: PaymentSourceDialogContentProps) => {
   const handleUpiToggle = (app: string) => {
     const newApps = selectedUpiApps.includes(app)
@@ -41,18 +32,22 @@ export const PaymentSourceDialogContent = ({
 
   return (
     <div className="space-y-4">
-      <PaymentSourceDialogForm
-        name={name}
-        setName={setName}
-        selectedUpiApps={selectedUpiApps}
-        onUpiToggle={handleUpiToggle}
-        operation={operation}
-        setOperation={setOperation}
-        amount={amount}
-        setAmount={setAmount}
-        sourceType={sourceType}
-        currentAmount={currentAmount}
-      />
+      <div className="grid gap-4 py-4">
+        <div className="space-y-2">
+          <Input
+            placeholder="Enter name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            className="h-12 rounded-[12px] text-base"
+          />
+        </div>
+        {sourceType === "Bank" && (
+          <UpiAppsSelector
+            selectedUpiApps={selectedUpiApps}
+            onUpiToggle={handleUpiToggle}
+          />
+        )}
+      </div>
       <div className="flex gap-2">
         <Button 
           onClick={onSave} 

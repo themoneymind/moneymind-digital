@@ -1,96 +1,29 @@
 import { useState } from "react";
-import { PaymentSource } from "@/types/finance";
-import { supabase } from "@/integrations/supabase/client";
-import { useToast } from "./use-toast";
 import { useFinance } from "@/contexts/FinanceContext";
+import { PaymentSource } from "@/types/finance";
 
 export const usePaymentSourceOperations = (
   source: PaymentSource | undefined,
   onSuccess: () => void
 ) => {
+  const { editPaymentSource } = useFinance();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { toast } = useToast();
-  const { refreshData } = useFinance();
 
-  const handleAmountChange = async (
-    operation: "add" | "subtract",
-    amount: string,
-    name?: string,
-    upiApps?: string[]
-  ) => {
+  const handleNameAndUpiChange = async (name: string, upiApps: string[]) => {
     if (!source) return;
 
+    setIsSubmitting(true);
     try {
-      setIsSubmitting(true);
-      const numAmount = Number(amount);
-      
-      if (isNaN(numAmount)) {
-        throw new Error("Invalid amount");
-      }
-
-      const currentAmount = Number(source.amount) || 0;
-      const newAmount = operation === "add" 
-        ? currentAmount + numAmount 
-        : currentAmount - numAmount;
-
-      if (newAmount < 0) {
-        toast({
-          title: "Error",
-          description: "Amount cannot be negative",
-          variant: "destructive",
-        });
-        return;
-      }
-
-      // Start a transaction
-      const { data: existingTransactions } = await supabase
-        .from("transactions")
-        .select("*")
-        .eq("source", source.id)
-        .eq("type", "income")
-        .order("created_at", { ascending: true })
-        .limit(1)
-        .single();
-
-      if (existingTransactions) {
-        // Update the existing income transaction
-        const { error: transactionError } = await supabase
-          .from("transactions")
-          .update({
-            amount: newAmount
-          })
-          .eq("id", existingTransactions.id);
-
-        if (transactionError) throw transactionError;
-      }
-
-      // Update payment source
-      const { error } = await supabase
-        .from("payment_sources")
-        .update({
-          amount: newAmount,
-          name: name || source.name,
-          upi_apps: upiApps || source.upi_apps
-        })
-        .eq("id", source.id);
-
-      if (error) throw error;
-
-      await refreshData();
-
-      toast({
-        title: "Success",
-        description: "Amount updated successfully",
+      await editPaymentSource({
+        ...source,
+        name,
+        linked: upiApps.length > 0,
+        upi_apps: upiApps.length > 0 ? upiApps : undefined,
       });
-
       onSuccess();
     } catch (error) {
-      console.error("Error updating amount:", error);
-      toast({
-        title: "Error",
-        description: "Failed to update amount",
-        variant: "destructive",
-      });
+      console.error("Error updating payment source:", error);
+      throw error;
     } finally {
       setIsSubmitting(false);
     }
@@ -98,6 +31,6 @@ export const usePaymentSourceOperations = (
 
   return {
     isSubmitting,
-    handleAmountChange,
+    handleNameAndUpiChange,
   };
 };

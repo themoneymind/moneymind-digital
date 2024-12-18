@@ -27,19 +27,13 @@ export const PaymentSourceDialog = ({
 }: PaymentSourceDialogProps) => {
   const [name, setName] = useState("");
   const [selectedUpiApps, setSelectedUpiApps] = useState<string[]>([]);
-  const [amount, setAmount] = useState("");
-  const [operation, setOperation] = useState<"add" | "subtract">("add");
-  const [currentAmount, setCurrentAmount] = useState(source?.amount || 0);
   const { toast } = useToast();
   const dialogState = useDialogState(onOpenChange);
 
   const resetState = useCallback(() => {
-    setAmount("");
-    setOperation("add");
     setName(source?.name || "");
     setSelectedUpiApps(source?.upi_apps || []);
     dialogState.reset();
-    setCurrentAmount(source?.amount || 0);
   }, [source]);
 
   useEffect(() => {
@@ -48,20 +42,7 @@ export const PaymentSourceDialog = ({
     }
   }, [open, resetState]);
 
-  useEffect(() => {
-    const numAmount = Number(amount);
-    if (!isNaN(numAmount) && source) {
-      setCurrentAmount(
-        operation === "add" 
-          ? Number(source.amount) + numAmount 
-          : Number(source.amount) - numAmount
-      );
-    } else {
-      setCurrentAmount(Number(source?.amount) || 0);
-    }
-  }, [amount, operation, source]);
-
-  const { isSubmitting, handleAmountChange } = usePaymentSourceOperations(
+  const { isSubmitting, handleNameAndUpiChange } = usePaymentSourceOperations(
     source,
     () => {
       dialogState.initiateClose();
@@ -70,16 +51,16 @@ export const PaymentSourceDialog = ({
   );
 
   const handleSave = async () => {
-    if (!amount || isNaN(Number(amount))) {
+    if (!name.trim()) {
       toast({
         title: "Error",
-        description: "Please enter a valid amount",
+        description: "Please enter a valid name",
         variant: "destructive",
       });
       return;
     }
 
-    await handleAmountChange(operation, amount, name, selectedUpiApps);
+    await handleNameAndUpiChange(name, selectedUpiApps);
   };
 
   const handleDelete = async () => {
@@ -121,15 +102,10 @@ export const PaymentSourceDialog = ({
           setName={setName}
           selectedUpiApps={selectedUpiApps}
           setSelectedUpiApps={setSelectedUpiApps}
-          operation={operation}
-          setOperation={setOperation}
-          amount={amount}
-          setAmount={setAmount}
           sourceType={source?.type}
           onSave={handleSave}
           onDelete={handleDelete}
           isSubmitting={dialogState.isSubmitting}
-          currentAmount={currentAmount}
         />
       </DialogContent>
     </Dialog>
