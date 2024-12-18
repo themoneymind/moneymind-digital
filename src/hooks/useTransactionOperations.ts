@@ -1,6 +1,6 @@
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
-import { Transaction, TransactionType } from "@/types/transactions";
+import { Transaction } from "@/types/transactions";
 import { PaymentSource } from "@/types/finance";
 import { toast } from "sonner";
 
@@ -13,7 +13,7 @@ export const useTransactionOperations = (
   const updatePaymentSourceAmount = async (
     sourceId: string,
     amount: number,
-    type: TransactionType,
+    type: "income" | "expense",
     isDelete: boolean = false
   ) => {
     const source = paymentSources.find(s => s.id === sourceId);
@@ -62,7 +62,7 @@ export const useTransactionOperations = (
       await updatePaymentSourceAmount(
         transaction.source,
         Number(transaction.amount),
-        transaction.type
+        transaction.type as "income" | "expense"
       );
 
       await refreshData();
@@ -110,7 +110,7 @@ export const useTransactionOperations = (
         await updatePaymentSourceAmount(
           originalTransaction.source,
           Number(originalTransaction.amount),
-          originalTransaction.type as TransactionType,
+          originalTransaction.type as "income" | "expense",
           true // isDelete = true to reverse the effect
         );
 
@@ -118,7 +118,7 @@ export const useTransactionOperations = (
         await updatePaymentSourceAmount(
           updates.source || originalTransaction.source,
           Number(updates.amount || originalTransaction.amount),
-          (updates.type || originalTransaction.type) as TransactionType
+          (updates.type as "income" | "expense") || originalTransaction.type
         );
       }
 
@@ -156,7 +156,7 @@ export const useTransactionOperations = (
       await updatePaymentSourceAmount(
         transaction.source,
         Number(transaction.amount),
-        transaction.type as TransactionType,
+        transaction.type as "income" | "expense",
         true // isDelete = true to reverse the effect
       );
 
