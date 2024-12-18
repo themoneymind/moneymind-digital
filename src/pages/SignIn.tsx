@@ -14,7 +14,38 @@ export const SignIn = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    // Check for email confirmation success
+    const handleEmailConfirmation = async () => {
+      const hashParams = new URLSearchParams(window.location.hash.substring(1));
+      const accessToken = hashParams.get('access_token');
+      const refreshToken = hashParams.get('refresh_token');
+      const type = hashParams.get('type');
+
+      if (type === 'recovery' || type === 'signup') {
+        // Clear the URL hash
+        window.location.hash = '';
+        
+        if (type === 'signup') {
+          toast({
+            title: "Email confirmed!",
+            description: "Your email has been confirmed. Please sign in.",
+          });
+        }
+        
+        // Don't automatically sign in, let the user sign in manually
+        const { error } = await supabase.auth.signOut();
+        if (error) {
+          console.error("Error signing out after confirmation:", error);
+        }
+      }
+    };
+
+    handleEmailConfirmation();
+  }, [toast, navigate]);
+
+  useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      console.log("Auth state changed:", event);
       if (event === 'SIGNED_IN' && session) {
         navigate('/app');
       }
