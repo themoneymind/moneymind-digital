@@ -1,10 +1,11 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { useFinance } from "@/contexts/FinanceContext";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { TransactionEditDialogForm } from "./TransactionEditDialogForm";
 import { useTransactionEditForm } from "@/hooks/useTransactionEditForm";
 import { Transaction } from "@/types/transactions";
+import { useToast } from "@/hooks/use-toast";
 
 type TransactionEditDialogProps = {
   open: boolean;
@@ -18,7 +19,9 @@ export const TransactionEditDialog = ({
   transaction,
 }: TransactionEditDialogProps) => {
   const { getFormattedPaymentSources } = useFinance();
+  const { toast } = useToast();
   const [isClosing, setIsClosing] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const formattedSources = getFormattedPaymentSources();
 
   const {
@@ -30,8 +33,7 @@ export const TransactionEditDialog = ({
     setSelectedSource,
     description,
     setDescription,
-    isSubmitting,
-    handleSubmit,
+    handleSubmit: onSubmit,
     resetForm,
   } = useTransactionEditForm(transaction, () => {
     setIsClosing(true);
@@ -42,19 +44,41 @@ export const TransactionEditDialog = ({
     if (open) {
       resetForm();
       setIsClosing(false);
+      setIsSubmitting(false);
     }
   }, [open, resetForm]);
 
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (isSubmitting) return;
+
+    setIsSubmitting(true);
+    try {
+      await onSubmit(e);
+      toast({
+        title: "Success",
+        description: "Transaction updated successfully",
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: error instanceof Error ? error.message : "Failed to update transaction",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleOpenChange = useCallback((newOpen: boolean) => {
+    if (!newOpen && !isSubmitting && !isClosing) {
+      setIsClosing(true);
+      onOpenChange(false);
+    }
+  }, [isSubmitting, isClosing, onOpenChange]);
+
   return (
-    <Dialog 
-      open={open} 
-      onOpenChange={(newOpen) => {
-        if (!newOpen && !isSubmitting) {
-          setIsClosing(true);
-          onOpenChange(false);
-        }
-      }}
-    >
+    <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent 
         className="sm:max-w-[425px]"
         onPointerDownOutside={(e) => {

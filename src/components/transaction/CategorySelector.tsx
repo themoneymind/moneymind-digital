@@ -18,7 +18,13 @@ type CategorySelectorProps = {
   onAddCustomCategory: (category: string) => void;
 };
 
-const useCategoryDialog = (onAddCustomCategory: (category: string) => void) => {
+export const CategorySelector = ({
+  type,
+  category,
+  onCategoryChange,
+  customCategories,
+  onAddCustomCategory,
+}: CategorySelectorProps) => {
   const { toast } = useToast();
   const [newCategory, setNewCategory] = useState("");
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -56,32 +62,6 @@ const useCategoryDialog = (onAddCustomCategory: (category: string) => void) => {
     }
   };
 
-  return {
-    newCategory,
-    setNewCategory,
-    isDialogOpen,
-    setIsDialogOpen,
-    isSubmitting,
-    handleAddCategory,
-  };
-};
-
-export const CategorySelector = ({
-  type,
-  category,
-  onCategoryChange,
-  customCategories,
-  onAddCustomCategory,
-}: CategorySelectorProps) => {
-  const {
-    newCategory,
-    setNewCategory,
-    isDialogOpen,
-    setIsDialogOpen,
-    isSubmitting,
-    handleAddCategory,
-  } = useCategoryDialog(onAddCustomCategory);
-
   const defaultExpenseCategories = ["Food", "Transport", "Shopping"];
   const defaultIncomeCategories = ["Salary", "Freelance", "Investment"];
 
@@ -92,6 +72,12 @@ export const CategorySelector = ({
     id: `${type}-${cat.toLowerCase()}`,
     name: cat
   }));
+
+  const handleDialogChange = useCallback((open: boolean) => {
+    if (!open && !isSubmitting) {
+      setIsDialogOpen(false);
+    }
+  }, [isSubmitting]);
 
   return (
     <div className="flex gap-2">
@@ -113,13 +99,14 @@ export const CategorySelector = ({
           ))}
         </SelectContent>
       </Select>
-      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+      <Dialog open={isDialogOpen} onOpenChange={handleDialogChange}>
         <DialogTrigger asChild>
           <Button 
             size="icon" 
             variant="outline" 
             className="h-14 w-14 border-gray-200 rounded-[12px]"
             type="button"
+            onClick={() => setIsDialogOpen(true)}
           >
             <Plus className="w-5 h-5" />
           </Button>
