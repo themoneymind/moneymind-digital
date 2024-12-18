@@ -26,18 +26,6 @@ export const BalanceCard = () => {
   // Calculate current total balance from payment sources
   const currentTotalBalance = paymentSources.reduce((acc, curr) => acc + Number(curr.amount), 0);
 
-  // Filter transactions up to the current month
-  const transactionsUpToMonth = transactions.filter(transaction => {
-    const transactionDate = new Date(transaction.date);
-    return isBefore(transactionDate, endOfMonth(currentMonth)) || 
-           isEqual(transactionDate, endOfMonth(currentMonth));
-  });
-
-  // Calculate historical balance up to the selected month
-  const historicalBalance = transactionsUpToMonth.reduce((acc, curr) => {
-    return curr.type === "income" ? acc + Number(curr.amount) : acc - Number(curr.amount);
-  }, 0);
-
   // Filter transactions for the current month
   const monthlyTransactions = transactions.filter(transaction => {
     const transactionDate = new Date(transaction.date);
@@ -85,19 +73,18 @@ export const BalanceCard = () => {
     }).format(amount);
   };
 
-  // Determine which balance to display based on the month
-  const displayBalance = isCurrentMonth || isCurrentMonthFuture
-    ? currentTotalBalance  // Show current balance for present and future months
-    : historicalBalance;   // Show historical balance for past months
+  // Calculate the net balance (income - expense)
+  const netBalance = monthlyIncome - monthlyExpense;
+
+  // Use net balance as the display balance
+  const displayBalance = netBalance;
 
   console.log("Balance calculation:", {
-    isCurrentMonth,
-    isCurrentMonthFuture,
-    currentTotalBalance,
-    historicalBalance,
-    displayBalance,
     monthlyIncome,
     monthlyExpense,
+    netBalance,
+    displayBalance,
+    currentTotalBalance,
     lastMonthClosingBalance
   });
 
