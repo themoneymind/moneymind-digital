@@ -1,42 +1,55 @@
-import { DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { PaymentSourceDialogContent } from "./PaymentSourceDialogContent";
+import { Input } from "@/components/ui/input";
+import { UpiAppsSelector } from "./UpiAppsSelector";
+import { AmountOperations } from "./AmountOperations";
 
-type PaymentSourceDialogFormProps = {
+interface PaymentSourceDialogFormProps {
   name: string;
   setName: (name: string) => void;
   selectedUpiApps: string[];
-  setSelectedUpiApps: (apps: string[]) => void;
+  onUpiToggle: (upiApp: string) => void;
+  operation: "add" | "subtract";
+  setOperation: (op: "add" | "subtract") => void;
+  amount: string;
+  setAmount: (amount: string) => void;
   sourceType?: string;
-  onSave: () => void;
-  onDelete?: () => void;
-  isSubmitting: boolean;
-};
+  currentAmount: number;
+}
 
 export const PaymentSourceDialogForm = ({
   name,
   setName,
   selectedUpiApps,
-  setSelectedUpiApps,
+  onUpiToggle,
+  operation,
+  setOperation,
+  amount,
+  setAmount,
   sourceType,
-  onSave,
-  onDelete,
-  isSubmitting,
+  currentAmount,
 }: PaymentSourceDialogFormProps) => {
   return (
-    <>
-      <DialogHeader>
-        <DialogTitle className="text-lg">Edit Payment Source</DialogTitle>
-      </DialogHeader>
-      <PaymentSourceDialogContent
-        name={name}
-        setName={setName}
-        selectedUpiApps={selectedUpiApps}
-        setSelectedUpiApps={setSelectedUpiApps}
-        sourceType={sourceType}
-        onSave={onSave}
-        onDelete={onDelete}
-        isSubmitting={isSubmitting}
+    <div className="grid gap-4 py-4">
+      <div className="space-y-2">
+        <Input
+          placeholder="Enter name"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          className="h-12 rounded-[12px] text-base"
+        />
+      </div>
+      {sourceType === "Bank" && (
+        <UpiAppsSelector
+          selectedUpiApps={selectedUpiApps}
+          onUpiToggle={onUpiToggle}
+        />
+      )}
+      <AmountOperations
+        operation={operation}
+        setOperation={setOperation}
+        amount={amount}
+        setAmount={setAmount}
+        currentAmount={currentAmount}
       />
-    </>
+    </div>
   );
 };

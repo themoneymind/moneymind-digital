@@ -1,8 +1,9 @@
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useState, useEffect, useCallback } from "react";
-import { useToast } from "@/hooks/use-toast";
+import { PaymentSourceDialogContent } from "./PaymentSourceDialogContent";
 import { usePaymentSourceOperations } from "@/hooks/usePaymentSourceOperations";
-import { PaymentSourceDialogForm } from "./PaymentSourceDialogForm";
+import { useToast } from "@/hooks/use-toast";
+import { useDialogState } from "@/hooks/useDialogState";
 
 type PaymentSourceDialogProps = {
   open: boolean;
@@ -26,13 +27,13 @@ export const PaymentSourceDialog = ({
 }: PaymentSourceDialogProps) => {
   const [name, setName] = useState("");
   const [selectedUpiApps, setSelectedUpiApps] = useState<string[]>([]);
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
+  const dialogState = useDialogState(onOpenChange);
 
   const resetState = useCallback(() => {
     setName(source?.name || "");
     setSelectedUpiApps(source?.upi_apps || []);
-    setIsSubmitting(false);
+    dialogState.reset();
   }, [source]);
 
   useEffect(() => {
@@ -41,9 +42,13 @@ export const PaymentSourceDialog = ({
     }
   }, [open, resetState]);
 
-  const { handleNameAndUpiChange } = usePaymentSourceOperations(source, () => {
-    onOpenChange(false);
-  });
+  const { isSubmitting, handleNameAndUpiChange } = usePaymentSourceOperations(
+    source,
+    () => {
+      dialogState.initiateClose();
+      onOpenChange(false);
+    }
+  );
 
   const handleSave = async () => {
     if (!name.trim()) {
@@ -55,19 +60,14 @@ export const PaymentSourceDialog = ({
       return;
     }
 
-    setIsSubmitting(true);
-    try {
-      await handleNameAndUpiChange(name, selectedUpiApps);
-    } finally {
-      setIsSubmitting(false);
-    }
+    await handleNameAndUpiChange(name, selectedUpiApps);
   };
 
   const handleDelete = async () => {
     if (onDelete) {
-      setIsSubmitting(true);
       try {
         await onDelete();
+        dialogState.initiateClose();
         onOpenChange(false);
       } catch (error) {
         console.error("Error deleting payment source:", error);
@@ -76,28 +76,36 @@ export const PaymentSourceDialog = ({
           description: "Failed to delete payment source",
           variant: "destructive",
         });
-      } finally {
-        setIsSubmitting(false);
       }
     }
   };
 
+  const handleOpenChange = (newOpen: boolean) => {
+    if (!newOpen) {
+      dialogState.initiateClose();
+      onOpenChange(false);
+    }
+  };
+
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent 
-        className="sm:max-w-[425px]"
+        className="sm:max-w-[425px]" 
         onPointerDownOutside={(e) => {
-          if (isSubmitting) {
+          if (dialogState.isSubmitting) {
             e.preventDefault();
           }
         }}
         onEscapeKeyDown={(e) => {
-          if (isSubmitting) {
+          if (dialogState.isSubmitting) {
             e.preventDefault();
           }
         }}
       >
-        <PaymentSourceDialogForm
+        <DialogHeader>
+          <DialogTitle className="text-lg">Edit Payment Source</DialogTitle>
+        </DialogHeader>
+        <PaymentSourceDialogContent
           name={name}
           setName={setName}
           selectedUpiApps={selectedUpiApps}
@@ -105,7 +113,7 @@ export const PaymentSourceDialog = ({
           sourceType={source?.type}
           onSave={handleSave}
           onDelete={handleDelete}
-          isSubmitting={isSubmitting}
+          isSubmitting={dialogState.isSubmitting}
         />
       </DialogContent>
     </Dialog>

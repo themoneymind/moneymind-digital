@@ -1,107 +1,129 @@
 import { Dialog, DialogContent } from "@/components/ui/dialog";
-import { useState, useEffect, useCallback } from "react";
-import { useToast } from "@/hooks/use-toast";
-import { TransactionDialogContent } from "./TransactionDialogContent";
+import { useFinance } from "@/contexts/FinanceContext";
+import { useState, useEffect } from "react";
 import { Transaction } from "@/types/transactions";
+import { useToast } from "@/hooks/use-toast";
+import { useTransactionEditForm } from "@/hooks/useTransactionEditForm";
+import { TransactionEditDialogContent } from "./TransactionEditDialogContent";
+import { useDialogState } from "@/hooks/useDialogState";
 
 type TransactionEditDialogProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  transaction?: Transaction;
-  onDelete?: () => void;
+  transaction: Transaction;
 };
 
 export const TransactionEditDialog = ({
   open,
   onOpenChange,
   transaction,
-  onDelete,
 }: TransactionEditDialogProps) => {
-  const [description, setDescription] = useState("");
-  const [amount, setAmount] = useState(0);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { getFormattedPaymentSources, deleteTransaction } = useFinance();
   const { toast } = useToast();
+  const formattedSources = getFormattedPaymentSources();
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [currentAmount, setCurrentAmount] = useState(transaction.amount);
+  const dialogState = useDialogState(onOpenChange);
 
-  const resetState = useCallback(() => {
-    setDescription(transaction?.description || "");
-    setAmount(transaction?.amount || 0);
-    setIsSubmitting(false);
-  }, [transaction]);
+  const {
+    operation,
+    setOperation,
+    amount,
+    setAmount,
+    selectedSource,
+    setSelectedSource,
+    description,
+    setDescription,
+    handleSubmit: onSubmit,
+    resetForm,
+  } = useTransactionEditForm(transaction, () => {
+    toast({
+      title: "Success",
+      description: "Transaction updated successfully",
+    });
+    dialogState.initiateClose();
+  });
 
   useEffect(() => {
     if (open) {
-      resetState();
+      resetForm();
+      dialogState.reset();
+      setIsDropdownOpen(false);
+      setCurrentAmount(transaction.amount);
     }
-  }, [open, resetState]);
+  }, [open, resetForm, transaction.amount]);
 
-  const handleSave = async () => {
-    if (!description.trim() || amount <= 0) {
-      toast({
-        title: "Error",
-        description: "Please enter valid description and amount",
-        variant: "destructive",
-      });
-      return;
+  // Update current amount in real-time based on operation and amount
+  useEffect(() => {
+    const numAmount = Number(amount);
+    if (!isNaN(numAmount)) {
+      if (operation === "add") {
+        setCurrentAmount(transaction.amount + numAmount);
+      } else {
+        setCurrentAmount(transaction.amount - numAmount);
+      }
+    } else {
+      setCurrentAmount(transaction.amount);
     }
-
-    setIsSubmitting(true);
-    try {
-      // Save transaction logic here
-      onOpenChange(false);
-    } catch (error) {
-      console.error("Error saving transaction:", error);
-      toast({
-        title: "Error",
-        description: "Failed to save transaction",
-        variant: "destructive",
-      });
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
+  }, [amount, operation, transaction.amount]);
 
   const handleDelete = async () => {
-    if (onDelete) {
-      setIsSubmitting(true);
-      try {
-        await onDelete();
-        onOpenChange(false);
-      } catch (error) {
-        console.error("Error deleting transaction:", error);
-        toast({
-          title: "Error",
-          description: "Failed to delete transaction",
-          variant: "destructive",
-        });
-      } finally {
-        setIsSubmitting(false);
-      }
+    try {
+      await deleteTransaction(transaction.id);
+      toast({
+        title: "Success",
+        description: "Transaction deleted successfully",
+      });
+      dialogState.initiateClose();
+      onOpenChange(false);
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to delete transaction",
+        variant: "destructive",
+      });
     }
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog 
+      open={open} 
+      onOpenChange={(newOpen) => {
+        if (!newOpen && !dialogState.isSubmitting && !dialogState.isClosing) {
+          dialogState.initiateClose();
+          onOpenChange(false);
+        }
+      }}
+    >
       <DialogContent 
         className="sm:max-w-[425px]"
         onPointerDownOutside={(e) => {
-          if (isSubmitting) {
+          if (dialogState.isSubmitting || dialogState.isClosing || isDropdownOpen) {
             e.preventDefault();
           }
         }}
         onEscapeKeyDown={(e) => {
-          if (isSubmitting) {
+          if (dialogState.isSubmitting || dialogState.isClosing || isDropdownOpen) {
             e.preventDefault();
           }
         }}
       >
-        <TransactionDialogContent
-          description={description}
-          setDescription={setDescription}
+        <TransactionEditDialogContent
+          transaction={transaction}
+          operation={operation}
+          setOperation={setOperation}
           amount={amount}
           setAmount={setAmount}
-          onSave={handleSave}
+          selectedSource={selectedSource}
+          setSelectedSource={setSelectedSource}
+          description={description}
+          setDescription={setDescription}
+          formattedSources={formattedSources}
+          onSubmit={onSubmit}
+          isSubmitting={dialogState.isSubmitting}
+          onDropdownOpenChange={setIsDropdownOpen}
+          currentAmount={currentAmount}
           onDelete={handleDelete}
-          isSubmitting={isSubmitting}
         />
       </DialogContent>
     </Dialog>
