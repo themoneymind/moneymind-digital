@@ -82,10 +82,8 @@ export const PaymentSourceDialog = ({
 
   const handleOpenChange = (newOpen: boolean) => {
     if (!newOpen) {
-      if (!dialogState.isSubmitting && !dialogState.isClosing) {
-        dialogState.initiateClose();
-        onOpenChange(false);
-      }
+      dialogState.initiateClose();
+      onOpenChange(false);
     }
   };
 
@@ -94,12 +92,12 @@ export const PaymentSourceDialog = ({
       <DialogContent 
         className="sm:max-w-[425px]" 
         onPointerDownOutside={(e) => {
-          if (dialogState.isSubmitting || dialogState.isClosing) {
+          if (dialogState.isSubmitting) {
             e.preventDefault();
           }
         }}
         onEscapeKeyDown={(e) => {
-          if (dialogState.isSubmitting || dialogState.isClosing) {
+          if (dialogState.isSubmitting) {
             e.preventDefault();
           }
         }}
