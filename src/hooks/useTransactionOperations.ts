@@ -4,6 +4,8 @@ import { Transaction } from "@/types/transactions";
 import { PaymentSource } from "@/types/finance";
 import { toast } from "sonner";
 
+type TransactionType = "income" | "expense";
+
 export const useTransactionOperations = (
   paymentSources: PaymentSource[],
   refreshData: () => Promise<void>
@@ -13,7 +15,7 @@ export const useTransactionOperations = (
   const updatePaymentSourceAmount = async (
     sourceId: string,
     amount: number,
-    type: "income" | "expense",
+    type: TransactionType,
     isDelete: boolean = false
   ) => {
     const source = paymentSources.find(s => s.id === sourceId);
@@ -62,7 +64,7 @@ export const useTransactionOperations = (
       await updatePaymentSourceAmount(
         transaction.source,
         Number(transaction.amount),
-        transaction.type as "income" | "expense"
+        transaction.type as TransactionType
       );
 
       await refreshData();
@@ -110,7 +112,7 @@ export const useTransactionOperations = (
         await updatePaymentSourceAmount(
           originalTransaction.source,
           Number(originalTransaction.amount),
-          originalTransaction.type as "income" | "expense",
+          originalTransaction.type as TransactionType,
           true // isDelete = true to reverse the effect
         );
 
@@ -118,7 +120,7 @@ export const useTransactionOperations = (
         await updatePaymentSourceAmount(
           updates.source || originalTransaction.source,
           Number(updates.amount || originalTransaction.amount),
-          (updates.type as "income" | "expense") || originalTransaction.type
+          (updates.type as TransactionType) || originalTransaction.type
         );
       }
 
@@ -156,7 +158,7 @@ export const useTransactionOperations = (
       await updatePaymentSourceAmount(
         transaction.source,
         Number(transaction.amount),
-        transaction.type as "income" | "expense",
+        transaction.type as TransactionType,
         true // isDelete = true to reverse the effect
       );
 
