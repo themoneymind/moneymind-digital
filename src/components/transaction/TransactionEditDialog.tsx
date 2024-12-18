@@ -1,8 +1,8 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useState, useEffect, useCallback } from "react";
 import { useToast } from "@/hooks/use-toast";
-import { Transaction } from "@/types/transactions";
 import { TransactionDialogContent } from "./TransactionDialogContent";
+import { Transaction } from "@/types/transactions";
 
 type TransactionEditDialogProps = {
   open: boolean;
@@ -106,15 +106,6 @@ export const TransactionEditDialog = ({
           onDelete={handleDelete}
           isSubmitting={isSubmitting}
         />
-        <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction 
-            onClick={handleDelete}
-            className="bg-red-600 text-white hover:bg-red-700"
-          >
-            Delete
-          </AlertDialogAction>
-        </AlertDialogFooter>
       </DialogContent>
     </Dialog>
   );
