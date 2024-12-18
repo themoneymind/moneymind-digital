@@ -34,9 +34,8 @@ export const TransactionEditDialog = ({
   const [selectedSource, setSelectedSource] = useState(transaction.source);
   const [description, setDescription] = useState(transaction.description || "");
 
-  // Reset state when dialog opens/closes
   useEffect(() => {
-    if (open) {
+    if (!open) {
       setAmount("");
       setOperation("add");
       setDescription(transaction.description || "");

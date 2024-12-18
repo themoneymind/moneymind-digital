@@ -28,9 +28,8 @@ export const PaymentSourceDialog = ({
   const [amount, setAmount] = useState("");
   const [operation, setOperation] = useState<"add" | "subtract">("add");
 
-  // Reset state when dialog opens/closes
   useEffect(() => {
-    if (open) {
+    if (!open) {
       setAmount("");
       setOperation("add");
       setName(source?.name || "");
