@@ -21,12 +21,10 @@ export const useTransactionOperations = (
 
     let newAmount;
     if (isDelete) {
-      // If deleting, reverse the transaction effect
       newAmount = type === "income" 
         ? Number(source.amount) - Number(amount)
         : Number(source.amount) + Number(amount);
     } else {
-      // For add/edit
       newAmount = type === "income" 
         ? Number(source.amount) + Number(amount)
         : Number(source.amount) - Number(amount);
@@ -47,7 +45,6 @@ export const useTransactionOperations = (
     if (!user) return;
 
     try {
-      // First add the transaction
       const { error: transactionError } = await supabase
         .from("transactions")
         .insert({
@@ -58,7 +55,6 @@ export const useTransactionOperations = (
 
       if (transactionError) throw transactionError;
 
-      // Then update the payment source amount
       await updatePaymentSourceAmount(
         transaction.source,
         Number(transaction.amount),
@@ -81,7 +77,6 @@ export const useTransactionOperations = (
     if (!user) return;
 
     try {
-      // Get the original transaction first
       const { data: originalTransaction, error: fetchError } = await supabase
         .from("transactions")
         .select("*")
@@ -90,36 +85,21 @@ export const useTransactionOperations = (
 
       if (fetchError) throw fetchError;
 
-      // Update the transaction
+      // Convert Date object to ISO string if it exists
+      const formattedUpdates = {
+        ...updates,
+        date: updates.date ? new Date(updates.date).toISOString() : undefined
+      };
+
       const { error: updateError } = await supabase
         .from("transactions")
-        .update(updates)
+        .update(formattedUpdates)
         .eq("id", id)
         .eq("user_id", user.id);
 
       if (updateError) throw updateError;
 
-      // If amount changed, update payment source
       if (updates.amount !== undefined && updates.amount !== originalTransaction.amount) {
-        // First, reverse the original transaction's effect
-        await updatePaymentSourceAmount(
-          originalTransaction.source,
-          Number(originalTransaction.amount),
-          originalTransaction.type as "income" | "expense",
-          true // isDelete = true to reverse the effect
-        );
-
-        // Then apply the new transaction's effect
-        await updatePaymentSourceAmount(
-          updates.source || originalTransaction.source,
-          Number(updates.amount),
-          originalTransaction.type as "income" | "expense"
-        );
-      }
-
-      // If source changed but amount didn't, move the amount between sources
-      if (updates.source && updates.source !== originalTransaction.source && updates.amount === undefined) {
-        // Remove amount from old source
         await updatePaymentSourceAmount(
           originalTransaction.source,
           Number(originalTransaction.amount),
@@ -127,7 +107,21 @@ export const useTransactionOperations = (
           true
         );
 
-        // Add amount to new source
+        await updatePaymentSourceAmount(
+          updates.source || originalTransaction.source,
+          Number(updates.amount),
+          originalTransaction.type as "income" | "expense"
+        );
+      }
+
+      if (updates.source && updates.source !== originalTransaction.source && updates.amount === undefined) {
+        await updatePaymentSourceAmount(
+          originalTransaction.source,
+          Number(originalTransaction.amount),
+          originalTransaction.type as "income" | "expense",
+          true
+        );
+
         await updatePaymentSourceAmount(
           updates.source,
           Number(originalTransaction.amount),
@@ -148,7 +142,6 @@ export const useTransactionOperations = (
     if (!user) return;
 
     try {
-      // Get the transaction first
       const { data: transaction, error: fetchError } = await supabase
         .from("transactions")
         .select("*")
@@ -157,7 +150,6 @@ export const useTransactionOperations = (
 
       if (fetchError) throw fetchError;
 
-      // Delete the transaction
       const { error: deleteError } = await supabase
         .from("transactions")
         .delete()
@@ -166,12 +158,11 @@ export const useTransactionOperations = (
 
       if (deleteError) throw deleteError;
 
-      // Update payment source amount (reverse the transaction effect)
       await updatePaymentSourceAmount(
         transaction.source,
         Number(transaction.amount),
         transaction.type as "income" | "expense",
-        true // isDelete = true to reverse the effect
+        true
       );
 
       await refreshData();
