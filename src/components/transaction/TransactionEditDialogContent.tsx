@@ -45,10 +45,6 @@ export const TransactionEditDialogContent = ({
         <DialogTitle className="text-xl font-semibold">Edit Transaction</DialogTitle>
       </DialogHeader>
       <form onSubmit={onSubmit} className="space-y-4">
-        <div className="p-4 bg-gray-50 rounded-[12px] border border-gray-100">
-          <p className="text-sm text-gray-500 mb-1">Current Amount</p>
-          <p className="text-lg font-semibold">{formatCurrency(currentAmount)}</p>
-        </div>
         <TransactionEditDialogForm
           currentAmount={currentAmount}
           operation={operation}
