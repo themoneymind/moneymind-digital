@@ -35,11 +35,11 @@ export const TransactionEditDialog = ({
   const [description, setDescription] = useState(transaction.description || "");
 
   useEffect(() => {
-    if (!open) {
+    if (open) {
       setAmount("");
       setOperation("add");
-      setDescription(transaction.description || "");
       setSelectedSource(transaction.source);
+      setDescription(transaction.description || "");
     }
   }, [open, transaction]);
 

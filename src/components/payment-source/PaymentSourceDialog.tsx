@@ -29,7 +29,7 @@ export const PaymentSourceDialog = ({
   const [operation, setOperation] = useState<"add" | "subtract">("add");
 
   useEffect(() => {
-    if (!open) {
+    if (open) {
       setAmount("");
       setOperation("add");
       setName(source?.name || "");
