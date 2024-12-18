@@ -52,7 +52,7 @@ export const useTransactionOperations = (
       await updatePaymentSourceAmount(
         transaction.source,
         Number(transaction.amount),
-        transaction.type
+        transaction.type as "income" | "expense"
       );
 
       await refreshData();
@@ -100,7 +100,7 @@ export const useTransactionOperations = (
         await updatePaymentSourceAmount(
           originalTransaction.source,
           Number(originalTransaction.amount),
-          originalTransaction.type === "income" ? "expense" : "income"
+          originalTransaction.type as "income" | "expense"
         );
 
         // Apply the new transaction's effect
@@ -145,7 +145,7 @@ export const useTransactionOperations = (
       await updatePaymentSourceAmount(
         transaction.source,
         Number(transaction.amount),
-        transaction.type === "income" ? "expense" : "income"
+        transaction.type as "income" | "expense"
       );
 
       await refreshData();
