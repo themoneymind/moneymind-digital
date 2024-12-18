@@ -17,8 +17,6 @@ export const SignIn = () => {
     // Check for email confirmation success
     const handleEmailConfirmation = async () => {
       const hashParams = new URLSearchParams(window.location.hash.substring(1));
-      const accessToken = hashParams.get('access_token');
-      const refreshToken = hashParams.get('refresh_token');
       const type = hashParams.get('type');
 
       if (type === 'recovery' || type === 'signup') {
@@ -77,16 +75,20 @@ export const SignIn = () => {
       });
 
       if (error) {
+        // Check specifically for email not confirmed error
+        if (error.message.includes("Email not confirmed")) {
+          toast({
+            title: "Email Not Verified",
+            description: "Please check your email and verify your account before signing in.",
+            variant: "destructive",
+          });
+          return;
+        }
+        
         if (error.message.includes("Invalid login credentials")) {
           toast({
             title: "Error",
             description: "Invalid email or password. Please check your credentials and try again.",
-            variant: "destructive",
-          });
-        } else if (error.message.includes("Email not confirmed")) {
-          toast({
-            title: "Error",
-            description: "Please verify your email before signing in",
             variant: "destructive",
           });
         } else {
