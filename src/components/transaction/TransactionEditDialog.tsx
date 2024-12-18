@@ -34,6 +34,7 @@ export const TransactionEditDialog = ({
   const [selectedSource, setSelectedSource] = useState("");
   const [description, setDescription] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isClosing, setIsClosing] = useState(false);
 
   const resetState = useCallback(() => {
     setAmount("");
@@ -41,6 +42,7 @@ export const TransactionEditDialog = ({
     setSelectedSource(transaction.source);
     setDescription(transaction.description || "");
     setIsSubmitting(false);
+    setIsClosing(false);
   }, [transaction]);
 
   useEffect(() => {
@@ -91,6 +93,7 @@ export const TransactionEditDialog = ({
         description: "Transaction updated successfully",
       });
 
+      setIsClosing(true);
       onOpenChange(false);
     } catch (error) {
       console.error("Error updating transaction:", error);
@@ -109,6 +112,7 @@ export const TransactionEditDialog = ({
       open={open} 
       onOpenChange={(newOpen) => {
         if (!newOpen && !isSubmitting) {
+          setIsClosing(true);
           onOpenChange(false);
         }
       }}
@@ -116,6 +120,11 @@ export const TransactionEditDialog = ({
       <DialogContent 
         className="sm:max-w-[425px]"
         onPointerDownOutside={(e) => {
+          if (isSubmitting) {
+            e.preventDefault();
+          }
+        }}
+        onEscapeKeyDown={(e) => {
           if (isSubmitting) {
             e.preventDefault();
           }

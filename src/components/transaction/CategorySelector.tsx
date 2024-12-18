@@ -28,17 +28,21 @@ export const CategorySelector = ({
   const { toast } = useToast();
   const [newCategory, setNewCategory] = useState("");
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const defaultExpenseCategories = ["Food", "Transport", "Shopping"];
   const defaultIncomeCategories = ["Salary", "Freelance", "Investment"];
 
-  // Ensure unique categories by using Set
+  // Ensure unique categories and create unique keys
   const uniqueCategories = Array.from(new Set([
     ...(type === "expense" ? customCategories.expense : customCategories.income),
     ...(type === "expense" ? defaultExpenseCategories : defaultIncomeCategories)
-  ]));
+  ])).map(cat => ({
+    id: `${type}-${cat.toLowerCase()}`,
+    name: cat
+  }));
 
-  const handleAddCategory = () => {
+  const handleAddCategory = async () => {
     if (!newCategory.trim()) {
       toast({
         title: "Error",
@@ -48,14 +52,26 @@ export const CategorySelector = ({
       return;
     }
 
-    onAddCustomCategory(newCategory.trim());
-    setNewCategory("");
-    setIsDialogOpen(false);
-    
-    toast({
-      title: "Success",
-      description: "Category added successfully",
-    });
+    setIsSubmitting(true);
+
+    try {
+      onAddCustomCategory(newCategory.trim());
+      setNewCategory("");
+      setIsDialogOpen(false);
+      
+      toast({
+        title: "Success",
+        description: "Category added successfully",
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to add category",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -63,23 +79,17 @@ export const CategorySelector = ({
       <Select 
         value={category} 
         onValueChange={onCategoryChange}
-        onOpenChange={(open) => {
-          if (!open) {
-            // Reset any temporary states when select closes
-            console.log("Select closed, resetting states");
-          }
-        }}
       >
         <SelectTrigger className="w-full h-14 border-gray-200 rounded-[12px]">
           <SelectValue placeholder="Select category" />
         </SelectTrigger>
         <SelectContent className="rounded-[12px] bg-white border-gray-200">
-          {uniqueCategories.map((cat) => (
+          {uniqueCategories.map(({ id, name }) => (
             <SelectItem 
-              key={`${type}-${cat.toLowerCase()}`} 
-              value={cat.toLowerCase()}
+              key={id}
+              value={name.toLowerCase()}
             >
-              {cat}
+              {name}
             </SelectItem>
           ))}
         </SelectContent>
@@ -90,13 +100,23 @@ export const CategorySelector = ({
             size="icon" 
             variant="outline" 
             className="h-14 w-14 border-gray-200 rounded-[12px]"
+            type="button"
           >
             <Plus className="w-5 h-5" />
           </Button>
         </DialogTrigger>
         <DialogContent 
           className="sm:max-w-[425px] rounded-[20px]"
-          onPointerDownOutside={(e) => e.preventDefault()}
+          onPointerDownOutside={(e) => {
+            if (isSubmitting) {
+              e.preventDefault();
+            }
+          }}
+          onEscapeKeyDown={(e) => {
+            if (isSubmitting) {
+              e.preventDefault();
+            }
+          }}
         >
           <DialogHeader>
             <DialogTitle>Add Custom Category</DialogTitle>
@@ -112,8 +132,9 @@ export const CategorySelector = ({
               <Button 
                 onClick={handleAddCategory} 
                 className="h-14 rounded-[12px]"
+                disabled={isSubmitting}
               >
-                Add
+                {isSubmitting ? "Adding..." : "Add"}
               </Button>
             </div>
           </div>
