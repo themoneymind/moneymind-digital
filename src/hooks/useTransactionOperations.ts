@@ -54,9 +54,15 @@ export const useTransactionOperations = (
     if (!user) return;
 
     try {
+      // Convert Date object to ISO string if it exists
+      const formattedUpdates = {
+        ...updates,
+        date: updates.date ? new Date(updates.date).toISOString() : undefined
+      };
+
       const { error } = await supabase
         .from("transactions")
-        .update(updates)
+        .update(formattedUpdates)
         .eq("id", id)
         .eq("user_id", user.id);
 
