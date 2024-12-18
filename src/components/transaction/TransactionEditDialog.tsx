@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import { Transaction } from "@/types/transactions";
 import { useToast } from "@/hooks/use-toast";
 import { useTransactionEditForm } from "@/hooks/useTransactionEditForm";
-import { useDialogState } from "@/hooks/useDialogState";
 import { TransactionEditDialogContent } from "./TransactionEditDialogContent";
 
 type TransactionEditDialogProps = {
@@ -22,16 +21,7 @@ export const TransactionEditDialog = ({
   const { toast } = useToast();
   const formattedSources = getFormattedPaymentSources();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-
-  const {
-    isClosing,
-    isSubmitting,
-    handleOpenChange,
-    startSubmitting,
-    stopSubmitting,
-    initiateClose,
-    reset,
-  } = useDialogState(onOpenChange);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const {
     operation,
@@ -49,22 +39,28 @@ export const TransactionEditDialog = ({
       title: "Success",
       description: "Transaction updated successfully",
     });
-    initiateClose();
+    handleClose();
   });
 
   useEffect(() => {
     if (open) {
       resetForm();
-      reset();
+      setIsSubmitting(false);
       setIsDropdownOpen(false);
     }
-  }, [open, resetForm, reset]);
+  }, [open, resetForm]);
+
+  const handleClose = () => {
+    if (!isSubmitting) {
+      onOpenChange(false);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (isSubmitting) return;
 
-    startSubmitting();
+    setIsSubmitting(true);
     try {
       await onSubmit(e);
     } catch (error) {
@@ -73,25 +69,19 @@ export const TransactionEditDialog = ({
         description: error instanceof Error ? error.message : "Failed to update transaction",
         variant: "destructive",
       });
-      stopSubmitting();
-    }
-  };
-
-  const handleEscapeKeyDown = (event: KeyboardEvent) => {
-    if (isSubmitting) {
-      event.preventDefault();
-      return;
-    }
-
-    if (isDropdownOpen) {
-      event.preventDefault();
-      setIsDropdownOpen(false);
-      return;
+      setIsSubmitting(false);
     }
   };
 
   return (
-    <Dialog open={open} onOpenChange={handleOpenChange}>
+    <Dialog 
+      open={open} 
+      onOpenChange={(newOpen) => {
+        if (!newOpen && !isSubmitting && !isDropdownOpen) {
+          handleClose();
+        }
+      }}
+    >
       <DialogContent 
         className="sm:max-w-[425px]"
         onPointerDownOutside={(e) => {
@@ -99,7 +89,14 @@ export const TransactionEditDialog = ({
             e.preventDefault();
           }
         }}
-        onEscapeKeyDown={handleEscapeKeyDown}
+        onEscapeKeyDown={(e) => {
+          if (isSubmitting || isDropdownOpen) {
+            e.preventDefault();
+            if (isDropdownOpen) {
+              setIsDropdownOpen(false);
+            }
+          }
+        }}
       >
         <TransactionEditDialogContent
           transaction={transaction}
