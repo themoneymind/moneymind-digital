@@ -83,12 +83,12 @@ export const PaymentSourceDialog = ({
     await handleAmountChange(operation, amount, name, selectedUpiApps);
   };
 
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat("en-IN", {
-      style: "currency",
-      currency: "INR",
-      maximumFractionDigits: 0,
-    }).format(amount);
+  const handleDelete = async () => {
+    if (onDelete) {
+      setIsClosing(true);
+      onDelete();
+      onOpenChange(false);
+    }
   };
 
   return (
@@ -124,7 +124,7 @@ export const PaymentSourceDialog = ({
           setAmount={setAmount}
           sourceType={source?.type}
           onSave={handleSave}
-          onDelete={onDelete}
+          onDelete={handleDelete}
           isSubmitting={isSubmitting}
         />
       </DialogContent>

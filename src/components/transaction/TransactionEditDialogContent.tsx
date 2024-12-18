@@ -82,7 +82,7 @@ export const TransactionEditDialogContent = ({
               type="button"
               variant="destructive"
               onClick={onDelete}
-              className="h-12 rounded-[12px] px-6"
+              className="flex-1 h-12 rounded-[12px]"
             >
               Delete
             </Button>
