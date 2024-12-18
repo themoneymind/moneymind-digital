@@ -1,10 +1,8 @@
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
-import { Transaction } from "@/types/transactions";
+import { Transaction, TransactionType } from "@/types/transactions";
 import { PaymentSource } from "@/types/finance";
 import { toast } from "sonner";
-
-type TransactionType = "income" | "expense";
 
 export const useTransactionOperations = (
   paymentSources: PaymentSource[],
@@ -64,7 +62,7 @@ export const useTransactionOperations = (
       await updatePaymentSourceAmount(
         transaction.source,
         Number(transaction.amount),
-        transaction.type as TransactionType
+        transaction.type
       );
 
       await refreshData();
@@ -120,7 +118,7 @@ export const useTransactionOperations = (
         await updatePaymentSourceAmount(
           updates.source || originalTransaction.source,
           Number(updates.amount || originalTransaction.amount),
-          (updates.type as TransactionType) || originalTransaction.type
+          (updates.type || originalTransaction.type) as TransactionType
         );
       }
 
