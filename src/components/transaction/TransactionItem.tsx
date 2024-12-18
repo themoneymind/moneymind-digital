@@ -1,11 +1,5 @@
 import { Transaction } from "@/types/transactions";
-import { MoreHorizontal, ArrowUpRight, ArrowDownLeft } from "lucide-react";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { ArrowUpRight, ArrowDownLeft } from "lucide-react";
 import { format } from "date-fns";
 
 type TransactionItemProps = {
@@ -19,12 +13,14 @@ type TransactionItemProps = {
 export const TransactionItem = ({
   transaction,
   onEdit,
-  onDelete,
   formatCurrency,
   toSentenceCase,
 }: TransactionItemProps) => {
   return (
-    <div className="flex items-center justify-between p-4 hover:bg-gray-50 transition-colors rounded-xl border border-gray-100">
+    <div 
+      className="flex items-center justify-between p-4 hover:bg-gray-50 transition-colors rounded-xl border border-gray-100 cursor-pointer"
+      onClick={() => onEdit(transaction)}
+    >
       <div className="flex items-center gap-3">
         <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
           transaction.type === "expense" 
@@ -46,32 +42,14 @@ export const TransactionItem = ({
           </span>
         </div>
       </div>
-      <div className="flex items-center gap-3">
-        <span
-          className={`text-sm font-medium ${
-            transaction.type === "expense" ? "text-red-600" : "text-green-600"
-          }`}
-        >
-          {transaction.type === "expense" ? "-" : "+"}
-          {formatCurrency(Number(transaction.amount))}
-        </span>
-        <DropdownMenu>
-          <DropdownMenuTrigger className="focus:outline-none">
-            <MoreHorizontal className="w-3.5 h-3.5 text-gray-500" />
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-36">
-            <DropdownMenuItem onClick={() => onEdit(transaction)}>
-              Edit
-            </DropdownMenuItem>
-            <DropdownMenuItem 
-              onClick={() => onDelete(transaction.id)}
-              className="text-red-600"
-            >
-              Delete
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </div>
+      <span
+        className={`text-sm font-medium ${
+          transaction.type === "expense" ? "text-red-600" : "text-green-600"
+        }`}
+      >
+        {transaction.type === "expense" ? "-" : "+"}
+        {formatCurrency(Number(transaction.amount))}
+      </span>
     </div>
   );
 };

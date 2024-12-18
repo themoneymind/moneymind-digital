@@ -5,6 +5,17 @@ import { Transaction } from "@/types/transactions";
 import { useToast } from "@/hooks/use-toast";
 import { useTransactionEditForm } from "@/hooks/useTransactionEditForm";
 import { TransactionEditDialogContent } from "./TransactionEditDialogContent";
+import { Button } from "@/components/ui/button";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 type TransactionEditDialogProps = {
   open: boolean;
@@ -22,6 +33,7 @@ export const TransactionEditDialog = ({
   const formattedSources = getFormattedPaymentSources();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isAlertOpen, setIsAlertOpen] = useState(false);
 
   const {
     operation,
@@ -35,7 +47,6 @@ export const TransactionEditDialog = ({
     handleSubmit: onSubmit,
     resetForm,
   } = useTransactionEditForm(transaction, () => {
-    console.log("Transaction edit success callback");
     toast({
       title: "Success",
       description: "Transaction updated successfully",
@@ -44,8 +55,6 @@ export const TransactionEditDialog = ({
   });
 
   useEffect(() => {
-    console.log("Dialog open state changed:", open);
-    console.log("Current dropdown state:", isDropdownOpen);
     if (open) {
       resetForm();
       setIsSubmitting(false);
@@ -54,9 +63,6 @@ export const TransactionEditDialog = ({
   }, [open, resetForm]);
 
   const handleClose = () => {
-    console.log("Attempting to close dialog");
-    console.log("isSubmitting:", isSubmitting);
-    console.log("isDropdownOpen:", isDropdownOpen);
     if (!isSubmitting) {
       onOpenChange(false);
     }
@@ -79,57 +85,79 @@ export const TransactionEditDialog = ({
     }
   };
 
+  const handleDelete = async () => {
+    // Handle delete logic here
+    setIsAlertOpen(false);
+    handleClose();
+  };
+
   return (
-    <Dialog 
-      open={open} 
-      onOpenChange={(newOpen) => {
-        console.log("Dialog onOpenChange triggered");
-        console.log("newOpen:", newOpen);
-        console.log("isSubmitting:", isSubmitting);
-        console.log("isDropdownOpen:", isDropdownOpen);
-        if (!newOpen && !isSubmitting && !isDropdownOpen) {
-          handleClose();
-        }
-      }}
-    >
-      <DialogContent 
-        className="sm:max-w-[425px]"
-        onPointerDownOutside={(e) => {
-          console.log("Pointer down outside");
-          console.log("isSubmitting:", isSubmitting);
-          console.log("isDropdownOpen:", isDropdownOpen);
-          if (isSubmitting || isDropdownOpen) {
-            e.preventDefault();
-          }
-        }}
-        onEscapeKeyDown={(e) => {
-          console.log("Escape key pressed");
-          console.log("isSubmitting:", isSubmitting);
-          console.log("isDropdownOpen:", isDropdownOpen);
-          if (isSubmitting || isDropdownOpen) {
-            e.preventDefault();
-            if (isDropdownOpen) {
-              setIsDropdownOpen(false);
-            }
+    <>
+      <Dialog 
+        open={open} 
+        onOpenChange={(newOpen) => {
+          if (!newOpen && !isSubmitting && !isDropdownOpen) {
+            handleClose();
           }
         }}
       >
-        <TransactionEditDialogContent
-          transaction={transaction}
-          operation={operation}
-          setOperation={setOperation}
-          amount={amount}
-          setAmount={setAmount}
-          selectedSource={selectedSource}
-          setSelectedSource={setSelectedSource}
-          description={description}
-          setDescription={setDescription}
-          formattedSources={formattedSources}
-          onSubmit={handleSubmit}
-          isSubmitting={isSubmitting}
-          onDropdownOpenChange={setIsDropdownOpen}
-        />
-      </DialogContent>
-    </Dialog>
+        <DialogContent 
+          className="sm:max-w-[425px]"
+          onPointerDownOutside={(e) => {
+            if (isSubmitting || isDropdownOpen) {
+              e.preventDefault();
+            }
+          }}
+          onEscapeKeyDown={(e) => {
+            if (isSubmitting || isDropdownOpen) {
+              e.preventDefault();
+              if (isDropdownOpen) {
+                setIsDropdownOpen(false);
+              }
+            }
+          }}
+        >
+          <TransactionEditDialogContent
+            transaction={transaction}
+            operation={operation}
+            setOperation={setOperation}
+            amount={amount}
+            setAmount={setAmount}
+            selectedSource={selectedSource}
+            setSelectedSource={setSelectedSource}
+            description={description}
+            setDescription={setDescription}
+            formattedSources={formattedSources}
+            onSubmit={handleSubmit}
+            isSubmitting={isSubmitting}
+            onDropdownOpenChange={setIsDropdownOpen}
+          />
+          <div className="mt-4 flex justify-end">
+            <Button 
+              variant="destructive"
+              onClick={() => setIsAlertOpen(true)}
+              className="mr-2"
+            >
+              Delete
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      <AlertDialog open={isAlertOpen} onOpenChange={setIsAlertOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This action cannot be undone. This will permanently delete this transaction.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={handleDelete}>Delete</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </>
   );
 };
