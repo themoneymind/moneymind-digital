@@ -62,6 +62,7 @@ export const PaymentSourceDialog = ({
     source,
     () => {
       dialogState.initiateClose();
+      onOpenChange(false);
     }
   );
 
@@ -81,6 +82,7 @@ export const PaymentSourceDialog = ({
     if (onDelete) {
       dialogState.initiateClose();
       onDelete();
+      onOpenChange(false);
     }
   };
 

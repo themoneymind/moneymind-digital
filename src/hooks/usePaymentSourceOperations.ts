@@ -1,81 +1,67 @@
 import { useState } from "react";
-import { useFinance } from "@/contexts/FinanceContext";
-import { useToast } from "@/hooks/use-toast";
 import { PaymentSource } from "@/types/finance";
-import { useTransactions } from "@/hooks/useTransactions";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "./use-toast";
 
 export const usePaymentSourceOperations = (
   source: PaymentSource | undefined,
-  onClose: () => void
+  onSuccess: () => void
 ) => {
-  const { editPaymentSource, refreshData } = useFinance();
-  const { addTransaction } = useTransactions();
-  const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { toast } = useToast();
 
   const handleAmountChange = async (
     operation: "add" | "subtract",
     amount: string,
-    name: string,
-    selectedUpiApps: string[]
+    name?: string,
+    upiApps?: string[]
   ) => {
-    if (!source || !amount.trim() || isNaN(Number(amount))) {
-      toast({
-        title: "Error",
-        description: "Please enter a valid amount",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    const numAmount = Number(amount);
-    if (operation === "subtract" && numAmount > source.amount) {
-      toast({
-        title: "Error",
-        description: "Cannot subtract more than the available balance",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    setIsSubmitting(true);
+    if (!source) return;
 
     try {
+      setIsSubmitting(true);
+      const numAmount = Number(amount);
+      
+      if (isNaN(numAmount)) {
+        throw new Error("Invalid amount");
+      }
+
+      const currentAmount = Number(source.amount) || 0;
       const newAmount = operation === "add" 
-        ? source.amount + numAmount 
-        : source.amount - numAmount;
+        ? currentAmount + numAmount 
+        : currentAmount - numAmount;
 
-      // First update the payment source
-      await editPaymentSource({
-        ...source,
-        amount: newAmount,
-        name: name.trim(),
-        linked: selectedUpiApps.length > 0,
-        upi_apps: selectedUpiApps.length > 0 ? selectedUpiApps : undefined,
-      });
+      if (newAmount < 0) {
+        toast({
+          title: "Error",
+          description: "Amount cannot be negative",
+          variant: "destructive",
+        });
+        return;
+      }
 
-      // Then create a transaction record
-      await addTransaction({
-        type: "income",
-        amount: numAmount,
-        category: "Bank Transfer",
-        source: source.id,
-        description: `${operation === 'add' ? 'Added' : 'Subtracted'} ${amount} ${operation === 'add' ? 'to' : 'from'} ${name}`,
-      });
+      const { error } = await supabase
+        .from("payment_sources")
+        .update({
+          amount: newAmount,
+          name: name || source.name,
+          upi_apps: upiApps || source.upi_apps
+        })
+        .eq("id", source.id);
 
-      await refreshData();
+      if (error) throw error;
 
       toast({
         title: "Success",
-        description: `Amount ${operation}ed ${operation === 'add' ? 'to' : 'from'} ${name}`,
+        description: "Amount updated successfully",
       });
 
-      onClose();
+      onSuccess();
     } catch (error) {
-      console.error("Error updating payment source:", error);
+      console.error("Error updating amount:", error);
       toast({
         title: "Error",
-        description: "Failed to update payment source",
+        description: "Failed to update amount",
         variant: "destructive",
       });
     } finally {
