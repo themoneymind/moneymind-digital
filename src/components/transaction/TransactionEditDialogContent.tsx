@@ -2,6 +2,7 @@ import { DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { TransactionEditDialogForm } from "./TransactionEditDialogForm";
 import { Transaction } from "@/types/transactions";
+import { formatCurrency } from "@/utils/formatters";
 
 interface TransactionEditDialogContentProps {
   transaction: Transaction;
@@ -38,14 +39,6 @@ export const TransactionEditDialogContent = ({
   currentAmount,
   onDelete,
 }: TransactionEditDialogContentProps) => {
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat("en-IN", {
-      style: "currency",
-      currency: "INR",
-      maximumFractionDigits: 0,
-    }).format(amount);
-  };
-
   return (
     <>
       <DialogHeader>

@@ -3,6 +3,8 @@ import { useState, useEffect, useCallback } from "react";
 import { PaymentSourceDialogContent } from "./PaymentSourceDialogContent";
 import { usePaymentSourceOperations } from "@/hooks/usePaymentSourceOperations";
 import { useToast } from "@/hooks/use-toast";
+import { useDialogState } from "@/hooks/useDialogState";
+import { formatCurrency } from "@/utils/formatters";
 
 type PaymentSourceDialogProps = {
   open: boolean;
@@ -28,24 +30,16 @@ export const PaymentSourceDialog = ({
   const [selectedUpiApps, setSelectedUpiApps] = useState<string[]>([]);
   const [amount, setAmount] = useState("");
   const [operation, setOperation] = useState<"add" | "subtract">("add");
-  const [isClosing, setIsClosing] = useState(false);
   const [currentAmount, setCurrentAmount] = useState(source?.amount || 0);
   const { toast } = useToast();
-
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat("en-IN", {
-      style: "currency",
-      currency: "INR",
-      maximumFractionDigits: 0,
-    }).format(amount);
-  };
+  const dialogState = useDialogState(onOpenChange);
 
   const resetState = useCallback(() => {
     setAmount("");
     setOperation("add");
     setName(source?.name || "");
     setSelectedUpiApps(source?.upi_apps || []);
-    setIsClosing(false);
+    dialogState.reset();
     setCurrentAmount(source?.amount || 0);
   }, [source]);
 
@@ -67,17 +61,9 @@ export const PaymentSourceDialog = ({
   const { isSubmitting, handleAmountChange } = usePaymentSourceOperations(
     source,
     () => {
-      setIsClosing(true);
-      onOpenChange(false);
+      dialogState.initiateClose();
     }
   );
-
-  const handleDialogChange = useCallback((newOpen: boolean) => {
-    if (!newOpen && !isSubmitting && !isClosing) {
-      setIsClosing(true);
-      onOpenChange(false);
-    }
-  }, [onOpenChange, isSubmitting, isClosing]);
 
   const handleSave = async () => {
     if (!amount || isNaN(Number(amount))) {
@@ -93,23 +79,29 @@ export const PaymentSourceDialog = ({
 
   const handleDelete = async () => {
     if (onDelete) {
-      setIsClosing(true);
+      dialogState.initiateClose();
       onDelete();
-      onOpenChange(false);
     }
   };
 
   return (
-    <Dialog open={open} onOpenChange={handleDialogChange}>
+    <Dialog 
+      open={open} 
+      onOpenChange={(newOpen) => {
+        if (!newOpen && !dialogState.isSubmitting && !dialogState.isClosing) {
+          dialogState.initiateClose();
+        }
+      }}
+    >
       <DialogContent 
         className="sm:max-w-[425px]" 
         onPointerDownOutside={(e) => {
-          if (isSubmitting || isClosing) {
+          if (dialogState.isSubmitting || dialogState.isClosing) {
             e.preventDefault();
           }
         }}
         onEscapeKeyDown={(e) => {
-          if (isSubmitting || isClosing) {
+          if (dialogState.isSubmitting || dialogState.isClosing) {
             e.preventDefault();
           }
         }}
@@ -133,7 +125,7 @@ export const PaymentSourceDialog = ({
           sourceType={source?.type}
           onSave={handleSave}
           onDelete={handleDelete}
-          isSubmitting={isSubmitting}
+          isSubmitting={dialogState.isSubmitting}
         />
       </DialogContent>
     </Dialog>
