@@ -14,36 +14,7 @@ export const SignIn = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Check for email confirmation success
-    const handleEmailConfirmation = async () => {
-      const hashParams = new URLSearchParams(window.location.hash.substring(1));
-      const type = hashParams.get('type');
-
-      if (type === 'recovery' || type === 'signup') {
-        // Clear the URL hash
-        window.location.hash = '';
-        
-        if (type === 'signup') {
-          toast({
-            title: "Email confirmed!",
-            description: "Your email has been confirmed. Please sign in.",
-          });
-        }
-        
-        // Don't automatically sign in, let the user sign in manually
-        const { error } = await supabase.auth.signOut();
-        if (error) {
-          console.error("Error signing out after confirmation:", error);
-        }
-      }
-    };
-
-    handleEmailConfirmation();
-  }, [toast, navigate]);
-
-  useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      console.log("Auth state changed:", event);
       if (event === 'SIGNED_IN' && session) {
         navigate('/app');
       }
@@ -69,33 +40,34 @@ export const SignIn = () => {
     setIsLoading(true);
     
     try {
+      console.log("Starting sign in process with email:", email.trim());
+      
       const { data, error } = await supabase.auth.signInWithPassword({
         email: email.trim(),
         password: password.trim(),
       });
 
+      console.log("Sign in response:", { data, error });
+
       if (error) {
-        // Check for specific error codes
-        const errorBody = error.message && JSON.parse(error.message);
-        if (errorBody?.code === "email_not_confirmed") {
-          toast({
-            title: "Email Not Verified",
-            description: "Please check your email and verify your account before signing in.",
-            variant: "destructive",
-          });
-          return;
-        }
+        console.error("Sign in error details:", error);
         
-        if (error.message.includes("Invalid login credentials")) {
+        if (error.message.includes("Email not confirmed")) {
           toast({
             title: "Error",
-            description: "Invalid email or password. Please check your credentials and try again.",
+            description: "Please confirm your email before signing in",
+            variant: "destructive",
+          });
+        } else if (error.message.includes("Invalid login credentials")) {
+          toast({
+            title: "Error",
+            description: "Invalid email or password",
             variant: "destructive",
           });
         } else {
           toast({
             title: "Error",
-            description: error.message,
+            description: "Wrong login credentials",
             variant: "destructive",
           });
         }
@@ -103,6 +75,7 @@ export const SignIn = () => {
       }
 
       if (!data?.user) {
+        console.error("No user data received");
         toast({
           title: "Error",
           description: "Unable to sign in. Please try again.",
@@ -111,13 +84,14 @@ export const SignIn = () => {
         return;
       }
 
+      console.log("Sign in successful:", data.user);
       toast({
         title: "Success",
         description: "Successfully signed in",
       });
       
       navigate('/app');
-    } catch (error: any) {
+    } catch (error) {
       console.error("Unexpected sign in error:", error);
       toast({
         title: "Error",
