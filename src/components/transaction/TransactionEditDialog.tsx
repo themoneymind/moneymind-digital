@@ -24,6 +24,8 @@ export const TransactionEditDialog = ({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const formattedSources = getFormattedPaymentSources();
 
+  console.log("Dialog state:", { open, isClosing, isSubmitting });
+
   const {
     operation,
     setOperation,
@@ -36,12 +38,14 @@ export const TransactionEditDialog = ({
     handleSubmit: onSubmit,
     resetForm,
   } = useTransactionEditForm(transaction, () => {
+    console.log("Form submission successful, closing dialog");
     setIsClosing(true);
     onOpenChange(false);
   });
 
   useEffect(() => {
     if (open) {
+      console.log("Dialog opened, resetting state");
       resetForm();
       setIsClosing(false);
       setIsSubmitting(false);
@@ -50,8 +54,12 @@ export const TransactionEditDialog = ({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (isSubmitting) return;
+    if (isSubmitting) {
+      console.log("Already submitting, preventing duplicate submission");
+      return;
+    }
 
+    console.log("Starting form submission");
     setIsSubmitting(true);
     try {
       await onSubmit(e);
@@ -60,17 +68,18 @@ export const TransactionEditDialog = ({
         description: "Transaction updated successfully",
       });
     } catch (error) {
+      console.error("Form submission error:", error);
       toast({
         title: "Error",
         description: error instanceof Error ? error.message : "Failed to update transaction",
         variant: "destructive",
       });
-    } finally {
       setIsSubmitting(false);
     }
   };
 
   const handleOpenChange = useCallback((newOpen: boolean) => {
+    console.log("Dialog open state changing:", { newOpen, isSubmitting, isClosing });
     if (!newOpen && !isSubmitting && !isClosing) {
       setIsClosing(true);
       onOpenChange(false);
@@ -82,11 +91,13 @@ export const TransactionEditDialog = ({
       <DialogContent 
         className="sm:max-w-[425px]"
         onPointerDownOutside={(e) => {
+          console.log("Pointer down outside, current state:", { isSubmitting });
           if (isSubmitting) {
             e.preventDefault();
           }
         }}
         onEscapeKeyDown={(e) => {
+          console.log("Escape key pressed, current state:", { isSubmitting });
           if (isSubmitting) {
             e.preventDefault();
           }
