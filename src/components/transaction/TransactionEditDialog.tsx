@@ -1,5 +1,6 @@
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { useFinance } from "@/contexts/FinanceContext";
+import { useState, useEffect } from "react";
 import { Transaction } from "@/types/transactions";
 import { useToast } from "@/hooks/use-toast";
 import { useTransactionEditForm } from "@/hooks/useTransactionEditForm";
