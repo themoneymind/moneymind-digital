@@ -13,27 +13,32 @@ export const PaymentSources = () => {
     navigate("/app/payment-source");
   };
 
-  // Calculate historical balances for payment sources
-  const sourcesWithHistoricalBalances = paymentSources.map(source => {
-    // If viewing current month, use current balance
-    if (isEqual(startOfMonth(currentMonth), startOfMonth(new Date()))) {
-      return source;
-    }
-
-    // Filter transactions for this source up to the selected month
+  // Calculate balances for payment sources based on transactions
+  const sourcesWithBalances = paymentSources.map(source => {
+    // Filter transactions for this source
     const sourceTransactions = transactions.filter(t => {
       const transactionDate = new Date(t.date);
-      return t.source === source.id && isBefore(transactionDate, endOfMonth(currentMonth));
+      return t.source === source.id && (
+        isBefore(transactionDate, endOfMonth(currentMonth)) || 
+        isEqual(startOfMonth(transactionDate), startOfMonth(currentMonth))
+      );
     });
 
-    // Calculate historical balance
-    const historicalBalance = sourceTransactions.reduce((acc, curr) => {
+    // Calculate balance from transactions
+    const balance = sourceTransactions.reduce((acc, curr) => {
       return curr.type === "income" ? acc + Number(curr.amount) : acc - Number(curr.amount);
     }, 0);
 
+    console.log("Source balance calculation:", {
+      sourceId: source.id,
+      sourceName: source.name,
+      transactionsCount: sourceTransactions.length,
+      calculatedBalance: balance
+    });
+
     return {
       ...source,
-      amount: historicalBalance
+      amount: balance
     };
   });
 
@@ -51,7 +56,7 @@ export const PaymentSources = () => {
         </Button>
       </div>
       <div className="space-y-3">
-        {sourcesWithHistoricalBalances.map((source) => (
+        {sourcesWithBalances.map((source) => (
           <PaymentSourceCard key={source.id} source={source} />
         ))}
       </div>
