@@ -1,6 +1,6 @@
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { useFinance } from "@/contexts/FinanceContext";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Transaction } from "@/types/transactions";
 import { useToast } from "@/hooks/use-toast";
 import { useTransactionEditForm } from "@/hooks/useTransactionEditForm";
@@ -21,6 +21,7 @@ export const TransactionEditDialog = ({
   const { getFormattedPaymentSources } = useFinance();
   const { toast } = useToast();
   const formattedSources = getFormattedPaymentSources();
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   const {
     isClosing,
@@ -55,6 +56,7 @@ export const TransactionEditDialog = ({
     if (open) {
       resetForm();
       reset();
+      setIsDropdownOpen(false);
     }
   }, [open, resetForm, reset]);
 
@@ -75,20 +77,29 @@ export const TransactionEditDialog = ({
     }
   };
 
+  const handleEscapeKeyDown = (e: React.KeyboardEvent) => {
+    if (isSubmitting) {
+      e.preventDefault();
+      return;
+    }
+
+    if (isDropdownOpen) {
+      e.preventDefault();
+      setIsDropdownOpen(false);
+      return;
+    }
+  };
+
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent 
         className="sm:max-w-[425px]"
         onPointerDownOutside={(e) => {
-          if (isSubmitting) {
+          if (isSubmitting || isDropdownOpen) {
             e.preventDefault();
           }
         }}
-        onEscapeKeyDown={(e) => {
-          if (isSubmitting) {
-            e.preventDefault();
-          }
-        }}
+        onEscapeKeyDown={handleEscapeKeyDown}
       >
         <TransactionEditDialogContent
           transaction={transaction}
@@ -103,6 +114,7 @@ export const TransactionEditDialog = ({
           formattedSources={formattedSources}
           onSubmit={handleSubmit}
           isSubmitting={isSubmitting}
+          onDropdownOpenChange={setIsDropdownOpen}
         />
       </DialogContent>
     </Dialog>

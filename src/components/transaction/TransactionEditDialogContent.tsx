@@ -16,6 +16,7 @@ interface TransactionEditDialogContentProps {
   formattedSources: { id: string; name: string }[];
   onSubmit: (e: React.FormEvent) => Promise<void>;
   isSubmitting: boolean;
+  onDropdownOpenChange: (open: boolean) => void;
 }
 
 export const TransactionEditDialogContent = ({
@@ -31,6 +32,7 @@ export const TransactionEditDialogContent = ({
   formattedSources,
   onSubmit,
   isSubmitting,
+  onDropdownOpenChange,
 }: TransactionEditDialogContentProps) => {
   return (
     <>
@@ -49,6 +51,7 @@ export const TransactionEditDialogContent = ({
           description={description}
           setDescription={setDescription}
           formattedSources={formattedSources}
+          onDropdownOpenChange={onDropdownOpenChange}
         />
         <Button 
           type="submit" 

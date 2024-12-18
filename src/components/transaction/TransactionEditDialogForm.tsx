@@ -13,6 +13,7 @@ interface TransactionEditDialogFormProps {
   description: string;
   setDescription: (description: string) => void;
   formattedSources: { id: string; name: string }[];
+  onDropdownOpenChange: (open: boolean) => void;
 }
 
 export const TransactionEditDialogForm = ({
@@ -26,6 +27,7 @@ export const TransactionEditDialogForm = ({
   description,
   setDescription,
   formattedSources,
+  onDropdownOpenChange,
 }: TransactionEditDialogFormProps) => {
   return (
     <div className="space-y-6">
@@ -41,7 +43,11 @@ export const TransactionEditDialogForm = ({
         <label htmlFor="source" className="text-sm font-medium">
           Payment Source
         </label>
-        <Select value={selectedSource} onValueChange={setSelectedSource}>
+        <Select 
+          value={selectedSource} 
+          onValueChange={setSelectedSource}
+          onOpenChange={onDropdownOpenChange}
+        >
           <SelectTrigger className="h-12 rounded-[12px]">
             <SelectValue placeholder="Select payment source" />
           </SelectTrigger>
