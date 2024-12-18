@@ -17,6 +17,7 @@ export const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
         .limit(1);
 
       const isFirstTimeUser = !sources || sources.length === 0;
+      console.log("Setting isFirstTimeUser:", isFirstTimeUser);
       localStorage.setItem("isFirstTimeUser", isFirstTimeUser.toString());
     };
 
