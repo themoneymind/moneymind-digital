@@ -82,7 +82,7 @@ export const TransactionEditDialogContent = ({
               type="button"
               variant="destructive"
               onClick={onDelete}
-              className="h-12 rounded-[12px]"
+              className="h-12 rounded-[12px] px-6"
             >
               Delete
             </Button>

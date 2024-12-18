@@ -62,7 +62,7 @@ export const PaymentSourceDialogContent = ({
           <Button 
             onClick={onDelete}
             variant="destructive"
-            className="h-12 rounded-[12px]"
+            className="h-12 rounded-[12px] px-6"
           >
             Delete
           </Button>

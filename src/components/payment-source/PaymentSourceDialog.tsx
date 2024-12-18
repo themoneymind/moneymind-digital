@@ -65,11 +65,11 @@ export const PaymentSourceDialog = ({
   );
 
   const handleDialogChange = useCallback((newOpen: boolean) => {
-    if (!newOpen && !isClosing) {
+    if (!newOpen && !isSubmitting && !isClosing) {
       setIsClosing(true);
       onOpenChange(false);
     }
-  }, [onOpenChange, isClosing]);
+  }, [onOpenChange, isSubmitting, isClosing]);
 
   const handleSave = async () => {
     if (!amount || isNaN(Number(amount))) {
@@ -93,7 +93,19 @@ export const PaymentSourceDialog = ({
 
   return (
     <Dialog open={open} onOpenChange={handleDialogChange}>
-      <DialogContent className="sm:max-w-[425px]" onPointerDownOutside={(e) => e.preventDefault()}>
+      <DialogContent 
+        className="sm:max-w-[425px]" 
+        onPointerDownOutside={(e) => {
+          if (isSubmitting || isClosing) {
+            e.preventDefault();
+          }
+        }}
+        onEscapeKeyDown={(e) => {
+          if (isSubmitting || isClosing) {
+            e.preventDefault();
+          }
+        }}
+      >
         <DialogHeader>
           <DialogTitle className="text-lg">Edit Payment Source</DialogTitle>
         </DialogHeader>
