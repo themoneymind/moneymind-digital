@@ -31,17 +31,19 @@ export const TransactionEditDialog = ({
   const formattedSources = getFormattedPaymentSources();
   const [operation, setOperation] = useState<"add" | "subtract">("add");
   const [amount, setAmount] = useState("");
-  const [selectedSource, setSelectedSource] = useState(transaction.source);
-  const [description, setDescription] = useState(transaction.description || "");
+  const [selectedSource, setSelectedSource] = useState("");
+  const [description, setDescription] = useState("");
 
+  // Only reset when dialog opens/closes
   useEffect(() => {
     if (open) {
       setAmount("");
       setOperation("add");
+      // Set initial values from transaction
       setSelectedSource(transaction.source);
       setDescription(transaction.description || "");
     }
-  }, [open, transaction]);
+  }, [open]); // Remove transaction dependency
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

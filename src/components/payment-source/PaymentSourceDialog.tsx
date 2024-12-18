@@ -21,21 +21,21 @@ export const PaymentSourceDialog = ({
   onOpenChange,
   source,
 }: PaymentSourceDialogProps) => {
-  const [name, setName] = useState(source?.name || "");
-  const [selectedUpiApps, setSelectedUpiApps] = useState<string[]>(
-    source?.upi_apps || []
-  );
+  const [name, setName] = useState("");
+  const [selectedUpiApps, setSelectedUpiApps] = useState<string[]>([]);
   const [amount, setAmount] = useState("");
   const [operation, setOperation] = useState<"add" | "subtract">("add");
 
+  // Only reset when dialog opens/closes
   useEffect(() => {
     if (open) {
       setAmount("");
       setOperation("add");
+      // Set initial values from source
       setName(source?.name || "");
       setSelectedUpiApps(source?.upi_apps || []);
     }
-  }, [open, source]);
+  }, [open]); // Remove source dependency
 
   const { isSubmitting, handleAmountChange } = usePaymentSourceOperations(
     source,
