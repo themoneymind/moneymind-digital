@@ -21,6 +21,7 @@ type FinanceContextType = {
   refreshData: () => Promise<void>;
   addTransaction: (transaction: Omit<Transaction, "id" | "date" | "user_id" | "created_at" | "updated_at">) => Promise<void>;
   editTransaction: (id: string, updates: Partial<Omit<Transaction, "id" | "created_at" | "updated_at">>) => Promise<void>;
+  deleteTransaction: (id: string) => Promise<void>;
   addPaymentSource: (source: Omit<PaymentSource, "id">) => Promise<void>;
   editPaymentSource: (source: PaymentSource) => Promise<void>;
   deletePaymentSource: (id: string) => Promise<void>;
@@ -64,7 +65,7 @@ export const FinanceProvider = ({ children }: { children: React.ReactNode }) => 
     transactions
   );
 
-  const { addTransaction, editTransaction } = useTransactionOperations(
+  const { addTransaction, editTransaction, deleteTransaction } = useTransactionOperations(
     paymentSources,
     refreshData
   );
@@ -110,6 +111,7 @@ export const FinanceProvider = ({ children }: { children: React.ReactNode }) => 
         refreshData,
         addTransaction,
         editTransaction,
+        deleteTransaction,
         addPaymentSource,
         editPaymentSource,
         deletePaymentSource,
