@@ -65,9 +65,18 @@ export const PaymentSourceDialog = ({
 
   const handleDelete = async () => {
     if (onDelete) {
-      await onDelete();
-      dialogState.initiateClose();
-      onOpenChange(false);
+      try {
+        await onDelete();
+        dialogState.initiateClose();
+        onOpenChange(false);
+      } catch (error) {
+        console.error("Error deleting payment source:", error);
+        toast({
+          title: "Error",
+          description: "Failed to delete payment source",
+          variant: "destructive",
+        });
+      }
     }
   };
 

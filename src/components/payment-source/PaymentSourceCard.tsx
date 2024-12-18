@@ -35,6 +35,7 @@ export const PaymentSourceCard = ({ source }: PaymentSourceCardProps) => {
     try {
       await deletePaymentSource(source.id);
       setIsAlertOpen(false);
+      setShowEditDialog(false);
       await refreshData();
       toast({
         title: "Success",
@@ -87,7 +88,7 @@ export const PaymentSourceCard = ({ source }: PaymentSourceCardProps) => {
         open={showEditDialog}
         onOpenChange={handleEditDialogClose}
         source={source}
-        onDelete={() => setIsAlertOpen(true)}
+        onDelete={handleDelete}
       />
     </div>
   );
