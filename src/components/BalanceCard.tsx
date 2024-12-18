@@ -19,7 +19,7 @@ export const BalanceCard = () => {
     ? new Date(Math.min(...transactions.map(t => new Date(t.date).getTime())))
     : new Date();
 
-  // Check if current selected month is in the future
+  // Check if current selected month is in the future or present
   const isCurrentMonthFuture = isAfter(startOfMonth(currentMonth), startOfMonth(new Date()));
   const isCurrentMonth = isEqual(startOfMonth(currentMonth), startOfMonth(new Date()));
 
@@ -29,7 +29,8 @@ export const BalanceCard = () => {
   // Filter transactions up to the current month
   const transactionsUpToMonth = transactions.filter(transaction => {
     const transactionDate = new Date(transaction.date);
-    return isBefore(transactionDate, endOfMonth(currentMonth));
+    return isBefore(transactionDate, endOfMonth(currentMonth)) || 
+           isEqual(transactionDate, endOfMonth(currentMonth));
   });
 
   // Calculate historical balance up to the selected month
@@ -61,11 +62,6 @@ export const BalanceCard = () => {
     });
   });
 
-  // Calculate last month's closing balance
-  const lastMonthClosingBalance = lastMonthTransactions.reduce((acc, curr) => {
-    return curr.type === "income" ? acc + Number(curr.amount) : acc - Number(curr.amount);
-  }, 0);
-
   // Calculate monthly income from income transactions
   const monthlyIncome = monthlyTransactions.reduce((acc, curr) => {
     return curr.type === "income" ? acc + Number(curr.amount) : acc;
@@ -74,6 +70,11 @@ export const BalanceCard = () => {
   // Calculate monthly expense
   const monthlyExpense = monthlyTransactions.reduce((acc, curr) => {
     return curr.type === "expense" ? acc + Number(curr.amount) : acc;
+  }, 0);
+
+  // Calculate last month's closing balance
+  const lastMonthClosingBalance = lastMonthTransactions.reduce((acc, curr) => {
+    return curr.type === "income" ? acc + Number(curr.amount) : acc - Number(curr.amount);
   }, 0);
 
   const formatCurrency = (amount: number) => {
@@ -88,6 +89,17 @@ export const BalanceCard = () => {
   const displayBalance = isCurrentMonth || isCurrentMonthFuture
     ? currentTotalBalance  // Show current balance for present and future months
     : historicalBalance;   // Show historical balance for past months
+
+  console.log("Balance calculation:", {
+    isCurrentMonth,
+    isCurrentMonthFuture,
+    currentTotalBalance,
+    historicalBalance,
+    displayBalance,
+    monthlyIncome,
+    monthlyExpense,
+    lastMonthClosingBalance
+  });
 
   return (
     <div className="p-6 mx-4 rounded-apple bg-gradient-to-br from-primary-gradient-from to-primary-gradient-to text-white shadow-lg">
