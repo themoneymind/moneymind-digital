@@ -5,6 +5,10 @@ import { format, addMonths, subMonths, startOfMonth } from "date-fns";
 export const MonthSelector = () => {
   const { currentMonth, setCurrentMonth } = useFinance();
 
+  if (!currentMonth || !setCurrentMonth) {
+    return null; // Return null instead of early return to maintain hook consistency
+  }
+
   const handlePrevMonth = () => {
     setCurrentMonth(startOfMonth(subMonths(currentMonth, 1)));
   };
