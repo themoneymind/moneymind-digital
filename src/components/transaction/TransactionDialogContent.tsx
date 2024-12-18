@@ -1,6 +1,6 @@
+import { DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 
 interface TransactionDialogContentProps {
   description: string;
@@ -22,52 +22,56 @@ export const TransactionDialogContent = ({
   isSubmitting,
 }: TransactionDialogContentProps) => {
   return (
-    <div className="space-y-4">
-      <div className="space-y-2">
-        <label htmlFor="amount" className="text-sm font-medium">
-          Amount
-        </label>
-        <Input
-          id="amount"
-          type="number"
-          value={amount}
-          onChange={(e) => setAmount(Number(e.target.value))}
-          className="h-12 rounded-[12px]"
-        />
-      </div>
+    <>
+      <DialogHeader>
+        <DialogTitle className="text-xl font-semibold">Edit Transaction</DialogTitle>
+      </DialogHeader>
+      <form onSubmit={(e) => { e.preventDefault(); onSave(); }} className="space-y-4">
+        <div className="space-y-2">
+          <label htmlFor="amount" className="text-sm font-medium">
+            Amount
+          </label>
+          <Input
+            id="amount"
+            type="number"
+            value={amount}
+            onChange={(e) => setAmount(Number(e.target.value))}
+            className="h-12 rounded-[12px]"
+          />
+        </div>
 
-      <div className="space-y-2">
-        <label htmlFor="description" className="text-sm font-medium">
-          Description
-        </label>
-        <Input
-          id="description"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          className="h-12 rounded-[12px]"
-        />
-      </div>
+        <div className="space-y-2">
+          <label htmlFor="description" className="text-sm font-medium">
+            Description
+          </label>
+          <Input
+            id="description"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            className="h-12 rounded-[12px]"
+          />
+        </div>
 
-      <div className="flex gap-2">
-        <Button 
-          type="button" 
-          onClick={onSave}
-          className="flex-1 h-12 rounded-[12px]"
-          disabled={isSubmitting}
-        >
-          {isSubmitting ? "Saving..." : "Save Changes"}
-        </Button>
-        {onDelete && (
+        <div className="flex gap-2">
           <Button 
-            type="button"
-            variant="destructive"
-            onClick={onDelete}
-            className="flex-1 h-12 rounded-[12px] bg-red-600 hover:bg-red-700 text-white"
+            type="submit" 
+            className="flex-1 h-12 rounded-[12px]"
+            disabled={isSubmitting}
           >
-            Delete
+            {isSubmitting ? "Saving..." : "Save Changes"}
           </Button>
-        )}
-      </div>
-    </div>
+          {onDelete && (
+            <Button 
+              type="button"
+              variant="destructive"
+              onClick={onDelete}
+              className="flex-1 h-12 rounded-[12px] bg-red-600 hover:bg-red-700 text-white"
+            >
+              Delete
+            </Button>
+          )}
+        </div>
+      </form>
+    </>
   );
 };

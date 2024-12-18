@@ -1,4 +1,4 @@
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { useState, useEffect, useCallback } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { TransactionDialogContent } from "./TransactionDialogContent";
@@ -94,9 +94,6 @@ export const TransactionEditDialog = ({
           }
         }}
       >
-        <DialogHeader>
-          <DialogTitle className="text-lg">Edit Transaction</DialogTitle>
-        </DialogHeader>
         <TransactionDialogContent
           description={description}
           setDescription={setDescription}
