@@ -6,7 +6,6 @@ import { useToast } from "@/hooks/use-toast";
 import { useTransactionEditForm } from "@/hooks/useTransactionEditForm";
 import { TransactionEditDialogContent } from "./TransactionEditDialogContent";
 import { useDialogState } from "@/hooks/useDialogState";
-import { formatCurrency } from "@/utils/formatters";
 
 type TransactionEditDialogProps = {
   open: boolean;
@@ -54,6 +53,19 @@ export const TransactionEditDialog = ({
     }
   }, [open, resetForm, transaction.amount]);
 
+  // Update current amount in real-time based on operation and amount
+  useEffect(() => {
+    const numAmount = Number(amount);
+    if (!isNaN(numAmount)) {
+      const newAmount = operation === "add" 
+        ? transaction.amount + numAmount 
+        : transaction.amount - numAmount;
+      setCurrentAmount(newAmount);
+    } else {
+      setCurrentAmount(transaction.amount);
+    }
+  }, [amount, operation, transaction.amount]);
+
   const handleDelete = async () => {
     try {
       await deleteTransaction(transaction.id);
@@ -77,6 +89,7 @@ export const TransactionEditDialog = ({
       onOpenChange={(newOpen) => {
         if (!newOpen && !dialogState.isSubmitting && !dialogState.isClosing) {
           dialogState.initiateClose();
+          onOpenChange(false);
         }
       }}
     >

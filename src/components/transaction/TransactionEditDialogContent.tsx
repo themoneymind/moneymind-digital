@@ -2,7 +2,6 @@ import { DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { TransactionEditDialogForm } from "./TransactionEditDialogForm";
 import { Transaction } from "@/types/transactions";
-import { formatCurrency } from "@/utils/formatters";
 
 interface TransactionEditDialogContentProps {
   transaction: Transaction;
@@ -71,7 +70,7 @@ export const TransactionEditDialogContent = ({
               type="button"
               variant="destructive"
               onClick={onDelete}
-              className="flex-1 h-12 rounded-[12px]"
+              className="flex-1 h-12 rounded-[12px] bg-red-600 hover:bg-red-700"
             >
               Delete
             </Button>
