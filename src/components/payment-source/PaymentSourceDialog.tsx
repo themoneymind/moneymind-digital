@@ -80,16 +80,17 @@ export const PaymentSourceDialog = ({
     }
   };
 
+  const handleOpenChange = (newOpen: boolean) => {
+    if (!newOpen) {
+      if (!dialogState.isSubmitting && !dialogState.isClosing) {
+        dialogState.initiateClose();
+        onOpenChange(false);
+      }
+    }
+  };
+
   return (
-    <Dialog 
-      open={open} 
-      onOpenChange={(newOpen) => {
-        if (!newOpen && !dialogState.isSubmitting && !dialogState.isClosing) {
-          dialogState.initiateClose();
-          onOpenChange(false);
-        }
-      }}
-    >
+    <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent 
         className="sm:max-w-[425px]" 
         onPointerDownOutside={(e) => {
