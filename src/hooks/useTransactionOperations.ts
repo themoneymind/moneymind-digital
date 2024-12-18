@@ -13,14 +13,24 @@ export const useTransactionOperations = (
   const updatePaymentSourceAmount = async (
     sourceId: string,
     amount: number,
-    type: "income" | "expense"
+    type: "income" | "expense",
+    isDelete: boolean = false
   ) => {
     const source = paymentSources.find(s => s.id === sourceId);
     if (!source) return;
 
-    const newAmount = type === "income" 
-      ? Number(source.amount) + Number(amount)
-      : Number(source.amount) - Number(amount);
+    let newAmount;
+    if (isDelete) {
+      // If deleting, reverse the transaction effect
+      newAmount = type === "income" 
+        ? Number(source.amount) - Number(amount)
+        : Number(source.amount) + Number(amount);
+    } else {
+      // For add/edit
+      newAmount = type === "income" 
+        ? Number(source.amount) + Number(amount)
+        : Number(source.amount) - Number(amount);
+    }
 
     const { error } = await supabase
       .from("payment_sources")
@@ -96,14 +106,15 @@ export const useTransactionOperations = (
 
       // If amount or type changed, update payment source
       if (updates.amount || updates.type) {
-        // Revert the original transaction's effect
+        // First, reverse the original transaction's effect
         await updatePaymentSourceAmount(
           originalTransaction.source,
           Number(originalTransaction.amount),
-          originalTransaction.type as "income" | "expense"
+          originalTransaction.type as "income" | "expense",
+          true // isDelete = true to reverse the effect
         );
 
-        // Apply the new transaction's effect
+        // Then apply the new transaction's effect
         await updatePaymentSourceAmount(
           updates.source || originalTransaction.source,
           Number(updates.amount || originalTransaction.amount),
@@ -141,11 +152,12 @@ export const useTransactionOperations = (
 
       if (deleteError) throw deleteError;
 
-      // Revert the transaction's effect on the payment source
+      // Update payment source amount (reverse the transaction effect)
       await updatePaymentSourceAmount(
         transaction.source,
         Number(transaction.amount),
-        transaction.type as "income" | "expense"
+        transaction.type as "income" | "expense",
+        true // isDelete = true to reverse the effect
       );
 
       await refreshData();

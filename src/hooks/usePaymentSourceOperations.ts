@@ -42,6 +42,29 @@ export const usePaymentSourceOperations = (
         return;
       }
 
+      // Start a transaction
+      const { data: existingTransactions } = await supabase
+        .from("transactions")
+        .select("*")
+        .eq("source", source.id)
+        .eq("type", "income")
+        .order("created_at", { ascending: true })
+        .limit(1)
+        .single();
+
+      if (existingTransactions) {
+        // Update the existing income transaction
+        const { error: transactionError } = await supabase
+          .from("transactions")
+          .update({
+            amount: newAmount
+          })
+          .eq("id", existingTransactions.id);
+
+        if (transactionError) throw transactionError;
+      }
+
+      // Update payment source
       const { error } = await supabase
         .from("payment_sources")
         .update({
