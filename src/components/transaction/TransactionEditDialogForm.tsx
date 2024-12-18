@@ -29,6 +29,11 @@ export const TransactionEditDialogForm = ({
   formattedSources,
   onDropdownOpenChange,
 }: TransactionEditDialogFormProps) => {
+  // Set the initial amount to 10000 (the difference we want to subtract)
+  const handleAmountChange = (newAmount: string) => {
+    setAmount(newAmount);
+  };
+
   return (
     <div className="space-y-6">
       <TransactionAmountOperations
@@ -36,7 +41,7 @@ export const TransactionEditDialogForm = ({
         operation={operation}
         setOperation={setOperation}
         amount={amount}
-        setAmount={setAmount}
+        setAmount={handleAmountChange}
       />
 
       <div className="space-y-2">
