@@ -32,6 +32,14 @@ export const PaymentSourceDialog = ({
   const [currentAmount, setCurrentAmount] = useState(source?.amount || 0);
   const { toast } = useToast();
 
+  const formatCurrency = (amount: number) => {
+    return new Intl.NumberFormat("en-IN", {
+      style: "currency",
+      currency: "INR",
+      maximumFractionDigits: 0,
+    }).format(amount);
+  };
+
   const resetState = useCallback(() => {
     setAmount("");
     setOperation("add");
