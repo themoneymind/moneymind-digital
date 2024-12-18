@@ -1,5 +1,5 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { PaymentSourceDialogContent } from "./PaymentSourceDialogContent";
 import { usePaymentSourceOperations } from "@/hooks/usePaymentSourceOperations";
 
@@ -28,19 +28,19 @@ export const PaymentSourceDialog = ({
   const [amount, setAmount] = useState("");
   const [operation, setOperation] = useState<"add" | "subtract">("add");
 
-  const handleDialogClose = (open: boolean) => {
-    if (!open) {
+  // Reset state when dialog opens/closes
+  useEffect(() => {
+    if (open) {
       setAmount("");
       setOperation("add");
       setName(source?.name || "");
       setSelectedUpiApps(source?.upi_apps || []);
     }
-    onOpenChange(open);
-  };
+  }, [open, source]);
 
   const { isSubmitting, handleAmountChange } = usePaymentSourceOperations(
     source,
-    () => handleDialogClose(false)
+    () => onOpenChange(false)
   );
 
   const handleSave = async () => {
@@ -51,7 +51,7 @@ export const PaymentSourceDialog = ({
   };
 
   return (
-    <Dialog open={open} onOpenChange={handleDialogClose}>
+    <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle className="text-lg">Edit Payment Source</DialogTitle>

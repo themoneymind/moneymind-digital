@@ -2,7 +2,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Button } from "@/components/ui/button";
 import { useFinance } from "@/contexts/FinanceContext";
 import { useToast } from "@/hooks/use-toast";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { TransactionEditDialogForm } from "./TransactionEditDialogForm";
 
 type Transaction = {
@@ -33,6 +33,16 @@ export const TransactionEditDialog = ({
   const [amount, setAmount] = useState("");
   const [selectedSource, setSelectedSource] = useState(transaction.source);
   const [description, setDescription] = useState(transaction.description || "");
+
+  // Reset state when dialog opens/closes
+  useEffect(() => {
+    if (open) {
+      setAmount("");
+      setOperation("add");
+      setDescription(transaction.description || "");
+      setSelectedSource(transaction.source);
+    }
+  }, [open, transaction]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -74,7 +84,7 @@ export const TransactionEditDialog = ({
         description: "Transaction updated successfully",
       });
 
-      handleDialogClose(false);
+      onOpenChange(false);
     } catch (error) {
       console.error("Error updating transaction:", error);
       toast({
@@ -85,18 +95,8 @@ export const TransactionEditDialog = ({
     }
   };
 
-  const handleDialogClose = (open: boolean) => {
-    if (!open) {
-      setAmount("");
-      setOperation("add");
-      setDescription(transaction.description || "");
-      setSelectedSource(transaction.source);
-    }
-    onOpenChange(open);
-  };
-
   return (
-    <Dialog open={open} onOpenChange={handleDialogClose}>
+    <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle className="text-xl font-semibold">Edit Transaction</DialogTitle>
