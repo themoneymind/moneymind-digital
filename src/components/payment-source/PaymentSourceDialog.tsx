@@ -14,12 +14,14 @@ type PaymentSourceDialogProps = {
     linked?: boolean;
     upi_apps?: string[];
   };
+  onDelete?: () => void;  // Added this prop definition
 };
 
 export const PaymentSourceDialog = ({
   open,
   onOpenChange,
   source,
+  onDelete,  // Added this to destructuring
 }: PaymentSourceDialogProps) => {
   const [name, setName] = useState("");
   const [selectedUpiApps, setSelectedUpiApps] = useState<string[]>([]);
