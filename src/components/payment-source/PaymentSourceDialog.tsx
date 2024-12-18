@@ -90,6 +90,7 @@ export const PaymentSourceDialog = ({
       onOpenChange={(newOpen) => {
         if (!newOpen && !dialogState.isSubmitting && !dialogState.isClosing) {
           dialogState.initiateClose();
+          onOpenChange(false);
         }
       }}
     >
@@ -109,7 +110,7 @@ export const PaymentSourceDialog = ({
         <DialogHeader>
           <DialogTitle className="text-lg">Edit Payment Source</DialogTitle>
         </DialogHeader>
-        <div className="p-4 bg-gray-50 rounded-[12px] border border-gray-100 mb-4">
+        <div className="p-4 bg-gray-50 rounded-[12px] border border-gray-100 mb-2">
           <p className="text-sm text-gray-500 mb-1">Current Amount</p>
           <p className="text-lg font-semibold">{formatCurrency(currentAmount)}</p>
         </div>
