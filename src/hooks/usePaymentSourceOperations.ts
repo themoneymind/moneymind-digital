@@ -53,7 +53,6 @@ export const usePaymentSourceOperations = (
 
       if (error) throw error;
 
-      // Refresh data to update all components
       await refreshData();
 
       toast({

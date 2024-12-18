@@ -52,9 +52,13 @@ export const PaymentSourceDialog = ({
   useEffect(() => {
     const numAmount = Number(amount);
     if (!isNaN(numAmount) && source) {
-      setCurrentAmount(operation === "add" ? source.amount + numAmount : source.amount - numAmount);
+      setCurrentAmount(
+        operation === "add" 
+          ? Number(source.amount) + numAmount 
+          : Number(source.amount) - numAmount
+      );
     } else {
-      setCurrentAmount(source?.amount || 0);
+      setCurrentAmount(Number(source?.amount) || 0);
     }
   }, [amount, operation, source]);
 
@@ -75,6 +79,7 @@ export const PaymentSourceDialog = ({
       });
       return;
     }
+
     await handleAmountChange(operation, amount, name, selectedUpiApps);
   };
 

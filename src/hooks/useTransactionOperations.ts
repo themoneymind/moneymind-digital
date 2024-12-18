@@ -10,13 +10,35 @@ export const useTransactionOperations = (
 ) => {
   const { user } = useAuth();
 
+  const updatePaymentSourceAmount = async (
+    sourceId: string,
+    amount: number,
+    type: "income" | "expense"
+  ) => {
+    const source = paymentSources.find(s => s.id === sourceId);
+    if (!source) return;
+
+    const newAmount = type === "income" 
+      ? Number(source.amount) + Number(amount)
+      : Number(source.amount) - Number(amount);
+
+    const { error } = await supabase
+      .from("payment_sources")
+      .update({ amount: newAmount })
+      .eq("id", sourceId)
+      .eq("user_id", user?.id);
+
+    if (error) throw error;
+  };
+
   const addTransaction = async (
     transaction: Omit<Transaction, "id" | "date" | "user_id" | "created_at" | "updated_at">
   ) => {
     if (!user) return;
 
     try {
-      const { error } = await supabase
+      // First add the transaction
+      const { error: transactionError } = await supabase
         .from("transactions")
         .insert({
           ...transaction,
@@ -24,7 +46,14 @@ export const useTransactionOperations = (
           date: new Date().toISOString(),
         });
 
-      if (error) throw error;
+      if (transactionError) throw transactionError;
+
+      // Then update the payment source amount
+      await updatePaymentSourceAmount(
+        transaction.source,
+        Number(transaction.amount),
+        transaction.type
+      );
 
       await refreshData();
       toast.success("Transaction added successfully");
@@ -41,19 +70,46 @@ export const useTransactionOperations = (
     if (!user) return;
 
     try {
+      // Get the original transaction first
+      const { data: originalTransaction, error: fetchError } = await supabase
+        .from("transactions")
+        .select("*")
+        .eq("id", id)
+        .single();
+
+      if (fetchError) throw fetchError;
+
       // Convert Date object to ISO string if it exists
       const formattedUpdates = {
         ...updates,
         date: updates.date ? new Date(updates.date).toISOString() : undefined
       };
 
-      const { error } = await supabase
+      // Update the transaction
+      const { error: updateError } = await supabase
         .from("transactions")
         .update(formattedUpdates)
         .eq("id", id)
         .eq("user_id", user.id);
 
-      if (error) throw error;
+      if (updateError) throw updateError;
+
+      // If amount or type changed, update payment source
+      if (updates.amount || updates.type) {
+        // Revert the original transaction's effect
+        await updatePaymentSourceAmount(
+          originalTransaction.source,
+          Number(originalTransaction.amount),
+          originalTransaction.type === "income" ? "expense" : "income"
+        );
+
+        // Apply the new transaction's effect
+        await updatePaymentSourceAmount(
+          updates.source || originalTransaction.source,
+          Number(updates.amount || originalTransaction.amount),
+          (updates.type as "income" | "expense") || originalTransaction.type
+        );
+      }
 
       await refreshData();
       toast.success("Transaction updated successfully");
@@ -67,13 +123,30 @@ export const useTransactionOperations = (
     if (!user) return;
 
     try {
-      const { error } = await supabase
+      // Get the transaction first
+      const { data: transaction, error: fetchError } = await supabase
+        .from("transactions")
+        .select("*")
+        .eq("id", id)
+        .single();
+
+      if (fetchError) throw fetchError;
+
+      // Delete the transaction
+      const { error: deleteError } = await supabase
         .from("transactions")
         .delete()
         .eq("id", id)
         .eq("user_id", user.id);
 
-      if (error) throw error;
+      if (deleteError) throw deleteError;
+
+      // Revert the transaction's effect on the payment source
+      await updatePaymentSourceAmount(
+        transaction.source,
+        Number(transaction.amount),
+        transaction.type === "income" ? "expense" : "income"
+      );
 
       await refreshData();
       toast.success("Transaction deleted successfully");
