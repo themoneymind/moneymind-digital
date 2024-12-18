@@ -1,6 +1,6 @@
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
-import { Transaction } from "@/types/transactions";
+import { Transaction, TransactionType } from "@/types/transactions";
 import { PaymentSource } from "@/types/finance";
 import { toast } from "sonner";
 
@@ -13,7 +13,7 @@ export const useTransactionOperations = (
   const updatePaymentSourceAmount = async (
     sourceId: string,
     amount: number,
-    type: "income" | "expense",
+    type: TransactionType,
     isReversal: boolean = false
   ) => {
     console.log("Updating payment source:", { sourceId, amount, type, isReversal });
@@ -22,12 +22,10 @@ export const useTransactionOperations = (
 
     let newAmount;
     if (isReversal) {
-      // When reversing, we do the opposite of the original transaction
       newAmount = type === "income" 
         ? Number(source.amount) - Number(amount)
         : Number(source.amount) + Number(amount);
     } else {
-      // When adding new transaction, add for income and subtract for expense
       newAmount = type === "income" 
         ? Number(source.amount) + Number(amount)
         : Number(source.amount) - Number(amount);
@@ -54,14 +52,12 @@ export const useTransactionOperations = (
     if (!user) return;
 
     try {
-      // Update the payment source first
       await updatePaymentSourceAmount(
         transaction.source,
         Number(transaction.amount),
-        transaction.type as "income" | "expense"
+        transaction.type
       );
 
-      // Create the transaction record
       const { error: transactionError } = await supabase
         .from("transactions")
         .insert({
@@ -88,7 +84,6 @@ export const useTransactionOperations = (
     if (!user) return;
 
     try {
-      // Fetch the original transaction
       const { data: originalTransaction, error: fetchError } = await supabase
         .from("transactions")
         .select("*")
@@ -97,29 +92,32 @@ export const useTransactionOperations = (
 
       if (fetchError) throw fetchError;
 
-      // Reverse the original transaction's effect on the payment source
       await updatePaymentSourceAmount(
         originalTransaction.source,
         Number(originalTransaction.amount),
-        originalTransaction.type,
-        true // isReversal = true
+        originalTransaction.type as TransactionType,
+        true
       );
 
-      // Apply the new transaction amount
       if (updates.amount !== undefined) {
         const targetSource = updates.source || originalTransaction.source;
         await updatePaymentSourceAmount(
           targetSource,
           Number(updates.amount),
-          originalTransaction.type,
-          false // Not a reversal, applying new amount
+          (updates.type || originalTransaction.type) as TransactionType,
+          false
         );
       }
 
-      // Update the transaction record
+      // Convert Date to ISO string if it exists in updates
+      const formattedUpdates = {
+        ...updates,
+        date: updates.date ? new Date(updates.date).toISOString() : undefined
+      };
+
       const { error: updateError } = await supabase
         .from("transactions")
-        .update(updates)
+        .update(formattedUpdates)
         .eq("id", id);
 
       if (updateError) throw updateError;
@@ -137,7 +135,6 @@ export const useTransactionOperations = (
     if (!user) return;
 
     try {
-      // Fetch the transaction to be deleted
       const { data: transaction, error: fetchError } = await supabase
         .from("transactions")
         .select("*")
@@ -146,15 +143,13 @@ export const useTransactionOperations = (
 
       if (fetchError) throw fetchError;
 
-      // Reverse the transaction's effect on the payment source
       await updatePaymentSourceAmount(
         transaction.source,
         Number(transaction.amount),
-        transaction.type,
-        true // isReversal = true
+        transaction.type as TransactionType,
+        true
       );
 
-      // Delete the transaction record
       const { error: deleteError } = await supabase
         .from("transactions")
         .delete()
