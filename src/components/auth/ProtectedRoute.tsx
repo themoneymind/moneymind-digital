@@ -32,9 +32,13 @@ export const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
     return <Navigate to="/signup" replace />;
   }
 
+  // Get the current path
+  const currentPath = window.location.pathname;
   const isFirstTimeUser = localStorage.getItem("isFirstTimeUser") === "true";
-
-  if (isFirstTimeUser && window.location.pathname !== "/app/payment-source") {
+  
+  // If user has no payment sources and isn't on the payment source page, redirect them
+  if (isFirstTimeUser && currentPath !== "/app/payment-source") {
+    console.log("Redirecting to payment source page - no sources found");
     return <Navigate to="/app/payment-source" replace />;
   }
 
