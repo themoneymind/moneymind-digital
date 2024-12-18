@@ -1,11 +1,11 @@
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { useFinance } from "@/contexts/FinanceContext";
-import { useState, useEffect, useCallback } from "react";
-import { TransactionEditDialogForm } from "./TransactionEditDialogForm";
-import { useTransactionEditForm } from "@/hooks/useTransactionEditForm";
+import { useEffect } from "react";
 import { Transaction } from "@/types/transactions";
 import { useToast } from "@/hooks/use-toast";
+import { useTransactionEditForm } from "@/hooks/useTransactionEditForm";
+import { useDialogState } from "@/hooks/useDialogState";
+import { TransactionEditDialogContent } from "./TransactionEditDialogContent";
 
 type TransactionEditDialogProps = {
   open: boolean;
@@ -20,11 +20,17 @@ export const TransactionEditDialog = ({
 }: TransactionEditDialogProps) => {
   const { getFormattedPaymentSources } = useFinance();
   const { toast } = useToast();
-  const [isClosing, setIsClosing] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const formattedSources = getFormattedPaymentSources();
 
-  console.log("Dialog state:", { open, isClosing, isSubmitting });
+  const {
+    isClosing,
+    isSubmitting,
+    handleOpenChange,
+    startSubmitting,
+    stopSubmitting,
+    initiateClose,
+    reset,
+  } = useDialogState(onOpenChange);
 
   const {
     operation,
@@ -38,95 +44,66 @@ export const TransactionEditDialog = ({
     handleSubmit: onSubmit,
     resetForm,
   } = useTransactionEditForm(transaction, () => {
-    console.log("Form submission successful, closing dialog");
-    setIsClosing(true);
-    onOpenChange(false);
+    toast({
+      title: "Success",
+      description: "Transaction updated successfully",
+    });
+    initiateClose();
   });
 
   useEffect(() => {
     if (open) {
-      console.log("Dialog opened, resetting state");
       resetForm();
-      setIsClosing(false);
-      setIsSubmitting(false);
+      reset();
     }
-  }, [open, resetForm]);
+  }, [open, resetForm, reset]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (isSubmitting) {
-      console.log("Already submitting, preventing duplicate submission");
-      return;
-    }
+    if (isSubmitting) return;
 
-    console.log("Starting form submission");
-    setIsSubmitting(true);
+    startSubmitting();
     try {
       await onSubmit(e);
-      toast({
-        title: "Success",
-        description: "Transaction updated successfully",
-      });
     } catch (error) {
-      console.error("Form submission error:", error);
       toast({
         title: "Error",
         description: error instanceof Error ? error.message : "Failed to update transaction",
         variant: "destructive",
       });
-      setIsSubmitting(false);
+      stopSubmitting();
     }
   };
-
-  const handleOpenChange = useCallback((newOpen: boolean) => {
-    console.log("Dialog open state changing:", { newOpen, isSubmitting, isClosing });
-    if (!newOpen && !isSubmitting && !isClosing) {
-      setIsClosing(true);
-      onOpenChange(false);
-    }
-  }, [isSubmitting, isClosing, onOpenChange]);
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent 
         className="sm:max-w-[425px]"
         onPointerDownOutside={(e) => {
-          console.log("Pointer down outside, current state:", { isSubmitting });
           if (isSubmitting) {
             e.preventDefault();
           }
         }}
         onEscapeKeyDown={(e) => {
-          console.log("Escape key pressed, current state:", { isSubmitting });
           if (isSubmitting) {
             e.preventDefault();
           }
         }}
       >
-        <DialogHeader>
-          <DialogTitle className="text-xl font-semibold">Edit Transaction</DialogTitle>
-        </DialogHeader>
-        <form onSubmit={handleSubmit}>
-          <TransactionEditDialogForm
-            currentAmount={transaction.amount}
-            operation={operation}
-            setOperation={setOperation}
-            amount={amount}
-            setAmount={setAmount}
-            selectedSource={selectedSource}
-            setSelectedSource={setSelectedSource}
-            description={description}
-            setDescription={setDescription}
-            formattedSources={formattedSources}
-          />
-          <Button 
-            type="submit" 
-            className="w-full h-12 rounded-[12px] mt-6"
-            disabled={isSubmitting}
-          >
-            {isSubmitting ? "Saving..." : "Save Changes"}
-          </Button>
-        </form>
+        <TransactionEditDialogContent
+          transaction={transaction}
+          operation={operation}
+          setOperation={setOperation}
+          amount={amount}
+          setAmount={setAmount}
+          selectedSource={selectedSource}
+          setSelectedSource={setSelectedSource}
+          description={description}
+          setDescription={setDescription}
+          formattedSources={formattedSources}
+          onSubmit={handleSubmit}
+          isSubmitting={isSubmitting}
+        />
       </DialogContent>
     </Dialog>
   );
