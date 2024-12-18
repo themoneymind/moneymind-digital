@@ -1,5 +1,5 @@
 import { Plus } from "lucide-react";
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -18,29 +18,11 @@ type CategorySelectorProps = {
   onAddCustomCategory: (category: string) => void;
 };
 
-export const CategorySelector = ({
-  type,
-  category,
-  onCategoryChange,
-  customCategories,
-  onAddCustomCategory,
-}: CategorySelectorProps) => {
+const useCategoryDialog = (onAddCustomCategory: (category: string) => void) => {
   const { toast } = useToast();
   const [newCategory, setNewCategory] = useState("");
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-
-  const defaultExpenseCategories = ["Food", "Transport", "Shopping"];
-  const defaultIncomeCategories = ["Salary", "Freelance", "Investment"];
-
-  // Ensure unique categories and create unique keys
-  const uniqueCategories = Array.from(new Set([
-    ...(type === "expense" ? customCategories.expense : customCategories.income),
-    ...(type === "expense" ? defaultExpenseCategories : defaultIncomeCategories)
-  ])).map(cat => ({
-    id: `${type}-${cat.toLowerCase()}`,
-    name: cat
-  }));
 
   const handleAddCategory = async () => {
     if (!newCategory.trim()) {
@@ -73,6 +55,43 @@ export const CategorySelector = ({
       setIsSubmitting(false);
     }
   };
+
+  return {
+    newCategory,
+    setNewCategory,
+    isDialogOpen,
+    setIsDialogOpen,
+    isSubmitting,
+    handleAddCategory,
+  };
+};
+
+export const CategorySelector = ({
+  type,
+  category,
+  onCategoryChange,
+  customCategories,
+  onAddCustomCategory,
+}: CategorySelectorProps) => {
+  const {
+    newCategory,
+    setNewCategory,
+    isDialogOpen,
+    setIsDialogOpen,
+    isSubmitting,
+    handleAddCategory,
+  } = useCategoryDialog(onAddCustomCategory);
+
+  const defaultExpenseCategories = ["Food", "Transport", "Shopping"];
+  const defaultIncomeCategories = ["Salary", "Freelance", "Investment"];
+
+  const uniqueCategories = Array.from(new Set([
+    ...(type === "expense" ? customCategories.expense : customCategories.income),
+    ...(type === "expense" ? defaultExpenseCategories : defaultIncomeCategories)
+  ])).map(cat => ({
+    id: `${type}-${cat.toLowerCase()}`,
+    name: cat
+  }));
 
   return (
     <div className="flex gap-2">

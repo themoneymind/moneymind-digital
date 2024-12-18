@@ -1,19 +1,10 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { useFinance } from "@/contexts/FinanceContext";
-import { useToast } from "@/hooks/use-toast";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import { TransactionEditDialogForm } from "./TransactionEditDialogForm";
-
-type Transaction = {
-  id: string;
-  type: "income" | "expense";
-  amount: number;
-  category: string;
-  source: string;
-  description?: string;
-  date: Date;
-};
+import { useTransactionEditForm } from "@/hooks/useTransactionEditForm";
+import { Transaction } from "@/types/transactions";
 
 type TransactionEditDialogProps = {
   open: boolean;
@@ -26,86 +17,33 @@ export const TransactionEditDialog = ({
   onOpenChange,
   transaction,
 }: TransactionEditDialogProps) => {
-  const { editTransaction, getFormattedPaymentSources } = useFinance();
-  const { toast } = useToast();
-  const formattedSources = getFormattedPaymentSources();
-  const [operation, setOperation] = useState<"add" | "subtract">("add");
-  const [amount, setAmount] = useState("");
-  const [selectedSource, setSelectedSource] = useState("");
-  const [description, setDescription] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { getFormattedPaymentSources } = useFinance();
   const [isClosing, setIsClosing] = useState(false);
+  const formattedSources = getFormattedPaymentSources();
 
-  const resetState = useCallback(() => {
-    setAmount("");
-    setOperation("add");
-    setSelectedSource(transaction.source);
-    setDescription(transaction.description || "");
-    setIsSubmitting(false);
-    setIsClosing(false);
-  }, [transaction]);
+  const {
+    operation,
+    setOperation,
+    amount,
+    setAmount,
+    selectedSource,
+    setSelectedSource,
+    description,
+    setDescription,
+    isSubmitting,
+    handleSubmit,
+    resetForm,
+  } = useTransactionEditForm(transaction, () => {
+    setIsClosing(true);
+    onOpenChange(false);
+  });
 
   useEffect(() => {
     if (open) {
-      resetState();
+      resetForm();
+      setIsClosing(false);
     }
-  }, [open, resetState]);
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (!selectedSource) {
-      toast({
-        title: "Error",
-        description: "Please select a payment source",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    const numAmount = Number(amount);
-    if (amount && isNaN(numAmount)) {
-      toast({
-        title: "Error",
-        description: "Please enter a valid amount",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    setIsSubmitting(true);
-
-    try {
-      const finalAmount = amount 
-        ? (operation === "add" 
-            ? transaction.amount + numAmount 
-            : transaction.amount - numAmount)
-        : transaction.amount;
-
-      await editTransaction(transaction.id, {
-        amount: finalAmount,
-        source: selectedSource,
-        description,
-      });
-
-      toast({
-        title: "Success",
-        description: "Transaction updated successfully",
-      });
-
-      setIsClosing(true);
-      onOpenChange(false);
-    } catch (error) {
-      console.error("Error updating transaction:", error);
-      toast({
-        title: "Error",
-        description: error instanceof Error ? error.message : "Failed to update transaction",
-        variant: "destructive",
-      });
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
+  }, [open, resetForm]);
 
   return (
     <Dialog 
