@@ -31,15 +31,14 @@ export const useTransactionEditForm = (
       throw new Error("Please enter a valid amount");
     }
 
-    // Calculate the final amount based on the operation
-    let finalAmount = transaction.amount; // Start with original amount
-    if (amount) {
-      finalAmount = operation === "add" 
-        ? transaction.amount + numAmount 
-        : transaction.amount - numAmount;
-    }
+    // Calculate the new final amount based on the operation
+    const finalAmount = amount ? (
+      operation === "add" 
+        ? Number(transaction.amount) + numAmount 
+        : Number(transaction.amount) - numAmount
+    ) : Number(transaction.amount);
 
-    console.log("Transaction edit operation:", {
+    console.log("Transaction edit calculation:", {
       originalAmount: transaction.amount,
       operation,
       changeAmount: numAmount,
