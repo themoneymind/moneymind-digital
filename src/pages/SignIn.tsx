@@ -40,34 +40,28 @@ export const SignIn = () => {
     setIsLoading(true);
     
     try {
-      console.log("Starting sign in process with email:", email.trim());
-      
       const { data, error } = await supabase.auth.signInWithPassword({
         email: email.trim(),
         password: password.trim(),
       });
 
-      console.log("Sign in response:", { data, error });
-
       if (error) {
-        console.error("Sign in error details:", error);
-        
-        if (error.message.includes("Email not confirmed")) {
+        if (error.message.includes("Invalid login credentials")) {
           toast({
             title: "Error",
-            description: "Please confirm your email before signing in",
+            description: "Invalid email or password. Please check your credentials and try again.",
             variant: "destructive",
           });
-        } else if (error.message.includes("Invalid login credentials")) {
+        } else if (error.message.includes("Email not confirmed")) {
           toast({
             title: "Error",
-            description: "Invalid email or password",
+            description: "Please verify your email before signing in",
             variant: "destructive",
           });
         } else {
           toast({
             title: "Error",
-            description: "Wrong login credentials",
+            description: error.message,
             variant: "destructive",
           });
         }
@@ -75,7 +69,6 @@ export const SignIn = () => {
       }
 
       if (!data?.user) {
-        console.error("No user data received");
         toast({
           title: "Error",
           description: "Unable to sign in. Please try again.",
@@ -84,14 +77,13 @@ export const SignIn = () => {
         return;
       }
 
-      console.log("Sign in successful:", data.user);
       toast({
         title: "Success",
         description: "Successfully signed in",
       });
       
       navigate('/app');
-    } catch (error) {
+    } catch (error: any) {
       console.error("Unexpected sign in error:", error);
       toast({
         title: "Error",
