@@ -33,7 +33,6 @@ export const TransactionEditDialog = ({
   const [amount, setAmount] = useState("");
   const [selectedSource, setSelectedSource] = useState("");
   const [description, setDescription] = useState("");
-  const [isClosing, setIsClosing] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const resetState = useCallback(() => {
@@ -41,23 +40,14 @@ export const TransactionEditDialog = ({
     setOperation("add");
     setSelectedSource(transaction.source);
     setDescription(transaction.description || "");
-    setIsClosing(false);
     setIsSubmitting(false);
   }, [transaction]);
 
-  // Reset state when dialog opens
   useEffect(() => {
     if (open) {
       resetState();
     }
   }, [open, resetState]);
-
-  const handleDialogChange = useCallback((newOpen: boolean) => {
-    if (!newOpen && !isClosing && !isSubmitting) {
-      setIsClosing(true);
-      onOpenChange(false);
-    }
-  }, [onOpenChange, isClosing, isSubmitting]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -101,7 +91,6 @@ export const TransactionEditDialog = ({
         description: "Transaction updated successfully",
       });
 
-      setIsClosing(true);
       onOpenChange(false);
     } catch (error) {
       console.error("Error updating transaction:", error);
@@ -116,10 +105,21 @@ export const TransactionEditDialog = ({
   };
 
   return (
-    <Dialog open={open} onOpenChange={handleDialogChange}>
+    <Dialog 
+      open={open} 
+      onOpenChange={(newOpen) => {
+        if (!newOpen && !isSubmitting) {
+          onOpenChange(false);
+        }
+      }}
+    >
       <DialogContent 
         className="sm:max-w-[425px]"
-        onPointerDownOutside={(e) => e.preventDefault()}
+        onPointerDownOutside={(e) => {
+          if (isSubmitting) {
+            e.preventDefault();
+          }
+        }}
       >
         <DialogHeader>
           <DialogTitle className="text-xl font-semibold">Edit Transaction</DialogTitle>
