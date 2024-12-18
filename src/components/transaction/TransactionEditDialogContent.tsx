@@ -18,6 +18,7 @@ interface TransactionEditDialogContentProps {
   isSubmitting: boolean;
   onDropdownOpenChange: (open: boolean) => void;
   currentAmount: number;
+  onDelete?: () => void;
 }
 
 export const TransactionEditDialogContent = ({
@@ -35,6 +36,7 @@ export const TransactionEditDialogContent = ({
   isSubmitting,
   onDropdownOpenChange,
   currentAmount,
+  onDelete,
 }: TransactionEditDialogContentProps) => {
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat("en-IN", {
@@ -67,13 +69,25 @@ export const TransactionEditDialogContent = ({
           formattedSources={formattedSources}
           onDropdownOpenChange={onDropdownOpenChange}
         />
-        <Button 
-          type="submit" 
-          className="w-full h-12 rounded-[12px] mt-6"
-          disabled={isSubmitting}
-        >
-          {isSubmitting ? "Saving..." : "Save Changes"}
-        </Button>
+        <div className="flex gap-2 mt-6">
+          <Button 
+            type="submit" 
+            className="flex-1 h-12 rounded-[12px]"
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? "Saving..." : "Save Changes"}
+          </Button>
+          {onDelete && (
+            <Button 
+              type="button"
+              variant="destructive"
+              onClick={onDelete}
+              className="h-12 rounded-[12px]"
+            >
+              Delete
+            </Button>
+          )}
+        </div>
       </form>
     </>
   );

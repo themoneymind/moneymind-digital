@@ -2,8 +2,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { useState, useEffect, useCallback } from "react";
 import { PaymentSourceDialogContent } from "./PaymentSourceDialogContent";
 import { usePaymentSourceOperations } from "@/hooks/usePaymentSourceOperations";
-import { Button } from "@/components/ui/button";
-import { Trash } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
 type PaymentSourceDialogProps = {
   open: boolean;
@@ -31,6 +30,7 @@ export const PaymentSourceDialog = ({
   const [operation, setOperation] = useState<"add" | "subtract">("add");
   const [isClosing, setIsClosing] = useState(false);
   const [currentAmount, setCurrentAmount] = useState(source?.amount || 0);
+  const { toast } = useToast();
 
   const resetState = useCallback(() => {
     setAmount("");
@@ -73,6 +73,11 @@ export const PaymentSourceDialog = ({
 
   const handleSave = async () => {
     if (!amount || isNaN(Number(amount))) {
+      toast({
+        title: "Error",
+        description: "Please enter a valid amount",
+        variant: "destructive",
+      });
       return;
     }
     await handleAmountChange(operation, amount, name, selectedUpiApps);
@@ -89,21 +94,8 @@ export const PaymentSourceDialog = ({
   return (
     <Dialog open={open} onOpenChange={handleDialogChange}>
       <DialogContent className="sm:max-w-[425px]" onPointerDownOutside={(e) => e.preventDefault()}>
-        <DialogHeader className="flex flex-row items-center justify-between">
+        <DialogHeader>
           <DialogTitle className="text-lg">Edit Payment Source</DialogTitle>
-          {onDelete && (
-            <Button
-              variant="destructive"
-              size="icon"
-              className="h-8 w-8"
-              onClick={(e) => {
-                e.stopPropagation();
-                onDelete();
-              }}
-            >
-              <Trash className="h-4 w-4" />
-            </Button>
-          )}
         </DialogHeader>
         <div className="p-4 bg-gray-50 rounded-[12px] border border-gray-100 mb-4">
           <p className="text-sm text-gray-500 mb-1">Current Amount</p>
@@ -120,6 +112,7 @@ export const PaymentSourceDialog = ({
           setAmount={setAmount}
           sourceType={source?.type}
           onSave={handleSave}
+          onDelete={onDelete}
           isSubmitting={isSubmitting}
         />
       </DialogContent>

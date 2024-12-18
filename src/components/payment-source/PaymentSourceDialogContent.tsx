@@ -12,6 +12,7 @@ interface PaymentSourceDialogContentProps {
   setAmount: (amount: string) => void;
   sourceType?: string;
   onSave: () => void;
+  onDelete?: () => void;
   isSubmitting: boolean;
 }
 
@@ -26,6 +27,7 @@ export const PaymentSourceDialogContent = ({
   setAmount,
   sourceType,
   onSave,
+  onDelete,
   isSubmitting,
 }: PaymentSourceDialogContentProps) => {
   const handleUpiToggle = (app: string) => {
@@ -48,13 +50,24 @@ export const PaymentSourceDialogContent = ({
         setAmount={setAmount}
         sourceType={sourceType}
       />
-      <Button 
-        onClick={onSave} 
-        className="h-12 rounded-[12px] mt-2 w-full"
-        disabled={isSubmitting}
-      >
-        {isSubmitting ? "Saving..." : "Save Changes"}
-      </Button>
+      <div className="flex gap-2">
+        <Button 
+          onClick={onSave} 
+          className="flex-1 h-12 rounded-[12px]"
+          disabled={isSubmitting}
+        >
+          {isSubmitting ? "Saving..." : "Save Changes"}
+        </Button>
+        {onDelete && (
+          <Button 
+            onClick={onDelete}
+            variant="destructive"
+            className="h-12 rounded-[12px]"
+          >
+            Delete
+          </Button>
+        )}
+      </div>
     </div>
   );
 };
