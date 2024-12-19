@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { PiggyBank } from "lucide-react";
 
 export const SignIn = () => {
   const [email, setEmail] = useState("");
@@ -95,11 +96,7 @@ export const SignIn = () => {
           <div className="space-y-8">
             <div className="text-center space-y-2">
               <div className="flex items-center justify-center mb-2">
-                <img 
-                  src="/lovable-uploads/e9fc4495-d8ba-4dcb-82a4-48a4e9bb6d1c.png" 
-                  alt="MoneyMind Logo" 
-                  className="h-10 w-10"
-                />
+                <PiggyBank className="h-10 w-10 text-blue-600" />
               </div>
               <h1 className="text-2xl font-bold text-blue-600">MoneyMind</h1>
               <p className="text-gray-600 text-base">
