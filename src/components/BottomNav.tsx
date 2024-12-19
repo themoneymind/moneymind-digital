@@ -31,27 +31,27 @@ export const BottomNav = () => {
                   onClick={() => navigate(item.path)}
                   className={cn(
                     "flex flex-col items-center z-10 transition-colors duration-200",
-                    // Add extra margin to create space for the FAB
-                    index === 2 ? "mr-6" : index === 1 ? "ml-6" : "",
+                    // Adjusted spacing for better FAB placement
+                    index === 2 ? "mr-8" : index === 1 ? "ml-8" : "",
                     isActive(item.path) 
                       ? "text-primary" 
                       : "text-gray-400 hover:text-gray-600"
                   )}
                 >
-                  <item.icon className="w-5 h-5 stroke-[1.25]" />
-                  <span className="text-[10px] font-medium mt-1">{item.label}</span>
+                  <item.icon className="w-5 h-5 stroke-[1]" />
+                  <span className="text-[10px] font-medium mt-1 text-gray-500">{item.label}</span>
                 </button>
               ))}
               
               {/* FAB Button with updated styling */}
               <button
                 onClick={() => setShowTransactionDialog(true)}
-                className="absolute -top-7 left-1/2 -translate-x-1/2 w-14 h-14 bg-primary rounded-full flex items-center justify-center shadow-lg hover:bg-primary/90 transition-colors animate-fade-in"
+                className="absolute -top-8 left-1/2 -translate-x-1/2 w-14 h-14 rounded-full flex items-center justify-center shadow-lg hover:opacity-90 transition-all animate-fade-in"
                 style={{
-                  background: "linear-gradient(135deg, var(--primary-gradient-from), var(--primary-gradient-to))"
+                  background: "linear-gradient(135deg, #7C3AED, #6366F1)"
                 }}
               >
-                <Plus className="w-7 h-7 text-white stroke-[1.5]" />
+                <Plus className="w-6 h-6 text-white stroke-[1.25]" />
               </button>
             </div>
           </div>
