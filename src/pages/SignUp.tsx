@@ -4,10 +4,17 @@ import { SignUpForm } from "@/components/auth/SignUpForm";
 
 export const SignUp = () => {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center px-6 py-8">
+    <div className="min-h-screen bg-gradient-to-br from-primary-gradient-from to-primary-gradient-to relative overflow-hidden flex items-center justify-center px-6 py-8">
+      {/* Decorative circles */}
+      <div className="absolute top-20 left-20 w-32 h-32 rounded-full bg-white/10 blur-xl" />
+      <div className="absolute bottom-20 right-20 w-40 h-40 rounded-full bg-white/10 blur-xl" />
+      
       <div className="w-full max-w-md">
-        <Link to="/" className="inline-flex items-center justify-center w-10 h-10 mb-8 rounded-full bg-gray-900/80 text-white hover:bg-gray-900/90 transition-colors">
-          <ArrowLeft className="h-5 w-5" />
+        <Link 
+          to="/" 
+          className="inline-flex items-center justify-center w-12 h-12 mb-8 rounded-full bg-gray-900/80 text-white hover:bg-gray-900/90 transition-colors"
+        >
+          <ArrowLeft className="h-6 w-6" />
         </Link>
 
         <div className="bg-white rounded-[32px] p-8 shadow-xl">
