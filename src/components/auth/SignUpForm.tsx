@@ -25,7 +25,7 @@ export const SignUpForm = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
+    <form onSubmit={handleSubmit} className="space-y-6">
       <SignUpInputs
         fullName={fullName}
         email={email}
@@ -43,7 +43,7 @@ export const SignUpForm = () => {
         <input 
           type="checkbox" 
           id="terms" 
-          className="rounded border-gray-300"
+          className="rounded border-gray-300 text-primary focus:ring-primary"
           required 
         />
         <label htmlFor="terms" className="text-sm text-gray-600">
@@ -56,11 +56,18 @@ export const SignUpForm = () => {
       
       <Button 
         type="submit" 
-        className="w-full h-12 rounded-xl text-base bg-primary hover:bg-primary/90"
+        className="w-full h-12 rounded-2xl text-base bg-primary hover:bg-primary/90 transition-colors"
         disabled={isLoading}
       >
         {isLoading ? "Creating Account..." : "Sign Up"}
       </Button>
+
+      <p className="text-center text-gray-500">
+        Already have an account?{" "}
+        <Link to="/signin" className="text-primary hover:text-primary/90 font-medium">
+          Sign In
+        </Link>
+      </p>
     </form>
   );
 };
