@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Link } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { PiggyBank } from "lucide-react";
@@ -9,10 +9,30 @@ import { PiggyBank } from "lucide-react";
 export const ForgotPassword = () => {
   const [email, setEmail] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [cooldownTime, setCooldownTime] = useState(0);
   const { toast } = useToast();
+
+  useEffect(() => {
+    if (cooldownTime > 0) {
+      const timer = setTimeout(() => {
+        setCooldownTime(time => time - 1);
+      }, 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [cooldownTime]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (cooldownTime > 0) {
+      toast({
+        title: "Please wait",
+        description: `You can request another reset email in ${cooldownTime} seconds`,
+        variant: "destructive",
+      });
+      return;
+    }
+
     setIsLoading(true);
 
     try {
@@ -21,11 +41,20 @@ export const ForgotPassword = () => {
       });
 
       if (error) {
-        toast({
-          title: "Error",
-          description: error.message,
-          variant: "destructive",
-        });
+        if (error.message.includes('rate_limit')) {
+          setCooldownTime(60); // 60 seconds cooldown
+          toast({
+            title: "Too many attempts",
+            description: "Please wait a minute before trying again",
+            variant: "destructive",
+          });
+        } else {
+          toast({
+            title: "Error",
+            description: error.message,
+            variant: "destructive",
+          });
+        }
         return;
       }
 
@@ -35,6 +64,7 @@ export const ForgotPassword = () => {
       });
       
       setEmail("");
+      setCooldownTime(60); // Set cooldown after successful request
     } catch (error) {
       toast({
         title: "Error",
@@ -68,15 +98,16 @@ export const ForgotPassword = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="h-12 rounded-xl border-gray-200 bg-gray-50/50 px-4 text-gray-900/70 placeholder:text-gray-500/60 focus:border-blue-600 focus:ring-blue-600"
-                disabled={isLoading}
+                disabled={isLoading || cooldownTime > 0}
                 required
               />
               <Button 
                 type="submit" 
                 className="w-full h-12 rounded-xl text-base bg-blue-600 hover:bg-blue-700"
-                disabled={isLoading}
+                disabled={isLoading || cooldownTime > 0}
               >
-                {isLoading ? "Sending Instructions..." : "Reset Password"}
+                {isLoading ? "Sending Instructions..." : 
+                 cooldownTime > 0 ? `Wait ${cooldownTime}s` : "Reset Password"}
               </Button>
             </form>
 
