@@ -25,26 +25,31 @@ export const BottomNav = () => {
                 { icon: Wallet2, label: "Dues", path: "/app/dues" },
                 { icon: LineChart, label: "Report", path: "/app/report" },
                 { icon: Settings, label: "Settings", path: "/app/settings" },
-              ].map((item) => (
+              ].map((item, index) => (
                 <button
                   key={item.label}
                   onClick={() => navigate(item.path)}
                   className={cn(
                     "flex flex-col items-center z-10 transition-colors duration-200",
+                    // Add extra margin to create space for the FAB
+                    index === 2 ? "mr-6" : index === 1 ? "ml-6" : "",
                     isActive(item.path) 
                       ? "text-primary" 
                       : "text-gray-400 hover:text-gray-600"
                   )}
                 >
-                  <item.icon className="w-5 h-5 stroke-[1.5]" />
+                  <item.icon className="w-5 h-5 stroke-[1.25]" />
                   <span className="text-[10px] font-medium mt-1">{item.label}</span>
                 </button>
               ))}
               
-              {/* FAB Button */}
+              {/* FAB Button with updated styling */}
               <button
                 onClick={() => setShowTransactionDialog(true)}
-                className="absolute -top-6 left-1/2 -translate-x-1/2 w-14 h-14 bg-primary rounded-full flex items-center justify-center shadow-lg hover:bg-primary/90 transition-colors animate-fade-in"
+                className="absolute -top-7 left-1/2 -translate-x-1/2 w-14 h-14 bg-primary rounded-full flex items-center justify-center shadow-lg hover:bg-primary/90 transition-colors animate-fade-in"
+                style={{
+                  background: "linear-gradient(135deg, var(--primary-gradient-from), var(--primary-gradient-to))"
+                }}
               >
                 <Plus className="w-7 h-7 text-white stroke-[1.5]" />
               </button>
