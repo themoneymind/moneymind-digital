@@ -37,9 +37,25 @@ export const SignUpForm = () => {
         isLoading={isLoading}
       />
       <PasswordRequirements password={password} />
+      
+      <div className="flex items-center space-x-2">
+        <input 
+          type="checkbox" 
+          id="terms" 
+          className="rounded border-gray-300"
+          required 
+        />
+        <label htmlFor="terms" className="text-sm text-gray-600">
+          I agree to the processing of{" "}
+          <Link to="/terms" className="text-primary hover:text-primary/90">
+            Personal data
+          </Link>
+        </label>
+      </div>
+      
       <Button 
         type="submit" 
-        className="w-full h-14 rounded-[12px] text-base bg-primary hover:bg-primary/90"
+        className="w-full h-12 rounded-xl text-base bg-primary hover:bg-primary/90"
         disabled={isLoading}
       >
         {isLoading ? "Creating Account..." : "Sign Up"}

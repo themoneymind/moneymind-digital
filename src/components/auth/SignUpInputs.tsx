@@ -30,7 +30,7 @@ export const SignUpInputs = ({
         placeholder="Enter your name"
         value={fullName}
         onChange={(e) => setFullName(e.target.value)}
-        className="h-14 rounded-[12px] bg-gray-50"
+        className="h-12 rounded-xl border-gray-200 bg-gray-50/50"
         disabled={isLoading}
         required
       />
@@ -39,7 +39,7 @@ export const SignUpInputs = ({
         placeholder="Enter your email"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
-        className="h-14 rounded-[12px] bg-gray-50"
+        className="h-12 rounded-xl border-gray-200 bg-gray-50/50"
         disabled={isLoading}
         required
       />
@@ -48,7 +48,7 @@ export const SignUpInputs = ({
         placeholder="Enter your mobile number"
         value={phoneNumber}
         onChange={(e) => setPhoneNumber(e.target.value)}
-        className="h-14 rounded-[12px] bg-gray-50"
+        className="h-12 rounded-xl border-gray-200 bg-gray-50/50"
         disabled={isLoading}
         required
       />
@@ -57,7 +57,7 @@ export const SignUpInputs = ({
         placeholder="Enter your password"
         value={password}
         onChange={(e) => setPassword(e.target.value)}
-        className="h-14 rounded-[12px] bg-gray-50"
+        className="h-12 rounded-xl border-gray-200 bg-gray-50/50"
         disabled={isLoading}
         required
       />
