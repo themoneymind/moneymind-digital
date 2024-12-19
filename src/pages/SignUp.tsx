@@ -4,12 +4,8 @@ import { SignUpForm } from "@/components/auth/SignUpForm";
 
 export const SignUp = () => {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary-gradient-from to-primary-gradient-to relative overflow-hidden flex items-center justify-center px-6 py-8">
-      {/* Decorative circles */}
-      <div className="absolute top-20 left-20 w-32 h-32 rounded-full bg-white/10 blur-xl" />
-      <div className="absolute bottom-20 right-20 w-40 h-40 rounded-full bg-white/10 blur-xl" />
-      
-      <div className="w-full max-w-md">
+    <div className="min-h-screen bg-[#F5F3FF] flex items-center justify-center px-6 py-8">
+      <div className="w-full max-w-[400px]">
         <Link 
           to="/" 
           className="inline-flex items-center justify-center w-12 h-12 mb-8 rounded-full bg-gray-900/80 text-white hover:bg-gray-900/90 transition-colors"
@@ -17,11 +13,18 @@ export const SignUp = () => {
           <ArrowLeft className="h-6 w-6" />
         </Link>
 
-        <div className="bg-white rounded-[32px] p-8 shadow-xl">
+        <div className="bg-white rounded-[32px] p-8 shadow-lg">
           <div className="space-y-6">
-            <div className="space-y-2">
-              <h1 className="text-2xl font-bold text-gray-900">Get Started</h1>
-              <p className="text-gray-500">
+            <div className="text-center space-y-2">
+              <div className="flex items-center justify-center mb-2">
+                <img 
+                  src="/lovable-uploads/e9fc4495-d8ba-4dcb-82a4-48a4e9bb6d1c.png" 
+                  alt="MoneyMind Logo" 
+                  className="h-10 w-10"
+                />
+              </div>
+              <h1 className="text-2xl font-bold text-blue-600">MoneyMind</h1>
+              <p className="text-gray-600 text-base">
                 Create your account to start managing your finances
               </p>
             </div>

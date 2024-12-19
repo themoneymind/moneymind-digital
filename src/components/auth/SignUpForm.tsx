@@ -43,12 +43,12 @@ export const SignUpForm = () => {
         <input 
           type="checkbox" 
           id="terms" 
-          className="rounded border-gray-300 text-primary focus:ring-primary"
+          className="rounded border-gray-300 text-blue-600 focus:ring-blue-600"
           required 
         />
         <label htmlFor="terms" className="text-sm text-gray-600">
           I agree to the processing of{" "}
-          <Link to="/terms" className="text-primary hover:text-primary/90">
+          <Link to="/terms" className="text-blue-600 hover:text-blue-700">
             Personal data
           </Link>
         </label>
@@ -56,15 +56,15 @@ export const SignUpForm = () => {
       
       <Button 
         type="submit" 
-        className="w-full h-14 rounded-2xl text-base bg-primary hover:bg-primary/90"
+        className="w-full h-12 rounded-xl text-base bg-blue-600 hover:bg-blue-700"
         disabled={isLoading}
       >
         {isLoading ? "Creating Account..." : "Sign Up"}
       </Button>
 
-      <p className="text-center text-gray-500">
+      <p className="text-center text-gray-600 text-sm">
         Already have an account?{" "}
-        <Link to="/signin" className="text-primary hover:text-primary/90 font-medium">
+        <Link to="/signin" className="text-blue-600 hover:text-blue-700">
           Sign In
         </Link>
       </p>
