@@ -94,8 +94,15 @@ export const SignIn = () => {
         <div className="bg-white rounded-[32px] p-8 shadow-lg">
           <div className="space-y-8">
             <div className="text-center space-y-2">
-              <h1 className="text-[32px] font-bold text-blue-600">MoneyMind</h1>
-              <p className="text-gray-600 text-lg">
+              <div className="flex items-center justify-center mb-2">
+                <img 
+                  src="/lovable-uploads/e9fc4495-d8ba-4dcb-82a4-48a4e9bb6d1c.png" 
+                  alt="MoneyMind Logo" 
+                  className="h-10 w-10"
+                />
+              </div>
+              <h1 className="text-2xl font-bold text-blue-600">MoneyMind</h1>
+              <p className="text-gray-600 text-base">
                 Sign in to your account
               </p>
             </div>
@@ -106,7 +113,7 @@ export const SignIn = () => {
                 placeholder="Email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="h-12 rounded-xl border-gray-200 bg-gray-50/50 px-4 focus:border-blue-600 focus:ring-blue-600"
+                className="h-12 rounded-xl border-gray-200 bg-gray-50/50 px-4 text-gray-900/70 placeholder:text-gray-500/60 focus:border-blue-600 focus:ring-blue-600"
                 disabled={isLoading}
                 required
               />
@@ -116,18 +123,10 @@ export const SignIn = () => {
                   placeholder="Password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="h-12 rounded-xl border-gray-200 bg-gray-50/50 px-4 focus:border-blue-600 focus:ring-blue-600"
+                  className="h-12 rounded-xl border-gray-200 bg-gray-50/50 px-4 text-gray-900/70 placeholder:text-gray-500/60 focus:border-blue-600 focus:ring-blue-600"
                   disabled={isLoading}
                   required
                 />
-                <div className="flex items-center justify-end">
-                  <Link 
-                    to="/forgot-password" 
-                    className="text-sm text-blue-600 hover:text-blue-700"
-                  >
-                    Forgot Password?
-                  </Link>
-                </div>
               </div>
               
               <Button 
@@ -137,9 +136,18 @@ export const SignIn = () => {
               >
                 {isLoading ? "Signing in..." : "Sign In"}
               </Button>
+
+              <div className="text-center">
+                <Link 
+                  to="/forgot-password" 
+                  className="text-sm text-blue-600 hover:text-blue-700"
+                >
+                  Forgot Password?
+                </Link>
+              </div>
             </form>
 
-            <p className="text-center text-gray-600">
+            <p className="text-center text-gray-600 text-sm">
               Don't have an account?{" "}
               <Link to="/signup" className="text-blue-600 hover:text-blue-700">
                 Sign up
