@@ -26,11 +26,19 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const navigate = useNavigate();
   const { toast } = useToast();
 
+  const handleAuthError = () => {
+    setSession(null);
+    setUser(null);
+    localStorage.removeItem("isFirstTimeUser");
+    navigate("/signin");
+  };
+
   useEffect(() => {
     // Get initial session
     supabase.auth.getSession().then(({ data: { session }, error }) => {
       if (error) {
         console.error("Error getting session:", error);
+        handleAuthError();
         return;
       }
       setSession(session);
@@ -43,11 +51,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     } = supabase.auth.onAuthStateChange(async (event, session) => {
       console.log("Auth state changed:", event);
       
-      if (event === 'SIGNED_OUT') {
-        setSession(null);
-        setUser(null);
-        navigate("/signin");
-        return;
+      if (event === 'SIGNED_OUT' || event === 'TOKEN_REFRESHED') {
+        if (!session) {
+          handleAuthError();
+          return;
+        }
       }
 
       if (event === 'TOKEN_REFRESHED') {
@@ -57,6 +65,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       if (event === 'SIGNED_IN') {
         if (!session) {
           console.error("No session after sign in");
+          handleAuthError();
           return;
         }
         console.log('Signed in successfully');
@@ -84,8 +93,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         return;
       }
       
-      localStorage.removeItem("isFirstTimeUser");
-      navigate("/signin");
+      handleAuthError();
     } catch (error) {
       console.error("Unexpected error during sign out:", error);
       toast({
