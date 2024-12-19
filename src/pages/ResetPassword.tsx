@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
@@ -10,6 +10,7 @@ export const ResetPassword = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -37,6 +38,19 @@ export const ResetPassword = () => {
     setIsLoading(true);
 
     try {
+      // Get the access_token from URL
+      const access_token = searchParams.get('access_token');
+      
+      if (!access_token) {
+        toast({
+          title: "Error",
+          description: "Invalid reset link. Please request a new one.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      // Set the new password using the token
       const { error } = await supabase.auth.updateUser({ 
         password: password 
       });
