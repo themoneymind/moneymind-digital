@@ -23,7 +23,7 @@ export const BottomNav = () => {
             { icon: Wallet2, label: "Dues", path: "/app/dues" },
             { icon: LineChart, label: "Report", path: "/app/report" },
             { icon: Settings, label: "Settings", path: "/app/settings" },
-          ].map((item, index) => (
+          ].map((item) => (
             <button
               key={item.label}
               onClick={() => navigate(item.path)}
