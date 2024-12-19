@@ -3,6 +3,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { SignIn } from "@/pages/SignIn";
 import { SignUp } from "@/pages/SignUp";
 import { ForgotPassword } from "@/pages/ForgotPassword";
+import { ResetPassword } from "@/pages/ResetPassword";
 import { Onboarding } from "@/pages/Onboarding";
 import { Terms } from "@/pages/Terms";
 import { PaymentSource } from "@/pages/PaymentSource";
@@ -37,6 +38,7 @@ export const PublicRoutes = () => {
       <Route path="/signin" element={<SignIn />} />
       <Route path="/signup" element={<SignUp />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
+      <Route path="/reset-password" element={<ResetPassword />} />
       <Route path="/onboarding" element={<Onboarding />} />
       <Route path="/terms" element={<Terms />} />
       <Route path="*" element={<Navigate to="/signin" />} />
