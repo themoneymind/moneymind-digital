@@ -90,67 +90,69 @@ export const SignIn = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background p-6">
-      <Link to="/" className="inline-block mb-8">
-        <ArrowLeft className="h-6 w-6" />
-      </Link>
+    <div className="min-h-screen bg-background flex items-center justify-center px-6">
+      <div className="w-full max-w-md">
+        <Link to="/" className="inline-block mb-8">
+          <ArrowLeft className="h-6 w-6" />
+        </Link>
 
-      <div className="space-y-6">
-        <div className="space-y-2">
-          <h1 className="text-2xl font-semibold">Welcome Back</h1>
-          <p className="text-muted-foreground">
-            Sign in to continue managing your finances
-          </p>
-        </div>
+        <div className="space-y-6">
+          <div className="space-y-2">
+            <h1 className="text-2xl font-semibold">Welcome Back</h1>
+            <p className="text-muted-foreground">
+              Sign in to continue managing your finances
+            </p>
+          </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <Input
-            type="email"
-            placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="h-14 rounded-[12px]"
-            disabled={isLoading}
-            required
-          />
-          <Input
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="h-14 rounded-[12px]"
-            disabled={isLoading}
-            required
-          />
-          <Link
-            to="/forgot-password"
-            className="inline-block text-sm text-primary font-medium"
-          >
-            Forgot Password?
-          </Link>
-          <Button 
-            type="submit" 
-            className="w-full h-14 rounded-[12px] text-base"
-            disabled={isLoading}
-          >
-            {isLoading ? "Signing in..." : "Sign In"}
-          </Button>
-        </form>
-
-        <div className="space-y-4">
-          <p className="text-center text-muted-foreground">
-            Don't have an account?{" "}
-            <Link to="/signup" className="text-primary font-medium">
-              Sign Up
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <Input
+              type="email"
+              placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="h-14 rounded-[12px]"
+              disabled={isLoading}
+              required
+            />
+            <Input
+              type="password"
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="h-14 rounded-[12px]"
+              disabled={isLoading}
+              required
+            />
+            <Link
+              to="/forgot-password"
+              className="inline-block text-sm text-primary font-medium"
+            >
+              Forgot Password?
             </Link>
-          </p>
-          
-          <p className="text-center text-sm text-muted-foreground">
-            By signing in, you agree to our{" "}
-            <Link to="/terms" className="text-primary underline hover:text-primary/90">
-              Terms and Conditions
-            </Link>
-          </p>
+            <Button 
+              type="submit" 
+              className="w-full h-14 rounded-[12px] text-base"
+              disabled={isLoading}
+            >
+              {isLoading ? "Signing in..." : "Sign In"}
+            </Button>
+          </form>
+
+          <div className="space-y-4">
+            <p className="text-center text-muted-foreground">
+              Don't have an account?{" "}
+              <Link to="/signup" className="text-primary font-medium">
+                Sign Up
+              </Link>
+            </p>
+            
+            <p className="text-center text-sm text-muted-foreground">
+              By signing in, you agree to our{" "}
+              <Link to="/terms" className="text-primary underline hover:text-primary/90">
+                Terms and Conditions
+              </Link>
+            </p>
+          </div>
         </div>
       </div>
     </div>
