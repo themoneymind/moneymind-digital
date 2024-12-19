@@ -28,11 +28,13 @@ export const BottomNav = () => {
               key={item.label}
               onClick={() => navigate(item.path)}
               className={cn(
-                "flex flex-col items-center z-10",
-                isActive(item.path) ? "text-primary" : "text-gray-400"
+                "flex flex-col items-center z-10 transition-colors duration-200",
+                isActive(item.path) 
+                  ? "text-primary" 
+                  : "text-gray-400 hover:text-gray-600"
               )}
             >
-              <item.icon className="w-5 h-5" />
+              <item.icon className="w-5 h-5 stroke-[1.5]" />
               <span className="text-[10px] font-medium mt-1">{item.label}</span>
             </button>
           ))}
@@ -40,9 +42,9 @@ export const BottomNav = () => {
           {/* FAB Button */}
           <button
             onClick={() => setShowTransactionDialog(true)}
-            className="absolute -top-6 left-1/2 -translate-x-1/2 w-12 h-12 bg-primary rounded-full flex items-center justify-center shadow-lg hover:bg-primary/90 transition-colors"
+            className="absolute -top-6 left-1/2 -translate-x-1/2 w-14 h-14 bg-primary rounded-full flex items-center justify-center shadow-lg hover:bg-primary/90 transition-colors animate-fade-in"
           >
-            <Plus className="w-6 h-6 text-white" />
+            <Plus className="w-7 h-7 text-white stroke-[1.5]" />
           </button>
         </div>
       </nav>
