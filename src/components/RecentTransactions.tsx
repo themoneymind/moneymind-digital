@@ -2,6 +2,7 @@ import { useFinance } from "@/contexts/FinanceContext";
 import { TransactionItem } from "./transaction/TransactionItem";
 import { Button } from "./ui/button";
 import { useNavigate } from "react-router-dom";
+import { Transaction } from "@/types/transactions";
 
 interface RecentTransactionsProps {
   showViewAll?: boolean;
@@ -12,6 +13,28 @@ export const RecentTransactions = ({ showViewAll = false }: RecentTransactionsPr
   const navigate = useNavigate();
   
   const recentTransactions = transactions.slice(0, 5);
+
+  const handleEdit = (transaction: Transaction) => {
+    // This will be handled by the parent component when needed
+    console.log('Edit transaction:', transaction);
+  };
+
+  const handleDelete = (id: string) => {
+    // This will be handled by the parent component when needed
+    console.log('Delete transaction:', id);
+  };
+
+  const formatCurrency = (amount: number) => {
+    return new Intl.NumberFormat("en-IN", {
+      style: "currency",
+      currency: "INR",
+      maximumFractionDigits: 0,
+    }).format(amount);
+  };
+
+  const toSentenceCase = (str: string) => {
+    return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+  };
 
   return (
     <div className="space-y-4">
@@ -35,7 +58,14 @@ export const RecentTransactions = ({ showViewAll = false }: RecentTransactionsPr
           </div>
         ) : (
           recentTransactions.map((transaction) => (
-            <TransactionItem key={transaction.id} transaction={transaction} />
+            <TransactionItem
+              key={transaction.id}
+              transaction={transaction}
+              onEdit={handleEdit}
+              onDelete={handleDelete}
+              formatCurrency={formatCurrency}
+              toSentenceCase={toSentenceCase}
+            />
           ))
         )}
       </div>
