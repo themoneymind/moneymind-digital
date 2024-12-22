@@ -7,37 +7,37 @@ import { MonthSelector } from "./MonthSelector";
 
 export const DashboardTabs = () => {
   return (
-    <Tabs defaultValue="overview" className="w-full">
+    <Tabs defaultValue="overview" className="w-full px-6">
       <div className="mb-6">
-        <TabsList className="w-full grid grid-cols-3 bg-white rounded-[20px] p-2 shadow-sm border border-gray-100">
+        <TabsList className="w-full grid grid-cols-3 bg-white rounded-[20px] p-1.5">
           <TabsTrigger
             value="overview"
-            className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-[14px] transition-all duration-300 text-sm font-medium"
+            className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-[14px] transition-all duration-300 text-sm py-2"
           >
             Overview
           </TabsTrigger>
           <TabsTrigger
             value="credit-cards"
-            className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-[14px] transition-all duration-300 text-sm font-medium"
+            className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-[14px] transition-all duration-300 text-sm py-2"
           >
             Cards
           </TabsTrigger>
           <TabsTrigger
             value="transactions"
-            className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-[14px] transition-all duration-300 text-sm font-medium"
+            className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-[14px] transition-all duration-300 text-sm py-2"
           >
             Transactions
           </TabsTrigger>
         </TabsList>
       </div>
 
-      <TabsContent value="overview" className="space-y-6 px-6">
+      <TabsContent value="overview" className="space-y-6">
         <MonthSelector />
         <BalanceCard />
         <PaymentSources />
       </TabsContent>
 
-      <TabsContent value="credit-cards" className="space-y-6 px-6">
+      <TabsContent value="credit-cards" className="space-y-6">
         <MonthSelector />
         <CreditCards />
         <div className="space-y-4">
@@ -46,7 +46,7 @@ export const DashboardTabs = () => {
         </div>
       </TabsContent>
 
-      <TabsContent value="transactions" className="space-y-6 px-6">
+      <TabsContent value="transactions" className="space-y-6">
         <RecentTransactions showViewAll />
       </TabsContent>
     </Tabs>

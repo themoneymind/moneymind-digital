@@ -17,8 +17,8 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-gray-50 pb-24 max-w-md mx-auto font-sans">
       <Header />
-      <div className="space-y-6">
-        <div className="flex items-center justify-between px-6">
+      <div className="space-y-8 mt-6">
+        <div className="flex items-start justify-between px-6">
           <div className="flex flex-col items-start">
             <Greeting />
             <MotivationalQuote />
