@@ -15,10 +15,11 @@ export const ProtectedRoutes = () => {
   return (
     <Routes>
       <Route path="/" element={<Index />} />
-      <Route path="/payment-source" element={<PaymentSource />} />
-      <Route path="/settings" element={<Settings />} />
-      <Route path="/report" element={<Report />} />
-      <Route path="*" element={<Navigate to="/" />} />
+      <Route path="/app" element={<Index />} />
+      <Route path="/app/payment-source" element={<PaymentSource />} />
+      <Route path="/app/settings" element={<Settings />} />
+      <Route path="/app/report" element={<Report />} />
+      <Route path="*" element={<Navigate to="/app" />} />
     </Routes>
   );
 };
