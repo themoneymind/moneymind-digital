@@ -94,7 +94,7 @@ export const BalanceCard = () => {
   });
 
   return (
-    <div className="p-6 mx-4 rounded-apple bg-gradient-to-br from-primary-gradient-from to-primary-gradient-to text-white shadow-lg">
+    <div className="p-6 mx-6 rounded-apple bg-gradient-to-br from-primary-gradient-from to-primary-gradient-to text-white shadow-lg">
       <h2 className="mb-2 text-sm font-medium opacity-90">Total Balance</h2>
       <p className="mb-2 text-4xl font-bold">{formatCurrency(displayBalance)}</p>
       <p className="mb-2 text-xs opacity-75">

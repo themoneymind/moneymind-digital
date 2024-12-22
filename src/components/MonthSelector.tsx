@@ -6,7 +6,7 @@ export const MonthSelector = () => {
   const { currentMonth, setCurrentMonth } = useFinance();
 
   if (!currentMonth || !setCurrentMonth) {
-    return null; // Return null instead of early return to maintain hook consistency
+    return null;
   }
 
   const handlePrevMonth = () => {
@@ -18,7 +18,7 @@ export const MonthSelector = () => {
   };
 
   return (
-    <div className="flex items-center justify-between p-4 mx-4 bg-white rounded-apple shadow-sm">
+    <div className="flex items-center justify-between p-4 mx-6 bg-white rounded-apple shadow-sm">
       <button 
         className="p-2 hover:bg-gray-50 rounded-full transition-colors" 
         onClick={handlePrevMonth}
