@@ -3,6 +3,7 @@ import { CreditCardItem } from "./credit-card/CreditCardItem";
 import { Button } from "./ui/button";
 import { Plus } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { ScrollArea, ScrollBar } from "./ui/scroll-area";
 
 export const CreditCards = () => {
   const { paymentSources } = useFinance();
@@ -24,17 +25,22 @@ export const CreditCards = () => {
         </Button>
       </div>
       
-      <div className="px-6 space-y-4">
-        {creditCards.length === 0 ? (
-          <div className="text-center py-8 text-muted-foreground">
-            No credit cards added yet
-          </div>
-        ) : (
-          creditCards.map((card) => (
-            <CreditCardItem key={card.id} card={card} />
-          ))
-        )}
-      </div>
+      <ScrollArea className="w-full whitespace-nowrap">
+        <div className="flex space-x-4 px-6 pb-4">
+          {creditCards.length === 0 ? (
+            <div className="text-center py-8 text-muted-foreground w-full">
+              No credit cards added yet
+            </div>
+          ) : (
+            creditCards.map((card) => (
+              <div key={card.id} className="min-w-[320px]">
+                <CreditCardItem card={card} />
+              </div>
+            ))
+          )}
+        </div>
+        <ScrollBar orientation="horizontal" />
+      </ScrollArea>
     </div>
   );
 };

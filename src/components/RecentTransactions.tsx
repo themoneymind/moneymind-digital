@@ -8,15 +8,31 @@ import { TransactionEditDialog } from "./transaction/TransactionEditDialog";
 
 interface RecentTransactionsProps {
   showViewAll?: boolean;
+  filterByType?: string;
 }
 
-export const RecentTransactions = ({ showViewAll = false }: RecentTransactionsProps) => {
-  const { transactions } = useFinance();
+export const RecentTransactions = ({ 
+  showViewAll = false,
+  filterByType
+}: RecentTransactionsProps) => {
+  const { transactions, paymentSources } = useFinance();
   const navigate = useNavigate();
   const [selectedTransaction, setSelectedTransaction] = useState<Transaction | null>(null);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   
-  const recentTransactions = transactions.slice(0, 5);
+  let filteredTransactions = transactions;
+  
+  if (filterByType === "Credit Card") {
+    const creditCardIds = paymentSources
+      .filter(source => source.type === "Credit Card")
+      .map(source => source.id);
+    
+    filteredTransactions = transactions.filter(t => 
+      creditCardIds.includes(t.source)
+    );
+  }
+  
+  const recentTransactions = filteredTransactions.slice(0, 5);
 
   const handleEdit = (transaction: Transaction) => {
     setSelectedTransaction(transaction);
@@ -41,9 +57,9 @@ export const RecentTransactions = ({ showViewAll = false }: RecentTransactionsPr
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between px-6">
-        <h2 className="text-lg font-semibold">Recent Transactions</h2>
-        {showViewAll && (
+      {showViewAll && (
+        <div className="flex items-center justify-between px-6">
+          <h2 className="text-lg font-semibold">Recent Transactions</h2>
           <Button
             variant="ghost"
             size="sm"
@@ -51,8 +67,8 @@ export const RecentTransactions = ({ showViewAll = false }: RecentTransactionsPr
           >
             View All
           </Button>
-        )}
-      </div>
+        </div>
+      )}
       
       <div className="px-6 space-y-4">
         {recentTransactions.length === 0 ? (

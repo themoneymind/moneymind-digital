@@ -9,7 +9,6 @@ interface CreditCardItemProps {
 
 export const CreditCardItem = ({ card }: CreditCardItemProps) => {
   const availableCredit = Number(card.credit_limit) - Math.abs(Number(card.amount));
-  const utilizationRate = (Math.abs(Number(card.amount)) / Number(card.credit_limit)) * 100;
 
   return (
     <div className="space-y-4">
@@ -67,15 +66,6 @@ export const CreditCardItem = ({ card }: CreditCardItemProps) => {
           )}
         </div>
       )}
-
-      <div className="px-4">
-        <div className="w-full bg-gray-100 rounded-full h-2">
-          <div
-            className="bg-primary h-2 rounded-full transition-all duration-300"
-            style={{ width: `${Math.min(utilizationRate, 100)}%` }}
-          />
-        </div>
-      </div>
     </div>
   );
 };
