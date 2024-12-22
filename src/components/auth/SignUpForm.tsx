@@ -47,9 +47,9 @@ export const SignUpForm = () => {
           required 
         />
         <label htmlFor="terms" className="text-sm text-gray-600">
-          I agree to the processing of{" "}
+          I agree to the{" "}
           <Link to="/terms" className="text-blue-600 hover:text-blue-700">
-            Personal data
+            Terms & Conditions
           </Link>
         </label>
       </div>
