@@ -3,6 +3,8 @@ import { TransactionItem } from "./transaction/TransactionItem";
 import { Button } from "./ui/button";
 import { useNavigate } from "react-router-dom";
 import { Transaction } from "@/types/transactions";
+import { useState } from "react";
+import { TransactionEditDialog } from "./transaction/TransactionEditDialog";
 
 interface RecentTransactionsProps {
   showViewAll?: boolean;
@@ -11,16 +13,17 @@ interface RecentTransactionsProps {
 export const RecentTransactions = ({ showViewAll = false }: RecentTransactionsProps) => {
   const { transactions } = useFinance();
   const navigate = useNavigate();
+  const [selectedTransaction, setSelectedTransaction] = useState<Transaction | null>(null);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   
   const recentTransactions = transactions.slice(0, 5);
 
   const handleEdit = (transaction: Transaction) => {
-    // This will be handled by the parent component when needed
-    console.log('Edit transaction:', transaction);
+    setSelectedTransaction(transaction);
+    setIsEditDialogOpen(true);
   };
 
   const handleDelete = (id: string) => {
-    // This will be handled by the parent component when needed
     console.log('Delete transaction:', id);
   };
 
@@ -69,6 +72,14 @@ export const RecentTransactions = ({ showViewAll = false }: RecentTransactionsPr
           ))
         )}
       </div>
+
+      {selectedTransaction && (
+        <TransactionEditDialog
+          open={isEditDialogOpen}
+          onOpenChange={setIsEditDialogOpen}
+          transaction={selectedTransaction}
+        />
+      )}
     </div>
   );
 };
