@@ -17,7 +17,7 @@ export const CreditCards = () => {
         <Button
           size="sm"
           onClick={() => navigate("/app/payment-source")}
-          className="rounded-full"
+          className="rounded-full bg-gradient-to-r from-primary-gradient-from to-primary-gradient-to hover:opacity-90 transition-all duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
         >
           <Plus className="w-4 h-4 mr-2" />
           Add Card
