@@ -51,9 +51,14 @@ export type Database = {
         Row: {
           amount: number | null
           created_at: string
+          credit_limit: number | null
+          due_date: string | null
           id: string
+          interest_rate: number | null
+          last_four_digits: string | null
           linked: boolean | null
           name: string
+          statement_date: string | null
           type: string
           updated_at: string
           upi_apps: string[] | null
@@ -62,9 +67,14 @@ export type Database = {
         Insert: {
           amount?: number | null
           created_at?: string
+          credit_limit?: number | null
+          due_date?: string | null
           id?: string
+          interest_rate?: number | null
+          last_four_digits?: string | null
           linked?: boolean | null
           name: string
+          statement_date?: string | null
           type: string
           updated_at?: string
           upi_apps?: string[] | null
@@ -73,9 +83,14 @@ export type Database = {
         Update: {
           amount?: number | null
           created_at?: string
+          credit_limit?: number | null
+          due_date?: string | null
           id?: string
+          interest_rate?: number | null
+          last_four_digits?: string | null
           linked?: boolean | null
           name?: string
+          statement_date?: string | null
           type?: string
           updated_at?: string
           upi_apps?: string[] | null

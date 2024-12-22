@@ -1,15 +1,12 @@
 import { Header } from "@/components/Header";
 import { MonthSelector } from "@/components/MonthSelector";
-import { BalanceCard } from "@/components/BalanceCard";
-import { NewTransaction } from "@/components/NewTransaction";
-import { RecentTransactions } from "@/components/RecentTransactions";
-import { PaymentSources } from "@/components/PaymentSources";
 import { BottomNav } from "@/components/BottomNav";
 import { ProfilePicture } from "@/components/ProfilePicture";
 import { useAuth } from "@/contexts/AuthContext";
 import { Navigate } from "react-router-dom";
 import { Greeting } from "@/components/Greeting";
 import { MotivationalQuote } from "@/components/MotivationalQuote";
+import { DashboardTabs } from "@/components/DashboardTabs";
 
 const Index = () => {
   const { user } = useAuth();
@@ -30,10 +27,7 @@ const Index = () => {
           <ProfilePicture />
         </div>
         <MonthSelector />
-        <BalanceCard />
-        <NewTransaction />
-        <RecentTransactions />
-        <PaymentSources />
+        <DashboardTabs />
       </div>
       <BottomNav />
     </div>
