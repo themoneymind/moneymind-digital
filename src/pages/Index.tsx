@@ -1,5 +1,4 @@
 import { Header } from "@/components/Header";
-import { MonthSelector } from "@/components/MonthSelector";
 import { BottomNav } from "@/components/BottomNav";
 import { ProfilePicture } from "@/components/ProfilePicture";
 import { useAuth } from "@/contexts/AuthContext";
@@ -26,7 +25,6 @@ const Index = () => {
           </div>
           <ProfilePicture />
         </div>
-        <MonthSelector />
         <DashboardTabs />
       </div>
       <BottomNav />
