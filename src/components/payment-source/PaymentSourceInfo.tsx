@@ -7,6 +7,7 @@ type PaymentSourceInfoProps = {
   linked?: boolean;
   showUpiList: boolean;
   setShowUpiList: (show: boolean) => void;
+  onUpiToggle: (e: React.MouseEvent) => void;
 };
 
 export const PaymentSourceInfo = ({
@@ -15,7 +16,7 @@ export const PaymentSourceInfo = ({
   upiApps,
   linked,
   showUpiList,
-  setShowUpiList,
+  onUpiToggle,
 }: PaymentSourceInfoProps) => {
   return (
     <div className="min-w-0 flex-1">
@@ -26,7 +27,7 @@ export const PaymentSourceInfo = ({
         <span className="text-xs text-gray-500 leading-tight">{type}</span>
         {linked && upiApps && upiApps.length > 0 && (
           <button
-            onClick={() => setShowUpiList(!showUpiList)}
+            onClick={onUpiToggle}
             className="flex items-center gap-0.5 text-xs text-blue-600 w-fit mt-0.5"
           >
             {upiApps.length} UPI linked

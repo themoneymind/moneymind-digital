@@ -58,6 +58,11 @@ export const PaymentSourceCard = ({ source }: PaymentSourceCardProps) => {
     }
   }, [refreshData]);
 
+  const handleUpiToggle = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setShowUpiList(!showUpiList);
+  };
+
   return (
     <div 
       className="flex items-center justify-between p-4 hover:bg-gray-50 transition-colors rounded-xl border border-gray-100 cursor-pointer space-y-0"
@@ -75,6 +80,7 @@ export const PaymentSourceCard = ({ source }: PaymentSourceCardProps) => {
           linked={source.linked}
           showUpiList={showUpiList}
           setShowUpiList={setShowUpiList}
+          onUpiToggle={handleUpiToggle}
         />
       </div>
       
