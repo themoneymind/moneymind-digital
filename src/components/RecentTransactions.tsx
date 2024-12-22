@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { Transaction } from "@/types/transactions";
 import { useState } from "react";
 import { TransactionEditDialog } from "./transaction/TransactionEditDialog";
+import { TransactionFilters } from "./transaction/TransactionFilters";
 
 interface RecentTransactionsProps {
   showViewAll?: boolean;
@@ -15,13 +16,16 @@ export const RecentTransactions = ({
   showViewAll = false,
   filterByType
 }: RecentTransactionsProps) => {
-  const { transactions, paymentSources } = useFinance();
+  const { transactions, paymentSources, currentMonth } = useFinance();
   const navigate = useNavigate();
   const [selectedTransaction, setSelectedTransaction] = useState<Transaction | null>(null);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [filter, setFilter] = useState<"all" | "income" | "expense" | "date">("all");
+  const [selectedSource, setSelectedSource] = useState<string | null>(null);
   
   let filteredTransactions = transactions;
   
+  // Apply source type filter (Credit Card)
   if (filterByType === "Credit Card") {
     const creditCardIds = paymentSources
       .filter(source => source.type === "Credit Card")
@@ -31,8 +35,20 @@ export const RecentTransactions = ({
       creditCardIds.includes(t.source)
     );
   }
+
+  // Apply transaction type filter
+  if (filter === "income") {
+    filteredTransactions = filteredTransactions.filter(t => t.type === "income");
+  } else if (filter === "expense") {
+    filteredTransactions = filteredTransactions.filter(t => t.type === "expense");
+  }
+
+  // Apply source filter
+  if (selectedSource) {
+    filteredTransactions = filteredTransactions.filter(t => t.source === selectedSource);
+  }
   
-  const recentTransactions = filteredTransactions.slice(0, 5);
+  const recentTransactions = filteredTransactions.slice(0, showViewAll ? undefined : 5);
 
   const handleEdit = (transaction: Transaction) => {
     setSelectedTransaction(transaction);
@@ -69,6 +85,16 @@ export const RecentTransactions = ({
           </Button>
         </div>
       )}
+      
+      <div className="px-6">
+        <TransactionFilters
+          filter={filter}
+          setFilter={setFilter}
+          currentMonth={currentMonth}
+          setCurrentMonth={() => {}}
+          onSourceSelect={setSelectedSource}
+        />
+      </div>
       
       <div className="px-6 space-y-4">
         {recentTransactions.length === 0 ? (
