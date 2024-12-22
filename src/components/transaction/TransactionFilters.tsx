@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { DateFilterButton } from "./DateFilterButton";
 import { PaymentSourceFilterDropdown } from "./PaymentSourceFilterDropdown";
+import { startOfDay, endOfDay, isEqual } from "date-fns";
 
 type TransactionFiltersProps = {
   filter: "all" | "income" | "expense" | "date";
@@ -19,8 +20,7 @@ export const TransactionFilters = ({
 }: TransactionFiltersProps) => {
   const handleDateSelect = (date: Date | undefined) => {
     if (date) {
-      const newDate = new Date(date);
-      newDate.setHours(0, 0, 0, 0);
+      const newDate = startOfDay(date);
       console.log("Date filter selected:", {
         date: newDate.toISOString(),
         filter: "date"
@@ -30,6 +30,10 @@ export const TransactionFilters = ({
     }
   };
 
+  const isToday = (date: Date) => {
+    return isEqual(startOfDay(date), startOfDay(new Date()));
+  };
+
   return (
     <div className="flex gap-2 mb-4 flex-nowrap overflow-visible">
       <Button
@@ -37,7 +41,10 @@ export const TransactionFilters = ({
           filter === "all" ? "bg-blue-600 text-white" : "bg-gray-100 text-gray-600"
         }`}
         variant={filter === "all" ? "default" : "outline"}
-        onClick={() => setFilter("all")}
+        onClick={() => {
+          setFilter("all");
+          setCurrentMonth(startOfDay(new Date()));
+        }}
       >
         All
       </Button>
@@ -62,7 +69,7 @@ export const TransactionFilters = ({
       <DateFilterButton
         currentMonth={currentMonth}
         onDateSelect={handleDateSelect}
-        isActive={filter === "date"}
+        isActive={filter === "date" && !isToday(currentMonth)}
       />
       <PaymentSourceFilterDropdown onSourceSelect={onSourceSelect} />
     </div>
