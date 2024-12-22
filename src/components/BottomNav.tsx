@@ -25,14 +25,12 @@ export const BottomNav = () => {
                 { icon: Wallet2, label: "Dues", path: "/app/dues" },
                 { icon: LineChart, label: "Report", path: "/app/report" },
                 { icon: Settings, label: "Settings", path: "/app/settings" },
-              ].map((item, index) => (
+              ].map((item) => (
                 <button
                   key={item.label}
                   onClick={() => navigate(item.path)}
                   className={cn(
                     "flex flex-col items-center z-10 transition-colors duration-200",
-                    // Adjusted spacing for better FAB placement
-                    index === 2 ? "mr-8" : index === 1 ? "ml-8" : "",
                     isActive(item.path) 
                       ? "text-primary" 
                       : "text-gray-400 hover:text-gray-600"
@@ -42,21 +40,21 @@ export const BottomNav = () => {
                   <span className="text-[10px] font-medium mt-1 text-gray-500">{item.label}</span>
                 </button>
               ))}
-              
-              {/* FAB Button with updated styling */}
-              <button
-                onClick={() => setShowTransactionDialog(true)}
-                className="absolute -top-8 left-1/2 -translate-x-1/2 w-14 h-14 rounded-full flex items-center justify-center shadow-lg hover:opacity-90 transition-all animate-fade-in"
-                style={{
-                  background: "linear-gradient(135deg, #7C3AED, #6366F1)"
-                }}
-              >
-                <Plus className="w-6 h-6 text-white stroke-[1.25]" />
-              </button>
             </div>
           </div>
         </div>
       </nav>
+
+      {/* Floating FAB Button */}
+      <button
+        onClick={() => setShowTransactionDialog(true)}
+        className="fixed bottom-20 right-4 w-14 h-14 rounded-full flex items-center justify-center shadow-lg hover:opacity-90 transition-all animate-fade-in z-50 md:right-8"
+        style={{
+          background: "linear-gradient(135deg, #7C3AED, #6366F1)"
+        }}
+      >
+        <Plus className="w-6 h-6 text-white stroke-[1.25]" />
+      </button>
 
       {/* Transaction Dialog */}
       <Dialog open={showTransactionDialog} onOpenChange={setShowTransactionDialog}>

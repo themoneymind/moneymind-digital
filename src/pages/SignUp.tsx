@@ -9,9 +9,9 @@ export const SignUp = () => {
           <div className="space-y-6">
             <div className="text-center space-y-2">
               <div className="flex items-center justify-center mb-2">
-                <PiggyBank className="h-10 w-10 text-blue-600" />
+                <PiggyBank className="h-10 w-10 text-primary" />
               </div>
-              <h1 className="text-2xl font-bold text-blue-600">MoneyMind</h1>
+              <h1 className="text-2xl font-bold text-primary">MoneyMind</h1>
               <p className="text-gray-600 text-base">
                 Create your account to start managing your finances
               </p>

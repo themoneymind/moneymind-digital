@@ -4,6 +4,8 @@ import { PaymentSourceDialogContent } from "./PaymentSourceDialogContent";
 import { usePaymentSourceOperations } from "@/hooks/usePaymentSourceOperations";
 import { useToast } from "@/hooks/use-toast";
 import { useDialogState } from "@/hooks/useDialogState";
+import { X } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 type PaymentSourceDialogProps = {
   open: boolean;
@@ -102,8 +104,16 @@ export const PaymentSourceDialog = ({
           }
         }}
       >
-        <DialogHeader>
+        <DialogHeader className="flex flex-row items-center justify-between">
           <DialogTitle className="text-lg">Edit Payment Source</DialogTitle>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-8 w-8 rounded-full"
+            onClick={() => handleOpenChange(false)}
+          >
+            <X className="h-4 w-4" />
+          </Button>
         </DialogHeader>
         <PaymentSourceDialogContent
           name={name}
