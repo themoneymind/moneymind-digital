@@ -94,8 +94,9 @@ export const BalanceCard = () => {
   });
 
   return (
-    <div className="rounded-apple bg-gradient-to-br from-primary-gradient-from to-primary-gradient-to text-white shadow-lg p-8 transition-transform hover:scale-[1.02] duration-300">
-      <div className="animate-fade-in">
+    <div className="rounded-apple bg-gradient-to-br from-primary-gradient-from to-primary-gradient-to text-white shadow-lg p-8 transition-transform hover:scale-[1.02] duration-300 relative overflow-hidden">
+      <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZGVmcz48cGF0dGVybiBpZD0iYSIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgd2lkdGg9IjQwIiBoZWlnaHQ9IjQwIiBwYXR0ZXJuVHJhbnNmb3JtPSJyb3RhdGUoNDUpIj48cGF0aCBkPSJNLTEwIDMwaDYwViIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZmZmIiBzdHJva2Utb3BhY2l0eT0iLjA1IiBzdHJva2Utd2lkdGg9IjEuNSIvPjwvcGF0dGVybj48L2RlZnM+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNhKSIvPjwvc3ZnPg==')] opacity-50" />
+      <div className="animate-fade-in relative z-10">
         <h2 className="mb-3 text-sm font-medium text-white/90">Total Balance</h2>
         <p className="mb-3 text-5xl font-bold tracking-tight">{formatCurrency(displayBalance)}</p>
         <p className="mb-4 text-xs text-white/75">
@@ -104,7 +105,7 @@ export const BalanceCard = () => {
         <div className="h-px bg-white/20 mb-6" />
         <div className="flex justify-between">
           <div className="flex items-center gap-4">
-            <div className="bg-emerald-400/20 p-2.5 rounded-full">
+            <div className="bg-emerald-400/20 p-2.5 rounded-full backdrop-blur-md">
               <ArrowDown className="w-5 h-5 text-emerald-400" />
             </div>
             <div>
@@ -114,7 +115,7 @@ export const BalanceCard = () => {
           </div>
           <div className="w-px h-16 bg-white/20" />
           <div className="flex items-center gap-4">
-            <div className="bg-rose-400/20 p-2.5 rounded-full">
+            <div className="bg-rose-400/20 p-2.5 rounded-full backdrop-blur-md">
               <ArrowUp className="w-5 h-5 text-rose-400" />
             </div>
             <div>

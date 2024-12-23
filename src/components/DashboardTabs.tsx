@@ -8,8 +8,8 @@ import { MonthSelector } from "./MonthSelector";
 export const DashboardTabs = () => {
   return (
     <Tabs defaultValue="overview" className="w-full animate-fade-in">
-      <div className="px-6 mb-8">
-        <TabsList className="w-full bg-white/50 backdrop-blur-sm rounded-[20px] p-2 h-[56px] shadow-sm">
+      <div className="sticky top-0 z-10 px-6 mb-8">
+        <TabsList className="w-full bg-white/50 backdrop-blur-sm rounded-[20px] p-2 h-[56px] shadow-sm border border-white/20">
           <TabsTrigger
             value="overview"
             className="flex-1 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-[14px] transition-all duration-300 text-sm h-[44px]"
