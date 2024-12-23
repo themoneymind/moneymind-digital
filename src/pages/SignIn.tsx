@@ -33,6 +33,8 @@ export const SignIn = () => {
       const { data, error } = await supabase.auth.signInWithPassword({
         email: email.trim(),
         password: password.trim(),
+      }, {
+        redirectTo: 'https://www.themoneymind.in/app'
       });
 
       console.log("Sign in response:", { data, error });
