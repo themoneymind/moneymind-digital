@@ -9,22 +9,22 @@ export const DashboardTabs = () => {
   return (
     <Tabs defaultValue="overview" className="w-full">
       <div className="px-6 mb-6">
-        <TabsList className="w-full bg-white rounded-[20px] p-1.5 h-[52px]">
+        <TabsList className="w-full bg-transparent border-b border-gray-200">
           <TabsTrigger
             value="overview"
-            className="flex-1 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-[14px] transition-all duration-300 text-sm h-[40px]"
+            className="flex-1 text-gray-500 data-[state=active]:text-primary data-[state=active]:border-b-2 data-[state=active]:border-primary rounded-none transition-all duration-300 text-sm h-[40px]"
           >
             Overview
           </TabsTrigger>
           <TabsTrigger
             value="credit-cards"
-            className="flex-1 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-[14px] transition-all duration-300 text-sm h-[40px]"
+            className="flex-1 text-gray-500 data-[state=active]:text-primary data-[state=active]:border-b-2 data-[state=active]:border-primary rounded-none transition-all duration-300 text-sm h-[40px]"
           >
             Cards
           </TabsTrigger>
           <TabsTrigger
             value="transactions"
-            className="flex-1 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-[14px] transition-all duration-300 text-sm h-[40px]"
+            className="flex-1 text-gray-500 data-[state=active]:text-primary data-[state=active]:border-b-2 data-[state=active]:border-primary rounded-none transition-all duration-300 text-sm h-[40px]"
           >
             Transactions
           </TabsTrigger>
