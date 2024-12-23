@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
@@ -11,6 +11,7 @@ export const SignIn = () => {
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -54,7 +55,7 @@ export const SignIn = () => {
         } else {
           toast({
             title: "Error",
-            description: "Wrong login credentials",
+            description: error.message,
             variant: "destructive",
           });
         }
@@ -76,6 +77,8 @@ export const SignIn = () => {
         title: "Success",
         description: "Successfully signed in",
       });
+      
+      navigate("/app");
       
     } catch (error) {
       console.error("Unexpected sign in error:", error);
