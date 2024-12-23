@@ -72,15 +72,30 @@ export const SignIn = () => {
         return;
       }
 
+      // Check if this is a first-time user
+      const { data: sources } = await supabase
+        .from("payment_sources")
+        .select("id")
+        .eq("user_id", data.user.id)
+        .limit(1);
+
+      const isFirstTimeUser = !sources || sources.length === 0;
+      localStorage.setItem("isFirstTimeUser", isFirstTimeUser.toString());
+
       console.log("Sign in successful:", data.user);
       toast({
         title: "Success",
         description: "Successfully signed in",
       });
       
-      navigate("/app");
+      // Redirect based on user status
+      if (isFirstTimeUser) {
+        navigate("/app/payment-source");
+      } else {
+        navigate("/app");
+      }
       
-    } catch (error) {
+    } catch (error: any) {
       console.error("Unexpected sign in error:", error);
       toast({
         title: "Error",
