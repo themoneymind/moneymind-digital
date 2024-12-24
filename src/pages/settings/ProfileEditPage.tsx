@@ -49,14 +49,21 @@ export const ProfileEditPage = () => {
 
     setIsLoading(true);
     try {
+      // Create an update object excluding empty values
+      const updateData: any = {
+        first_name: profile.first_name || null,
+        last_name: profile.last_name || null,
+        phone_number: profile.phone_number || null,
+      };
+
+      // Only include date_of_birth if it's not empty
+      if (profile.date_of_birth) {
+        updateData.date_of_birth = profile.date_of_birth;
+      }
+
       const { error } = await supabase
         .from('profiles')
-        .update({
-          first_name: profile.first_name,
-          last_name: profile.last_name,
-          phone_number: profile.phone_number,
-          date_of_birth: profile.date_of_birth,
-        })
+        .update(updateData)
         .eq('id', user.id);
 
       if (error) throw error;
