@@ -1,8 +1,10 @@
 import { useNavigate } from "react-router-dom";
+import { BottomNav } from "@/components/BottomNav";
 import { ProfileHeader } from "@/components/settings/ProfileHeader";
-import { Settings as SettingsIcon, Moon, Shield, Download, User, Bell, Lock, CreditCard, Goal, PieChart } from "lucide-react";
+import { Settings as SettingsIcon, Moon, Shield, Download, LogOut, User, Bell, Lock } from "lucide-react";
 import { useTheme } from "@/hooks/use-theme";
 import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 import { ArrowLeft } from "lucide-react";
@@ -13,36 +15,20 @@ const Settings = () => {
   const { signOut } = useAuth();
 
   const handleExportData = () => {
+    // TODO: Implement data export
     toast.info("Data export coming soon!");
   };
 
   const settingsSections = [
     {
-      title: "ACCOUNT",
+      title: "GENERAL",
       items: [
         {
           icon: User,
-          label: "Profile Settings",
+          label: "Account",
           path: "/app/settings/account",
           color: "text-primary",
         },
-        {
-          icon: Bell,
-          label: "Notifications",
-          path: "/app/settings/notifications",
-          color: "text-orange-500",
-        },
-        {
-          icon: Shield,
-          label: "Security",
-          path: "/app/settings/security",
-          color: "text-purple-500",
-        },
-      ],
-    },
-    {
-      title: "PREFERENCES",
-      items: [
         {
           icon: Moon,
           label: "Dark Mode",
@@ -54,42 +40,45 @@ const Settings = () => {
               </div>
               <Switch
                 checked={theme === "dark"}
-                onCheckedChange={(checked) => {
-                  setTheme(checked ? "dark" : "light");
-                  document.documentElement.classList.toggle("dark", checked);
-                }}
+                onCheckedChange={(checked) => setTheme(checked ? "dark" : "light")}
               />
             </div>
           ),
         },
+        {
+          icon: Bell,
+          label: "Notifications",
+          path: "/app/settings/notifications",
+          color: "text-orange-500",
+        },
       ],
     },
     {
-      title: "FINANCE",
+      title: "SECURITY",
       items: [
         {
-          icon: CreditCard,
-          label: "Payment Methods",
-          path: "/app/settings/payment-methods",
+          icon: Shield,
+          label: "Security",
+          path: "/app/settings/security",
+          color: "text-purple-500",
+        },
+        {
+          icon: Lock,
+          label: "Privacy",
+          path: "/app/settings/privacy",
           color: "text-green-500",
-        },
-        {
-          icon: PieChart,
-          label: "Categories",
-          path: "/app/settings/categories",
-          color: "text-blue-500",
-        },
-        {
-          icon: Goal,
-          label: "Financial Goals",
-          path: "/app/settings/goals",
-          color: "text-yellow-500",
         },
         {
           icon: Download,
           label: "Export Data",
           onClick: handleExportData,
-          color: "text-indigo-500",
+          color: "text-blue-500",
+        },
+        {
+          icon: LogOut,
+          label: "Logout",
+          onClick: signOut,
+          color: "text-red-500",
         },
       ],
     },
@@ -109,7 +98,7 @@ const Settings = () => {
         </div>
       </header>
 
-      <div className="max-w-2xl mx-auto p-4 space-y-6">
+      <div className="max-w-2xl mx-auto p-4 pb-20 space-y-6">
         <ProfileHeader />
         
         <div className="space-y-6">
@@ -140,6 +129,7 @@ const Settings = () => {
           ))}
         </div>
       </div>
+      <BottomNav />
     </div>
   );
 };
