@@ -11,7 +11,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Shield, Download, Lock, Eye, UserCog } from "lucide-react";
+import { Shield, Download, Lock, Eye, UserCog, Mail } from "lucide-react";
 
 export const PrivacySettings = () => {
   const { user } = useAuth();
