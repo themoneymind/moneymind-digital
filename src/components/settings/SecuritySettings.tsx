@@ -1,8 +1,7 @@
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { ResetDataDialog } from "./ResetDataDialog";
-import { useToast } from "@/components/ui/use-toast";
-import { supabase } from "@/integrations/supabase/client";
+import { useNavigate } from "react-router-dom";
 import {
   Card,
   CardContent,
@@ -14,28 +13,10 @@ import { KeyRound } from "lucide-react";
 
 export const SecuritySettings = () => {
   const { user } = useAuth();
-  const { toast } = useToast();
+  const navigate = useNavigate();
 
-  const handleForgotPassword = async () => {
-    try {
-      const { error } = await supabase.auth.resetPasswordForEmail(user?.email || "", {
-        redirectTo: `${window.location.origin}/reset-password`,
-      });
-
-      if (error) throw error;
-
-      toast({
-        title: "Password reset email sent",
-        description: "Check your email for the password reset link",
-      });
-    } catch (error) {
-      console.error("Error sending reset password email:", error);
-      toast({
-        title: "Error",
-        description: "Failed to send password reset email. Please try again.",
-        variant: "destructive",
-      });
-    }
+  const handleResetPassword = () => {
+    navigate("/reset-password");
   };
 
   return (
@@ -51,7 +32,7 @@ export const SecuritySettings = () => {
           <Button
             variant="outline"
             className="w-full border-gray-200 hover:bg-gray-50 rounded-lg h-11"
-            onClick={handleForgotPassword}
+            onClick={handleResetPassword}
           >
             <KeyRound className="w-4 h-4 mr-2" />
             Reset Password

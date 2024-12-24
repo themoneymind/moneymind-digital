@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
@@ -10,7 +10,6 @@ export const ResetPassword = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -38,19 +37,6 @@ export const ResetPassword = () => {
     setIsLoading(true);
 
     try {
-      // Get the access_token from URL
-      const access_token = searchParams.get('access_token');
-      
-      if (!access_token) {
-        toast({
-          title: "Error",
-          description: "Invalid reset link. Please request a new one.",
-          variant: "destructive",
-        });
-        return;
-      }
-
-      // Set the new password using the token
       const { error } = await supabase.auth.updateUser({ 
         password: password 
       });
@@ -66,12 +52,12 @@ export const ResetPassword = () => {
 
       toast({
         title: "Success",
-        description: "Password has been reset successfully",
+        description: "Password has been updated successfully",
       });
       
-      // Give user time to read the success message
+      // Navigate back to settings after successful password change
       setTimeout(() => {
-        navigate("/signin");
+        navigate("/app/settings/security");
       }, 2000);
       
     } catch (error: any) {
@@ -94,7 +80,7 @@ export const ResetPassword = () => {
               <div className="flex items-center justify-center mb-2">
                 <PiggyBank className="h-10 w-10 text-blue-600" />
               </div>
-              <h1 className="text-2xl font-bold text-blue-600">Reset Password</h1>
+              <h1 className="text-2xl font-bold text-blue-600">Change Password</h1>
               <p className="text-gray-600 text-base">
                 Enter your new password
               </p>
@@ -124,7 +110,7 @@ export const ResetPassword = () => {
                 className="w-full h-12 rounded-xl text-base bg-blue-600 hover:bg-blue-700"
                 disabled={isLoading}
               >
-                {isLoading ? "Resetting Password..." : "Reset Password"}
+                {isLoading ? "Updating Password..." : "Update Password"}
               </Button>
             </form>
           </div>
