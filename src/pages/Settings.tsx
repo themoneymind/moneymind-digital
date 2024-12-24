@@ -40,7 +40,7 @@ const Settings = () => {
           icon: Moon,
           label: "Dark Mode",
           customContent: (
-            <div className="flex items-center justify-between w-full">
+            <button className="w-full flex items-center justify-between p-4 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
               <div className="flex items-center gap-4">
                 <Moon className="w-5 h-5 text-blue-500" />
                 <span className="text-gray-700 dark:text-gray-200 font-medium">Dark Mode</span>
@@ -49,7 +49,7 @@ const Settings = () => {
                 checked={theme === "dark"}
                 onCheckedChange={(checked) => setTheme(checked ? "dark" : "light")}
               />
-            </div>
+            </button>
           ),
         },
         {
