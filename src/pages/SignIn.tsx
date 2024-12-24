@@ -35,27 +35,25 @@ export const SignIn = () => {
         password: password.trim(),
       });
 
-      console.log("Sign in response:", { data, error });
-
       if (error) {
         console.error("Sign in error details:", error);
         
         if (error.message.includes("Email not confirmed")) {
           toast({
-            title: "Error",
-            description: "Please confirm your email before signing in",
+            title: "Email Not Verified",
+            description: "Please check your email and verify your account before signing in.",
             variant: "destructive",
           });
-        } else if (error.message.includes("Invalid login credentials")) {
+        } else if (error.message.includes("Invalid login credentials") || error.status === 400) {
           toast({
-            title: "Error",
-            description: "Invalid email or password",
+            title: "Invalid Credentials",
+            description: "The email or password you entered is incorrect. Please try again.",
             variant: "destructive",
           });
         } else {
           toast({
             title: "Error",
-            description: error.message,
+            description: "An unexpected error occurred. Please try again.",
             variant: "destructive",
           });
         }
