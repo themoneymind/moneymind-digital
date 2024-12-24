@@ -60,12 +60,12 @@ export const FeedbackForm = () => {
         value={message}
         onChange={(e) => setMessage(e.target.value)}
         placeholder="Share your thoughts, suggestions, or report issues..."
-        className="min-h-[120px]"
+        className="min-h-[120px] bg-background text-foreground"
         required
       />
       <Button
         type="submit"
-        className="w-full bg-primary hover:bg-primary/90"
+        className="w-full"
         disabled={isSubmitting}
       >
         {isSubmitting ? "Sending..." : "Submit Feedback"}

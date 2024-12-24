@@ -19,26 +19,26 @@ export const DisplaySettings = () => {
 
   return (
     <div className="space-y-6">
-      <Card className="border-none shadow-none bg-white rounded-apple">
+      <Card className="border-none shadow-none bg-background rounded-apple">
         <CardHeader>
-          <CardTitle className="text-xl font-semibold">Display Settings</CardTitle>
-          <CardDescription className="text-gray-500">
+          <CardTitle className="text-xl font-semibold text-foreground">Display Settings</CardTitle>
+          <CardDescription className="text-muted-foreground">
             Customize your app appearance
           </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
-              <div className="p-2 rounded-full bg-gray-100">
+              <div className="p-2 rounded-full bg-muted">
                 {theme === "dark" ? (
-                  <Moon className="w-5 h-5 text-gray-600" />
+                  <Moon className="w-5 h-5 text-muted-foreground" />
                 ) : (
-                  <Sun className="w-5 h-5 text-gray-600" />
+                  <Sun className="w-5 h-5 text-muted-foreground" />
                 )}
               </div>
               <div className="space-y-1">
-                <Label htmlFor="dark-mode">Dark Mode</Label>
-                <p className="text-sm text-gray-500">
+                <Label htmlFor="dark-mode" className="text-foreground">Dark Mode</Label>
+                <p className="text-sm text-muted-foreground">
                   Switch between light and dark themes
                 </p>
               </div>

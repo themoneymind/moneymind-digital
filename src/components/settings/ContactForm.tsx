@@ -65,18 +65,19 @@ export const ContactForm = () => {
         value={subject}
         onChange={(e) => setSubject(e.target.value)}
         placeholder="Subject"
+        className="bg-background text-foreground"
         required
       />
       <Textarea
         value={message}
         onChange={(e) => setMessage(e.target.value)}
         placeholder="How can we help you?"
-        className="min-h-[120px]"
+        className="min-h-[120px] bg-background text-foreground"
         required
       />
       <Button
         type="submit"
-        className="w-full bg-primary hover:bg-primary/90"
+        className="w-full"
         disabled={isSubmitting}
       >
         {isSubmitting ? "Sending..." : "Send Message"}
