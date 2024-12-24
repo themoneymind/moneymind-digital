@@ -50,8 +50,12 @@ export const ProfilePictureEditor = ({
 
   return (
     <div className="flex flex-col items-center gap-6 py-4">
+      <div className="text-sm font-medium text-gray-500 dark:text-gray-400">
+        Drag to adjust position and use slider to zoom
+      </div>
+      
       <div 
-        className="relative w-48 h-48 cursor-move rounded-full overflow-hidden"
+        className="relative w-48 h-48 cursor-move rounded-full overflow-hidden border-2 border-primary"
         draggable
         onDragStart={handleDragStart}
         onDrag={handleDrag}
@@ -76,7 +80,9 @@ export const ProfilePictureEditor = ({
 
       <div className="w-full max-w-xs space-y-4">
         <div className="space-y-2">
-          <label className="text-sm font-medium text-gray-500">Zoom</label>
+          <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+            Zoom Level: {scale.toFixed(1)}x
+          </label>
           <Slider
             min={1}
             max={3}
@@ -86,10 +92,6 @@ export const ProfilePictureEditor = ({
             className="w-full"
           />
         </div>
-
-        <p className="text-sm text-gray-500 text-center">
-          Drag the image to adjust position
-        </p>
 
         <Button 
           onClick={onSave} 
