@@ -137,7 +137,7 @@ const Settings = () => {
       {/* Header with curved bottom */}
       <header className="sticky top-0 z-10">
         <div className="bg-[#7F3DFF] pb-8">
-          <div className="max-w-2xl mx-auto flex items-center gap-4 px-4 pt-6">
+          <div className="max-w-2xl mx-auto flex items-center gap-4 px-4 py-8">
             <button 
               onClick={() => navigate(-1)}
               className="p-2 hover:bg-white/10 rounded-full transition-colors"
