@@ -12,7 +12,7 @@ const Index = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 pb-24 max-w-md mx-auto font-sans">
+    <div className="min-h-screen bg-gray-50 pb-24 max-w-md mx-auto font-sans rounded-t-[20px]">
       <Header />
       <div className="mt-4 space-y-8">
         <DashboardTabs />
