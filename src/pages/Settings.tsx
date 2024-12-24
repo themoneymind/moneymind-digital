@@ -15,7 +15,6 @@ const Settings = () => {
   const { signOut } = useAuth();
 
   const handleExportData = () => {
-    // TODO: Implement data export
     toast.info("Data export coming soon!");
   };
 
@@ -26,7 +25,7 @@ const Settings = () => {
         {
           icon: User,
           label: "Account",
-          path: "/app/settings/account",
+          onClick: () => navigate("/app/settings/account"),
           color: "text-primary",
         },
         {
@@ -48,7 +47,7 @@ const Settings = () => {
         {
           icon: Bell,
           label: "Notifications",
-          path: "/app/settings/notifications",
+          onClick: () => navigate("/app/settings/notifications"),
           color: "text-orange-500",
         },
       ],
@@ -59,13 +58,13 @@ const Settings = () => {
         {
           icon: Shield,
           label: "Security",
-          path: "/app/settings/security",
+          onClick: () => navigate("/app/settings/security"),
           color: "text-purple-500",
         },
         {
           icon: Lock,
           label: "Privacy",
-          path: "/app/settings/privacy",
+          onClick: () => navigate("/app/settings/privacy"),
           color: "text-green-500",
         },
         {
@@ -112,7 +111,7 @@ const Settings = () => {
                   {section.items.map((item) => (
                     <button
                       key={item.label}
-                      onClick={item.onClick || (item.path ? () => navigate(item.path) : undefined)}
+                      onClick={item.onClick}
                       className="w-full flex items-center gap-4 p-4 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-left"
                     >
                       {item.customContent || (
