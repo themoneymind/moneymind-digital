@@ -1,10 +1,7 @@
 import { Header } from "@/components/Header";
 import { BottomNav } from "@/components/BottomNav";
-import { ProfilePicture } from "@/components/ProfilePicture";
 import { useAuth } from "@/contexts/AuthContext";
 import { Navigate } from "react-router-dom";
-import { Greeting } from "@/components/Greeting";
-import { MotivationalQuote } from "@/components/MotivationalQuote";
 import { DashboardTabs } from "@/components/DashboardTabs";
 
 const Index = () => {
@@ -18,13 +15,6 @@ const Index = () => {
     <div className="min-h-screen bg-gray-50 pb-24 max-w-md mx-auto font-sans">
       <Header />
       <div className="mt-8 space-y-8">
-        <div className="flex items-start justify-between px-6">
-          <div className="flex flex-col items-start">
-            <Greeting />
-            <MotivationalQuote />
-          </div>
-          <ProfilePicture />
-        </div>
         <DashboardTabs />
       </div>
       <BottomNav />
