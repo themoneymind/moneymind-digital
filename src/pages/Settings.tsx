@@ -87,8 +87,8 @@ const Settings = () => {
     <div className="min-h-screen bg-[#F5F5F7] dark:bg-gray-900">
       {/* Header with curved bottom */}
       <header className="sticky top-0 z-10">
-        <div className="bg-[#7F3DFF] pb-6">
-          <div className="max-w-2xl mx-auto flex items-center gap-4 px-4 pt-3">
+        <div className="bg-[#7F3DFF] pb-8">
+          <div className="max-w-2xl mx-auto flex items-center gap-4 px-4 pt-6">
             <button 
               onClick={() => navigate(-1)}
               className="p-2 hover:bg-white/10 rounded-full transition-colors"
@@ -99,16 +99,18 @@ const Settings = () => {
           </div>
         </div>
         {/* Curved white overlay for content area */}
-        <div className="h-5 bg-[#F5F5F7] dark:bg-gray-900 relative -mt-5 rounded-t-[20px]" />
+        <div className="h-6 bg-[#F5F5F7] dark:bg-gray-900 relative -mt-6 rounded-t-[28px]" />
       </header>
 
-      <div className="max-w-2xl mx-auto px-4 pb-20 space-y-6 -mt-3">
-        <ProfileHeader />
+      <div className="max-w-2xl mx-auto px-4 pb-20 space-y-8">
+        <div className="pt-2">
+          <ProfileHeader />
+        </div>
         
         <div className="space-y-6">
           {settingsSections.map((section) => (
-            <div key={section.title}>
-              <h2 className="text-sm font-medium text-gray-500 dark:text-gray-400 px-4 mb-2">
+            <div key={section.title} className="space-y-3">
+              <h2 className="text-sm font-medium text-gray-500 dark:text-gray-400 px-4">
                 {section.title}
               </h2>
               <div className="bg-white dark:bg-gray-800 rounded-apple shadow-sm">
