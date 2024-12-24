@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { AccountSettings } from "@/components/settings/AccountSettings";
 import { SettingsHeader } from "@/components/settings/SettingsHeader";
 import { Input } from "@/components/ui/input";
@@ -25,6 +25,44 @@ export const AccountSettingsPage = () => {
     phone_number: "",
     date_of_birth: "",
   });
+
+  // Load user profile data when component mounts
+  useEffect(() => {
+    const loadUserProfile = async () => {
+      if (!user) return;
+
+      try {
+        const { data, error } = await supabase
+          .from("profiles")
+          .select("first_name, last_name, phone_number, date_of_birth")
+          .eq("id", user.id)
+          .single();
+
+        if (error) throw error;
+
+        // Format date to YYYY-MM-DD for input type="date"
+        const formattedDate = data.date_of_birth 
+          ? new Date(data.date_of_birth).toISOString().split('T')[0]
+          : "";
+
+        setFormData({
+          first_name: data.first_name || "",
+          last_name: data.last_name || "",
+          phone_number: data.phone_number || "",
+          date_of_birth: formattedDate,
+        });
+      } catch (error) {
+        console.error("Error loading profile:", error);
+        toast({
+          title: "Error",
+          description: "Failed to load profile information",
+          variant: "destructive",
+        });
+      }
+    };
+
+    loadUserProfile();
+  }, [user, toast]);
 
   const handleSave = async () => {
     if (!user) return;
