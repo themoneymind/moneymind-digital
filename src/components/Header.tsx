@@ -109,7 +109,7 @@ export const Header = () => {
           </div>
         </div>
       </div>
-      <div className="h-2 bg-[#F5F5F7] dark:bg-gray-900 relative -mt-2 rounded-t-[28px] shadow-lg" />
+      <div className="h-2 bg-[#F5F5F7] dark:bg-gray-900 relative -mt-2 rounded-t-apple" />
     </header>
   );
 };
