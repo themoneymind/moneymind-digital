@@ -65,7 +65,7 @@ export const Header = () => {
 
   return (
     <header className="sticky top-0 z-10">
-      <div className="bg-[#7F3DFF] pb-6">
+      <div className="bg-[#7F3DFF]">
         {/* Decorative Circle */}
         <div className="absolute right-0 top-0 w-32 h-32 bg-white/10 rounded-full transform translate-x-16 -translate-y-8" />
         
@@ -94,7 +94,7 @@ export const Header = () => {
         </div>
         
         {/* Profile Info */}
-        <div className="max-w-2xl mx-auto px-4">
+        <div className="max-w-2xl mx-auto px-4 pb-6">
           <div className="flex items-center gap-4 pl-2">
             <div className="w-10 h-10 ring-2 ring-white rounded-full">
               <ProfilePicture />
@@ -109,7 +109,6 @@ export const Header = () => {
           </div>
         </div>
       </div>
-      <div className="h-6 bg-[#F5F5F7] dark:bg-gray-900 relative -mt-6 rounded-t-[28px]" />
     </header>
   );
 };
