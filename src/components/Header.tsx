@@ -12,7 +12,10 @@ export const Header = () => {
   const { toast } = useToast();
   const { user } = useAuth();
   const [profile, setProfile] = useState<any>(null);
-  const [greeting, setGreeting] = useState("");
+  const [greeting] = useState(() => {
+    const greetings = ["Hi", "Hello"];
+    return greetings[Math.floor(Math.random() * greetings.length)];
+  });
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -30,12 +33,6 @@ export const Header = () => {
     };
 
     fetchProfile();
-    
-    // Set greeting based on time of day
-    const hour = new Date().getHours();
-    if (hour < 12) setGreeting("Good morning");
-    else if (hour < 18) setGreeting("Good afternoon");
-    else setGreeting("Good evening");
   }, [user]);
 
   const displayName = profile 
@@ -112,7 +109,7 @@ export const Header = () => {
           </div>
         </div>
       </div>
-      <div className="h-2 bg-[#F5F5F7] dark:bg-gray-900 relative -mt-2 rounded-t-[28px]" />
+      <div className="h-2 bg-[#F5F5F7] dark:bg-gray-900 relative -mt-2 rounded-t-[28px] shadow-lg" />
     </header>
   );
 };
