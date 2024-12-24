@@ -14,6 +14,8 @@ export const BottomNav = () => {
     return location.pathname === path;
   };
 
+  const isSettingsRoute = location.pathname.startsWith('/app/settings');
+
   return (
     <>
       <nav className="fixed bottom-0 left-0 right-0">
@@ -45,16 +47,18 @@ export const BottomNav = () => {
         </div>
       </nav>
 
-      {/* Floating FAB Button */}
-      <button
-        onClick={() => setShowTransactionDialog(true)}
-        className="fixed bottom-20 right-4 w-14 h-14 rounded-full flex items-center justify-center shadow-lg hover:opacity-90 transition-all animate-fade-in z-50 md:right-8"
-        style={{
-          background: "linear-gradient(135deg, #7C3AED, #6366F1)"
-        }}
-      >
-        <Plus className="w-6 h-6 text-white stroke-[1.25]" />
-      </button>
+      {/* Floating FAB Button - Hidden on settings routes */}
+      {!isSettingsRoute && (
+        <button
+          onClick={() => setShowTransactionDialog(true)}
+          className="fixed bottom-20 right-4 w-14 h-14 rounded-full flex items-center justify-center shadow-lg hover:opacity-90 transition-all animate-fade-in z-50 md:right-8"
+          style={{
+            background: "linear-gradient(135deg, #7C3AED, #6366F1)"
+          }}
+        >
+          <Plus className="w-6 h-6 text-white stroke-[1.25]" />
+        </button>
+      )}
 
       {/* Transaction Dialog */}
       <Dialog open={showTransactionDialog} onOpenChange={setShowTransactionDialog}>
