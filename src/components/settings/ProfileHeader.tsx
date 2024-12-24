@@ -17,7 +17,10 @@ export const ProfileHeader = () => {
             <p className="text-sm text-gray-500">{user?.email}</p>
           </div>
         </div>
-        <button className="p-2 hover:bg-gray-100 rounded-full transition-colors">
+        <button 
+          className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+          aria-label="Edit profile"
+        >
           <Edit className="w-5 h-5 text-gray-500" />
         </button>
       </div>
