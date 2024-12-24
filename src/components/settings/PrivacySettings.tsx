@@ -11,6 +11,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Shield, Download, Lock } from "lucide-react";
 
 export const PrivacySettings = () => {
   const { user } = useAuth();
@@ -88,41 +89,70 @@ export const PrivacySettings = () => {
   return (
     <Card className="border-none shadow-none bg-white rounded-apple">
       <CardHeader>
-        <CardTitle className="text-xl font-semibold">Privacy Settings</CardTitle>
+        <div className="flex items-center gap-2">
+          <Shield className="w-6 h-6 text-primary" />
+          <CardTitle className="text-xl font-semibold">Privacy Settings</CardTitle>
+        </div>
         <CardDescription className="text-gray-500">
-          Manage your data and privacy preferences
+          Control how your data is handled and used
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
-        <div className="flex items-center justify-between">
-          <div className="space-y-0.5">
-            <label className="text-sm font-medium">Data Sharing</label>
-            <p className="text-sm text-gray-500">
-              Allow anonymous data sharing to improve our services
+        <div className="space-y-6">
+          <div className="p-4 bg-blue-50 rounded-lg">
+            <h3 className="font-medium text-blue-800 mb-2">Our Commitment to Your Privacy</h3>
+            <p className="text-sm text-blue-600">
+              We prioritize the security and privacy of your financial data. All information is encrypted,
+              stored securely, and never shared without your explicit consent. We comply with industry
+              standards to ensure your data remains protected.
             </p>
           </div>
-          <Switch
-            checked={dataSharing}
-            onCheckedChange={setDataSharing}
-          />
-        </div>
 
-        <div className="space-y-4">
-          <Button
-            onClick={handlePrivacyUpdate}
-            disabled={isUpdating}
-            className="w-full bg-primary hover:bg-primary/90 text-white rounded-lg h-11"
-          >
-            {isUpdating ? "Saving..." : "Save Changes"}
-          </Button>
+          <div className="space-y-6">
+            <div className="flex items-center justify-between">
+              <div className="space-y-0.5">
+                <label className="text-sm font-medium">Anonymous Data Sharing</label>
+                <p className="text-sm text-gray-500">
+                  Allow sharing of anonymized data to improve our services and features
+                </p>
+              </div>
+              <Switch
+                checked={dataSharing}
+                onCheckedChange={setDataSharing}
+              />
+            </div>
 
-          <Button
-            onClick={handleExportData}
-            variant="outline"
-            className="w-full border-gray-200 hover:bg-gray-50 rounded-lg h-11"
-          >
-            Export My Data
-          </Button>
+            <div className="space-y-4">
+              <Button
+                onClick={handlePrivacyUpdate}
+                disabled={isUpdating}
+                className="w-full bg-primary hover:bg-primary/90 text-white rounded-lg h-11"
+              >
+                {isUpdating ? "Saving..." : "Save Changes"}
+              </Button>
+
+              <Button
+                onClick={handleExportData}
+                variant="outline"
+                className="w-full border-gray-200 hover:bg-gray-50 rounded-lg h-11 flex items-center justify-center gap-2"
+              >
+                <Download className="w-4 h-4" />
+                Export My Data
+              </Button>
+            </div>
+
+            <div className="p-4 border border-gray-100 rounded-lg space-y-2">
+              <div className="flex items-center gap-2">
+                <Lock className="w-4 h-4 text-gray-500" />
+                <h4 className="font-medium">Data Protection</h4>
+              </div>
+              <p className="text-sm text-gray-500">
+                Your financial data is encrypted and stored securely. We never share your personal
+                information with third parties without your explicit consent. You can export or delete
+                your data at any time.
+              </p>
+            </div>
+          </div>
         </div>
       </CardContent>
     </Card>

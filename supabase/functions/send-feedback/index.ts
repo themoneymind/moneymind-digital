@@ -7,6 +7,7 @@ interface EmailRequest {
   type: "feedback" | "contact";
   email: string;
   message: string;
+  rating?: number;
   subject?: string;
 }
 
@@ -16,14 +17,15 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
-    const { type, email, message, subject } = await req.json() as EmailRequest;
+    const { type, email, message, rating, subject } = await req.json() as EmailRequest;
 
     const emailSubject = type === "feedback" 
-      ? "New Feedback Received"
+      ? `New Feedback Received (${rating ? rating + ' stars' : 'No rating'})`
       : subject || "New Contact Request";
 
     const htmlContent = `
       <h2>${type === "feedback" ? "Feedback" : "Contact Request"} from ${email}</h2>
+      ${rating ? `<p>Rating: ${rating} stars</p>` : ''}
       <p>${message}</p>
     `;
 
