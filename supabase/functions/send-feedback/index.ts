@@ -1,7 +1,11 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
-import { corsHeaders } from "../_shared/cors.ts";
 
 const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
+
+const corsHeaders = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+};
 
 interface EmailRequest {
   type: "feedback" | "contact";
@@ -38,8 +42,8 @@ const handler = async (req: Request): Promise<Response> => {
         Authorization: `Bearer ${RESEND_API_KEY}`,
       },
       body: JSON.stringify({
-        from: "onboarding@resend.dev", // Using Resend's default verified domain
-        to: ["support@themoneymind.in"],
+        from: "support@themoneymind.in",
+        to: ["e.ravi@themoneymind.in"], // Updated to use your verified email
         subject: emailSubject,
         html: htmlContent,
         reply_to: email,
