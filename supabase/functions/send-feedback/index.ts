@@ -38,7 +38,7 @@ const handler = async (req: Request): Promise<Response> => {
         Authorization: `Bearer ${RESEND_API_KEY}`,
       },
       body: JSON.stringify({
-        from: "MoneyMind Support <support@themoneymind.in>",
+        from: "onboarding@resend.dev", // Using Resend's default verified domain
         to: ["support@themoneymind.in"],
         subject: emailSubject,
         html: htmlContent,
@@ -47,7 +47,9 @@ const handler = async (req: Request): Promise<Response> => {
     });
 
     if (!res.ok) {
-      throw new Error(await res.text());
+      const errorText = await res.text();
+      console.error("Resend API error:", errorText);
+      throw new Error(errorText);
     }
 
     return new Response(JSON.stringify({ success: true }), {
