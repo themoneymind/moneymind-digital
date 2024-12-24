@@ -9,6 +9,79 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      connected_devices: {
+        Row: {
+          created_at: string | null
+          device_name: string
+          device_type: string
+          id: string
+          last_active: string | null
+          updated_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          device_name: string
+          device_type: string
+          id?: string
+          last_active?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          device_name?: string
+          device_type?: string
+          id?: string
+          last_active?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "connected_devices_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      login_history: {
+        Row: {
+          created_at: string | null
+          device_info: string | null
+          id: string
+          ip_address: string | null
+          location: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          device_info?: string | null
+          id?: string
+          ip_address?: string | null
+          location?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          device_info?: string | null
+          id?: string
+          ip_address?: string | null
+          location?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "login_history_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       notifications: {
         Row: {
           created_at: string
@@ -110,35 +183,62 @@ export type Database = {
         Row: {
           avatar_url: string | null
           created_at: string
+          currency_format: string | null
+          data_sharing: boolean | null
           date_of_birth: string | null
+          due_reminders: boolean | null
           first_name: string | null
           id: string
+          language: string | null
           last_name: string | null
           notification_time: string | null
           phone_number: string | null
+          text_size: string | null
+          theme: string | null
+          timezone: string | null
+          transaction_alerts: boolean | null
           updated_at: string
+          weekly_reports: boolean | null
         }
         Insert: {
           avatar_url?: string | null
           created_at?: string
+          currency_format?: string | null
+          data_sharing?: boolean | null
           date_of_birth?: string | null
+          due_reminders?: boolean | null
           first_name?: string | null
           id: string
+          language?: string | null
           last_name?: string | null
           notification_time?: string | null
           phone_number?: string | null
+          text_size?: string | null
+          theme?: string | null
+          timezone?: string | null
+          transaction_alerts?: boolean | null
           updated_at?: string
+          weekly_reports?: boolean | null
         }
         Update: {
           avatar_url?: string | null
           created_at?: string
+          currency_format?: string | null
+          data_sharing?: boolean | null
           date_of_birth?: string | null
+          due_reminders?: boolean | null
           first_name?: string | null
           id?: string
+          language?: string | null
           last_name?: string | null
           notification_time?: string | null
           phone_number?: string | null
+          text_size?: string | null
+          theme?: string | null
+          timezone?: string | null
+          transaction_alerts?: boolean | null
           updated_at?: string
+          weekly_reports?: boolean | null
         }
         Relationships: []
       }
