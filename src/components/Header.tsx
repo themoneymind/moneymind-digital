@@ -65,7 +65,7 @@ export const Header = () => {
 
   return (
     <header className="sticky top-0 z-10">
-      <div className="bg-[#7F3DFF] pb-8">
+      <div className="bg-[#7F3DFF] pb-6">
         {/* Decorative Circle */}
         <div className="absolute right-0 top-0 w-32 h-32 bg-white/10 rounded-full transform translate-x-16 -translate-y-8" />
         
