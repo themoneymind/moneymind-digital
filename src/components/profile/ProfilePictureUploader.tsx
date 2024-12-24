@@ -21,8 +21,9 @@ export const ProfilePictureUploader = ({ imageUrl, onFileSelect }: ProfilePictur
           src={imageUrl || "/placeholder.svg"} 
           alt="Profile" 
           className="object-cover"
+          style={{ background: 'transparent' }}
         />
-        <AvatarFallback>
+        <AvatarFallback className="bg-transparent border-2 border-white">
           {user?.email?.charAt(0).toUpperCase() || 'U'}
         </AvatarFallback>
       </Avatar>
