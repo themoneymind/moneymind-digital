@@ -4,6 +4,11 @@ import Index from "@/pages/Index";
 import { PaymentSource } from "@/pages/PaymentSource";
 import Settings from "@/pages/Settings";
 import Report from "@/pages/Report";
+import { AccountSettingsPage } from "@/pages/settings/AccountSettingsPage";
+import { NotificationSettingsPage } from "@/pages/settings/NotificationSettingsPage";
+import { SecuritySettingsPage } from "@/pages/settings/SecuritySettingsPage";
+import { DisplaySettingsPage } from "@/pages/settings/DisplaySettingsPage";
+import { PrivacySettingsPage } from "@/pages/settings/PrivacySettingsPage";
 import { useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
@@ -47,6 +52,11 @@ export const ProtectedRoutes = () => {
       <Route path="/app" element={<Index />} />
       <Route path="/app/payment-source" element={<PaymentSource />} />
       <Route path="/app/settings" element={<Settings />} />
+      <Route path="/app/settings/account" element={<AccountSettingsPage />} />
+      <Route path="/app/settings/notifications" element={<NotificationSettingsPage />} />
+      <Route path="/app/settings/security" element={<SecuritySettingsPage />} />
+      <Route path="/app/settings/display" element={<DisplaySettingsPage />} />
+      <Route path="/app/settings/privacy" element={<PrivacySettingsPage />} />
       <Route path="/app/report" element={<Report />} />
       <Route path="*" element={<Navigate to="/app" />} />
     </Routes>
