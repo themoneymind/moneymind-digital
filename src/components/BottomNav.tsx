@@ -33,7 +33,7 @@ export const BottomNav = () => {
                   onClick={() => navigate(item.path)}
                   className={cn(
                     "flex flex-col items-center z-10 transition-colors duration-200 relative",
-                    isActive(item.path) && "before:absolute before:top-0 before:left-1/2 before:-translate-x-1/2 before:w-8 before:h-0.5 before:bg-[#7F3DFF]"
+                    isActive(item.path) && "before:absolute before:-top-3 before:left-1/2 before:-translate-x-1/2 before:w-8 before:h-[2px] before:bg-[#7F3DFF]"
                   )}
                 >
                   <item.icon 
@@ -41,7 +41,7 @@ export const BottomNav = () => {
                       "w-5 h-5 stroke-[1.5]",
                       isActive(item.path) 
                         ? "text-[#7F3DFF]" 
-                        : "text-gray-600 hover:text-gray-900"
+                        : "text-gray-700 hover:text-gray-900"
                     )} 
                   />
                   <span 
@@ -49,7 +49,7 @@ export const BottomNav = () => {
                       "text-[10px] font-medium mt-1",
                       isActive(item.path)
                         ? "text-[#7F3DFF]"
-                        : "text-gray-600"
+                        : "text-gray-700"
                     )}
                   >
                     {item.label}
