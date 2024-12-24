@@ -1,17 +1,18 @@
+import { useState } from "react";
+import { useAuth } from "@/contexts/AuthContext";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { useAuth } from "@/contexts/AuthContext";
 import { Slider } from "@/components/ui/slider";
 
-type ProfilePictureEditorProps = {
+interface ProfilePictureEditorProps {
   imageUrl: string | null;
   scale: number;
   position: { x: number; y: number };
-  onScaleChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onScaleChange: (e: { target: { value: string } }) => void;
   onPositionChange: (position: { x: number; y: number }) => void;
   onSave: () => void;
   isLoading: boolean;
-};
+}
 
 export const ProfilePictureEditor = ({
   imageUrl,
@@ -23,6 +24,7 @@ export const ProfilePictureEditor = ({
   isLoading,
 }: ProfilePictureEditorProps) => {
   const { user } = useAuth();
+  const [isDragging, setIsDragging] = useState(false);
 
   const handleDrag = (e: React.DragEvent<HTMLDivElement>) => {
     const bounds = e.currentTarget.getBoundingClientRect();
@@ -34,19 +36,28 @@ export const ProfilePictureEditor = ({
   const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     e.currentTarget.style.border = "2px dashed #4F46E5";
+    setIsDragging(true);
   };
 
   const handleDragLeave = (e: React.DragEvent<HTMLDivElement>) => {
     e.currentTarget.style.border = "2px solid transparent";
+    setIsDragging(false);
+  };
+
+  const handleDragEnd = () => {
+    setIsDragging(false);
   };
 
   return (
     <div className="flex flex-col items-center gap-4 py-4">
       <div 
-        className="relative w-32 h-32 cursor-move rounded-full overflow-hidden border-2 border-transparent transition-all duration-200"
+        className={`relative w-32 h-32 cursor-move rounded-full overflow-hidden border-2 transition-all duration-200 ${
+          isDragging ? 'border-primary' : 'border-transparent'
+        }`}
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         onDrop={handleDrag}
+        onDragEnd={handleDragEnd}
         style={{ 
           background: "rgba(0,0,0,0.05)",
         }}
@@ -78,7 +89,7 @@ export const ProfilePictureEditor = ({
           max={2}
           step={0.1}
           value={[scale]}
-          onValueChange={(value) => onScaleChange({ target: { value: value[0] } } as any)}
+          onValueChange={([value]) => onScaleChange({ target: { value: value.toString() } })}
           className="w-full"
         />
       </div>
@@ -95,7 +106,7 @@ export const ProfilePictureEditor = ({
       <Button 
         onClick={onSave} 
         disabled={isLoading} 
-        className="w-full bg-blue-600 hover:bg-blue-700 text-white"
+        className="w-full bg-primary hover:bg-primary/90 text-white"
       >
         {isLoading ? "Saving..." : "Save Changes"}
       </Button>
