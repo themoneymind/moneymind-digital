@@ -1,15 +1,6 @@
-import { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
-import { useToast } from "@/hooks/use-toast";
+import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { Button } from "@/components/ui/button";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import {
   Card,
   CardContent,
@@ -17,219 +8,106 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { ProfilePicture } from "@/components/ProfilePicture";
 import { Input } from "@/components/ui/input";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+import { Button } from "@/components/ui/button";
+import { format } from "date-fns";
+import { Loader2 } from "lucide-react";
+
+type LoginHistory = {
+  id: string;
+  device_info: string;
+  ip_address: string;
+  location: string;
+  created_at: string;
+};
+
+type Profile = {
+  first_name: string;
+  last_name: string;
+  phone_number: string;
+  email: string;
+};
 
 export const AccountSettings = () => {
   const { user } = useAuth();
-  const { toast } = useToast();
-  const [isUpdating, setIsUpdating] = useState(false);
-  const [language, setLanguage] = useState("en");
-  const [currency, setCurrency] = useState("USD");
-  const [timezone, setTimezone] = useState("UTC");
-  const [loginHistory, setLoginHistory] = useState<any[]>([]);
-  const [profile, setProfile] = useState({
-    first_name: "",
-    last_name: "",
-    phone_number: "",
-    date_of_birth: "",
-  });
+  const [profile, setProfile] = useState<Profile | null>(null);
+  const [loginHistory, setLoginHistory] = useState<LoginHistory[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    fetchUserData();
-    fetchLoginHistory();
-  }, [user]);
+    const fetchProfileAndHistory = async () => {
+      try {
+        // Fetch profile data
+        const { data: profileData, error: profileError } = await supabase
+          .from("profiles")
+          .select("first_name, last_name, phone_number")
+          .eq("id", user?.id)
+          .single();
 
-  const fetchUserData = async () => {
-    if (!user) return;
-    
-    const { data, error } = await supabase
-      .from('profiles')
-      .select('*')
-      .eq('id', user.id)
-      .single();
-      
-    if (!error && data) {
-      setProfile({
-        first_name: data.first_name || "",
-        last_name: data.last_name || "",
-        phone_number: data.phone_number || "",
-        date_of_birth: data.date_of_birth || "",
-      });
-      setLanguage(data.language || "en");
-      setCurrency(data.currency_format || "USD");
-      setTimezone(data.timezone || "UTC");
+        if (profileError) throw profileError;
+
+        // Fetch login history
+        const { data: historyData, error: historyError } = await supabase
+          .from("login_history")
+          .select("*")
+          .eq("user_id", user?.id)
+          .order("created_at", { ascending: false })
+          .limit(5);
+
+        if (historyError) throw historyError;
+
+        setProfile({
+          ...profileData,
+          email: user?.email || "",
+        });
+        setLoginHistory(historyData);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    if (user?.id) {
+      fetchProfileAndHistory();
     }
-  };
+  }, [user?.id, user?.email]);
 
-  const fetchLoginHistory = async () => {
-    if (!user) return;
-    
-    const { data, error } = await supabase
-      .from('login_history')
-      .select('*')
-      .eq('user_id', user.id)
-      .order('created_at', { ascending: false })
-      .limit(5);
-      
-    if (!error && data) {
-      setLoginHistory(data);
-    }
-  };
-
-  const handleAccountUpdate = async () => {
-    setIsUpdating(true);
-    try {
-      const { error } = await supabase
-        .from("profiles")
-        .update({
-          first_name: profile.first_name,
-          last_name: profile.last_name,
-          phone_number: profile.phone_number,
-          date_of_birth: profile.date_of_birth,
-          language,
-          currency_format: currency,
-          timezone,
-        })
-        .eq("id", user?.id);
-
-      if (error) throw error;
-
-      toast({
-        title: "Success",
-        description: "Account settings updated successfully",
-      });
-    } catch (error) {
-      console.error("Error updating account settings:", error);
-      toast({
-        title: "Error",
-        description: "Failed to update account settings",
-        variant: "destructive",
-      });
-    } finally {
-      setIsUpdating(false);
-    }
-  };
-
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    });
-  };
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center p-8">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
       <Card className="border-none shadow-none bg-white rounded-apple">
         <CardHeader>
-          <CardTitle className="text-xl font-semibold">Profile Information</CardTitle>
+          <CardTitle className="text-xl font-semibold">Account Details</CardTitle>
           <CardDescription className="text-gray-500">
-            Update your profile information and account preferences
+            Your personal information
           </CardDescription>
         </CardHeader>
-        <CardContent className="space-y-6">
-          <div className="flex justify-center mb-6">
-            <ProfilePicture />
+        <CardContent className="space-y-4">
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-gray-700">First Name</label>
+              <Input value={profile?.first_name || ""} readOnly />
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-gray-700">Last Name</label>
+              <Input value={profile?.last_name || ""} readOnly />
+            </div>
           </div>
-          
-          <div className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-gray-500">First Name</label>
-                <Input
-                  value={profile.first_name}
-                  onChange={(e) => setProfile(prev => ({ ...prev, first_name: e.target.value }))}
-                />
-              </div>
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-gray-500">Last Name</label>
-                <Input
-                  value={profile.last_name}
-                  onChange={(e) => setProfile(prev => ({ ...prev, last_name: e.target.value }))}
-                />
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-500">Phone Number</label>
-              <Input
-                type="tel"
-                value={profile.phone_number}
-                onChange={(e) => setProfile(prev => ({ ...prev, phone_number: e.target.value }))}
-              />
-            </div>
-
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-500">Date of Birth</label>
-              <Input
-                type="date"
-                value={profile.date_of_birth}
-                onChange={(e) => setProfile(prev => ({ ...prev, date_of_birth: e.target.value }))}
-              />
-            </div>
-
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-500">Language</label>
-              <Select value={language} onValueChange={setLanguage}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select language" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="en">English</SelectItem>
-                  <SelectItem value="es">Spanish</SelectItem>
-                  <SelectItem value="fr">French</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-500">Currency</label>
-              <Select value={currency} onValueChange={setCurrency}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select currency" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="USD">USD ($)</SelectItem>
-                  <SelectItem value="EUR">EUR (€)</SelectItem>
-                  <SelectItem value="GBP">GBP (£)</SelectItem>
-                  <SelectItem value="INR">INR (₹)</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-500">Time Zone</label>
-              <Select value={timezone} onValueChange={setTimezone}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select timezone" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="UTC">UTC</SelectItem>
-                  <SelectItem value="America/New_York">Eastern Time</SelectItem>
-                  <SelectItem value="America/Los_Angeles">Pacific Time</SelectItem>
-                  <SelectItem value="Asia/Tokyo">Japan Time</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            <Button
-              onClick={handleAccountUpdate}
-              disabled={isUpdating}
-              className="w-full bg-primary hover:bg-primary/90"
-            >
-              {isUpdating ? "Saving..." : "Save Changes"}
-            </Button>
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-gray-700">Email</label>
+            <Input value={profile?.email || ""} readOnly />
+          </div>
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-gray-700">Phone Number</label>
+            <Input value={profile?.phone_number || ""} readOnly />
           </div>
         </CardContent>
       </Card>
@@ -238,30 +116,28 @@ export const AccountSettings = () => {
         <CardHeader>
           <CardTitle className="text-xl font-semibold">Recent Login Activity</CardTitle>
           <CardDescription className="text-gray-500">
-            Review your recent account access
+            Your recent account access history
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Date</TableHead>
-                <TableHead>Device</TableHead>
-                <TableHead>Location</TableHead>
-                <TableHead>IP Address</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {loginHistory.map((login) => (
-                <TableRow key={login.id}>
-                  <TableCell>{formatDate(login.created_at)}</TableCell>
-                  <TableCell>{login.device_info}</TableCell>
-                  <TableCell>{login.location}</TableCell>
-                  <TableCell>{login.ip_address}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+          <div className="space-y-4">
+            {loginHistory.map((login) => (
+              <div
+                key={login.id}
+                className="flex items-center justify-between p-4 rounded-lg bg-gray-50"
+              >
+                <div className="space-y-1">
+                  <p className="text-sm font-medium">{login.device_info}</p>
+                  <p className="text-xs text-gray-500">
+                    {login.ip_address} • {login.location}
+                  </p>
+                </div>
+                <p className="text-sm text-gray-500">
+                  {format(new Date(login.created_at), "MMM d, yyyy h:mm a")}
+                </p>
+              </div>
+            ))}
+          </div>
         </CardContent>
       </Card>
     </div>
