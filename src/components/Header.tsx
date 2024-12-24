@@ -65,7 +65,7 @@ export const Header = () => {
 
   return (
     <header className="sticky top-0 z-10">
-      <div className="bg-[#7F3DFF] pb-6 relative overflow-hidden">
+      <div className="bg-[#7F3DFF] pb-8">
         {/* Decorative Circle */}
         <div className="absolute right-0 top-0 w-32 h-32 bg-white/10 rounded-full transform translate-x-16 -translate-y-8" />
         
@@ -109,7 +109,7 @@ export const Header = () => {
           </div>
         </div>
       </div>
-      <div className="h-2 bg-[#F5F5F7] dark:bg-gray-900 relative -mt-2 rounded-t-apple" />
+      <div className="h-6 bg-[#F5F5F7] dark:bg-gray-900 relative -mt-6 rounded-t-[28px]" />
     </header>
   );
 };
