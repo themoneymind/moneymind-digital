@@ -22,13 +22,13 @@ export const BottomNav = () => {
           <span className="text-xs mt-1">Home</span>
         </Link>
         <Link
-          to="/app/report"
+          to="/app/dues"
           className={`flex flex-col items-center p-2 ${
-            isActive("/app/report") ? "text-[#7F3DFF]" : "text-gray-700"
+            isActive("/app/dues") ? "text-[#7F3DFF]" : "text-gray-700"
           }`}
         >
           <PieChart className="w-6 h-6" />
-          <span className="text-xs mt-1">Report</span>
+          <span className="text-xs mt-1">Dues</span>
         </Link>
         <Link
           to="/app/payment-source"
@@ -40,13 +40,13 @@ export const BottomNav = () => {
           <span className="text-xs mt-1">Add</span>
         </Link>
         <Link
-          to="/app/wallet"
+          to="/app/report"
           className={`flex flex-col items-center p-2 ${
-            isActive("/app/wallet") ? "text-[#7F3DFF]" : "text-gray-700"
+            isActive("/app/report") ? "text-[#7F3DFF]" : "text-gray-700"
           }`}
         >
           <Wallet className="w-6 h-6" />
-          <span className="text-xs mt-1">Wallet</span>
+          <span className="text-xs mt-1">Report</span>
         </Link>
         <Link
           to="/app/settings"
