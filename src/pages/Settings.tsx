@@ -33,7 +33,6 @@ const Settings = () => {
       if (error) throw error;
 
       if (data) {
-        // Profile data is now handled by individual components
         console.log("Profile fetched successfully");
       }
     } catch (error) {
@@ -42,26 +41,43 @@ const Settings = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-[#F5F5F7]">
       <SettingsHeader />
 
-      <div className="max-w-md mx-auto p-4 pb-20">
-        <Tabs defaultValue="profile" className="space-y-4">
-          <TabsList className="grid w-full grid-cols-3 bg-white">
-            <TabsTrigger value="profile">Profile</TabsTrigger>
-            <TabsTrigger value="notifications">Notifications</TabsTrigger>
-            <TabsTrigger value="security">Security</TabsTrigger>
+      <div className="max-w-2xl mx-auto p-4 pb-20 space-y-6">
+        <Tabs defaultValue="profile" className="space-y-6">
+          <TabsList className="w-full bg-transparent border-b border-gray-200 p-0 h-auto">
+            <div className="flex space-x-8">
+              <TabsTrigger 
+                value="profile"
+                className="px-1 py-3 font-medium data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:text-primary rounded-none bg-transparent"
+              >
+                Profile
+              </TabsTrigger>
+              <TabsTrigger 
+                value="notifications"
+                className="px-1 py-3 font-medium data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:text-primary rounded-none bg-transparent"
+              >
+                Notifications
+              </TabsTrigger>
+              <TabsTrigger 
+                value="security"
+                className="px-1 py-3 font-medium data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:text-primary rounded-none bg-transparent"
+              >
+                Security
+              </TabsTrigger>
+            </div>
           </TabsList>
 
-          <TabsContent value="profile">
+          <TabsContent value="profile" className="mt-6 space-y-6">
             <ProfileSettings />
           </TabsContent>
 
-          <TabsContent value="notifications">
+          <TabsContent value="notifications" className="mt-6 space-y-6">
             <NotificationSettings />
           </TabsContent>
 
-          <TabsContent value="security">
+          <TabsContent value="security" className="mt-6 space-y-6">
             <SecuritySettings />
           </TabsContent>
         </Tabs>
