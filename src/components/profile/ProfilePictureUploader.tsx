@@ -1,5 +1,4 @@
 import { useRef } from "react";
-import { Button } from "@/components/ui/button";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { useAuth } from "@/contexts/AuthContext";
 
@@ -15,7 +14,7 @@ export const ProfilePictureUploader = ({ imageUrl, onFileSelect }: ProfilePictur
   return (
     <>
       <Avatar 
-        className="w-12 h-12 cursor-pointer hover:opacity-90 transition-opacity"
+        className="w-full h-full cursor-pointer hover:opacity-90 transition-opacity"
         onClick={() => fileInputRef.current?.click()}
       >
         <AvatarImage 

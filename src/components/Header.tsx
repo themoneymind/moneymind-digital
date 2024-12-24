@@ -1,4 +1,4 @@
-import { ArrowLeft, Bell, LogOut, Hand } from "lucide-react";
+import { ArrowLeft, Bell, LogOut } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -96,15 +96,13 @@ export const Header = () => {
         {/* Second Row - Profile Info */}
         <div className="max-w-2xl mx-auto px-4 pb-4">
           <div className="flex items-center gap-4">
-            <div className="bg-white rounded-full p-0.5">
-              <div className="w-10 h-10">
-                <ProfilePicture />
-              </div>
+            <div className="w-10 h-10 ring-2 ring-white/50 rounded-full">
+              <ProfilePicture />
             </div>
             <div className="flex-1">
               <h2 className="text-lg font-medium text-white flex items-center gap-2">
                 {greeting}, {displayName}
-                <Hand className="w-5 h-5 text-white animate-wave" />
+                <span className="animate-wave">👋</span>
               </h2>
               <MotivationalQuote />
             </div>
