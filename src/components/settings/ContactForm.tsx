@@ -19,26 +19,16 @@ export const ContactForm = () => {
 
     setIsSubmitting(true);
     try {
-      const { data: { session } } = await supabase.auth.getSession();
-      
-      const response = await fetch(
-        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/send-feedback`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${session?.access_token}`,
-          },
-          body: JSON.stringify({
-            type: "contact",
-            email: user?.email,
-            subject,
-            message,
-          }),
-        }
-      );
+      const { error } = await supabase.functions.invoke('send-feedback', {
+        body: {
+          type: "contact",
+          email: user?.email,
+          subject,
+          message,
+        },
+      });
 
-      if (!response.ok) throw new Error("Failed to send message");
+      if (error) throw error;
 
       toast({
         title: "Message sent successfully!",

@@ -19,9 +19,11 @@ const handler = async (req: Request): Promise<Response> => {
   try {
     const { type, email, message, rating, subject } = await req.json() as EmailRequest;
 
+    console.log("Received request:", { type, email, message, rating, subject });
+
     const emailSubject = type === "feedback" 
-      ? `New Feedback Received (${rating ? rating + ' stars' : 'No rating'})`
-      : subject || "New Contact Request";
+      ? `New Feedback Received ${rating ? `(${rating} stars)` : ''}`
+      : `New Contact Request: ${subject}`;
 
     const htmlContent = `
       <h2>${type === "feedback" ? "Feedback" : "Contact Request"} from ${email}</h2>
@@ -53,6 +55,7 @@ const handler = async (req: Request): Promise<Response> => {
       status: 200,
     });
   } catch (error) {
+    console.error("Error in send-feedback function:", error);
     return new Response(JSON.stringify({ error: error.message }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 500,

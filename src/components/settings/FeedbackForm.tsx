@@ -20,26 +20,16 @@ export const FeedbackForm = () => {
 
     setIsSubmitting(true);
     try {
-      const { data: { session } } = await supabase.auth.getSession();
-      
-      const response = await fetch(
-        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/send-feedback`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${session?.access_token}`,
-          },
-          body: JSON.stringify({
-            type: "feedback",
-            email: user?.email,
-            message,
-            rating,
-          }),
-        }
-      );
+      const { error } = await supabase.functions.invoke('send-feedback', {
+        body: {
+          type: "feedback",
+          email: user?.email,
+          message,
+          rating,
+        },
+      });
 
-      if (!response.ok) throw new Error("Failed to send feedback");
+      if (error) throw error;
 
       toast({
         title: "Thank you for your feedback!",
