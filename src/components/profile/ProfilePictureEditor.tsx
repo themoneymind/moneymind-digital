@@ -2,6 +2,7 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
 import { Slider } from "@/components/ui/slider";
+import { useState } from "react";
 
 type ProfilePictureEditorProps = {
   imageUrl: string | null;
@@ -23,26 +24,45 @@ export const ProfilePictureEditor = ({
   isLoading,
 }: ProfilePictureEditorProps) => {
   const { user } = useAuth();
+  const [isDragging, setIsDragging] = useState(false);
+
+  const handleDragStart = (e: React.DragEvent<HTMLDivElement>) => {
+    setIsDragging(true);
+    e.dataTransfer.setDragImage(new Image(), 0, 0);
+  };
 
   const handleDrag = (e: React.DragEvent<HTMLDivElement>) => {
+    if (!isDragging || !e.clientX || !e.clientY) return;
+    
     const bounds = e.currentTarget.getBoundingClientRect();
     const x = e.clientX - bounds.left;
     const y = e.clientY - bounds.top;
-    onPositionChange({ x, y });
+    
+    onPositionChange({ 
+      x: Math.max(-50, Math.min(50, x - bounds.width / 2)),
+      y: Math.max(-50, Math.min(50, y - bounds.height / 2))
+    });
+  };
+
+  const handleDragEnd = () => {
+    setIsDragging(false);
   };
 
   return (
-    <div className="flex flex-col items-center gap-4 py-4">
+    <div className="flex flex-col items-center gap-6 py-4">
       <div 
-        className="relative w-32 h-32 cursor-move"
-        onDragOver={(e) => e.preventDefault()}
-        onDrop={handleDrag}
+        className="relative w-48 h-48 cursor-move rounded-full overflow-hidden"
+        draggable
+        onDragStart={handleDragStart}
+        onDrag={handleDrag}
+        onDragEnd={handleDragEnd}
       >
-        <Avatar className="w-32 h-32">
+        <div className="absolute inset-0 border-2 border-dashed border-gray-300 rounded-full" />
+        <Avatar className="w-full h-full">
           <AvatarImage 
             src={imageUrl || "/placeholder.svg"}
             alt="Profile" 
-            className="object-cover"
+            className="object-cover transition-transform duration-200"
             style={{ 
               transform: `scale(${scale}) translate(${position.x}px, ${position.y}px)`,
               transformOrigin: 'center'
@@ -53,23 +73,32 @@ export const ProfilePictureEditor = ({
           </AvatarFallback>
         </Avatar>
       </div>
-      <div className="w-full max-w-xs space-y-2">
-        <label className="text-sm text-gray-500">Scale</label>
-        <Slider
-          min={0.5}
-          max={2}
-          step={0.1}
-          value={[scale]}
-          onValueChange={(value) => onScaleChange({ target: { value: value[0] } } as any)}
-          className="w-full"
-        />
+
+      <div className="w-full max-w-xs space-y-4">
+        <div className="space-y-2">
+          <label className="text-sm font-medium text-gray-500">Zoom</label>
+          <Slider
+            min={1}
+            max={3}
+            step={0.1}
+            value={[scale]}
+            onValueChange={(value) => onScaleChange({ target: { value: value[0] } } as any)}
+            className="w-full"
+          />
+        </div>
+
+        <p className="text-sm text-gray-500 text-center">
+          Drag the image to adjust position
+        </p>
+
+        <Button 
+          onClick={onSave} 
+          disabled={isLoading} 
+          className="w-full bg-primary hover:bg-primary/90"
+        >
+          {isLoading ? "Saving..." : "Save Changes"}
+        </Button>
       </div>
-      <p className="text-sm text-gray-500">
-        Drag the image to adjust position
-      </p>
-      <Button onClick={onSave} disabled={isLoading} className="w-full">
-        {isLoading ? "Saving..." : "Save Changes"}
-      </Button>
     </div>
   );
 };
