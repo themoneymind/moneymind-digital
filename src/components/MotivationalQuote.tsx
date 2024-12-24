@@ -21,7 +21,7 @@ export const MotivationalQuote = () => {
 
   return (
     <div className="pl-2 -mt-0.5">
-      <p className="text-sm text-gray-600">
+      <p className="text-sm text-white/80">
         {quote}
       </p>
     </div>
