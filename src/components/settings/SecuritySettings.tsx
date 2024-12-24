@@ -60,9 +60,9 @@ export const SecuritySettings = () => {
       </Card>
 
       <Card className="border-none shadow-none bg-white rounded-apple">
-        <CardHeader>
+        <CardHeader className="pb-3">
           <CardTitle className="text-xl font-semibold text-red-600">Danger Zone</CardTitle>
-          <CardDescription className="text-gray-500">
+          <CardDescription className="text-gray-500 mt-1">
             Actions here can't be undone
           </CardDescription>
         </CardHeader>
