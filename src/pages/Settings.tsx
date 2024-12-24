@@ -1,12 +1,13 @@
 import { useNavigate } from "react-router-dom";
 import { BottomNav } from "@/components/BottomNav";
 import { ProfileHeader } from "@/components/settings/ProfileHeader";
-import { Settings as SettingsIcon, Moon, Shield, Download, LogOut, User } from "lucide-react";
+import { Settings as SettingsIcon, Moon, Shield, Download, LogOut, User, Bell, Lock } from "lucide-react";
 import { useTheme } from "@/hooks/use-theme";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
+import { ArrowLeft } from "lucide-react";
 
 const Settings = () => {
   const navigate = useNavigate();
@@ -35,7 +36,7 @@ const Settings = () => {
             <div className="flex items-center justify-between w-full">
               <div className="flex items-center gap-4">
                 <Moon className="w-5 h-5 text-blue-500" />
-                <span className="text-gray-700 font-medium">Dark Mode</span>
+                <span className="text-gray-700 dark:text-gray-200 font-medium">Dark Mode</span>
               </div>
               <Switch
                 checked={theme === "dark"}
@@ -43,6 +44,12 @@ const Settings = () => {
               />
             </div>
           ),
+        },
+        {
+          icon: Bell,
+          label: "Notifications",
+          path: "/app/settings/notifications",
+          color: "text-orange-500",
         },
       ],
     },
@@ -56,10 +63,16 @@ const Settings = () => {
           color: "text-purple-500",
         },
         {
+          icon: Lock,
+          label: "Privacy",
+          path: "/app/settings/privacy",
+          color: "text-green-500",
+        },
+        {
           icon: Download,
           label: "Export Data",
           onClick: handleExportData,
-          color: "text-green-500",
+          color: "text-blue-500",
         },
         {
           icon: LogOut,
@@ -75,7 +88,12 @@ const Settings = () => {
     <div className="min-h-screen bg-[#F5F5F7] dark:bg-gray-900">
       <header className="sticky top-0 z-10 backdrop-blur-xl bg-[#F5F5F7]/80 dark:bg-gray-900/80 border-b border-gray-200 dark:border-gray-800">
         <div className="max-w-2xl mx-auto flex items-center gap-4 px-4 py-3">
-          <SettingsIcon className="w-6 h-6 text-gray-700 dark:text-gray-300" />
+          <button 
+            onClick={() => navigate(-1)}
+            className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full transition-colors"
+          >
+            <ArrowLeft className="w-5 h-5 text-gray-700 dark:text-gray-300" />
+          </button>
           <h1 className="text-2xl font-semibold dark:text-white">Settings</h1>
         </div>
       </header>
