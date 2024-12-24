@@ -77,7 +77,7 @@ export const ContactForm = () => {
       />
       <Button
         type="submit"
-        className="w-full"
+        className="w-full bg-primary hover:bg-primary/90"
         disabled={isSubmitting}
       >
         {isSubmitting ? "Sending..." : "Send Message"}

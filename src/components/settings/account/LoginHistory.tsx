@@ -9,7 +9,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { MapPin, Monitor, Clock } from "lucide-react";
+import { MapPin, Monitor, Clock, Shield } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 type LoginHistory = {
@@ -55,9 +55,12 @@ export const LoginHistory = () => {
   return (
     <Card className="border-none shadow-none bg-white rounded-apple">
       <CardHeader>
-        <CardTitle className="text-xl font-semibold">Recent Login Activity</CardTitle>
+        <div className="flex items-center gap-2">
+          <Shield className="w-6 h-6 text-primary" />
+          <CardTitle className="text-xl font-semibold">Recent Login Activity</CardTitle>
+        </div>
         <CardDescription className="text-gray-500">
-          Your recent account access history
+          Monitor your account access for security
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -65,16 +68,18 @@ export const LoginHistory = () => {
           {loginHistory.map((login) => (
             <div
               key={login.id}
-              className="flex flex-col sm:flex-row sm:items-center justify-between p-4 border border-gray-100 rounded-lg hover:bg-gray-50 transition-colors"
+              className="flex flex-col sm:flex-row sm:items-center justify-between p-4 border border-gray-100 rounded-lg hover:bg-gray-50/50 transition-colors"
             >
-              <div className="space-y-2 sm:space-y-0">
-                <div className="flex items-center gap-2 text-gray-600">
-                  <Monitor className="w-4 h-4" />
+              <div className="space-y-3">
+                <div className="flex items-center gap-2 text-gray-700">
+                  <Monitor className="w-4 h-4 text-primary" />
                   <span className="font-medium">{login.device_info}</span>
                 </div>
                 <div className="flex items-center gap-2 text-gray-500 text-sm">
                   <MapPin className="w-4 h-4" />
                   <span>{login.location}</span>
+                  <span className="text-gray-300">•</span>
+                  <span className="text-gray-500">{login.ip_address}</span>
                 </div>
               </div>
               <div className="mt-2 sm:mt-0 flex items-center gap-2 text-gray-400 text-sm">

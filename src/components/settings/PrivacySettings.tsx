@@ -11,13 +11,15 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Shield, Download, Lock } from "lucide-react";
+import { Shield, Download, Lock, Eye, UserCog } from "lucide-react";
 
 export const PrivacySettings = () => {
   const { user } = useAuth();
   const { toast } = useToast();
   const [isUpdating, setIsUpdating] = useState(false);
   const [dataSharing, setDataSharing] = useState(false);
+  const [analyticsEnabled, setAnalyticsEnabled] = useState(true);
+  const [marketingEnabled, setMarketingEnabled] = useState(false);
 
   const handlePrivacyUpdate = async () => {
     setIsUpdating(true);
@@ -102,23 +104,58 @@ export const PrivacySettings = () => {
           <div className="p-4 bg-blue-50 rounded-lg">
             <h3 className="font-medium text-blue-800 mb-2">Our Commitment to Your Privacy</h3>
             <p className="text-sm text-blue-600">
-              We prioritize the security and privacy of your financial data. All information is encrypted,
+              At MoneyMind, we prioritize the security and privacy of your financial data. All information is encrypted,
               stored securely, and never shared without your explicit consent. We comply with industry
-              standards to ensure your data remains protected.
+              standards and best practices to ensure your data remains protected at all times.
             </p>
           </div>
 
           <div className="space-y-6">
             <div className="flex items-center justify-between">
               <div className="space-y-0.5">
-                <label className="text-sm font-medium">Anonymous Data Sharing</label>
+                <div className="flex items-center gap-2">
+                  <Eye className="w-4 h-4 text-gray-500" />
+                  <label className="text-sm font-medium">Anonymous Data Collection</label>
+                </div>
                 <p className="text-sm text-gray-500">
-                  Allow sharing of anonymized data to improve our services and features
+                  Allow collection of anonymous usage data to improve our services
                 </p>
               </div>
               <Switch
                 checked={dataSharing}
                 onCheckedChange={setDataSharing}
+              />
+            </div>
+
+            <div className="flex items-center justify-between">
+              <div className="space-y-0.5">
+                <div className="flex items-center gap-2">
+                  <UserCog className="w-4 h-4 text-gray-500" />
+                  <label className="text-sm font-medium">Personalized Analytics</label>
+                </div>
+                <p className="text-sm text-gray-500">
+                  Enable personalized insights and recommendations
+                </p>
+              </div>
+              <Switch
+                checked={analyticsEnabled}
+                onCheckedChange={setAnalyticsEnabled}
+              />
+            </div>
+
+            <div className="flex items-center justify-between">
+              <div className="space-y-0.5">
+                <div className="flex items-center gap-2">
+                  <Mail className="w-4 h-4 text-gray-500" />
+                  <label className="text-sm font-medium">Marketing Communications</label>
+                </div>
+                <p className="text-sm text-gray-500">
+                  Receive updates about new features and promotions
+                </p>
+              </div>
+              <Switch
+                checked={marketingEnabled}
+                onCheckedChange={setMarketingEnabled}
               />
             </div>
 
@@ -147,9 +184,9 @@ export const PrivacySettings = () => {
                 <h4 className="font-medium">Data Protection</h4>
               </div>
               <p className="text-sm text-gray-500">
-                Your financial data is encrypted and stored securely. We never share your personal
-                information with third parties without your explicit consent. You can export or delete
-                your data at any time.
+                Your financial data is encrypted using industry-standard protocols and stored securely.
+                We never share your personal information with third parties without your explicit consent.
+                You can export or request deletion of your data at any time.
               </p>
             </div>
           </div>
