@@ -85,19 +85,24 @@ const Settings = () => {
 
   return (
     <div className="min-h-screen bg-[#F5F5F7] dark:bg-gray-900">
-      <header className="sticky top-0 z-10 bg-[#7F3DFF] rounded-b-[20px] shadow-sm">
-        <div className="max-w-2xl mx-auto flex items-center gap-4 px-4 py-3">
-          <button 
-            onClick={() => navigate(-1)}
-            className="p-2 hover:bg-white/10 rounded-full transition-colors"
-          >
-            <ArrowLeft className="w-5 h-5 text-white" />
-          </button>
-          <h1 className="text-2xl font-semibold text-white">Settings</h1>
+      {/* Header with curved bottom */}
+      <header className="sticky top-0 z-10">
+        <div className="bg-[#7F3DFF] pb-6">
+          <div className="max-w-2xl mx-auto flex items-center gap-4 px-4 pt-3">
+            <button 
+              onClick={() => navigate(-1)}
+              className="p-2 hover:bg-white/10 rounded-full transition-colors"
+            >
+              <ArrowLeft className="w-5 h-5 text-white" />
+            </button>
+            <h1 className="text-2xl font-semibold text-white">Settings</h1>
+          </div>
         </div>
+        {/* Curved white overlay for content area */}
+        <div className="h-5 bg-[#F5F5F7] dark:bg-gray-900 relative -mt-5 rounded-t-[20px]" />
       </header>
 
-      <div className="max-w-2xl mx-auto p-4 pb-20 space-y-6">
+      <div className="max-w-2xl mx-auto px-4 pb-20 space-y-6 -mt-3">
         <ProfileHeader />
         
         <div className="space-y-6">
