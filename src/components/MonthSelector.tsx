@@ -18,7 +18,7 @@ export const MonthSelector = () => {
   };
 
   return (
-    <div className="flex items-center justify-between bg-white rounded-apple shadow-sm p-4 w-full">
+    <div className="flex items-center justify-between bg-white rounded-apple shadow-sm p-4 w-full mb-4">
       <button 
         className="p-2 hover:bg-gray-50 rounded-full transition-colors" 
         onClick={handlePrevMonth}
