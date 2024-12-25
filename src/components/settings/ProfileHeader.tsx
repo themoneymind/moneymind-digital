@@ -36,7 +36,9 @@ export const ProfileHeader = () => {
     <div className="bg-white dark:bg-gray-800 rounded-apple p-4 shadow-sm">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
-          <ProfilePicture />
+          <div className="w-16 h-16 relative rounded-full overflow-hidden">
+            <ProfilePicture />
+          </div>
           <div>
             <h2 className="font-semibold text-lg text-gray-900 dark:text-white">
               {displayName}
