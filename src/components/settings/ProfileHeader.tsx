@@ -36,7 +36,7 @@ export const ProfileHeader = () => {
     <div className="bg-white dark:bg-gray-800 rounded-apple p-4 shadow-sm">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
-          <div className="w-16 h-16 relative rounded-full overflow-hidden">
+          <div className="w-12 h-12 relative rounded-full overflow-hidden">
             <ProfilePicture />
           </div>
           <div>
