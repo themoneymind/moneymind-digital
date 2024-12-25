@@ -108,23 +108,23 @@ export const BalanceCard = () => {
         </p>
         <div className="h-px bg-white/20 mb-4" />
         <div className="flex justify-between">
-          <div className="flex items-start space-x-3">
-            <div className="bg-green-400/20 p-1.5 rounded-full mt-1">
+          <div className="flex items-start space-x-2">
+            <div className="bg-green-400/20 p-1 rounded-full mt-1.5">
               <ArrowDown className="w-3 h-3 text-green-400" />
             </div>
             <div>
               <p className="text-sm opacity-90">Income</p>
-              <p className="text-lg font-semibold">{formatCurrency(monthlyIncome)}</p>
+              <p className="text-lg font-semibold text-left">{formatCurrency(monthlyIncome)}</p>
             </div>
           </div>
           <div className="w-px h-12 bg-white/20" />
-          <div className="flex items-start space-x-3">
-            <div className="bg-red-400/20 p-1.5 rounded-full mt-1">
+          <div className="flex items-start space-x-2">
+            <div className="bg-red-400/20 p-1 rounded-full mt-1.5">
               <ArrowUp className="w-3 h-3 text-red-400" />
             </div>
             <div>
               <p className="text-sm opacity-90">Expense</p>
-              <p className="text-lg font-semibold">{formatCurrency(monthlyExpense)}</p>
+              <p className="text-lg font-semibold text-left">{formatCurrency(monthlyExpense)}</p>
             </div>
           </div>
         </div>

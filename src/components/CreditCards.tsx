@@ -26,7 +26,7 @@ export const CreditCards = () => {
       </div>
       
       <ScrollArea className="w-full">
-        <div className="flex space-x-4 px-6 pb-4">
+        <div className="flex space-x-4 px-6 pb-4 overflow-x-auto no-scrollbar">
           {creditCards.length === 0 ? (
             <div className="text-center py-8 text-muted-foreground w-full">
               No credit cards added yet
@@ -39,7 +39,7 @@ export const CreditCards = () => {
             ))
           )}
         </div>
-        <ScrollBar orientation="horizontal" />
+        <ScrollBar orientation="horizontal" className="opacity-0" />
       </ScrollArea>
     </div>
   );
