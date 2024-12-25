@@ -73,51 +73,52 @@ export const ResetPassword = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#F5F3FF]">
+    <div className="min-h-screen bg-[#F5F3FF] relative overflow-hidden">
       <TopBar title="Reset Password" />
-      <div className="flex items-center justify-center px-6 py-8">
-        <div className="w-full max-w-[400px]">
-          <div className="bg-white rounded-[32px] p-8 shadow-lg">
-            <div className="space-y-8">
-              <div className="text-center space-y-2">
-                <div className="flex items-center justify-center mb-2">
-                  <PiggyBank className="h-10 w-10 text-blue-600" />
-                </div>
-                <h1 className="text-2xl font-bold text-blue-600">Change Password</h1>
-                <p className="text-gray-600 text-base">
-                  Enter your new password
-                </p>
-              </div>
-
-              <form onSubmit={handleSubmit} className="space-y-6">
-                <Input
-                  type="password"
-                  placeholder="New Password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="h-12 rounded-xl border-gray-200 bg-gray-50/50 px-4 text-gray-900/70 placeholder:text-gray-500/60 focus:border-blue-600 focus:ring-blue-600"
-                  disabled={isLoading}
-                  required
-                />
-                <Input
-                  type="password"
-                  placeholder="Confirm New Password"
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                  className="h-12 rounded-xl border-gray-200 bg-gray-50/50 px-4 text-gray-900/70 placeholder:text-gray-500/60 focus:border-blue-600 focus:ring-blue-600"
-                  disabled={isLoading}
-                  required
-                />
-                <Button 
-                  type="submit" 
-                  className="w-full h-12 rounded-xl text-base bg-blue-600 hover:bg-blue-700"
-                  disabled={isLoading}
-                >
-                  {isLoading ? "Updating Password..." : "Update Password"}
-                </Button>
-              </form>
+      
+      {/* Decorative Circles */}
+      <div className="absolute top-0 right-0 w-32 h-32 rounded-full bg-[#7F3DFF]/10 -mr-16 -mt-16" />
+      <div className="absolute bottom-0 left-0 w-40 h-40 rounded-full bg-[#7F3DFF]/10 -ml-20 -mb-20" />
+      
+      <div className="p-6 pt-8">
+        <div className="space-y-6">
+          <div className="text-left space-y-2">
+            <div className="flex items-center mb-2">
+              <PiggyBank className="h-10 w-10 text-[#7F3DFF]" />
             </div>
+            <h1 className="text-2xl font-bold text-[#7F3DFF]">Change Password</h1>
+            <p className="text-gray-600 text-base">
+              Enter your new password
+            </p>
           </div>
+
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <Input
+              type="password"
+              placeholder="New Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="h-12 rounded-xl border-gray-200 bg-gray-50/50 px-4 text-gray-900/70 placeholder:text-gray-500/60 focus:border-[#7F3DFF] focus:ring-[#7F3DFF]"
+              disabled={isLoading}
+              required
+            />
+            <Input
+              type="password"
+              placeholder="Confirm New Password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              className="h-12 rounded-xl border-gray-200 bg-gray-50/50 px-4 text-gray-900/70 placeholder:text-gray-500/60 focus:border-[#7F3DFF] focus:ring-[#7F3DFF]"
+              disabled={isLoading}
+              required
+            />
+            <Button 
+              type="submit" 
+              className="w-full h-12 rounded-xl text-base bg-[#7F3DFF] hover:bg-[#7F3DFF]/90"
+              disabled={isLoading}
+            >
+              {isLoading ? "Updating Password..." : "Update Password"}
+            </Button>
+          </form>
         </div>
       </div>
     </div>
