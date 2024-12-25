@@ -36,7 +36,7 @@ export const PaymentSources = () => {
   });
 
   return (
-    <div className="bg-white rounded-apple shadow-sm mt-8 mb-12">
+    <div className="bg-white rounded-apple shadow-sm mt-8 mb-24">
       <div className="flex items-center justify-between p-6">
         <h2 className="text-lg font-semibold text-gray-900">Payment Sources</h2>
         <Button

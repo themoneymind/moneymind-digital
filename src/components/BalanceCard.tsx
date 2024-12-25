@@ -94,31 +94,42 @@ export const BalanceCard = () => {
   });
 
   return (
-    <div className="rounded-apple bg-gradient-to-br from-primary-gradient-from to-primary-gradient-to text-white shadow-lg p-6">
-      <h2 className="mb-2 text-sm font-medium opacity-90">Total Balance</h2>
-      <p className="mb-2 text-4xl font-bold">{formatCurrency(displayBalance)}</p>
-      <p className="mb-2 text-xs opacity-75">
-        Last month's closing balance: {formatCurrency(lastMonthClosingBalance)}
-      </p>
-      <div className="h-px bg-white/20 mb-4" />
-      <div className="flex justify-between">
-        <div className="flex items-center gap-3">
-          <div className="bg-green-400/20 p-1.5 rounded-full">
-            <ArrowDown className="w-4 h-4 text-green-400" />
+    <div className="rounded-apple bg-gradient-to-br from-primary-gradient-from to-primary-gradient-to text-white shadow-lg p-6 relative overflow-hidden">
+      {/* Decorative Circles */}
+      <div className="absolute right-0 top-0 w-48 h-48 bg-white/5 rounded-full transform translate-x-24 -translate-y-24" />
+      <div className="absolute left-0 bottom-0 w-32 h-32 bg-white/5 rounded-full transform -translate-x-16 translate-y-16" />
+      
+      {/* Content */}
+      <div className="relative z-10">
+        <h2 className="mb-2 text-sm font-medium opacity-90">Total Balance</h2>
+        <p className="mb-2 text-4xl font-bold">{formatCurrency(displayBalance)}</p>
+        <p className="mb-2 text-xs opacity-75">
+          Last month's closing balance: {formatCurrency(lastMonthClosingBalance)}
+        </p>
+        <div className="h-px bg-white/20 mb-4" />
+        <div className="flex justify-between">
+          <div className="flex items-center gap-3">
+            <div className="flex items-start gap-3">
+              <div className="bg-green-400/20 p-1.5 rounded-full mt-0.5">
+                <ArrowDown className="w-3.5 h-3.5 text-green-400" />
+              </div>
+              <div className="text-left">
+                <p className="text-sm opacity-90">Income</p>
+                <p className="text-lg font-semibold">{formatCurrency(monthlyIncome)}</p>
+              </div>
+            </div>
           </div>
-          <div>
-            <p className="text-sm opacity-90">Income</p>
-            <p className="text-lg font-semibold">{formatCurrency(monthlyIncome)}</p>
-          </div>
-        </div>
-        <div className="w-px h-12 bg-white/20" />
-        <div className="flex items-center gap-3">
-          <div className="bg-red-400/20 p-1.5 rounded-full">
-            <ArrowUp className="w-4 h-4 text-red-400" />
-          </div>
-          <div>
-            <p className="text-sm opacity-90">Expense</p>
-            <p className="text-lg font-semibold">{formatCurrency(monthlyExpense)}</p>
+          <div className="w-px h-12 bg-white/20" />
+          <div className="flex items-center gap-3">
+            <div className="flex items-start gap-3">
+              <div className="bg-red-400/20 p-1.5 rounded-full mt-0.5">
+                <ArrowUp className="w-3.5 h-3.5 text-red-400" />
+              </div>
+              <div className="text-left">
+                <p className="text-sm opacity-90">Expense</p>
+                <p className="text-lg font-semibold">{formatCurrency(monthlyExpense)}</p>
+              </div>
+            </div>
           </div>
         </div>
       </div>
