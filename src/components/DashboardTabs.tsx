@@ -31,22 +31,24 @@ export const DashboardTabs = () => {
         </TabsList>
       </div>
 
-      <TabsContent value="overview" className="space-y-6 mx-6 mt-6">
+      <TabsContent value="overview" className="space-y-6 px-6 mt-6">
         <MonthSelector />
         <BalanceCard />
         <PaymentSources />
       </TabsContent>
 
-      <TabsContent value="credit-cards" className="space-y-6 mx-6 mt-6">
-        <MonthSelector />
+      <TabsContent value="credit-cards" className="space-y-6 mt-6">
+        <div className="px-6">
+          <MonthSelector />
+        </div>
         <CreditCards />
-        <div className="space-y-4">
+        <div className="px-6 space-y-4">
           <h3 className="text-lg font-semibold">Card Transactions</h3>
           <RecentTransactions showViewAll={false} filterByType="Credit Card" />
         </div>
       </TabsContent>
 
-      <TabsContent value="transactions" className="space-y-6 mx-6 mt-6">
+      <TabsContent value="transactions" className="space-y-6 mt-6">
         <RecentTransactions showViewAll />
       </TabsContent>
     </Tabs>

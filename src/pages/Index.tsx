@@ -12,10 +12,10 @@ const Index = () => {
   }
 
   return (
-    <div className="relative flex flex-col min-h-screen max-w-md mx-auto font-sans">
+    <div className="relative flex flex-col min-h-screen max-w-md mx-auto font-sans overflow-hidden">
       <Header />
-      <main className="flex-1 bg-[#F5F5F7] dark:bg-gray-900 rounded-t-[28px] -mt-6 relative overflow-hidden">
-        <div className="mt-6 space-y-6">
+      <main className="flex-1 bg-[#F5F5F7] dark:bg-gray-900 rounded-t-[28px] -mt-6 relative">
+        <div className="mt-6">
           <DashboardTabs />
         </div>
       </main>

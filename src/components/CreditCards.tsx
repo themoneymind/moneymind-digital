@@ -25,22 +25,24 @@ export const CreditCards = () => {
         </Button>
       </div>
       
-      <ScrollArea className="w-full whitespace-nowrap">
-        <div className="flex space-x-4 px-6 pb-4">
-          {creditCards.length === 0 ? (
-            <div className="text-center py-8 text-muted-foreground w-full">
-              No credit cards added yet
-            </div>
-          ) : (
-            creditCards.map((card) => (
-              <div key={card.id} className="min-w-[320px]">
-                <CreditCardItem card={card} />
+      <div className="relative w-full">
+        <ScrollArea className="w-full">
+          <div className="flex space-x-4 px-6 pb-4">
+            {creditCards.length === 0 ? (
+              <div className="text-center py-8 text-muted-foreground w-full">
+                No credit cards added yet
               </div>
-            ))
-          )}
-        </div>
-        <ScrollBar orientation="horizontal" />
-      </ScrollArea>
+            ) : (
+              creditCards.map((card) => (
+                <div key={card.id} className="min-w-[320px] max-w-[320px] flex-shrink-0">
+                  <CreditCardItem card={card} />
+                </div>
+              ))
+            )}
+          </div>
+          <ScrollBar orientation="horizontal" />
+        </ScrollArea>
+      </div>
     </div>
   );
 };
