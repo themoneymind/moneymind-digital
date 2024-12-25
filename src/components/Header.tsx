@@ -65,17 +65,36 @@ export const Header = () => {
 
   return (
     <header className="sticky top-0 z-10">
-      <div className="bg-[#7F3DFF] pb-8">
-        <div className="max-w-2xl mx-auto flex items-center gap-4 px-4 py-8">
-          <button 
-            onClick={() => navigate(-1)}
-            className="p-2 hover:bg-white/10 rounded-full transition-colors"
-          >
-            <ArrowLeft className="w-5 h-5 text-white" />
-          </button>
-          <h1 className="text-2xl font-semibold text-white">Dashboard</h1>
+      <div className="bg-[#7F3DFF]">
+        {/* Decorative Circle */}
+        <div className="absolute right-0 top-0 w-32 h-32 bg-white/10 rounded-full transform translate-x-16 -translate-y-8" />
+        
+        {/* First Row - Navigation and Actions */}
+        <div className="max-w-2xl mx-auto flex items-center justify-between px-4 py-4 relative">
+          <div className="flex items-center gap-4">
+            <button 
+              onClick={() => navigate(-1)}
+              className="p-2 hover:bg-white/10 rounded-full transition-colors"
+            >
+              <ArrowLeft className="w-5 h-5 text-white" />
+            </button>
+            <h1 className="text-lg font-medium text-white">Dashboard</h1>
+          </div>
+          <div className="flex items-center gap-4">
+            <button className="p-2 hover:bg-white/10 rounded-full transition-colors">
+              <Bell className="w-5 h-5 text-white" />
+            </button>
+            <button 
+              onClick={handleLogout}
+              className="p-2 hover:bg-red-500/20 rounded-full transition-colors"
+            >
+              <LogOut className="w-5 h-5 text-white" />
+            </button>
+          </div>
         </div>
-        <div className="max-w-2xl mx-auto px-4 pb-16">
+        
+        {/* Profile Info */}
+        <div className="max-w-2xl mx-auto px-4 pb-6">
           <div className="flex items-center gap-4 pl-2">
             <div className="w-10 h-10 ring-2 ring-white rounded-full">
               <ProfilePicture />
@@ -90,7 +109,6 @@ export const Header = () => {
           </div>
         </div>
       </div>
-      <div className="h-6 bg-[#F5F5F7] dark:bg-gray-900 relative -mt-6 rounded-t-[28px]" />
     </header>
   );
 };
