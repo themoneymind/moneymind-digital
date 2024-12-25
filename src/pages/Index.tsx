@@ -12,10 +12,10 @@ const Index = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 pb-24 max-w-md mx-auto font-sans">
+    <div className="min-h-screen bg-[#F5F5F7] dark:bg-gray-900">
       <Header />
-      <div className="bg-[#F5F5F7] dark:bg-gray-900 rounded-t-[28px] -mt-1">
-        <div className="mt-4 space-y-8">
+      <div className="max-w-2xl mx-auto px-4 pb-20">
+        <div className="space-y-8">
           <DashboardTabs />
         </div>
       </div>
