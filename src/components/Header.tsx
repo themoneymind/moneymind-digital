@@ -94,7 +94,7 @@ export const Header = () => {
         </div>
         
         {/* Profile Info */}
-        <div className="max-w-2xl mx-auto px-4 pb-6">
+        <div className="max-w-2xl mx-auto px-4 pb-16">
           <div className="flex items-center gap-4 pl-2">
             <div className="w-10 h-10 ring-2 ring-white rounded-full">
               <ProfilePicture />
