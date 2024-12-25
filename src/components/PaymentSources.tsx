@@ -29,13 +29,6 @@ export const PaymentSources = () => {
       return curr.type === "income" ? acc + Number(curr.amount) : acc - Number(curr.amount);
     }, 0);
 
-    console.log("Source balance calculation:", {
-      sourceId: source.id,
-      sourceName: source.name,
-      transactionsCount: sourceTransactions.length,
-      calculatedBalance: balance
-    });
-
     return {
       ...source,
       amount: balance
@@ -43,8 +36,8 @@ export const PaymentSources = () => {
   });
 
   return (
-    <div className="p-6 mx-4 bg-white rounded-apple shadow-sm">
-      <div className="flex items-center justify-between mb-6">
+    <div className="bg-white rounded-apple shadow-sm">
+      <div className="flex items-center justify-between p-6">
         <h2 className="text-lg font-semibold text-gray-900">Payment Sources</h2>
         <Button
           size="icon"
@@ -55,7 +48,7 @@ export const PaymentSources = () => {
           <Plus className="w-5 h-5 text-gray-700" />
         </Button>
       </div>
-      <div className="space-y-3">
+      <div className="px-6 pb-6 space-y-3">
         {sourcesWithBalances.map((source) => (
           <PaymentSourceCard key={source.id} source={source} />
         ))}
