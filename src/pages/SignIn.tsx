@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Link, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { PiggyBank } from "lucide-react";
@@ -12,6 +12,18 @@ export const SignIn = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
+
+  // Check for existing session on mount
+  useEffect(() => {
+    const checkSession = async () => {
+      const { data: { session }, error } = await supabase.auth.getSession();
+      if (session && !error) {
+        navigate("/app");
+      }
+    };
+    
+    checkSession();
+  }, [navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -38,7 +50,6 @@ export const SignIn = () => {
       if (error) {
         console.error("Sign in error details:", error);
         
-        // Handle specific error cases
         if (error.message?.includes("Email not confirmed")) {
           toast({
             title: "Email Not Verified",
@@ -54,7 +65,7 @@ export const SignIn = () => {
         } else {
           toast({
             title: "Error",
-            description: "An unexpected error occurred. Please try again.",
+            description: error.message || "An unexpected error occurred. Please try again.",
             variant: "destructive",
           });
         }
