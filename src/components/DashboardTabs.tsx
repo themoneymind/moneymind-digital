@@ -7,9 +7,9 @@ import { MonthSelector } from "./MonthSelector";
 
 export const DashboardTabs = () => {
   return (
-    <Tabs defaultValue="overview" className="w-full relative -mt-6">
-      <div className="bg-transparent dark:bg-transparent rounded-t-[28px] pt-8 px-6">
-        <TabsList className="w-full bg-transparent border-b border-gray-200">
+    <Tabs defaultValue="overview" className="w-full">
+      <div className="bg-[#F5F5F7] dark:bg-gray-900">
+        <TabsList className="w-full bg-transparent border-b border-gray-200 px-6">
           <TabsTrigger
             value="overview"
             className="flex-1 text-gray-500 data-[state=active]:text-primary data-[state=active]:border-b-2 data-[state=active]:border-primary rounded-none transition-all duration-300 text-sm h-[40px]"
@@ -29,9 +29,7 @@ export const DashboardTabs = () => {
             Transactions
           </TabsTrigger>
         </TabsList>
-      </div>
 
-      <div className="bg-[#F5F5F7] dark:bg-gray-900">
         <TabsContent value="overview" className="space-y-6 mx-6">
           <MonthSelector />
           <BalanceCard />
