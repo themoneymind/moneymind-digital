@@ -64,7 +64,7 @@ export const Header = () => {
   };
 
   return (
-    <header className="flex-none bg-[#7F3DFF] pb-12">
+    <header className="flex-none bg-[#7F3DFF] pb-8">
       {/* Decorative Circle */}
       <div className="absolute right-0 top-0 w-32 h-32 bg-white/10 rounded-full transform translate-x-16 -translate-y-8" />
       
@@ -93,7 +93,7 @@ export const Header = () => {
       </div>
       
       {/* Profile Info */}
-      <div className="max-w-2xl mx-auto px-4 mb-4">
+      <div className="max-w-2xl mx-auto px-4 mb-2">
         <div className="flex items-center gap-4 pl-2">
           <div className="w-10 h-10 ring-2 ring-white rounded-full">
             <ProfilePicture />

@@ -12,10 +12,10 @@ const Index = () => {
   }
 
   return (
-    <div className="flex flex-col h-screen bg-gray-50 max-w-md mx-auto font-sans">
+    <div className="flex flex-col min-h-screen max-w-md mx-auto font-sans">
       <Header />
-      <main className="flex-1 bg-[#F5F5F7] dark:bg-gray-900 rounded-t-[28px] -mt-6 relative z-10 overflow-y-auto">
-        <div className="mt-4 space-y-8 pb-24">
+      <main className="flex-1 bg-[#F5F5F7] dark:bg-gray-900 rounded-t-[28px] -mt-6 relative overflow-y-scroll pb-20">
+        <div className="mt-4 space-y-8">
           <DashboardTabs />
         </div>
       </main>
