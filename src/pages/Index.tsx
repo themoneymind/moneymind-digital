@@ -14,7 +14,7 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-gray-50 pb-24 max-w-md mx-auto font-sans">
       <Header />
-      <div className="bg-[#F5F5F7] dark:bg-gray-900 rounded-t-[28px] -mt-1">
+      <div className="bg-[#F5F5F7] dark:bg-gray-900 rounded-t-[28px] -mt-6 relative z-10">
         <div className="mt-4 space-y-8">
           <DashboardTabs />
         </div>
