@@ -4,10 +4,11 @@ import { CreditCards } from "./CreditCards";
 import { RecentTransactions } from "./RecentTransactions";
 import { BalanceCard } from "./BalanceCard";
 import { MonthSelector } from "./MonthSelector";
+import { ScrollArea } from "./ui/scroll-area";
 
 export const DashboardTabs = () => {
   return (
-    <Tabs defaultValue="overview" className="w-full">
+    <Tabs defaultValue="overview" className="w-full h-[calc(100vh-180px)] flex flex-col">
       <div className="px-6 mb-2 mt-6">
         <TabsList className="w-full bg-transparent border-b border-gray-200">
           <TabsTrigger
@@ -31,24 +32,26 @@ export const DashboardTabs = () => {
         </TabsList>
       </div>
 
-      <TabsContent value="overview" className="space-y-6 mx-6">
-        <MonthSelector />
-        <BalanceCard />
-        <PaymentSources />
-      </TabsContent>
+      <ScrollArea className="flex-1">
+        <TabsContent value="overview" className="space-y-6 mx-6 mb-20">
+          <MonthSelector />
+          <BalanceCard />
+          <PaymentSources />
+        </TabsContent>
 
-      <TabsContent value="credit-cards" className="space-y-6 mx-6">
-        <MonthSelector />
-        <CreditCards />
-        <div className="space-y-4">
-          <h3 className="text-lg font-semibold">Card Transactions</h3>
-          <RecentTransactions showViewAll={false} filterByType="Credit Card" />
-        </div>
-      </TabsContent>
+        <TabsContent value="credit-cards" className="space-y-6 mx-6 mb-20">
+          <MonthSelector />
+          <CreditCards />
+          <div className="space-y-4">
+            <h3 className="text-lg font-semibold">Card Transactions</h3>
+            <RecentTransactions showViewAll={false} filterByType="Credit Card" />
+          </div>
+        </TabsContent>
 
-      <TabsContent value="transactions" className="space-y-6 mx-6">
-        <RecentTransactions showViewAll />
-      </TabsContent>
+        <TabsContent value="transactions" className="space-y-6 mx-6 mb-20">
+          <RecentTransactions showViewAll />
+        </TabsContent>
+      </ScrollArea>
     </Tabs>
   );
 };
