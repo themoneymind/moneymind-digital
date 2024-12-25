@@ -114,9 +114,8 @@ export const PaymentSource = () => {
     <div className="min-h-screen bg-[#F5F5F7] relative overflow-hidden">
       <TopBar title="Add Payment Source" />
       
-      {/* Decorative Circles */}
+      {/* Decorative Circle */}
       <div className="absolute top-0 right-0 w-32 h-32 rounded-full bg-[#7F3DFF]/10 -mr-16 -mt-16" />
-      <div className="absolute bottom-0 left-0 w-40 h-40 rounded-full bg-[#7F3DFF]/10 -ml-20 -mb-20" />
       
       <div className="p-6">
         <div className="space-y-6">
