@@ -8,7 +8,7 @@ import { MonthSelector } from "./MonthSelector";
 export const DashboardTabs = () => {
   return (
     <Tabs defaultValue="overview" className="w-full">
-      <div className="px-6 mb-2">
+      <div className="px-6 mb-2 mt-6">
         <TabsList className="w-full bg-transparent border-b border-gray-200">
           <TabsTrigger
             value="overview"
