@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { PiggyBank } from "lucide-react";
+import { TopBar } from "@/components/TopBar";
 
 export const SignIn = () => {
   const [email, setEmail] = useState("");
@@ -118,66 +119,69 @@ export const SignIn = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#F5F3FF] flex items-center justify-center px-6 py-8">
-      <div className="w-full max-w-[400px]">
-        <div className="bg-white rounded-[32px] p-8 shadow-lg">
-          <div className="space-y-8">
-            <div className="text-center space-y-2">
-              <div className="flex items-center justify-center mb-2">
-                <PiggyBank className="h-10 w-10 text-blue-600" />
+    <div className="min-h-screen bg-[#F5F3FF]">
+      <TopBar title="Sign In" />
+      <div className="flex items-center justify-center px-6 py-8">
+        <div className="w-full max-w-[400px]">
+          <div className="bg-white rounded-[32px] p-8 shadow-lg">
+            <div className="space-y-8">
+              <div className="text-center space-y-2">
+                <div className="flex items-center justify-center mb-2">
+                  <PiggyBank className="h-10 w-10 text-blue-600" />
+                </div>
+                <h1 className="text-2xl font-bold text-blue-600">MoneyMind</h1>
+                <p className="text-gray-600 text-base">
+                  Sign in to your account
+                </p>
               </div>
-              <h1 className="text-2xl font-bold text-blue-600">MoneyMind</h1>
-              <p className="text-gray-600 text-base">
-                Sign in to your account
-              </p>
-            </div>
 
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <Input
-                type="email"
-                placeholder="Email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="h-12 rounded-xl border-gray-200 bg-gray-50/50 px-4 text-gray-900/70 placeholder:text-gray-500/60 focus:border-blue-600 focus:ring-blue-600"
-                disabled={isLoading}
-                required
-              />
-              <div className="space-y-1">
+              <form onSubmit={handleSubmit} className="space-y-6">
                 <Input
-                  type="password"
-                  placeholder="Password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  type="email"
+                  placeholder="Email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   className="h-12 rounded-xl border-gray-200 bg-gray-50/50 px-4 text-gray-900/70 placeholder:text-gray-500/60 focus:border-blue-600 focus:ring-blue-600"
                   disabled={isLoading}
                   required
                 />
-              </div>
-              
-              <Button 
-                type="submit" 
-                className="w-full h-12 rounded-xl text-base bg-blue-600 hover:bg-blue-700"
-                disabled={isLoading}
-              >
-                {isLoading ? "Signing in..." : "Sign In"}
-              </Button>
-
-              <div className="text-center">
-                <Link 
-                  to="/forgot-password" 
-                  className="text-sm text-blue-600 hover:text-blue-700"
+                <div className="space-y-1">
+                  <Input
+                    type="password"
+                    placeholder="Password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="h-12 rounded-xl border-gray-200 bg-gray-50/50 px-4 text-gray-900/70 placeholder:text-gray-500/60 focus:border-blue-600 focus:ring-blue-600"
+                    disabled={isLoading}
+                    required
+                  />
+                </div>
+                
+                <Button 
+                  type="submit" 
+                  className="w-full h-12 rounded-xl text-base bg-blue-600 hover:bg-blue-700"
+                  disabled={isLoading}
                 >
-                  Forgot Password?
-                </Link>
-              </div>
-            </form>
+                  {isLoading ? "Signing in..." : "Sign In"}
+                </Button>
 
-            <p className="text-center text-gray-600 text-sm">
-              Don't have an account?{" "}
-              <Link to="/signup" className="text-blue-600 hover:text-blue-700">
-                Sign up
-              </Link>
-            </p>
+                <div className="text-center">
+                  <Link 
+                    to="/forgot-password" 
+                    className="text-sm text-blue-600 hover:text-blue-700"
+                  >
+                    Forgot Password?
+                  </Link>
+                </div>
+              </form>
+
+              <p className="text-center text-gray-600 text-sm">
+                Don't have an account?{" "}
+                <Link to="/signup" className="text-blue-600 hover:text-blue-700">
+                  Sign up
+                </Link>
+              </p>
+            </div>
           </div>
         </div>
       </div>

@@ -5,6 +5,7 @@ import { useToast } from "@/hooks/use-toast";
 import { PaymentSourceHeader } from "@/components/payment-source/PaymentSourceHeader";
 import { PaymentSourceForm } from "@/components/payment-source/PaymentSourceForm";
 import { PaymentSourceButtons } from "@/components/payment-source/PaymentSourceButtons";
+import { TopBar } from "@/components/TopBar";
 
 export const PaymentSource = () => {
   const { addPaymentSource, paymentSources } = useFinance();
@@ -110,29 +111,32 @@ export const PaymentSource = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background p-6 overflow-y-auto">
-      <div className="space-y-6 max-w-md mx-auto pb-20">
-        <PaymentSourceHeader />
-        
-        <PaymentSourceForm
-          selectedType={selectedType}
-          selectedBank={selectedBank}
-          customBankName={customBankName}
-          customUpi={customUpi}
-          selectedUpiApps={selectedUpiApps}
-          onTypeChange={handleTypeChange}
-          onBankSelect={handleBankSelect}
-          setCustomBankName={setCustomBankName}
-          setCustomUpi={setCustomUpi}
-          onUpiToggle={handleUpiToggle}
-          showBankSearch={showBankSearch}
-          setShowBankSearch={setShowBankSearch}
-        />
+    <div className="min-h-screen bg-[#F5F5F7]">
+      <TopBar title="Add Payment Source" />
+      <div className="p-6 overflow-y-auto">
+        <div className="space-y-6 max-w-md mx-auto pb-20">
+          <PaymentSourceHeader />
+          
+          <PaymentSourceForm
+            selectedType={selectedType}
+            selectedBank={selectedBank}
+            customBankName={customBankName}
+            customUpi={customUpi}
+            selectedUpiApps={selectedUpiApps}
+            onTypeChange={handleTypeChange}
+            onBankSelect={handleBankSelect}
+            setCustomBankName={setCustomBankName}
+            setCustomUpi={setCustomUpi}
+            onUpiToggle={handleUpiToggle}
+            showBankSearch={showBankSearch}
+            setShowBankSearch={setShowBankSearch}
+          />
 
-        <PaymentSourceButtons
-          onAddSource={handleAddSource}
-          onComplete={handleComplete}
-        />
+          <PaymentSourceButtons
+            onAddSource={handleAddSource}
+            onComplete={handleComplete}
+          />
+        </div>
       </div>
     </div>
   );

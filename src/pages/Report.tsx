@@ -13,12 +13,14 @@ import { BottomNav } from "@/components/BottomNav";
 import { useReport } from "@/hooks/useReport";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 import { Line, LineChart, XAxis, YAxis } from "recharts";
+import { TopBar } from "@/components/TopBar";
 
 const Report = () => {
   const { timeframe, setTimeframe, prepareChartData, downloadReport, transactions, isLoading } = useReport();
 
   return (
-    <div className="min-h-screen bg-gray-50 pb-24">
+    <div className="min-h-screen bg-[#F5F5F7]">
+      <TopBar title="Financial Report" />
       <div className="max-w-md mx-auto p-4">
         <h1 className="text-2xl font-semibold mb-6">Financial Report</h1>
         

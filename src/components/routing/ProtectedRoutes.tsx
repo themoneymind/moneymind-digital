@@ -4,6 +4,7 @@ import Index from "@/pages/Index";
 import { PaymentSource } from "@/pages/PaymentSource";
 import Settings from "@/pages/Settings";
 import Report from "@/pages/Report";
+import Dues from "@/pages/Dues";
 import { AccountSettingsPage } from "@/pages/settings/AccountSettingsPage";
 import { NotificationSettingsPage } from "@/pages/settings/NotificationSettingsPage";
 import { SecuritySettingsPage } from "@/pages/settings/SecuritySettingsPage";
@@ -59,6 +60,7 @@ export const ProtectedRoutes = () => {
       <Route path="/app/settings/security" element={<SecuritySettingsPage />} />
       <Route path="/app/settings/privacy" element={<PrivacySettingsPage />} />
       <Route path="/app/report" element={<Report />} />
+      <Route path="/app/dues" element={<Dues />} />
       <Route path="/reset-password" element={<ResetPassword />} />
       <Route path="*" element={<Navigate to="/app" />} />
     </Routes>
