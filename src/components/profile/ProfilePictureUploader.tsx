@@ -17,13 +17,13 @@ export const ProfilePictureUploader = ({ imageUrl, onFileSelect }: ProfilePictur
 
   return (
     <div className="relative group cursor-pointer" onClick={handleClick}>
-      <Avatar className="w-full h-full transition-opacity group-hover:opacity-90">
+      <Avatar className="w-full h-full bg-primary/10 transition-opacity group-hover:opacity-90">
         <AvatarImage 
           src={imageUrl || "/placeholder.svg"} 
           alt="Profile" 
           className="object-cover"
         />
-        <AvatarFallback className="bg-transparent border-2 border-white">
+        <AvatarFallback className="bg-primary/10 text-primary">
           {user?.email?.charAt(0).toUpperCase() || 'U'}
         </AvatarFallback>
       </Avatar>

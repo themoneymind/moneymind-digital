@@ -37,7 +37,12 @@ export const ProfilePicture = () => {
       .single();
 
     if (profile?.avatar_url) {
-      setImageUrl(profile.avatar_url);
+      // Preload the image to prevent flash
+      const img = new Image();
+      img.src = profile.avatar_url;
+      img.onload = () => {
+        setImageUrl(profile.avatar_url);
+      };
     }
   };
 

@@ -1,4 +1,4 @@
-import { ArrowLeft, Bell, LogOut } from "lucide-react";
+import { Bell, LogOut } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -70,14 +70,16 @@ export const Header = () => {
       
       {/* First Row - Navigation and Actions */}
       <div className="max-w-2xl mx-auto flex items-center justify-between px-4 py-4 relative">
-        <div className="flex items-center gap-4">
-          <button 
-            onClick={() => navigate(-1)}
-            className="p-2 hover:bg-white/10 rounded-full transition-colors"
-          >
-            <ArrowLeft className="w-5 h-5 text-white" />
-          </button>
-          <h1 className="text-lg font-medium text-white">Dashboard</h1>
+        <div className="flex items-center gap-3">
+          <div className="w-8 h-8 ring-2 ring-white/20 rounded-full">
+            <ProfilePicture />
+          </div>
+          <div>
+            <h1 className="text-sm font-medium text-white/90">Dashboard</h1>
+            <p className="text-xs text-white/60 leading-tight">
+              Welcome back
+            </p>
+          </div>
         </div>
         <div className="flex items-center gap-4">
           <button className="p-2 hover:bg-white/10 rounded-full transition-colors">
