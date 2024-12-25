@@ -15,7 +15,7 @@ const Index = () => {
     <div className="min-h-screen bg-[#F5F5F7] dark:bg-gray-900">
       <Header />
       <div className="max-w-2xl mx-auto px-4 pb-20">
-        <div className="space-y-8">
+        <div className="bg-white dark:bg-gray-800 rounded-t-[28px] -mt-6 p-4 space-y-8">
           <DashboardTabs />
         </div>
       </div>
