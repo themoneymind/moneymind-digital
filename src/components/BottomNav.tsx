@@ -1,90 +1,85 @@
-import { Link, useLocation } from "react-router-dom";
-import { Home, PieChart, Receipt, Settings } from "lucide-react";
+import { Home, Wallet2, LineChart, Settings, Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { NewTransaction } from "./NewTransaction";
 
-type BottomNavProps = {
-  showFab?: boolean;
-};
-
-export const BottomNav = ({ showFab = true }: BottomNavProps) => {
+export const BottomNav = () => {
   const location = useLocation();
-  const isActive = (path: string) => location.pathname === path;
+  const navigate = useNavigate();
+  const [showTransactionDialog, setShowTransactionDialog] = useState(false);
+
+  const isActive = (path: string) => {
+    return location.pathname === path;
+  };
+
+  const isSettingsRoute = location.pathname.startsWith('/app/settings');
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 pb-safe-area-inset-bottom">
-      {showFab && (location.pathname === "/" || location.pathname === "/report") && (
-        <Link
-          to="/transaction/new"
-          className="absolute -top-7 left-1/2 -translate-x-1/2 bg-blue-600 text-white p-4 rounded-full shadow-lg"
-        >
-          <span className="sr-only">New Transaction</span>
-          <svg
-            className="w-5 h-5"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M12 4v16m8-8H4"
-            />
-          </svg>
-        </Link>
-      )}
-      
-      <nav className="flex justify-around py-2">
-        <Link
-          to="/"
-          className={cn(
-            "flex flex-col items-center px-4 py-2 text-xs",
-            isActive("/")
-              ? "text-blue-600"
-              : "text-gray-600"
-          )}
-        >
-          <Home className="w-6 h-6 mb-1" />
-          Home
-        </Link>
-        <Link
-          to="/report"
-          className={cn(
-            "flex flex-col items-center px-4 py-2 text-xs",
-            isActive("/report")
-              ? "text-blue-600"
-              : "text-gray-600"
-          )}
-        >
-          <PieChart className="w-6 h-6 mb-1" />
-          Report
-        </Link>
-        <div className="w-[68px]" /> {/* Spacer for FAB */}
-        <Link
-          to="/dues"
-          className={cn(
-            "flex flex-col items-center px-4 py-2 text-xs",
-            isActive("/dues")
-              ? "text-blue-600"
-              : "text-gray-600"
-          )}
-        >
-          <Receipt className="w-6 h-6 mb-1" />
-          Dues
-        </Link>
-        <Link
-          to="/settings"
-          className={cn(
-            "flex flex-col items-center px-4 py-2 text-xs",
-            isActive("/settings")
-              ? "text-blue-600"
-              : "text-gray-600"
-          )}
-        >
-          <Settings className="w-6 h-6 mb-1" />
-          Settings
-        </Link>
+    <>
+      <nav className="fixed bottom-0 left-0 right-0">
+        <div className="max-w-md mx-auto">
+          <div className="relative bg-white border-t border-gray-100 shadow-lg">
+            <div className="flex justify-around items-center p-3">
+              {[
+                { icon: Home, label: "Home", path: "/app" },
+                { icon: Wallet2, label: "Dues", path: "/app/dues" },
+                { icon: LineChart, label: "Report", path: "/app/report" },
+                { icon: Settings, label: "Settings", path: "/app/settings" },
+              ].map((item) => (
+                <button
+                  key={item.label}
+                  onClick={() => navigate(item.path)}
+                  className={cn(
+                    "flex flex-col items-center z-10 transition-colors duration-200 relative",
+                    isActive(item.path) && "before:absolute before:-top-3 before:left-1/2 before:-translate-x-1/2 before:w-8 before:h-[2px] before:bg-[#7F3DFF]"
+                  )}
+                >
+                  <item.icon 
+                    className={cn(
+                      "w-5 h-5 stroke-[1.5]",
+                      isActive(item.path) 
+                        ? "text-[#7F3DFF]" 
+                        : "text-gray-700 hover:text-gray-900"
+                    )} 
+                  />
+                  <span 
+                    className={cn(
+                      "text-[10px] font-medium mt-1",
+                      isActive(item.path)
+                        ? "text-[#7F3DFF]"
+                        : "text-gray-700"
+                    )}
+                  >
+                    {item.label}
+                  </span>
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
       </nav>
-    </div>
+
+      {/* Floating FAB Button - Hidden on settings routes */}
+      {!isSettingsRoute && (
+        <button
+          onClick={() => setShowTransactionDialog(true)}
+          className="fixed bottom-20 right-4 w-14 h-14 rounded-full flex items-center justify-center shadow-lg hover:opacity-90 transition-all animate-fade-in z-50 md:right-8"
+          style={{
+            background: "linear-gradient(135deg, #7C3AED, #6366F1)"
+          }}
+        >
+          <Plus className="w-6 h-6 text-white stroke-[1.25]" />
+        </button>
+      )}
+
+      {/* Transaction Dialog */}
+      <Dialog open={showTransactionDialog} onOpenChange={setShowTransactionDialog}>
+        <DialogContent className="sm:max-w-[425px] p-0">
+          <NewTransaction />
+        </DialogContent>
+      </Dialog>
+    </>
   );
 };
