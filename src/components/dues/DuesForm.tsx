@@ -10,6 +10,11 @@ import { CalendarIcon } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 
+type DynamicMessage = {
+  message: string;
+  note: string;
+} | "";
+
 export const DuesForm = () => {
   const { getFormattedPaymentSources } = useFinance();
   const [type, setType] = useState<"given" | "received">("given");
@@ -22,7 +27,7 @@ export const DuesForm = () => {
 
   const formattedSources = getFormattedPaymentSources();
 
-  const getDynamicMessage = () => {
+  const getDynamicMessage = (): DynamicMessage => {
     if (!amount || !personName) return "";
     const formattedAmount = new Intl.NumberFormat("en-IN", {
       style: "currency",
@@ -54,7 +59,7 @@ export const DuesForm = () => {
     });
   };
 
-  const { message, note } = getDynamicMessage();
+  const dynamicMessage = getDynamicMessage();
 
   return (
     <div className="p-6 mx-4 bg-white rounded-[20px]">
@@ -123,15 +128,15 @@ export const DuesForm = () => {
           onChange={(e) => setDescription(e.target.value)}
         />
 
-        {(amount || personName) && (
+        {(amount || personName) && dynamicMessage && (
           <div className="p-4 bg-blue-50 rounded-[12px] space-y-2">
-            <p className="text-sm text-blue-700">{message}</p>
+            <p className="text-sm text-blue-700">{dynamicMessage.message}</p>
             {upiId && (
               <p className="text-xs text-blue-600">
                 {type === "given" ? "Their" : "Your"} UPI/Phone: {upiId}
               </p>
             )}
-            <p className="text-xs text-blue-500 italic">{note}</p>
+            <p className="text-xs text-blue-500 italic">{dynamicMessage.note}</p>
           </div>
         )}
 
