@@ -30,9 +30,15 @@ export const DuesForm = () => {
       maximumFractionDigits: 0,
     }).format(Number(amount));
 
-    return type === "given"
+    const message = type === "given"
       ? `You'll receive ${formattedAmount} from ${personName}`
       : `You'll pay ${formattedAmount} to ${personName}`;
+
+    const note = type === "given"
+      ? "This will be recorded as 'Due Given' in your transactions"
+      : "This will be recorded as 'Due Received' in your transactions";
+
+    return { message, note };
   };
 
   const handleSubmit = () => {
@@ -43,10 +49,12 @@ export const DuesForm = () => {
       personName,
       dueDate,
       source,
-      description,
+      description: `Due ${type === "given" ? "Given" : "Received"}: ${description || "No description"}`,
       upiId,
     });
   };
+
+  const { message, note } = getDynamicMessage();
 
   return (
     <div className="p-6 mx-4 bg-white rounded-[20px]">
@@ -116,13 +124,14 @@ export const DuesForm = () => {
         />
 
         {(amount || personName) && (
-          <div className="p-4 bg-blue-50 rounded-[12px] text-sm text-blue-700">
-            {getDynamicMessage()}
+          <div className="p-4 bg-blue-50 rounded-[12px] space-y-2">
+            <p className="text-sm text-blue-700">{message}</p>
             {upiId && (
-              <div className="mt-1 text-xs text-blue-600">
-                {type === "given" ? "Their" : "Their"} UPI/Phone: {upiId}
-              </div>
+              <p className="text-xs text-blue-600">
+                {type === "given" ? "Their" : "Your"} UPI/Phone: {upiId}
+              </p>
             )}
+            <p className="text-xs text-blue-500 italic">{note}</p>
           </div>
         )}
 
