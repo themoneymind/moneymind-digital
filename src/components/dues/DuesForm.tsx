@@ -68,6 +68,29 @@ export const DuesForm = () => {
     }
   };
 
+  const getNotificationPreview = () => {
+    if (!amount || !personName) return null;
+
+    const formattedAmount = new Intl.NumberFormat("en-IN", {
+      style: "currency",
+      currency: "INR",
+      maximumFractionDigits: 0,
+    }).format(Number(amount));
+
+    const dueDate = new Date();
+    dueDate.setDate(dueDate.getDate() + 7); // Example: due in 7 days
+
+    return {
+      title: `Due ${type === "given" ? "Reminder" : "Payment"}`,
+      message: type === "given"
+        ? `Reminder: ${personName} needs to pay you ${formattedAmount}`
+        : `Payment Due: You need to pay ${formattedAmount} to ${personName}`,
+      dueDate: dueDate.toLocaleDateString()
+    };
+  };
+
+  const preview = getNotificationPreview();
+
   return (
     <div className="p-6 bg-white rounded-[20px]">
       <h2 className="mb-6 text-base font-semibold">New Due</h2>
@@ -141,6 +164,14 @@ export const DuesForm = () => {
           personName={personName}
           upiId={upiId}
         />
+
+        {preview && (
+          <div className="p-4 bg-gray-50 rounded-[12px] space-y-2">
+            <p className="text-sm font-medium text-gray-900">{preview.title}</p>
+            <p className="text-sm text-gray-600">{preview.message}</p>
+            <p className="text-xs text-gray-500">Will be sent on: {preview.dueDate}</p>
+          </div>
+        )}
 
         <Button
           className="w-full h-14 bg-blue-600 hover:bg-blue-700 rounded-[12px]"
