@@ -11,6 +11,8 @@ export type Transaction = {
   user_id: string;
   created_at: string;
   updated_at: string;
+  reference_type?: string;
+  reference_id?: string;
 };
 
 export type NewTransaction = Omit<Transaction, "id" | "date" | "user_id" | "created_at" | "updated_at">;
