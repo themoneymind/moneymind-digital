@@ -250,6 +250,8 @@ export type Database = {
           date: string
           description: string | null
           id: string
+          reference_id: string | null
+          reference_type: string | null
           source: string
           type: string
           updated_at: string
@@ -262,6 +264,8 @@ export type Database = {
           date?: string
           description?: string | null
           id?: string
+          reference_id?: string | null
+          reference_type?: string | null
           source: string
           type: string
           updated_at?: string
@@ -274,6 +278,8 @@ export type Database = {
           date?: string
           description?: string | null
           id?: string
+          reference_id?: string | null
+          reference_type?: string | null
           source?: string
           type?: string
           updated_at?: string

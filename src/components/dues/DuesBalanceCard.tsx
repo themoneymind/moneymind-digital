@@ -6,19 +6,18 @@ export const DuesBalanceCard = () => {
 
   // Filter dues transactions
   const duesTransactions = transactions.filter(t => 
-    t.description?.toLowerCase().includes('due given') || 
-    t.description?.toLowerCase().includes('due received')
+    t.reference_type === 'due'
   );
 
   // Calculate dues totals
   const duesGiven = duesTransactions.reduce((acc, curr) => {
-    return curr.description?.toLowerCase().includes('due given') 
+    return curr.type === 'expense'
       ? acc + Number(curr.amount) 
       : acc;
   }, 0);
 
   const duesReceived = duesTransactions.reduce((acc, curr) => {
-    return curr.description?.toLowerCase().includes('due received') 
+    return curr.type === 'income'
       ? acc + Number(curr.amount) 
       : acc;
   }, 0);
@@ -47,8 +46,8 @@ export const DuesBalanceCard = () => {
         <div className="flex justify-between">
           <div className="flex items-center gap-3">
             <div className="flex items-start gap-3">
-              <div className="bg-green-400/20 p-1.5 rounded-full mt-0.5">
-                <ArrowDown className="w-3.5 h-3.5 text-green-400" />
+              <div className="bg-red-400/20 p-1.5 rounded-full mt-0.5">
+                <ArrowDown className="w-3.5 h-3.5 text-red-400" />
               </div>
               <div className="text-left">
                 <p className="text-sm opacity-90">Given</p>
@@ -59,8 +58,8 @@ export const DuesBalanceCard = () => {
           <div className="w-px h-12 bg-white/20" />
           <div className="flex items-center gap-3">
             <div className="flex items-start gap-3">
-              <div className="bg-red-400/20 p-1.5 rounded-full mt-0.5">
-                <ArrowUp className="w-3.5 h-3.5 text-red-400" />
+              <div className="bg-green-400/20 p-1.5 rounded-full mt-0.5">
+                <ArrowUp className="w-3.5 h-3.5 text-green-400" />
               </div>
               <div className="text-left">
                 <p className="text-sm opacity-90">Received</p>

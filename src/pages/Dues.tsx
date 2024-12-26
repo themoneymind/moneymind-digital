@@ -8,11 +8,8 @@ const Dues = () => {
     <div className="min-h-screen bg-[#F5F5F7]">
       <TopBar title="Dues" />
       
-      {/* Decorative Circle */}
-      <div className="absolute top-0 right-0 w-32 h-32 rounded-full bg-[#7F3DFF]/10 -mr-16 -mt-16" />
-      
-      <main className="pb-24 pt-[64px]">
-        <div className="px-4 space-y-4">
+      <main className="pb-24 pt-[64px] max-w-[100vw] overflow-x-hidden">
+        <div className="max-w-[100%] px-4 space-y-4">
           <DuesBalanceCard />
           <DuesForm />
         </div>

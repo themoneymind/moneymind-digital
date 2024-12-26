@@ -10,9 +10,10 @@ import { CalendarIcon } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { DuesMessage } from "./DuesMessage";
+import { toast } from "sonner";
 
 export const DuesForm = () => {
-  const { getFormattedPaymentSources } = useFinance();
+  const { getFormattedPaymentSources, addTransaction } = useFinance();
   const [type, setType] = useState<"given" | "received">("given");
   const [amount, setAmount] = useState("");
   const [personName, setPersonName] = useState("");
@@ -20,20 +21,51 @@ export const DuesForm = () => {
   const [source, setSource] = useState("");
   const [description, setDescription] = useState("");
   const [upiId, setUpiId] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const formattedSources = getFormattedPaymentSources();
 
-  const handleSubmit = () => {
-    // Will implement the submission logic later
-    console.log({
-      type,
-      amount,
-      personName,
-      dueDate,
-      source,
-      description: `Due ${type === "given" ? "Given" : "Received"}: ${description || "No description"}`,
-      upiId,
-    });
+  const handleSubmit = async () => {
+    if (!amount || !personName || !source) {
+      toast.error("Please fill in all required fields");
+      return;
+    }
+
+    if (isNaN(Number(amount)) || Number(amount) <= 0) {
+      toast.error("Please enter a valid amount");
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      const dueDescription = `Due ${type === "given" ? "Given" : "Received"}: ${description || "No description"}`;
+      const dueNote = `Person: ${personName}${upiId ? `, UPI: ${upiId}` : ''}${dueDate ? `, Due Date: ${format(dueDate, 'PP')}` : ''}`;
+
+      await addTransaction({
+        type: type === "given" ? "expense" : "income",
+        amount: Number(amount),
+        category: "Dues",
+        source,
+        description: dueDescription,
+        reference_type: "due",
+        reference_id: crypto.randomUUID(),
+      });
+
+      // Reset form after successful submission
+      setAmount("");
+      setPersonName("");
+      setDueDate(undefined);
+      setSource("");
+      setDescription("");
+      setUpiId("");
+      
+      toast.success("Due added successfully");
+    } catch (error) {
+      console.error("Error adding due:", error);
+      toast.error("Failed to add due");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -113,8 +145,9 @@ export const DuesForm = () => {
         <Button
           className="w-full h-14 bg-blue-600 hover:bg-blue-700 rounded-[12px]"
           onClick={handleSubmit}
+          disabled={isSubmitting}
         >
-          Add Due
+          {isSubmitting ? "Adding Due..." : "Add Due"}
         </Button>
       </div>
     </div>
