@@ -9,11 +9,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { CalendarIcon } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
-
-type DynamicMessage = {
-  message: string;
-  note: string;
-} | "";
+import { DuesMessage } from "./DuesMessage";
 
 export const DuesForm = () => {
   const { getFormattedPaymentSources } = useFinance();
@@ -26,25 +22,6 @@ export const DuesForm = () => {
   const [upiId, setUpiId] = useState("");
 
   const formattedSources = getFormattedPaymentSources();
-
-  const getDynamicMessage = (): DynamicMessage => {
-    if (!amount || !personName) return "";
-    const formattedAmount = new Intl.NumberFormat("en-IN", {
-      style: "currency",
-      currency: "INR",
-      maximumFractionDigits: 0,
-    }).format(Number(amount));
-
-    const message = type === "given"
-      ? `You'll receive ${formattedAmount} from ${personName}`
-      : `You'll pay ${formattedAmount} to ${personName}`;
-
-    const note = type === "given"
-      ? "This will be recorded as 'Due Given' in your transactions"
-      : "This will be recorded as 'Due Received' in your transactions";
-
-    return { message, note };
-  };
 
   const handleSubmit = () => {
     // Will implement the submission logic later
@@ -59,10 +36,8 @@ export const DuesForm = () => {
     });
   };
 
-  const dynamicMessage = getDynamicMessage();
-
   return (
-    <div className="p-6 mx-4 bg-white rounded-[20px]">
+    <div className="p-6 bg-white rounded-[20px]">
       <h2 className="mb-6 text-base font-semibold">New Due</h2>
       <div className="space-y-4">
         <DuesTypeSelector type={type} onTypeChange={setType} />
@@ -128,17 +103,12 @@ export const DuesForm = () => {
           onChange={(e) => setDescription(e.target.value)}
         />
 
-        {(amount || personName) && dynamicMessage && (
-          <div className="p-4 bg-blue-50 rounded-[12px] space-y-2">
-            <p className="text-sm text-blue-700">{dynamicMessage.message}</p>
-            {upiId && (
-              <p className="text-xs text-blue-600">
-                {type === "given" ? "Their" : "Your"} UPI/Phone: {upiId}
-              </p>
-            )}
-            <p className="text-xs text-blue-500 italic">{dynamicMessage.note}</p>
-          </div>
-        )}
+        <DuesMessage
+          type={type}
+          amount={amount}
+          personName={personName}
+          upiId={upiId}
+        />
 
         <Button
           className="w-full h-14 bg-blue-600 hover:bg-blue-700 rounded-[12px]"
