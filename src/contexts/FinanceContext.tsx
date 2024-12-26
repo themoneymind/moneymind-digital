@@ -93,8 +93,17 @@ export const FinanceProvider = ({ children }: { children: React.ReactNode }) => 
 
   useEffect(() => {
     if (!user) return;
-    refreshData();
-    return setupSubscriptions();
+    
+    const initializeData = async () => {
+      try {
+        await refreshData();
+        return setupSubscriptions();
+      } catch (error) {
+        console.error("Error initializing data:", error);
+      }
+    };
+
+    initializeData();
   }, [user]);
 
   return (
