@@ -2,6 +2,7 @@ import { TopBar } from "@/components/TopBar";
 import { BottomNav } from "@/components/BottomNav";
 import { DuesForm } from "@/components/dues/DuesForm";
 import { DuesBalanceCard } from "@/components/dues/DuesBalanceCard";
+import { DuesTransactionsList } from "@/components/dues/DuesTransactionsList";
 
 const Dues = () => {
   return (
@@ -12,6 +13,7 @@ const Dues = () => {
         <div className="max-w-[100%] px-4 space-y-4">
           <DuesBalanceCard />
           <DuesForm />
+          <DuesTransactionsList />
         </div>
       </main>
       <BottomNav />

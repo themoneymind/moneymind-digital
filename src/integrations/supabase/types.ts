@@ -250,9 +250,11 @@ export type Database = {
           date: string
           description: string | null
           id: string
+          parent_transaction_id: string | null
           reference_id: string | null
           reference_type: string | null
           source: string
+          status: string | null
           type: string
           updated_at: string
           user_id: string
@@ -264,9 +266,11 @@ export type Database = {
           date?: string
           description?: string | null
           id?: string
+          parent_transaction_id?: string | null
           reference_id?: string | null
           reference_type?: string | null
           source: string
+          status?: string | null
           type: string
           updated_at?: string
           user_id: string
@@ -278,14 +282,23 @@ export type Database = {
           date?: string
           description?: string | null
           id?: string
+          parent_transaction_id?: string | null
           reference_id?: string | null
           reference_type?: string | null
           source?: string
+          status?: string | null
           type?: string
           updated_at?: string
           user_id?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "transactions_parent_transaction_id_fkey"
+            columns: ["parent_transaction_id"]
+            isOneToOne: false
+            referencedRelation: "transactions"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "transactions_source_fkey"
             columns: ["source"]
