@@ -4,16 +4,10 @@ import { useFinance } from "@/contexts/FinanceContext";
 import { useToast } from "@/hooks/use-toast";
 import { PaymentSourceInfo } from "./PaymentSourceInfo";
 import { ArrowDownLeft } from "lucide-react";
+import { PaymentSource } from "@/types/finance";
 
 type PaymentSourceCardProps = {
-  source: {
-    id: string;
-    name: string;
-    type: string;
-    amount: number;
-    linked?: boolean;
-    upi_apps?: string[];
-  };
+  source: PaymentSource;
 };
 
 export const PaymentSourceCard = ({ source }: PaymentSourceCardProps) => {
