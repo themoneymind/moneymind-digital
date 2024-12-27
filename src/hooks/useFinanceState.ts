@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Transaction } from "@/types/finance";
+import { Transaction } from "@/types/transactions";
 import { PaymentSource } from "@/types/finance";
 
 export const useFinanceState = () => {

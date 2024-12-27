@@ -1,6 +1,6 @@
 import { useState, useCallback } from "react";
 import { useFinance } from "@/contexts/FinanceContext";
-import { Transaction } from "@/types/finance";
+import { Transaction } from "@/types/transactions";
 
 export const useTransactionEditForm = (
   transaction: Transaction,

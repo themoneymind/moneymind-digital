@@ -2,7 +2,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useTransactions } from "./useTransactions";
 import { usePaymentSources } from "./usePaymentSources";
 import { supabase } from "@/integrations/supabase/client";
-import { Transaction } from "@/types/finance";
+import { Transaction } from "@/types/transactions";
 import { PaymentSource } from "@/types/finance";
 
 type DataSyncProps = {

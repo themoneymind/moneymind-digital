@@ -2,7 +2,7 @@ import { useFinance } from "@/contexts/FinanceContext";
 import { TransactionItem } from "./transaction/TransactionItem";
 import { Button } from "./ui/button";
 import { useNavigate } from "react-router-dom";
-import { Transaction } from "@/types/finance";
+import { Transaction } from "@/types/transactions";
 import { useState } from "react";
 import { TransactionEditDialog } from "./transaction/TransactionEditDialog";
 import { TransactionFilters } from "./transaction/TransactionFilters";

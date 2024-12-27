@@ -74,9 +74,6 @@ export const PaymentSource = () => {
         amount: 0,
         linked: selectedUpiApps.length > 0,
         upi_apps: selectedUpiApps.length > 0 ? selectedUpiApps : undefined,
-        user_id: "", // Add this
-        created_at: new Date().toISOString(), // Add this
-        updated_at: new Date().toISOString()  // Add this
       };
 
       await addPaymentSource(newSource);

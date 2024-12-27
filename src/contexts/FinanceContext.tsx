@@ -1,10 +1,35 @@
-import React, { createContext, useContext, useState, useCallback } from "react";
-import { NewPaymentSource, PaymentSource, Transaction } from "@/types/finance";
-import { useToast } from "@/hooks/use-toast";
-import { paymentSourcesApi } from "@/api/paymentSourcesApi";
-import { useAuth } from "@/contexts/AuthContext";
+import React, { createContext, useContext, useEffect } from "react";
+import { useAuth } from "./AuthContext";
+import { Transaction } from "@/types/transactions";
+import { PaymentSource } from "@/types/finance";
+import { useFinanceState } from "@/hooks/useFinanceState";
+import { useFinanceCalculations } from "@/hooks/useFinanceCalculations";
+import { useFinanceDataSync } from "@/hooks/useFinanceDataSync";
+import { useFinanceUtils } from "@/hooks/useFinanceUtils";
+import { useTransactionOperations } from "@/hooks/useTransactionOperations";
+import { usePaymentSources } from "@/hooks/usePaymentSources";
 
-const FinanceContext = createContext<any>(null);
+type FinanceContextType = {
+  currentMonth: Date;
+  setCurrentMonth: (date: Date) => void;
+  balance: number;
+  income: number;
+  expense: number;
+  transactions: Transaction[];
+  paymentSources: PaymentSource[];
+  isLoading: boolean;
+  refreshData: () => Promise<void>;
+  addTransaction: (transaction: Omit<Transaction, "id" | "date" | "user_id" | "created_at" | "updated_at">) => Promise<void>;
+  editTransaction: (id: string, updates: Partial<Omit<Transaction, "id" | "created_at" | "updated_at">>) => Promise<void>;
+  deleteTransaction: (id: string) => Promise<void>;
+  addPaymentSource: (source: Omit<PaymentSource, "id">) => Promise<void>;
+  editPaymentSource: (source: PaymentSource) => Promise<void>;
+  deletePaymentSource: (id: string) => Promise<void>;
+  getFormattedPaymentSources: () => { id: string; name: string }[];
+  getTransactionsBySource: (sourceId: string) => Transaction[];
+};
+
+const FinanceContext = createContext<FinanceContextType | null>(null);
 
 export const useFinance = () => {
   const context = useContext(FinanceContext);
@@ -15,50 +40,92 @@ export const useFinance = () => {
 };
 
 export const FinanceProvider = ({ children }: { children: React.ReactNode }) => {
-  const { toast } = useToast();
   const { user } = useAuth();
-  const [paymentSources, setPaymentSources] = useState<PaymentSource[]>([]);
-  const [transactions, setTransactions] = useState<Transaction[]>([]);
-  const [currentMonth, setCurrentMonth] = useState<Date>(new Date());
+  const {
+    currentMonth,
+    setCurrentMonth,
+    transactions,
+    setTransactions,
+    paymentSources,
+    setPaymentSources,
+    isLoading,
+    setIsLoading,
+  } = useFinanceState();
 
-  const refreshData = async () => {
-    // Fetch and set payment sources
-    const sources = await paymentSourcesApi.fetchPaymentSources();
-    setPaymentSources(sources);
+  const { balance, income, expense } = useFinanceCalculations(transactions);
+  
+  const { refreshData, setupSubscriptions } = useFinanceDataSync({
+    setTransactions,
+    setPaymentSources,
+    setIsLoading,
+  });
+
+  const { getFormattedPaymentSources, getTransactionsBySource } = useFinanceUtils(
+    paymentSources,
+    transactions
+  );
+
+  const { addTransaction, editTransaction, deleteTransaction } = useTransactionOperations(
+    paymentSources,
+    refreshData
+  );
+
+  const { 
+    addPaymentSource: addSource, 
+    editPaymentSource: editSource, 
+    deletePaymentSource: deleteSource 
+  } = usePaymentSources();
+
+  const addPaymentSource = async (source: Omit<PaymentSource, "id">) => {
+    await addSource(source);
+    await refreshData();
   };
 
-  const addPaymentSource = useCallback(async (newSource: NewPaymentSource) => {
-    try {
-      await paymentSourcesApi.addPaymentSource({
-        ...newSource,
-        user_id: user?.id || '',
-      });
-      await refreshData();
-      toast({
-        title: "Success",
-        description: "Payment source added successfully",
-      });
-    } catch (error) {
-      console.error("Error adding payment source:", error);
-      toast({
-        title: "Error",
-        description: "Failed to add payment source",
-        variant: "destructive",
-      });
-      throw error;
-    }
-  }, [user, refreshData, toast]);
+  const editPaymentSource = async (source: PaymentSource) => {
+    await editSource(source);
+    await refreshData();
+  };
+
+  const deletePaymentSource = async (id: string) => {
+    await deleteSource(id);
+    await refreshData();
+  };
+
+  useEffect(() => {
+    if (!user) return;
+    
+    const initializeData = async () => {
+      try {
+        await refreshData();
+        return setupSubscriptions();
+      } catch (error) {
+        console.error("Error initializing data:", error);
+      }
+    };
+
+    initializeData();
+  }, [user]);
 
   return (
-    <FinanceContext.Provider 
-      value={{ 
-        paymentSources, 
-        addPaymentSource, 
-        refreshData,
-        transactions,
-        setTransactions,
+    <FinanceContext.Provider
+      value={{
         currentMonth,
-        setCurrentMonth
+        setCurrentMonth,
+        balance,
+        income,
+        expense,
+        transactions,
+        paymentSources,
+        isLoading,
+        refreshData,
+        addTransaction,
+        editTransaction,
+        deleteTransaction,
+        addPaymentSource,
+        editPaymentSource,
+        deletePaymentSource,
+        getFormattedPaymentSources,
+        getTransactionsBySource,
       }}
     >
       {children}

@@ -6,12 +6,18 @@ import { useToast } from "@/hooks/use-toast";
 import { useDialogState } from "@/hooks/useDialogState";
 import { X } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { PaymentSource } from "@/types/finance";
 
 type PaymentSourceDialogProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  source?: PaymentSource;
+  source?: {
+    id: string;
+    name: string;
+    type: string;
+    amount: number;
+    linked?: boolean;
+    upi_apps?: string[];
+  };
   onDelete?: () => void;
 };
 

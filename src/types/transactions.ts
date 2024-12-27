@@ -17,16 +17,4 @@ export type Transaction = {
   parent_transaction_id?: string;
 };
 
-export type PaymentSource = {
-  id: string;
-  name: string;
-  type: string;
-  amount: number;
-  linked?: boolean;
-  upi_apps?: string[];
-  credit_limit?: number;
-  statement_date?: string;
-  due_date?: string;
-  interest_rate?: number;
-  last_four_digits?: string;
-};
+export type NewTransaction = Omit<Transaction, "id" | "date" | "user_id" | "created_at" | "updated_at">;
