@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useCallback } from "react";
-import { NewPaymentSource, PaymentSource } from "@/types/finance";
+import { NewPaymentSource, PaymentSource, Transaction } from "@/types/finance";
 import { useToast } from "@/hooks/use-toast";
 import { paymentSourcesApi } from "@/api/paymentSourcesApi";
 import { useAuth } from "@/contexts/AuthContext";
@@ -18,6 +18,8 @@ export const FinanceProvider = ({ children }: { children: React.ReactNode }) => 
   const { toast } = useToast();
   const { user } = useAuth();
   const [paymentSources, setPaymentSources] = useState<PaymentSource[]>([]);
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [currentMonth, setCurrentMonth] = useState<Date>(new Date());
 
   const refreshData = async () => {
     // Fetch and set payment sources
@@ -48,7 +50,17 @@ export const FinanceProvider = ({ children }: { children: React.ReactNode }) => 
   }, [user, refreshData, toast]);
 
   return (
-    <FinanceContext.Provider value={{ paymentSources, addPaymentSource, refreshData }}>
+    <FinanceContext.Provider 
+      value={{ 
+        paymentSources, 
+        addPaymentSource, 
+        refreshData,
+        transactions,
+        setTransactions,
+        currentMonth,
+        setCurrentMonth
+      }}
+    >
       {children}
     </FinanceContext.Provider>
   );
