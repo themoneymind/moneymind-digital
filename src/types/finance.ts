@@ -13,6 +13,8 @@ export type Transaction = {
   updated_at: string;
   reference_type?: string;
   reference_id?: string;
+  status?: string;
+  parent_transaction_id?: string;
 };
 
 export type PaymentSource = {
