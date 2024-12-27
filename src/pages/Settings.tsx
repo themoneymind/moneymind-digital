@@ -9,6 +9,7 @@ import { toast } from "sonner";
 import { ArrowLeft } from "lucide-react";
 import { FeedbackForm } from "@/components/settings/FeedbackForm";
 import { ContactForm } from "@/components/settings/ContactForm";
+import { VersionHistory } from "@/components/settings/VersionHistory";
 import {
   Dialog,
   DialogContent,
@@ -147,7 +148,6 @@ const Settings = () => {
             <h1 className="text-2xl font-semibold text-white">Settings</h1>
           </div>
         </div>
-        {/* Curved white overlay for content area */}
         <div className="h-6 bg-[#F5F5F7] dark:bg-gray-900 relative -mt-6 rounded-t-[28px]" />
       </header>
 
@@ -180,6 +180,10 @@ const Settings = () => {
               </div>
             </div>
           ))}
+        </div>
+
+        <div className="pt-4">
+          <VersionHistory />
         </div>
       </div>
       <BottomNav />
