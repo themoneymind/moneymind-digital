@@ -1,4 +1,5 @@
 import { type FC } from "react";
+import { MessageSquare } from "lucide-react";
 
 type DuesMessageProps = {
   type: "given" | "received";
@@ -31,6 +32,10 @@ export const DuesMessage: FC<DuesMessageProps> = ({
 
   return (
     <div className="p-4 bg-blue-50 rounded-[12px] space-y-2">
+      <div className="flex items-center gap-2 text-blue-700 mb-1">
+        <MessageSquare className="w-4 h-4" />
+        <span className="text-sm font-medium">Message Preview</span>
+      </div>
       <p className="text-sm text-blue-700">{message}</p>
       {upiId && (
         <p className="text-xs text-blue-600">

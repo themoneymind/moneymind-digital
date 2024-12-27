@@ -1,15 +1,13 @@
-import { ArrowDown, ArrowUp } from "lucide-react";
+import { ArrowDown, ArrowUp, WalletCards } from "lucide-react";
 import { useFinance } from "@/contexts/FinanceContext";
 
 export const DuesBalanceCard = () => {
   const { transactions } = useFinance();
 
-  // Filter dues transactions
   const duesTransactions = transactions.filter(t => 
     t.reference_type === 'due'
   );
 
-  // Calculate dues totals
   const duesGiven = duesTransactions.reduce((acc, curr) => {
     return curr.type === 'expense'
       ? acc + Number(curr.amount) 
@@ -31,7 +29,11 @@ export const DuesBalanceCard = () => {
   };
 
   return (
-    <div className="rounded-apple bg-gradient-to-br from-primary-gradient-from to-primary-gradient-to text-white shadow-lg p-6 relative overflow-hidden mb-6">
+    <div className="rounded-apple bg-gradient-to-br from-primary-gradient-from to-primary-gradient-to text-white shadow-lg p-6 relative overflow-hidden">
+      <div className="flex items-center gap-2 mb-4">
+        <WalletCards className="w-5 h-5" />
+        <h2 className="text-lg font-semibold">Dues Overview</h2>
+      </div>
       <div className="flex justify-between">
         <div className="flex items-center gap-3">
           <div className="flex items-start gap-3">
