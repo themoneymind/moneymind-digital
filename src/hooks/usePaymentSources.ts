@@ -1,6 +1,6 @@
 import { useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { PaymentSource } from "@/types/finance";
+import { PaymentSource, NewPaymentSource } from "@/types/finance";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 
@@ -24,15 +24,15 @@ export const usePaymentSources = () => {
     return data || [];
   }, [user]);
 
-  const addPaymentSource = useCallback(async (newSource: Omit<PaymentSource, "id">) => {
+  const addPaymentSource = useCallback(async (newSource: NewPaymentSource) => {
     if (!user) return;
 
     const { error } = await supabase
       .from("payment_sources")
-      .insert([{
+      .insert({
         ...newSource,
         user_id: user.id
-      }]);
+      });
 
     if (error) {
       console.error("Error adding payment source:", error);

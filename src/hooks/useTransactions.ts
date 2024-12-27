@@ -1,6 +1,6 @@
 import { useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { Transaction, TransactionType } from "@/types/finance";
+import { Transaction, TransactionType, NewTransaction } from "@/types/finance";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 
@@ -34,17 +34,17 @@ export const useTransactions = () => {
     }
   }, [user]);
 
-  const addTransaction = useCallback(async (newTransaction: Omit<Transaction, "id" | "date" | "user_id" | "created_at" | "updated_at">) => {
+  const addTransaction = useCallback(async (newTransaction: NewTransaction) => {
     if (!user) return;
 
     try {
       const { error } = await supabase
         .from("transactions")
-        .insert([{
+        .insert({
           ...newTransaction,
           user_id: user.id,
           date: new Date().toISOString()
-        }]);
+        });
 
       if (error) {
         console.error("Error adding transaction:", error);
@@ -77,7 +77,7 @@ export const useTransactions = () => {
 
       const formattedUpdates = {
         ...updates,
-        date: updates.date ? updates.date.toISOString() : undefined
+        date: updates.date ? new Date(updates.date).toISOString() : undefined
       };
 
       const { error, data } = await supabase
