@@ -31,7 +31,8 @@ export const DuesBalanceCard = () => {
   };
 
   return (
-    <div className="rounded-apple bg-gradient-to-br from-primary-gradient-from to-primary-gradient-to text-white shadow-lg p-6 relative overflow-hidden mb-6">
+    <div className="rounded-apple bg-gradient-to-br from-primary-gradient-from to-primary-gradient-to text-white shadow-lg p-4 relative overflow-hidden mb-4">
+      <h3 className="text-lg font-semibold mb-3">Dues Overview</h3>
       <div className="flex justify-between">
         <div className="flex items-center gap-3">
           <div className="flex items-start gap-3">

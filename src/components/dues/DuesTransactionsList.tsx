@@ -2,7 +2,7 @@ import { useFinance } from "@/contexts/FinanceContext";
 import { format } from "date-fns";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { CheckCircle2, Clock, AlertCircle } from "lucide-react";
+import { CheckCircle2, XCircle, Edit2 } from "lucide-react";
 
 export const DuesTransactionsList = () => {
   const { transactions } = useFinance();
@@ -31,14 +31,12 @@ export const DuesTransactionsList = () => {
       case 'partially_paid':
         return (
           <Badge className="bg-yellow-100 text-yellow-800 hover:bg-yellow-200">
-            <Clock className="w-3 h-3 mr-1" />
             Partially Paid
           </Badge>
         );
       default:
         return (
           <Badge className="bg-red-100 text-red-800 hover:bg-red-200">
-            <AlertCircle className="w-3 h-3 mr-1" />
             Pending
           </Badge>
         );
@@ -75,16 +73,25 @@ export const DuesTransactionsList = () => {
               <Button 
                 variant="outline" 
                 size="sm"
-                className="w-full"
+                className="flex-1 gap-2"
               >
-                Mark as Complete
+                <CheckCircle2 className="w-4 h-4" />
+                Complete
               </Button>
               <Button 
                 variant="outline" 
                 size="sm"
-                className="w-full"
+                className="flex-1 gap-2"
               >
-                Add Partial Payment
+                <XCircle className="w-4 h-4" />
+                Partial
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                className="gap-2"
+              >
+                <Edit2 className="w-4 h-4" />
               </Button>
             </div>
           </div>
