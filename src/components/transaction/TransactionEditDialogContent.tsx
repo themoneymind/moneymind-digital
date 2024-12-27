@@ -1,7 +1,7 @@
 import { DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { TransactionEditDialogForm } from "./TransactionEditDialogForm";
-import { Transaction } from "@/types/transactions";
+import { Transaction } from "@/types/finance";
 
 interface TransactionEditDialogContentProps {
   transaction: Transaction;

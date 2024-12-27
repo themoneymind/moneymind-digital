@@ -1,4 +1,4 @@
-import { Transaction } from "@/types/transactions";
+import { Transaction } from "@/types/finance";
 import { ArrowUpRight, ArrowDownLeft } from "lucide-react";
 import { format } from "date-fns";
 

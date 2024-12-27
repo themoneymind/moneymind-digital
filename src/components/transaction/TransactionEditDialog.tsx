@@ -1,7 +1,7 @@
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { useFinance } from "@/contexts/FinanceContext";
 import { useState, useEffect } from "react";
-import { Transaction } from "@/types/transactions";
+import { Transaction } from "@/types/finance";
 import { useToast } from "@/hooks/use-toast";
 import { useTransactionEditForm } from "@/hooks/useTransactionEditForm";
 import { TransactionEditDialogContent } from "./TransactionEditDialogContent";
@@ -126,5 +126,3 @@ export const TransactionEditDialog = ({
         />
       </DialogContent>
     </Dialog>
-  );
-};

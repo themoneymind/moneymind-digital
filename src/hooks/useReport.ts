@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Transaction } from "@/types/transactions";
+import { Transaction } from "@/types/finance";
 import { useTransactions } from "./useTransactions";
 import { format, startOfDay, startOfWeek, startOfMonth, startOfYear } from "date-fns";
 

@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect } from "react";
 import { useAuth } from "./AuthContext";
-import { Transaction } from "@/types/transactions";
+import { Transaction } from "@/types/finance";
 import { PaymentSource } from "@/types/finance";
 import { useFinanceState } from "@/hooks/useFinanceState";
 import { useFinanceCalculations } from "@/hooks/useFinanceCalculations";
@@ -77,7 +77,12 @@ export const FinanceProvider = ({ children }: { children: React.ReactNode }) => 
   } = usePaymentSources();
 
   const addPaymentSource = async (source: Omit<PaymentSource, "id">) => {
-    await addSource(source);
+    await addSource({
+      ...source,
+      user_id: user.id,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString()
+    });
     await refreshData();
   };
 

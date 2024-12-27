@@ -1,4 +1,4 @@
-import { Transaction } from "@/types/transactions";
+import { Transaction } from "@/types/finance";
 import { TransactionItem } from "./TransactionItem";
 
 type TransactionListProps = {

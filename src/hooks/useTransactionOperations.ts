@@ -1,7 +1,6 @@
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
-import { Transaction, TransactionType } from "@/types/transactions";
-import { PaymentSource } from "@/types/finance";
+import { Transaction, TransactionType, PaymentSource } from "@/types/finance";
 import { toast } from "sonner";
 
 export const useTransactionOperations = (
@@ -109,7 +108,6 @@ export const useTransactionOperations = (
         );
       }
 
-      // Convert Date to ISO string if it exists in updates
       const formattedUpdates = {
         ...updates,
         date: updates.date ? new Date(updates.date).toISOString() : undefined
