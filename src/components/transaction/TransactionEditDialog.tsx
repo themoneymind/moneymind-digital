@@ -126,3 +126,5 @@ export const TransactionEditDialog = ({
         />
       </DialogContent>
     </Dialog>
+  );
+};
