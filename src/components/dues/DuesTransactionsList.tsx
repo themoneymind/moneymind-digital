@@ -7,6 +7,8 @@ import { DuesDialogs } from "./DuesDialogs";
 import { DeleteConfirmationDialog } from "./DeleteConfirmationDialog";
 import { useDuesOperations } from "@/hooks/useDuesOperations";
 import { formatDuesCurrency } from "@/utils/duesUtils";
+import { DuesEditDialog } from "./DuesEditDialog";
+import { useState } from "react";
 
 export const DuesTransactionsList = () => {
   const { transactions, refreshData } = useFinance();
@@ -34,6 +36,8 @@ export const DuesTransactionsList = () => {
     handlePartialPaymentSourceSelect,
   } = useDuesOperations(refreshData);
 
+  const [showEditDialog, setShowEditDialog] = useState(false);
+
   const handleExcuseSubmit = async () => {
     if (!selectedTransaction || !excuseReason || !newRepaymentDate) return;
 
@@ -47,6 +51,30 @@ export const DuesTransactionsList = () => {
     setExcuseReason("");
     setNewRepaymentDate(undefined);
     setSelectedTransaction(null);
+  };
+
+  const handleEdit = (transaction: DueTransaction) => {
+    setSelectedTransaction(transaction);
+    setShowEditDialog(true);
+  };
+
+  const handleEditSave = async (updates: Partial<DueTransaction>) => {
+    if (!selectedTransaction) return;
+
+    try {
+      const { error } = await supabase
+        .from('transactions')
+        .update(updates)
+        .eq('id', selectedTransaction.id);
+
+      if (error) throw error;
+
+      await refreshData();
+      toast.success("Due transaction updated successfully");
+    } catch (error) {
+      console.error("Error updating transaction:", error);
+      toast.error("Failed to update transaction");
+    }
   };
 
   const handleUndo = async (transaction: DueTransaction) => {
@@ -109,7 +137,7 @@ export const DuesTransactionsList = () => {
 
   // Filter only active due transactions (not rejected)
   const dueTransactions = transactions.filter(
-    transaction => transaction.reference_type === 'due' && transaction.status !== 'rejected'
+    transaction => transaction.reference_type === 'due'
   ) as DueTransaction[];
 
   return (
@@ -137,7 +165,7 @@ export const DuesTransactionsList = () => {
                 setSelectedTransaction(t);
                 setShowExcuseDialog(true);
               }}
-              onReject={(id) => updateTransactionStatus(id, 'rejected')}
+              onEdit={handleEdit}
               onUndo={handleUndo}
               onDelete={handleDelete}
               formatCurrency={formatDuesCurrency}
@@ -167,6 +195,15 @@ export const DuesTransactionsList = () => {
         isDropdownOpen={isDropdownOpen}
         setIsDropdownOpen={setIsDropdownOpen}
       />
+
+      {selectedTransaction && (
+        <DuesEditDialog
+          open={showEditDialog}
+          onOpenChange={setShowEditDialog}
+          transaction={selectedTransaction}
+          onSave={handleEditSave}
+        />
+      )}
 
       <DeleteConfirmationDialog
         isOpen={showDeleteDialog}
