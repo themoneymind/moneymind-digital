@@ -25,22 +25,25 @@ export const DuesTransactionItem = ({
   formatCurrency,
 }: DuesTransactionItemProps) => {
   return (
-    <div className="bg-white p-4 rounded-[12px] border border-gray-200 space-y-3">
+    <div className="bg-white rounded-[20px] border border-gray-100 shadow-sm hover:shadow-md transition-shadow p-5 space-y-4">
       <div className="flex justify-between items-start">
-        <div>
-          <p className="font-medium">{transaction.description}</p>
+        <div className="space-y-1">
+          <h3 className="text-lg font-medium text-gray-900">
+            {transaction.type === 'expense' ? 'Due Given to: ' : 'Due Received from: '}
+            <span className="text-gray-700">{transaction.description?.replace(/^Due (Given to|Received from): /, '')}</span>
+          </h3>
           <div className="flex items-center gap-2 text-sm text-gray-500">
-            <span>{format(new Date(transaction.date), 'PPP')}</span>
+            <span>Given: {format(new Date(transaction.date), 'PP')}</span>
             {transaction.repayment_date && (
               <>
                 <span>•</span>
-                <span>Due: {format(new Date(transaction.repayment_date), 'PPP')}</span>
+                <span>Due: {format(new Date(transaction.repayment_date), 'PP')}</span>
               </>
             )}
           </div>
         </div>
-        <div className="text-right">
-          <p className={`font-semibold ${
+        <div className="text-right space-y-2">
+          <p className={`text-xl font-semibold ${
             transaction.type === 'expense' ? 'text-red-600' : 'text-green-600'
           }`}>
             {transaction.type === 'expense' ? '-' : '+'}
@@ -51,7 +54,7 @@ export const DuesTransactionItem = ({
       </div>
       
       {transaction.excuse_reason && (
-        <p className="text-sm text-gray-600 bg-gray-50 p-2 rounded">
+        <p className="text-sm text-gray-600 bg-gray-50 p-3 rounded-xl">
           Reason: {transaction.excuse_reason}
         </p>
       )}
