@@ -3,6 +3,7 @@ import { DueTransaction } from "@/types/dues";
 import { DuesTransactionItem } from "./DuesTransactionItem";
 import { useDuesListOperations } from "./hooks/useDuesListOperations";
 import { formatDuesCurrency } from "@/utils/duesUtils";
+import { DuesDialogManager } from "./DuesDialogManager";
 
 export const DuesTransactionsList = () => {
   const { transactions } = useFinance();
