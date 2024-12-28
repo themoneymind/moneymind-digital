@@ -3,11 +3,14 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useFinance } from "@/contexts/FinanceContext";
 import { DueTransaction } from "@/types/dues";
+import { useAuth } from "@/contexts/AuthContext";
 
 export const useTransactionOperations = () => {
   const { refreshData } = useFinance();
+  const { user } = useAuth();
   const [selectedTransaction, setSelectedTransaction] = useState<DueTransaction | null>(null);
   const [showPaymentSourceDialog, setShowPaymentSourceDialog] = useState(false);
+  const [showPartialDialog, setShowPartialDialog] = useState(false);
   const [partialAmount, setPartialAmount] = useState("");
   const [excuseReason, setExcuseReason] = useState("");
   const [showExcuseDialog, setShowExcuseDialog] = useState(false);
@@ -50,7 +53,7 @@ export const useTransactionOperations = () => {
   };
 
   const handlePaymentSource = async (sourceId: string) => {
-    if (!selectedTransaction) return;
+    if (!selectedTransaction || !user) return;
 
     try {
       const baseSourceId = getBaseSourceId(sourceId);
@@ -64,6 +67,7 @@ export const useTransactionOperations = () => {
         description: `Repayment for: ${selectedTransaction.description}`,
         reference_type: "due_repayment",
         reference_id: selectedTransaction.id,
+        user_id: user.id,
       });
 
       await updateTransactionStatus(selectedTransaction.id, 'completed', {
@@ -81,7 +85,7 @@ export const useTransactionOperations = () => {
   };
 
   const handlePartialPayment = async (sourceId: string) => {
-    if (!selectedTransaction || !partialAmount) return;
+    if (!selectedTransaction || !partialAmount || !user) return;
 
     const amount = Number(partialAmount);
     if (isNaN(amount) || amount <= 0 || amount >= (selectedTransaction.remaining_balance || selectedTransaction.amount)) {
@@ -101,6 +105,7 @@ export const useTransactionOperations = () => {
         description: `Partial repayment for: ${selectedTransaction.description}`,
         reference_type: "due_repayment",
         reference_id: selectedTransaction.id,
+        user_id: user.id,
       });
 
       await updateTransactionStatus(selectedTransaction.id, 'partially_paid', {
@@ -141,6 +146,8 @@ export const useTransactionOperations = () => {
     setSelectedTransaction,
     showPaymentSourceDialog,
     setShowPaymentSourceDialog,
+    showPartialDialog,
+    setShowPartialDialog,
     partialAmount,
     setPartialAmount,
     excuseReason,
