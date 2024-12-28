@@ -41,7 +41,12 @@ export const useDuesOperations = (refreshData: () => Promise<void>) => {
       if (error) throw error;
 
       await refreshData();
-      toast.success(`Due marked as ${status}`);
+      
+      if (status === 'rejected') {
+        toast.success("Transaction has been rejected");
+      } else {
+        toast.success(`Due marked as ${status}`);
+      }
     } catch (error) {
       console.error("Error updating transaction status:", error);
       toast.error("Failed to update status");
