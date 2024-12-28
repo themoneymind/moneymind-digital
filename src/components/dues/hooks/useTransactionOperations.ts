@@ -19,7 +19,9 @@ export const useTransactionOperations = () => {
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
   const getBaseSourceId = (sourceId: string) => {
-    return sourceId.split('-')[0];
+    // Extract the UUID part before any suffix (like -ippopay)
+    const match = sourceId.match(/^([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/i);
+    return match ? match[1] : sourceId;
   };
 
   const updateTransactionStatus = async (id: string, status: string, updates: any = {}) => {
