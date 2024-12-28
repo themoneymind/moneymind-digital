@@ -62,9 +62,16 @@ export const DuesTransactionsList = () => {
     if (!selectedTransaction) return;
 
     try {
+      // Convert Date objects to ISO strings before sending to Supabase
+      const formattedUpdates = {
+        ...updates,
+        date: updates.date ? new Date(updates.date).toISOString() : undefined,
+        repayment_date: updates.repayment_date ? new Date(updates.repayment_date).toISOString() : undefined,
+      };
+
       const { error } = await supabase
         .from('transactions')
-        .update(updates)
+        .update(formattedUpdates)
         .eq('id', selectedTransaction.id);
 
       if (error) throw error;
