@@ -11,6 +11,7 @@ import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { DuesMessage } from "./DuesMessage";
 import { toast } from "sonner";
+import { DueTransaction } from "@/types/dues";
 
 export const DuesForm = () => {
   const { getFormattedPaymentSources, addTransaction } = useFinance();
@@ -54,7 +55,7 @@ export const DuesForm = () => {
         remaining_balance: Number(amount),
         next_reminder_date: repaymentDate.toISOString(),
         reminder_count: 0,
-      });
+      } as DueTransaction);
 
       // Reset form after successful submission
       setAmount("");

@@ -6,7 +6,6 @@ import {
   CheckCircle2, 
   XCircle, 
   Percent, 
-  Edit2, 
   Calendar,
   AlertCircle,
   Clock
@@ -16,10 +15,13 @@ import { supabase } from "@/integrations/supabase/client";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { cn } from "@/lib/utils";
+import { DueTransaction } from "@/types/dues";
 
 export const DuesTransactionsList = () => {
   const { transactions, refreshData } = useFinance();
-  const [selectedTransaction, setSelectedTransaction] = useState<any>(null);
+  const [selectedTransaction, setSelectedTransaction] = useState<DueTransaction | null>(null);
   const [showPartialDialog, setShowPartialDialog] = useState(false);
   const [partialAmount, setPartialAmount] = useState("");
   const [excuseReason, setExcuseReason] = useState("");
@@ -149,7 +151,7 @@ export const DuesTransactionsList = () => {
   // Filter only due transactions
   const dueTransactions = transactions.filter(
     transaction => transaction.reference_type === 'due'
-  );
+  ) as DueTransaction[];
 
   return (
     <div className="mt-4 space-y-4">
@@ -296,7 +298,7 @@ export const DuesTransactionsList = () => {
                     !newRepaymentDate && "text-muted-foreground"
                   )}
                 >
-                  <CalendarIcon className="mr-2 h-4 w-4" />
+                  <Calendar className="mr-2 h-4 w-4" />
                   {newRepaymentDate ? format(newRepaymentDate, "PPP") : "Select new date"}
                 </Button>
               </PopoverTrigger>

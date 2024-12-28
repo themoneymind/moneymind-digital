@@ -1,5 +1,6 @@
 import { ArrowDown, ArrowUp } from "lucide-react";
 import { useFinance } from "@/contexts/FinanceContext";
+import { DueTransaction } from "@/types/dues";
 
 export const DuesBalanceCard = () => {
   const { transactions } = useFinance();
@@ -7,7 +8,7 @@ export const DuesBalanceCard = () => {
   // Filter dues transactions
   const duesTransactions = transactions.filter(t => 
     t.reference_type === 'due'
-  );
+  ) as DueTransaction[];
 
   // Calculate dues totals
   const duesGiven = duesTransactions.reduce((acc, curr) => {
