@@ -23,6 +23,7 @@ type DuesDialogsProps = {
   newRepaymentDate: Date | undefined;
   setNewRepaymentDate: (date: Date | undefined) => void;
   selectedTransaction: DueTransaction | null;
+  setSelectedTransaction: (transaction: DueTransaction | null) => void;
   handleExcuseSubmit: () => Promise<void>;
   handlePaymentSourceSelect: (sourceId: string) => Promise<void>;
   handlePartialPaymentSourceSelect: (sourceId: string) => Promise<void>;
@@ -44,6 +45,7 @@ export const DuesDialogs = ({
   newRepaymentDate,
   setNewRepaymentDate,
   selectedTransaction,
+  setSelectedTransaction,
   handleExcuseSubmit,
   handlePaymentSourceSelect,
   handlePartialPaymentSourceSelect,

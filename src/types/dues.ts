@@ -7,4 +7,9 @@ export interface DueTransaction extends BaseTransaction {
   next_reminder_date?: string;
   reminder_count?: number;
   last_reminder_sent?: string;
+  audit_trail?: {
+    action: string;
+    timestamp: string;
+  }[];
+  previous_status?: string;
 }

@@ -15,6 +15,11 @@ export type Transaction = {
   reference_id?: string;
   status?: string;
   parent_transaction_id?: string;
+  audit_trail?: {
+    action: string;
+    timestamp: string;
+  }[];
+  previous_status?: string;
 };
 
 export type NewTransaction = Omit<Transaction, "id" | "date" | "user_id" | "created_at" | "updated_at">;
