@@ -1,23 +1,17 @@
 import { useFinance } from "@/contexts/FinanceContext";
 import { format } from "date-fns";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { 
-  CheckCircle2, 
-  XCircle, 
-  Percent, 
-  Calendar,
-  AlertCircle,
-  Clock
-} from "lucide-react";
-import { toast } from "sonner";
-import { supabase } from "@/integrations/supabase/client";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Calendar } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
+import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
 import { DueTransaction } from "@/types/dues";
+import { DuesStatusBadge } from "./DuesStatusBadge";
+import { DuesActionButtons } from "./DuesActionButtons";
 
 export const DuesTransactionsList = () => {
   const { transactions, refreshData } = useFinance();
@@ -67,13 +61,13 @@ export const DuesTransactionsList = () => {
     if (!selectedTransaction || !partialAmount) return;
 
     const amount = Number(partialAmount);
-    if (isNaN(amount) || amount <= 0 || amount >= selectedTransaction.remaining_balance) {
+    if (isNaN(amount) || amount <= 0 || amount >= selectedTransaction.remaining_balance!) {
       toast.error("Please enter a valid partial amount");
       return;
     }
 
     await updateTransactionStatus(selectedTransaction.id, 'partially_paid', {
-      remaining_balance: selectedTransaction.remaining_balance - amount
+      remaining_balance: selectedTransaction.remaining_balance! - amount
     });
 
     setShowPartialDialog(false);
@@ -98,54 +92,6 @@ export const DuesTransactionsList = () => {
 
   const handleReject = async (id: string) => {
     await updateTransactionStatus(id, 'rejected');
-  };
-
-  const getStatusBadge = (transaction: any) => {
-    const status = transaction.status || 'pending';
-    switch (status) {
-      case 'completed':
-        return (
-          <Badge className="bg-green-100 text-green-800 hover:bg-green-200">
-            <CheckCircle2 className="w-3 h-3 mr-1" />
-            Completed
-          </Badge>
-        );
-      case 'partially_paid':
-        return (
-          <Badge className="bg-yellow-100 text-yellow-800 hover:bg-yellow-200">
-            <Percent className="w-3 h-3 mr-1" />
-            Partially Paid ({formatCurrency(transaction.remaining_balance)} remaining)
-          </Badge>
-        );
-      case 'payment_scheduled':
-        return (
-          <Badge className="bg-blue-100 text-blue-800 hover:bg-blue-200">
-            <Calendar className="w-3 h-3 mr-1" />
-            Scheduled ({format(new Date(transaction.repayment_date), 'PP')})
-          </Badge>
-        );
-      case 'rejected':
-        return (
-          <Badge className="bg-red-100 text-red-800 hover:bg-red-200">
-            <XCircle className="w-3 h-3 mr-1" />
-            Rejected
-          </Badge>
-        );
-      case 'overdue':
-        return (
-          <Badge className="bg-orange-100 text-orange-800 hover:bg-orange-200">
-            <AlertCircle className="w-3 h-3 mr-1" />
-            Overdue
-          </Badge>
-        );
-      default:
-        return (
-          <Badge className="bg-gray-100 text-gray-800 hover:bg-gray-200">
-            <Clock className="w-3 h-3 mr-1" />
-            Pending
-          </Badge>
-        );
-    }
   };
 
   // Filter only due transactions
@@ -187,7 +133,7 @@ export const DuesTransactionsList = () => {
                     {transaction.type === 'expense' ? '-' : '+'}
                     {formatCurrency(Number(transaction.amount))}
                   </p>
-                  {getStatusBadge(transaction)}
+                  <DuesStatusBadge transaction={transaction} />
                 </div>
               </div>
               
@@ -197,54 +143,19 @@ export const DuesTransactionsList = () => {
                 </p>
               )}
 
-              <div className="flex gap-2">
-                <Button 
-                  variant="outline" 
-                  size="sm"
-                  className="flex-1 gap-2"
-                  onClick={() => handleComplete(transaction.id)}
-                  disabled={transaction.status === 'completed'}
-                >
-                  <CheckCircle2 className="w-4 h-4 text-green-600" />
-                  Complete
-                </Button>
-                <Button 
-                  variant="outline" 
-                  size="sm"
-                  className="flex-1 gap-2"
-                  onClick={() => {
-                    setSelectedTransaction(transaction);
-                    setShowPartialDialog(true);
-                  }}
-                  disabled={transaction.status === 'completed'}
-                >
-                  <Percent className="w-4 h-4 text-yellow-600" />
-                  Partial
-                </Button>
-                <Button 
-                  variant="outline" 
-                  size="sm"
-                  className="flex-1 gap-2"
-                  onClick={() => {
-                    setSelectedTransaction(transaction);
-                    setShowExcuseDialog(true);
-                  }}
-                  disabled={transaction.status === 'completed'}
-                >
-                  <Calendar className="w-4 h-4 text-blue-600" />
-                  Reschedule
-                </Button>
-                <Button 
-                  variant="outline" 
-                  size="sm"
-                  className="flex-1 gap-2"
-                  onClick={() => handleReject(transaction.id)}
-                  disabled={transaction.status === 'rejected'}
-                >
-                  <XCircle className="w-4 h-4 text-red-600" />
-                  Reject
-                </Button>
-              </div>
+              <DuesActionButtons
+                transaction={transaction}
+                onComplete={handleComplete}
+                onPartial={(t) => {
+                  setSelectedTransaction(t);
+                  setShowPartialDialog(true);
+                }}
+                onReschedule={(t) => {
+                  setSelectedTransaction(t);
+                  setShowExcuseDialog(true);
+                }}
+                onReject={handleReject}
+              />
             </div>
           ))
         )}
