@@ -245,6 +245,7 @@ export type Database = {
       transactions: {
         Row: {
           amount: number
+          audit_trail: Json[] | null
           category: string
           created_at: string
           date: string
@@ -254,6 +255,7 @@ export type Database = {
           last_reminder_sent: string | null
           next_reminder_date: string | null
           parent_transaction_id: string | null
+          previous_status: string | null
           reference_id: string | null
           reference_type: string | null
           remaining_balance: number | null
@@ -267,6 +269,7 @@ export type Database = {
         }
         Insert: {
           amount: number
+          audit_trail?: Json[] | null
           category: string
           created_at?: string
           date?: string
@@ -276,6 +279,7 @@ export type Database = {
           last_reminder_sent?: string | null
           next_reminder_date?: string | null
           parent_transaction_id?: string | null
+          previous_status?: string | null
           reference_id?: string | null
           reference_type?: string | null
           remaining_balance?: number | null
@@ -289,6 +293,7 @@ export type Database = {
         }
         Update: {
           amount?: number
+          audit_trail?: Json[] | null
           category?: string
           created_at?: string
           date?: string
@@ -298,6 +303,7 @@ export type Database = {
           last_reminder_sent?: string | null
           next_reminder_date?: string | null
           parent_transaction_id?: string | null
+          previous_status?: string | null
           reference_id?: string | null
           reference_type?: string | null
           remaining_balance?: number | null
