@@ -4,9 +4,10 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { CheckCircle2, XCircle, Percent, Edit2 } from "lucide-react";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
 
 export const DuesTransactionsList = () => {
-  const { transactions } = useFinance();
+  const { transactions, refreshData } = useFinance();
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat("en-IN", {
@@ -16,19 +17,33 @@ export const DuesTransactionsList = () => {
     }).format(amount);
   };
 
-  const handleComplete = (id: string) => {
-    toast.success("Marked as complete");
-    // Add implementation later
+  const updateTransactionStatus = async (id: string, status: string) => {
+    try {
+      const { error } = await supabase
+        .from('transactions')
+        .update({ status })
+        .eq('id', id);
+
+      if (error) throw error;
+
+      await refreshData();
+      toast.success(`Due marked as ${status}`);
+    } catch (error) {
+      console.error("Error updating transaction status:", error);
+      toast.error("Failed to update status");
+    }
   };
 
-  const handlePartial = (id: string) => {
-    toast.success("Marked as partially paid");
-    // Add implementation later
+  const handleComplete = async (id: string) => {
+    await updateTransactionStatus(id, 'completed');
   };
 
-  const handleReject = (id: string) => {
-    toast.success("Marked as rejected");
-    // Add implementation later
+  const handlePartial = async (id: string) => {
+    await updateTransactionStatus(id, 'partially_paid');
+  };
+
+  const handleReject = async (id: string) => {
+    await updateTransactionStatus(id, 'rejected');
   };
 
   const getStatusBadge = (status: string) => {
@@ -63,16 +78,21 @@ export const DuesTransactionsList = () => {
     }
   };
 
+  // Filter only due transactions
+  const dueTransactions = transactions.filter(
+    transaction => transaction.reference_type === 'due'
+  );
+
   return (
     <div className="mt-4 space-y-4">
       <h3 className="text-base font-semibold">Due Transactions</h3>
       <div className="space-y-3">
-        {transactions.length === 0 ? (
+        {dueTransactions.length === 0 ? (
           <div className="text-center py-8 text-muted-foreground">
-            No transactions yet
+            No due transactions yet
           </div>
         ) : (
-          transactions.map((transaction) => (
+          dueTransactions.map((transaction) => (
             <div 
               key={transaction.id}
               className="bg-white p-4 rounded-[12px] border border-gray-200 space-y-3"
@@ -100,6 +120,7 @@ export const DuesTransactionsList = () => {
                   size="sm"
                   className="flex-1 gap-2"
                   onClick={() => handleComplete(transaction.id)}
+                  disabled={transaction.status === 'completed'}
                 >
                   <CheckCircle2 className="w-4 h-4 text-green-600" />
                   Complete
@@ -109,6 +130,7 @@ export const DuesTransactionsList = () => {
                   size="sm"
                   className="flex-1 gap-2"
                   onClick={() => handlePartial(transaction.id)}
+                  disabled={transaction.status === 'partially_paid'}
                 >
                   <Percent className="w-4 h-4 text-yellow-600" />
                   Partial
@@ -118,6 +140,7 @@ export const DuesTransactionsList = () => {
                   size="sm"
                   className="flex-1 gap-2"
                   onClick={() => handleReject(transaction.id)}
+                  disabled={transaction.status === 'rejected'}
                 >
                   <XCircle className="w-4 h-4 text-red-600" />
                   Reject
