@@ -4,7 +4,7 @@ import { DueTransaction } from "@/types/dues";
 
 type DuesActionButtonsProps = {
   transaction: DueTransaction;
-  onComplete: (id: string) => void;
+  onComplete: (transaction: DueTransaction) => void;  // Updated type
   onPartial: (transaction: DueTransaction) => void;
   onReschedule: (transaction: DueTransaction) => void;
   onReject: (id: string) => void;
@@ -23,7 +23,7 @@ export const DuesActionButtons = ({
         variant="outline" 
         size="sm"
         className="flex-1 gap-2"
-        onClick={() => onComplete(transaction.id)}
+        onClick={() => onComplete(transaction)}  // Pass the full transaction
         disabled={transaction.status === 'completed'}
       >
         <CheckCircle2 className="w-4 h-4 text-green-600" />

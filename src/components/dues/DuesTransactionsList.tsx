@@ -196,7 +196,7 @@ export const DuesTransactionsList = () => {
 
               <DuesActionButtons
                 transaction={transaction}
-                onComplete={handleComplete}
+                onComplete={handleComplete}  // This now matches the expected type
                 onPartial={handlePartial}
                 onReschedule={(t) => {
                   setSelectedTransaction(t);
