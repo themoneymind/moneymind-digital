@@ -7,16 +7,18 @@ import {
   subMonths, 
   isFuture, 
   isAfter, 
-  isBefore, 
   isEqual 
 } from "date-fns";
 
 export const BalanceCard = () => {
   const { transactions, currentMonth, paymentSources } = useFinance();
 
+  // Filter out rejected transactions
+  const activeTransactions = transactions.filter(t => t.status !== 'rejected');
+
   // Get the earliest transaction date to determine when the user started using the app
-  const earliestTransaction = transactions.length > 0 
-    ? new Date(Math.min(...transactions.map(t => new Date(t.date).getTime())))
+  const earliestTransaction = activeTransactions.length > 0 
+    ? new Date(Math.min(...activeTransactions.map(t => new Date(t.date).getTime())))
     : new Date();
 
   // Check if current selected month is in the future or present
@@ -27,7 +29,7 @@ export const BalanceCard = () => {
   const currentTotalBalance = paymentSources.reduce((acc, curr) => acc + Number(curr.amount), 0);
 
   // Filter transactions for the current month
-  const monthlyTransactions = transactions.filter(transaction => {
+  const monthlyTransactions = activeTransactions.filter(transaction => {
     const transactionDate = new Date(transaction.date);
     const monthStart = startOfMonth(currentMonth);
     const monthEnd = endOfMonth(currentMonth);
@@ -42,7 +44,7 @@ export const BalanceCard = () => {
   const lastMonthStart = startOfMonth(subMonths(currentMonth, 1));
   const lastMonthEnd = endOfMonth(subMonths(currentMonth, 1));
   
-  const lastMonthTransactions = transactions.filter(transaction => {
+  const lastMonthTransactions = activeTransactions.filter(transaction => {
     const transactionDate = new Date(transaction.date);
     return isWithinInterval(transactionDate, {
       start: lastMonthStart,

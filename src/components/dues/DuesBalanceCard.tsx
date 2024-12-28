@@ -5,9 +5,9 @@ import { DueTransaction } from "@/types/dues";
 export const DuesBalanceCard = () => {
   const { transactions } = useFinance();
 
-  // Filter dues transactions
+  // Filter dues transactions and exclude rejected ones
   const duesTransactions = transactions.filter(t => 
-    t.reference_type === 'due'
+    t.reference_type === 'due' && t.status !== 'rejected'
   ) as DueTransaction[];
 
   // Calculate dues totals

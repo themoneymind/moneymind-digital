@@ -107,9 +107,9 @@ export const DuesTransactionsList = () => {
     }
   };
 
-  // Filter only due transactions
+  // Filter only active due transactions (not rejected)
   const dueTransactions = transactions.filter(
-    transaction => transaction.reference_type === 'due'
+    transaction => transaction.reference_type === 'due' && transaction.status !== 'rejected'
   ) as DueTransaction[];
 
   return (
