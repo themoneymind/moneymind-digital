@@ -1,4 +1,3 @@
-import { Badge } from "@/components/ui/badge";
 import { CheckCircle2, XCircle, Percent, Calendar, AlertCircle, Clock } from "lucide-react";
 import { format } from "date-fns";
 import { DueTransaction } from "@/types/dues";

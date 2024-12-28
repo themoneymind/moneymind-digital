@@ -24,13 +24,17 @@ export const DuesTransactionItem = ({
   onDelete,
   formatCurrency,
 }: DuesTransactionItemProps) => {
+  const description = transaction.description?.replace(/^Due (Given to|Received from): /, '') || '';
+
   return (
     <div className="bg-white rounded-[20px] border border-gray-100 shadow-sm hover:shadow-md transition-shadow p-5 space-y-4">
       <div className="flex justify-between items-start">
         <div className="space-y-1">
-          <h3 className="text-lg font-medium text-gray-900">
-            {transaction.type === 'expense' ? 'Due Given to: ' : 'Due Received from: '}
-            <span className="text-gray-700">{transaction.description?.replace(/^Due (Given to|Received from): /, '')}</span>
+          <h3 className="text-lg">
+            <span className="text-gray-500 font-normal">
+              {transaction.type === 'expense' ? 'Due Given to: ' : 'Due Received from: '}
+            </span>
+            <span className="text-gray-900 font-medium">{description}</span>
           </h3>
           <div className="flex items-center gap-2 text-sm text-gray-500">
             <span>Given: {format(new Date(transaction.date), 'PP')}</span>
