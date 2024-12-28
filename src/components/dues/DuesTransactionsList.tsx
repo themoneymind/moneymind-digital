@@ -67,6 +67,7 @@ export const DuesTransactionsList = () => {
         ...updates,
         date: updates.date ? new Date(updates.date).toISOString() : undefined,
         repayment_date: updates.repayment_date ? new Date(updates.repayment_date).toISOString() : undefined,
+        next_reminder_date: updates.next_reminder_date ? new Date(updates.next_reminder_date).toISOString() : undefined,
       };
 
       const { error } = await supabase
