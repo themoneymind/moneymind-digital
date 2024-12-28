@@ -3,6 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Transaction, TransactionType } from "@/types/transactions";
 import { PaymentSource } from "@/types/finance";
 import { toast } from "sonner";
+import { getBaseSourceId } from "@/utils/paymentSourceUtils";
 
 export const useTransactionOperations = (
   paymentSources: PaymentSource[],
@@ -16,8 +17,10 @@ export const useTransactionOperations = (
     type: TransactionType,
     isReversal: boolean = false
   ) => {
-    console.log("Updating payment source:", { sourceId, amount, type, isReversal });
-    const source = paymentSources.find(s => s.id === sourceId);
+    const baseSourceId = getBaseSourceId(sourceId);
+    console.log("Updating payment source:", { sourceId, baseSourceId, amount, type, isReversal });
+    
+    const source = paymentSources.find(s => s.id === baseSourceId);
     if (!source) return;
 
     let newAmount;
@@ -41,7 +44,7 @@ export const useTransactionOperations = (
     const { error } = await supabase
       .from("payment_sources")
       .update({ amount: newAmount })
-      .eq("id", sourceId);
+      .eq("id", baseSourceId);
 
     if (error) throw error;
   };
@@ -52,8 +55,10 @@ export const useTransactionOperations = (
     if (!user) return;
 
     try {
+      const baseSourceId = getBaseSourceId(transaction.source);
+      
       await updatePaymentSourceAmount(
-        transaction.source,
+        baseSourceId,
         Number(transaction.amount),
         transaction.type
       );
@@ -62,6 +67,7 @@ export const useTransactionOperations = (
         .from("transactions")
         .insert({
           ...transaction,
+          source: baseSourceId,
           user_id: user.id,
           date: new Date().toISOString(),
         });
@@ -100,7 +106,7 @@ export const useTransactionOperations = (
       );
 
       if (updates.amount !== undefined) {
-        const targetSource = updates.source || originalTransaction.source;
+        const targetSource = updates.source ? getBaseSourceId(updates.source) : originalTransaction.source;
         await updatePaymentSourceAmount(
           targetSource,
           Number(updates.amount),
@@ -112,6 +118,7 @@ export const useTransactionOperations = (
       // Convert Date to ISO string if it exists in updates
       const formattedUpdates = {
         ...updates,
+        source: updates.source ? getBaseSourceId(updates.source) : updates.source,
         date: updates.date ? new Date(updates.date).toISOString() : undefined
       };
 
