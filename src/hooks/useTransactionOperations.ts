@@ -25,6 +25,7 @@ export const useTransactionOperations = (
 
     let newAmount;
     if (isReversal) {
+      // For reversals (including rejections), we need to reverse the original transaction effect
       newAmount = type === "income" 
         ? Number(source.amount) - Number(amount)
         : Number(source.amount) + Number(amount);
@@ -57,11 +58,14 @@ export const useTransactionOperations = (
     try {
       const baseSourceId = getBaseSourceId(transaction.source);
       
-      await updatePaymentSourceAmount(
-        baseSourceId,
-        Number(transaction.amount),
-        transaction.type
-      );
+      // Only update payment source if it's not a rejected transaction
+      if (transaction.status !== 'rejected') {
+        await updatePaymentSourceAmount(
+          baseSourceId,
+          Number(transaction.amount),
+          transaction.type
+        );
+      }
 
       const { error: transactionError } = await supabase
         .from("transactions")
@@ -98,14 +102,33 @@ export const useTransactionOperations = (
 
       if (fetchError) throw fetchError;
 
-      await updatePaymentSourceAmount(
-        originalTransaction.source,
-        Number(originalTransaction.amount),
-        originalTransaction.type as TransactionType,
-        true
-      );
+      // If the transaction is being rejected, reverse its effect on the payment source
+      if (updates.status === 'rejected' && originalTransaction.status !== 'rejected') {
+        await updatePaymentSourceAmount(
+          originalTransaction.source,
+          Number(originalTransaction.amount),
+          originalTransaction.type as TransactionType,
+          true
+        );
+      }
+      // If a rejected transaction is being un-rejected, apply its effect
+      else if (originalTransaction.status === 'rejected' && updates.status && updates.status !== 'rejected') {
+        await updatePaymentSourceAmount(
+          originalTransaction.source,
+          Number(originalTransaction.amount),
+          originalTransaction.type as TransactionType,
+          false
+        );
+      }
+      // For normal updates (not involving rejection)
+      else if (updates.amount !== undefined && originalTransaction.status !== 'rejected') {
+        await updatePaymentSourceAmount(
+          originalTransaction.source,
+          Number(originalTransaction.amount),
+          originalTransaction.type as TransactionType,
+          true
+        );
 
-      if (updates.amount !== undefined) {
         const targetSource = updates.source ? getBaseSourceId(updates.source) : originalTransaction.source;
         await updatePaymentSourceAmount(
           targetSource,
@@ -150,12 +173,15 @@ export const useTransactionOperations = (
 
       if (fetchError) throw fetchError;
 
-      await updatePaymentSourceAmount(
-        transaction.source,
-        Number(transaction.amount),
-        transaction.type as TransactionType,
-        true
-      );
+      // Only reverse the payment source if the transaction wasn't rejected
+      if (transaction.status !== 'rejected') {
+        await updatePaymentSourceAmount(
+          transaction.source,
+          Number(transaction.amount),
+          transaction.type as TransactionType,
+          true
+        );
+      }
 
       const { error: deleteError } = await supabase
         .from("transactions")
