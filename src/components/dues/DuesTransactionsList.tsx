@@ -14,6 +14,7 @@ import { DueTransaction } from "@/types/dues";
 import { DuesStatusBadge } from "./DuesStatusBadge";
 import { DuesActionButtons } from "./DuesActionButtons";
 import { DuesPaymentSourceDialog } from "./DuesPaymentSourceDialog";
+import { getBaseSourceId } from "@/utils/paymentSourceUtils";
 
 export const DuesTransactionsList = () => {
   const { transactions, refreshData, addTransaction } = useFinance();
@@ -37,12 +38,15 @@ export const DuesTransactionsList = () => {
     if (!selectedTransaction) return;
 
     try {
+      const baseSourceId = getBaseSourceId(sourceId);
+      console.log("Processing payment with source:", sourceId, "base:", baseSourceId);
+
       // Create the repayment transaction
       await addTransaction({
         type: selectedTransaction.type === 'expense' ? 'income' : 'expense',
         amount: selectedTransaction.remaining_balance || selectedTransaction.amount,
         category: "Dues Repayment",
-        source: sourceId,
+        source: baseSourceId,
         description: `Repayment for: ${selectedTransaction.description}`,
         reference_type: "due_repayment",
         reference_id: selectedTransaction.id,
@@ -70,12 +74,15 @@ export const DuesTransactionsList = () => {
     }
 
     try {
+      const baseSourceId = getBaseSourceId(sourceId);
+      console.log("Processing partial payment with source:", sourceId, "base:", baseSourceId);
+
       // Create the partial repayment transaction
       await addTransaction({
         type: selectedTransaction.type === 'expense' ? 'income' : 'expense',
         amount: amount,
         category: "Dues Partial Repayment",
-        source: sourceId,
+        source: baseSourceId,
         description: `Partial repayment for: ${selectedTransaction.description}`,
         reference_type: "due_repayment",
         reference_id: selectedTransaction.id,
