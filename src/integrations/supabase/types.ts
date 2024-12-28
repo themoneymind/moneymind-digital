@@ -249,10 +249,16 @@ export type Database = {
           created_at: string
           date: string
           description: string | null
+          excuse_reason: string | null
           id: string
+          last_reminder_sent: string | null
+          next_reminder_date: string | null
           parent_transaction_id: string | null
           reference_id: string | null
           reference_type: string | null
+          remaining_balance: number | null
+          reminder_count: number | null
+          repayment_date: string | null
           source: string
           status: string | null
           type: string
@@ -265,10 +271,16 @@ export type Database = {
           created_at?: string
           date?: string
           description?: string | null
+          excuse_reason?: string | null
           id?: string
+          last_reminder_sent?: string | null
+          next_reminder_date?: string | null
           parent_transaction_id?: string | null
           reference_id?: string | null
           reference_type?: string | null
+          remaining_balance?: number | null
+          reminder_count?: number | null
+          repayment_date?: string | null
           source: string
           status?: string | null
           type: string
@@ -281,10 +293,16 @@ export type Database = {
           created_at?: string
           date?: string
           description?: string | null
+          excuse_reason?: string | null
           id?: string
+          last_reminder_sent?: string | null
+          next_reminder_date?: string | null
           parent_transaction_id?: string | null
           reference_id?: string | null
           reference_type?: string | null
+          remaining_balance?: number | null
+          reminder_count?: number | null
+          repayment_date?: string | null
           source?: string
           status?: string | null
           type?: string

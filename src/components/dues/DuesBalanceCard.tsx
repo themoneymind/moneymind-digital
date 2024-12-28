@@ -12,13 +12,13 @@ export const DuesBalanceCard = () => {
   // Calculate dues totals
   const duesGiven = duesTransactions.reduce((acc, curr) => {
     return curr.type === 'expense'
-      ? acc + Number(curr.amount) 
+      ? acc + Number(curr.remaining_balance || curr.amount)
       : acc;
   }, 0);
 
   const duesReceived = duesTransactions.reduce((acc, curr) => {
     return curr.type === 'income'
-      ? acc + Number(curr.amount) 
+      ? acc + Number(curr.remaining_balance || curr.amount)
       : acc;
   }, 0);
 

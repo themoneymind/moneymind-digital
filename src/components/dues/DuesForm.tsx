@@ -17,7 +17,7 @@ export const DuesForm = () => {
   const [type, setType] = useState<"given" | "received">("given");
   const [amount, setAmount] = useState("");
   const [personName, setPersonName] = useState("");
-  const [dueDate, setDueDate] = useState<Date>();
+  const [repaymentDate, setRepaymentDate] = useState<Date>();
   const [source, setSource] = useState("");
   const [description, setDescription] = useState("");
   const [upiId, setUpiId] = useState("");
@@ -26,7 +26,7 @@ export const DuesForm = () => {
   const formattedSources = getFormattedPaymentSources();
 
   const handleSubmit = async () => {
-    if (!amount || !personName || !source) {
+    if (!amount || !personName || !source || !repaymentDate) {
       toast.error("Please fill in all required fields");
       return;
     }
@@ -38,8 +38,8 @@ export const DuesForm = () => {
 
     setIsSubmitting(true);
     try {
-      const dueDescription = `Due ${type === "given" ? "Given" : "Received"}: ${description || "No description"}`;
-      const dueNote = `Person: ${personName}${upiId ? `, UPI: ${upiId}` : ''}${dueDate ? `, Due Date: ${format(dueDate, 'PP')}` : ''}`;
+      const dueDescription = `Due ${type === "given" ? "Given to" : "Received from"}: ${personName}`;
+      const dueNote = `${description || "No description"}${upiId ? `, UPI: ${upiId}` : ''}`;
 
       await addTransaction({
         type: type === "given" ? "expense" : "income",
@@ -49,12 +49,17 @@ export const DuesForm = () => {
         description: dueDescription,
         reference_type: "due",
         reference_id: crypto.randomUUID(),
+        status: 'pending',
+        repayment_date: repaymentDate.toISOString(),
+        remaining_balance: Number(amount),
+        next_reminder_date: repaymentDate.toISOString(),
+        reminder_count: 0,
       });
 
       // Reset form after successful submission
       setAmount("");
       setPersonName("");
-      setDueDate(undefined);
+      setRepaymentDate(undefined);
       setSource("");
       setDescription("");
       setUpiId("");
@@ -98,19 +103,20 @@ export const DuesForm = () => {
               variant="outline"
               className={cn(
                 "w-full h-14 justify-start text-left font-normal border-gray-200 rounded-[12px]",
-                !dueDate && "text-muted-foreground"
+                !repaymentDate && "text-muted-foreground"
               )}
             >
               <CalendarIcon className="mr-2 h-4 w-4" />
-              {dueDate ? format(dueDate, "PPP") : "Select due date"}
+              {repaymentDate ? format(repaymentDate, "PPP") : "Select repayment date"}
             </Button>
           </PopoverTrigger>
           <PopoverContent className="w-auto p-0" align="start">
             <Calendar
               mode="single"
-              selected={dueDate}
-              onSelect={setDueDate}
+              selected={repaymentDate}
+              onSelect={setRepaymentDate}
               initialFocus
+              disabled={(date) => date < new Date()}
             />
           </PopoverContent>
         </Popover>
