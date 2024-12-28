@@ -1,4 +1,4 @@
-import { Transaction as BaseTransaction } from "./transactions";
+import { Transaction as BaseTransaction, AuditTrailEntry } from "./transactions";
 
 export interface DueTransaction extends BaseTransaction {
   repayment_date?: string;
@@ -7,9 +7,6 @@ export interface DueTransaction extends BaseTransaction {
   next_reminder_date?: string;
   reminder_count?: number;
   last_reminder_sent?: string;
-  audit_trail?: {
-    action: string;
-    timestamp: string;
-  }[];
+  audit_trail?: AuditTrailEntry[];
   previous_status?: string;
 }

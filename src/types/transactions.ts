@@ -1,5 +1,10 @@
 export type TransactionType = "income" | "expense";
 
+export type AuditTrailEntry = {
+  action: string;
+  timestamp: string;
+};
+
 export type Transaction = {
   id: string;
   type: TransactionType;
@@ -15,10 +20,7 @@ export type Transaction = {
   reference_id?: string;
   status?: string;
   parent_transaction_id?: string;
-  audit_trail?: {
-    action: string;
-    timestamp: string;
-  }[];
+  audit_trail?: AuditTrailEntry[];
   previous_status?: string;
 };
 

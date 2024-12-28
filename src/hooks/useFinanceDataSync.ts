@@ -2,7 +2,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useTransactions } from "./useTransactions";
 import { usePaymentSources } from "./usePaymentSources";
 import { supabase } from "@/integrations/supabase/client";
-import { Transaction } from "@/types/transactions";
+import { Transaction, AuditTrailEntry } from "@/types/transactions";
 import { PaymentSource } from "@/types/finance";
 
 type DataSyncProps = {
@@ -25,10 +25,20 @@ export const useFinanceDataSync = ({
     
     try {
       setIsLoading(true);
-      const [txns, sources] = await Promise.all([
+      const [txnsData, sources] = await Promise.all([
         fetchTransactions(),
         fetchPaymentSources()
       ]);
+
+      // Transform the audit_trail to match our TypeScript type
+      const txns = txnsData.map(t => ({
+        ...t,
+        audit_trail: t.audit_trail?.map((entry: any) => ({
+          action: entry.action,
+          timestamp: entry.timestamp
+        })) as AuditTrailEntry[]
+      }));
+
       setTransactions(txns);
       setPaymentSources(sources);
     } catch (error) {

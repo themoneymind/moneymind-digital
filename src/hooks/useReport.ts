@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Transaction } from "@/types/transactions";
+import { Transaction, AuditTrailEntry } from "@/types/transactions";
 import { useTransactions } from "./useTransactions";
 import { format, startOfDay, startOfWeek, startOfMonth, startOfYear } from "date-fns";
 
@@ -16,7 +16,15 @@ export const useReport = () => {
       setIsLoading(true);
       try {
         const data = await fetchTransactions();
-        setTransactions(data);
+        // Transform the audit_trail to match our TypeScript type
+        const txns = data.map(t => ({
+          ...t,
+          audit_trail: t.audit_trail?.map((entry: any) => ({
+            action: entry.action,
+            timestamp: entry.timestamp
+          })) as AuditTrailEntry[]
+        }));
+        setTransactions(txns);
       } catch (error) {
         console.error("Error loading transactions:", error);
       } finally {

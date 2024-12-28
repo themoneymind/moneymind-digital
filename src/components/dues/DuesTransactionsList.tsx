@@ -229,6 +229,7 @@ export const DuesTransactionsList = () => {
         newRepaymentDate={newRepaymentDate}
         setNewRepaymentDate={setNewRepaymentDate}
         selectedTransaction={selectedTransaction}
+        setSelectedTransaction={setSelectedTransaction}
         handleExcuseSubmit={handleExcuseSubmit}
         handlePaymentSourceSelect={handlePaymentSourceSelect}
         handlePartialPaymentSourceSelect={handlePartialPaymentSourceSelect}
