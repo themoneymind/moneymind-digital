@@ -6,6 +6,7 @@ import { DueTransaction } from "@/types/dues";
 import { getBaseSourceId } from "@/utils/paymentSourceUtils";
 import { DuesTransactionItem } from "./DuesTransactionItem";
 import { DuesDialogs } from "./DuesDialogs";
+import { DeleteConfirmationDialog } from "./DeleteConfirmationDialog";
 
 export const DuesTransactionsList = () => {
   const { transactions, refreshData, addTransaction } = useFinance();
@@ -17,6 +18,7 @@ export const DuesTransactionsList = () => {
   const [showExcuseDialog, setShowExcuseDialog] = useState(false);
   const [newRepaymentDate, setNewRepaymentDate] = useState<Date>();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat("en-IN", {
@@ -177,6 +179,32 @@ export const DuesTransactionsList = () => {
     }
   };
 
+  const handleDelete = async (transaction: DueTransaction) => {
+    setSelectedTransaction(transaction);
+    setShowDeleteDialog(true);
+  };
+
+  const confirmDelete = async () => {
+    if (!selectedTransaction) return;
+
+    try {
+      const { error } = await supabase
+        .from('transactions')
+        .delete()
+        .eq('id', selectedTransaction.id);
+
+      if (error) throw error;
+
+      await refreshData();
+      toast.success("Transaction deleted successfully");
+      setShowDeleteDialog(false);
+      setSelectedTransaction(null);
+    } catch (error) {
+      console.error("Error deleting transaction:", error);
+      toast.error("Failed to delete transaction");
+    }
+  };
+
   // Filter only due transactions
   const dueTransactions = transactions.filter(
     transaction => transaction.reference_type === 'due'
@@ -209,6 +237,7 @@ export const DuesTransactionsList = () => {
               }}
               onReject={(id) => updateTransactionStatus(id, 'rejected')}
               onUndo={handleUndo}
+              onDelete={handleDelete}
               formatCurrency={formatCurrency}
             />
           ))
@@ -235,6 +264,16 @@ export const DuesTransactionsList = () => {
         handlePartialPaymentSourceSelect={handlePartialPaymentSourceSelect}
         isDropdownOpen={isDropdownOpen}
         setIsDropdownOpen={setIsDropdownOpen}
+      />
+
+      <DeleteConfirmationDialog
+        isOpen={showDeleteDialog}
+        onClose={() => {
+          setShowDeleteDialog(false);
+          setSelectedTransaction(null);
+        }}
+        onConfirm={confirmDelete}
+        amount={selectedTransaction?.amount || 0}
       />
     </div>
   );

@@ -10,6 +10,7 @@ type DuesTransactionItemProps = {
   onReschedule: (transaction: DueTransaction) => void;
   onReject: (id: string) => void;
   onUndo: (transaction: DueTransaction) => void;
+  onDelete: (transaction: DueTransaction) => void;
   formatCurrency: (amount: number) => string;
 };
 
@@ -20,6 +21,7 @@ export const DuesTransactionItem = ({
   onReschedule,
   onReject,
   onUndo,
+  onDelete,
   formatCurrency,
 }: DuesTransactionItemProps) => {
   return (
@@ -67,6 +69,7 @@ export const DuesTransactionItem = ({
         onReschedule={onReschedule}
         onReject={onReject}
         onUndo={onUndo}
+        onDelete={onDelete}
       />
     </div>
   );
