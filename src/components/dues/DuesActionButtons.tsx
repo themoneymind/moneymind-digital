@@ -1,7 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { CheckCircle2, XCircle, Percent, Calendar, RotateCcw, Trash2 } from "lucide-react";
 import { DueTransaction } from "@/types/dues";
-import { cn } from "@/lib/utils";
 
 type DuesActionButtonsProps = {
   transaction: DueTransaction;
@@ -23,7 +22,6 @@ export const DuesActionButtons = ({
   onDelete,
 }: DuesActionButtonsProps) => {
   const isCompleted = transaction.status === 'completed';
-  const isRejected = transaction.status === 'rejected';
   const showUndo = isCompleted && transaction.previous_status;
   const canDelete = !transaction.status || transaction.status === 'pending';
 
@@ -32,7 +30,7 @@ export const DuesActionButtons = ({
       <Button 
         variant="outline" 
         size="sm"
-        className="w-full gap-2 rounded-xl hover:bg-blue-50"
+        className="w-full gap-2"
         onClick={() => onUndo(transaction)}
       >
         <RotateCcw className="w-4 h-4 text-blue-600" />
@@ -43,16 +41,13 @@ export const DuesActionButtons = ({
 
   return (
     <div className="space-y-2">
-      <div className="grid grid-cols-2 gap-2">
+      <div className="flex gap-2">
         <Button 
           variant="outline" 
           size="sm"
-          className={cn(
-            "rounded-xl gap-2",
-            !isRejected && "hover:bg-green-50"
-          )}
+          className="flex-1 gap-2"
           onClick={() => onComplete(transaction)}
-          disabled={isCompleted || isRejected}
+          disabled={isCompleted}
         >
           <CheckCircle2 className="w-4 h-4 text-green-600" />
           Complete
@@ -60,27 +55,21 @@ export const DuesActionButtons = ({
         <Button 
           variant="outline" 
           size="sm"
-          className={cn(
-            "rounded-xl gap-2",
-            !isRejected && "hover:bg-yellow-50"
-          )}
+          className="flex-1 gap-2"
           onClick={() => onPartial(transaction)}
-          disabled={isCompleted || isRejected}
+          disabled={isCompleted}
         >
           <Percent className="w-4 h-4 text-yellow-600" />
           Partial
         </Button>
       </div>
-      <div className="grid grid-cols-2 gap-2">
+      <div className="flex gap-2">
         <Button 
           variant="outline" 
           size="sm"
-          className={cn(
-            "rounded-xl gap-2",
-            !isRejected && "hover:bg-blue-50"
-          )}
+          className="flex-1 gap-2"
           onClick={() => onReschedule(transaction)}
-          disabled={isCompleted || isRejected}
+          disabled={isCompleted}
         >
           <Calendar className="w-4 h-4 text-blue-600" />
           Reschedule
@@ -88,12 +77,9 @@ export const DuesActionButtons = ({
         <Button 
           variant="outline" 
           size="sm"
-          className={cn(
-            "rounded-xl gap-2",
-            isRejected ? "bg-red-50 border-red-100" : "hover:bg-red-50"
-          )}
+          className="flex-1 gap-2"
           onClick={() => onReject(transaction.id)}
-          disabled={isCompleted || isRejected}
+          disabled={transaction.status === 'rejected'}
         >
           <XCircle className="w-4 h-4 text-red-600" />
           Reject
@@ -103,7 +89,7 @@ export const DuesActionButtons = ({
         <Button 
           variant="outline" 
           size="sm"
-          className="w-full gap-2 rounded-xl border-red-200 hover:bg-red-50"
+          className="w-full gap-2 border-red-200 hover:bg-red-50"
           onClick={() => onDelete(transaction)}
         >
           <Trash2 className="w-4 h-4 text-red-600" />
