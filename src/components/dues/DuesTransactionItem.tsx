@@ -4,6 +4,7 @@ import { DuesStatusBadge } from "./DuesStatusBadge";
 import { DuesActionButtons } from "./DuesActionButtons";
 import { DuesTransactionAmount } from "./DuesTransactionAmount";
 import { Calendar, Clock } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 type DuesTransactionItemProps = {
   transaction: DueTransaction;

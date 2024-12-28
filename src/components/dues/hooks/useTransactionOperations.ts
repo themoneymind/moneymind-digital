@@ -2,9 +2,52 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useFinance } from "@/contexts/FinanceContext";
+import { DueTransaction } from "@/types/dues";
 
 export const useTransactionOperations = () => {
-  const { refreshData, addTransaction } = useFinance();
+  const { refreshData } = useFinance();
+  const [selectedTransaction, setSelectedTransaction] = useState<DueTransaction | null>(null);
+  const [showPaymentSourceDialog, setShowPaymentSourceDialog] = useState(false);
+  const [partialAmount, setPartialAmount] = useState("");
+  const [excuseReason, setExcuseReason] = useState("");
+  const [showExcuseDialog, setShowExcuseDialog] = useState(false);
+  const [newRepaymentDate, setNewRepaymentDate] = useState<Date>();
+
+  const getBaseSourceId = (sourceId: string) => {
+    return sourceId.split('-')[0];
+  };
+
+  const updateTransactionStatus = async (id: string, status: string, updates: any = {}) => {
+    try {
+      const { data: currentTransaction } = await supabase
+        .from('transactions')
+        .select('status, audit_trail')
+        .eq('id', id)
+        .single();
+
+      const auditEntry = {
+        action: `Status changed from ${currentTransaction.status} to ${status}`,
+        timestamp: new Date().toISOString(),
+      };
+
+      const { error } = await supabase
+        .from('transactions')
+        .update({ 
+          status,
+          previous_status: currentTransaction.status,
+          audit_trail: [...(currentTransaction.audit_trail || []), auditEntry],
+          ...updates,
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', id);
+
+      if (error) throw error;
+      await refreshData();
+    } catch (error) {
+      console.error("Error updating transaction status:", error);
+      throw error;
+    }
+  };
 
   const handlePaymentSource = async (sourceId: string) => {
     if (!selectedTransaction) return;
@@ -13,7 +56,7 @@ export const useTransactionOperations = () => {
       const baseSourceId = getBaseSourceId(sourceId);
       console.log("Processing payment with source:", sourceId, "base:", baseSourceId);
 
-      await addTransaction({
+      await supabase.from("transactions").insert({
         type: selectedTransaction.type === 'expense' ? 'income' : 'expense',
         amount: selectedTransaction.remaining_balance || selectedTransaction.amount,
         category: "Dues Repayment",
@@ -30,6 +73,7 @@ export const useTransactionOperations = () => {
       setShowPaymentSourceDialog(false);
       setSelectedTransaction(null);
       toast.success("Payment completed successfully");
+      await refreshData();
     } catch (error) {
       console.error("Error processing payment:", error);
       toast.error("Failed to process payment");
@@ -49,7 +93,7 @@ export const useTransactionOperations = () => {
       const baseSourceId = getBaseSourceId(sourceId);
       console.log("Processing partial payment with source:", sourceId, "base:", baseSourceId);
 
-      await addTransaction({
+      await supabase.from("transactions").insert({
         type: selectedTransaction.type === 'expense' ? 'income' : 'expense',
         amount: amount,
         category: "Dues Partial Repayment",
@@ -68,6 +112,7 @@ export const useTransactionOperations = () => {
       setShowPaymentSourceDialog(false);
       setSelectedTransaction(null);
       toast.success("Partial payment processed successfully");
+      await refreshData();
     } catch (error) {
       console.error("Error processing partial payment:", error);
       toast.error("Failed to process partial payment");
@@ -87,9 +132,23 @@ export const useTransactionOperations = () => {
     setExcuseReason("");
     setNewRepaymentDate(undefined);
     setSelectedTransaction(null);
+    toast.success("Payment rescheduled successfully");
+    await refreshData();
   };
 
   return {
+    selectedTransaction,
+    setSelectedTransaction,
+    showPaymentSourceDialog,
+    setShowPaymentSourceDialog,
+    partialAmount,
+    setPartialAmount,
+    excuseReason,
+    setExcuseReason,
+    showExcuseDialog,
+    setShowExcuseDialog,
+    newRepaymentDate,
+    setNewRepaymentDate,
     handlePaymentSource,
     handlePartialPayment,
     handleExcuse,

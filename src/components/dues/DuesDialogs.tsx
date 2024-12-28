@@ -10,51 +10,41 @@ import { DueTransaction } from "@/types/dues";
 import { DuesPaymentSourceDialog } from "./DuesPaymentSourceDialog";
 
 type DuesDialogsProps = {
-  showPartialDialog: boolean;
-  setShowPartialDialog: (show: boolean) => void;
-  showPaymentSourceDialog: boolean;
-  setShowPaymentSourceDialog: (show: boolean) => void;
-  showExcuseDialog: boolean;
-  setShowExcuseDialog: (show: boolean) => void;
-  partialAmount: string;
-  setPartialAmount: (amount: string) => void;
-  excuseReason: string;
-  setExcuseReason: (reason: string) => void;
-  newRepaymentDate: Date | undefined;
-  setNewRepaymentDate: (date: Date | undefined) => void;
-  selectedTransaction: DueTransaction | null;
-  setSelectedTransaction: (transaction: DueTransaction | null) => void;
-  handleExcuseSubmit: () => Promise<void>;
-  handlePaymentSourceSelect: (sourceId: string) => Promise<void>;
-  handlePartialPaymentSourceSelect: (sourceId: string) => Promise<void>;
-  isDropdownOpen: boolean;
-  setIsDropdownOpen: (open: boolean) => void;
+  dialogState: {
+    selectedTransaction: DueTransaction | null;
+    showPartialDialog: boolean;
+    showPaymentSourceDialog: boolean;
+    partialAmount: string;
+    excuseReason: string;
+    showExcuseDialog: boolean;
+    newRepaymentDate: Date | undefined;
+    isDropdownOpen: boolean;
+  };
+  handlers: {
+    setSelectedTransaction: (transaction: DueTransaction | null) => void;
+    setShowPartialDialog: (show: boolean) => void;
+    setShowPaymentSourceDialog: (show: boolean) => void;
+    setPartialAmount: (amount: string) => void;
+    setExcuseReason: (reason: string) => void;
+    setShowExcuseDialog: (show: boolean) => void;
+    setNewRepaymentDate: (date: Date | undefined) => void;
+    setIsDropdownOpen: (open: boolean) => void;
+  };
+  onPaymentSourceSelect: (sourceId: string) => Promise<void>;
+  onPartialPaymentSourceSelect: (sourceId: string) => Promise<void>;
+  onExcuseSubmit: () => Promise<void>;
 };
 
 export const DuesDialogs = ({
-  showPartialDialog,
-  setShowPartialDialog,
-  showPaymentSourceDialog,
-  setShowPaymentSourceDialog,
-  showExcuseDialog,
-  setShowExcuseDialog,
-  partialAmount,
-  setPartialAmount,
-  excuseReason,
-  setExcuseReason,
-  newRepaymentDate,
-  setNewRepaymentDate,
-  selectedTransaction,
-  setSelectedTransaction,
-  handleExcuseSubmit,
-  handlePaymentSourceSelect,
-  handlePartialPaymentSourceSelect,
-  isDropdownOpen,
-  setIsDropdownOpen,
+  dialogState,
+  handlers,
+  onPaymentSourceSelect,
+  onPartialPaymentSourceSelect,
+  onExcuseSubmit,
 }: DuesDialogsProps) => {
   return (
     <>
-      <Dialog open={showPartialDialog} onOpenChange={setShowPartialDialog}>
+      <Dialog open={dialogState.showPartialDialog} onOpenChange={handlers.setShowPartialDialog}>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Enter Partial Payment Amount</DialogTitle>
@@ -66,18 +56,18 @@ export const DuesDialogs = ({
                 type="number"
                 placeholder="0"
                 className="pl-8"
-                value={partialAmount}
-                onChange={(e) => setPartialAmount(e.target.value)}
+                value={dialogState.partialAmount}
+                onChange={(e) => handlers.setPartialAmount(e.target.value)}
               />
             </div>
             <Button 
               className="w-full"
               onClick={() => {
-                if (selectedTransaction) {
-                  setShowPaymentSourceDialog(true);
+                if (dialogState.selectedTransaction) {
+                  handlers.setShowPaymentSourceDialog(true);
                 }
               }}
-              disabled={!partialAmount}
+              disabled={!dialogState.partialAmount}
             >
               Select Payment Source
             </Button>
@@ -86,17 +76,17 @@ export const DuesDialogs = ({
       </Dialog>
 
       <DuesPaymentSourceDialog
-        isOpen={showPaymentSourceDialog}
+        isOpen={dialogState.showPaymentSourceDialog}
         onClose={() => {
-          setShowPaymentSourceDialog(false);
-          setShowPartialDialog(false);
-          setSelectedTransaction(null);
+          handlers.setShowPaymentSourceDialog(false);
+          handlers.setShowPartialDialog(false);
+          handlers.setSelectedTransaction(null);
         }}
-        onConfirm={partialAmount ? handlePartialPaymentSourceSelect : handlePaymentSourceSelect}
-        title={`Select ${selectedTransaction?.type === 'expense' ? 'Repayment' : 'Payment'} Source`}
+        onConfirm={dialogState.partialAmount ? onPartialPaymentSourceSelect : onPaymentSourceSelect}
+        title={`Select ${dialogState.selectedTransaction?.type === 'expense' ? 'Repayment' : 'Payment'} Source`}
       />
 
-      <Dialog open={showExcuseDialog} onOpenChange={setShowExcuseDialog}>
+      <Dialog open={dialogState.showExcuseDialog} onOpenChange={handlers.setShowExcuseDialog}>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Reschedule Payment</DialogTitle>
@@ -104,8 +94,8 @@ export const DuesDialogs = ({
           <div className="space-y-4 p-4">
             <Input
               placeholder="Reason for rescheduling"
-              value={excuseReason}
-              onChange={(e) => setExcuseReason(e.target.value)}
+              value={dialogState.excuseReason}
+              onChange={(e) => handlers.setExcuseReason(e.target.value)}
             />
             <Popover>
               <PopoverTrigger asChild>
@@ -113,18 +103,18 @@ export const DuesDialogs = ({
                   variant="outline"
                   className={cn(
                     "w-full justify-start text-left font-normal",
-                    !newRepaymentDate && "text-muted-foreground"
+                    !dialogState.newRepaymentDate && "text-muted-foreground"
                   )}
                 >
                   <CalendarIcon className="mr-2 h-4 w-4" />
-                  {newRepaymentDate ? format(newRepaymentDate, "PPP") : "Select new date"}
+                  {dialogState.newRepaymentDate ? format(dialogState.newRepaymentDate, "PPP") : "Select new date"}
                 </Button>
               </PopoverTrigger>
               <PopoverContent className="w-auto p-0" align="start">
                 <Calendar
                   mode="single"
-                  selected={newRepaymentDate}
-                  onSelect={setNewRepaymentDate}
+                  selected={dialogState.newRepaymentDate}
+                  onSelect={handlers.setNewRepaymentDate}
                   initialFocus
                   disabled={(date) => date < new Date()}
                 />
@@ -132,7 +122,7 @@ export const DuesDialogs = ({
             </Popover>
             <Button 
               className="w-full"
-              onClick={handleExcuseSubmit}
+              onClick={onExcuseSubmit}
             >
               Confirm Reschedule
             </Button>
