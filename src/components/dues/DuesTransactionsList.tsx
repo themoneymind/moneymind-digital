@@ -1,134 +1,38 @@
 import { useFinance } from "@/contexts/FinanceContext";
-import { useState } from "react";
-import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { DueTransaction } from "@/types/dues";
-import { getBaseSourceId } from "@/utils/paymentSourceUtils";
+import { toast } from "sonner";
 import { DuesTransactionItem } from "./DuesTransactionItem";
 import { DuesDialogs } from "./DuesDialogs";
 import { DeleteConfirmationDialog } from "./DeleteConfirmationDialog";
+import { useDuesOperations } from "@/hooks/useDuesOperations";
+import { formatDuesCurrency } from "@/utils/duesUtils";
 
 export const DuesTransactionsList = () => {
-  const { transactions, refreshData, addTransaction } = useFinance();
-  const [selectedTransaction, setSelectedTransaction] = useState<DueTransaction | null>(null);
-  const [showPartialDialog, setShowPartialDialog] = useState(false);
-  const [showPaymentSourceDialog, setShowPaymentSourceDialog] = useState(false);
-  const [partialAmount, setPartialAmount] = useState("");
-  const [excuseReason, setExcuseReason] = useState("");
-  const [showExcuseDialog, setShowExcuseDialog] = useState(false);
-  const [newRepaymentDate, setNewRepaymentDate] = useState<Date>();
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
-
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat("en-IN", {
-      style: "currency",
-      currency: "INR",
-      maximumFractionDigits: 0,
-    }).format(amount);
-  };
-
-  const updateTransactionStatus = async (id: string, status: string, updates: any = {}) => {
-    try {
-      const { data: currentTransaction } = await supabase
-        .from('transactions')
-        .select('status, audit_trail')
-        .eq('id', id)
-        .single();
-
-      const auditEntry = {
-        action: `Status changed from ${currentTransaction.status} to ${status}`,
-        timestamp: new Date().toISOString(),
-      };
-
-      const { error } = await supabase
-        .from('transactions')
-        .update({ 
-          status,
-          previous_status: currentTransaction.status,
-          audit_trail: [...(currentTransaction.audit_trail || []), auditEntry],
-          ...updates,
-          updated_at: new Date().toISOString()
-        })
-        .eq('id', id);
-
-      if (error) throw error;
-
-      await refreshData();
-      toast.success(`Due marked as ${status}`);
-    } catch (error) {
-      console.error("Error updating transaction status:", error);
-      toast.error("Failed to update status");
-    }
-  };
-
-  const handlePaymentSourceSelect = async (sourceId: string) => {
-    if (!selectedTransaction) return;
-
-    try {
-      const baseSourceId = getBaseSourceId(sourceId);
-      console.log("Processing payment with source:", sourceId, "base:", baseSourceId);
-
-      await addTransaction({
-        type: selectedTransaction.type === 'expense' ? 'income' : 'expense',
-        amount: selectedTransaction.remaining_balance || selectedTransaction.amount,
-        category: "Dues Repayment",
-        source: baseSourceId,
-        description: `Repayment for: ${selectedTransaction.description}`,
-        reference_type: "due_repayment",
-        reference_id: selectedTransaction.id,
-      });
-
-      await updateTransactionStatus(selectedTransaction.id, 'completed', {
-        remaining_balance: 0
-      });
-
-      setShowPaymentSourceDialog(false);
-      setSelectedTransaction(null);
-      toast.success("Payment completed successfully");
-    } catch (error) {
-      console.error("Error processing payment:", error);
-      toast.error("Failed to process payment");
-    }
-  };
-
-  const handlePartialPaymentSourceSelect = async (sourceId: string) => {
-    if (!selectedTransaction || !partialAmount) return;
-
-    const amount = Number(partialAmount);
-    if (isNaN(amount) || amount <= 0 || amount >= (selectedTransaction.remaining_balance || selectedTransaction.amount)) {
-      toast.error("Please enter a valid partial amount");
-      return;
-    }
-
-    try {
-      const baseSourceId = getBaseSourceId(sourceId);
-      console.log("Processing partial payment with source:", sourceId, "base:", baseSourceId);
-
-      await addTransaction({
-        type: selectedTransaction.type === 'expense' ? 'income' : 'expense',
-        amount: amount,
-        category: "Dues Partial Repayment",
-        source: baseSourceId,
-        description: `Partial repayment for: ${selectedTransaction.description}`,
-        reference_type: "due_repayment",
-        reference_id: selectedTransaction.id,
-      });
-
-      await updateTransactionStatus(selectedTransaction.id, 'partially_paid', {
-        remaining_balance: (selectedTransaction.remaining_balance || selectedTransaction.amount) - amount
-      });
-
-      setShowPartialDialog(false);
-      setPartialAmount("");
-      setShowPaymentSourceDialog(false);
-      setSelectedTransaction(null);
-      toast.success("Partial payment processed successfully");
-    } catch (error) {
-      console.error("Error processing partial payment:", error);
-      toast.error("Failed to process partial payment");
-    }
-  };
+  const { transactions, refreshData } = useFinance();
+  const {
+    selectedTransaction,
+    setSelectedTransaction,
+    showPartialDialog,
+    setShowPartialDialog,
+    showPaymentSourceDialog,
+    setShowPaymentSourceDialog,
+    showExcuseDialog,
+    setShowExcuseDialog,
+    showDeleteDialog,
+    setShowDeleteDialog,
+    partialAmount,
+    setPartialAmount,
+    excuseReason,
+    setExcuseReason,
+    newRepaymentDate,
+    setNewRepaymentDate,
+    isDropdownOpen,
+    setIsDropdownOpen,
+    updateTransactionStatus,
+    handlePaymentSourceSelect,
+    handlePartialPaymentSourceSelect,
+  } = useDuesOperations(refreshData);
 
   const handleExcuseSubmit = async () => {
     if (!selectedTransaction || !excuseReason || !newRepaymentDate) return;
@@ -149,7 +53,6 @@ export const DuesTransactionsList = () => {
     if (!transaction.previous_status) return;
 
     try {
-      // Find and reverse the repayment transaction
       const { data: repaymentTransaction } = await supabase
         .from('transactions')
         .select('*')
@@ -166,7 +69,6 @@ export const DuesTransactionsList = () => {
           .eq('id', repaymentTransaction.id);
       }
 
-      // Restore the original transaction status
       await updateTransactionStatus(transaction.id, transaction.previous_status, {
         remaining_balance: transaction.amount,
         previous_status: null
@@ -238,7 +140,7 @@ export const DuesTransactionsList = () => {
               onReject={(id) => updateTransactionStatus(id, 'rejected')}
               onUndo={handleUndo}
               onDelete={handleDelete}
-              formatCurrency={formatCurrency}
+              formatCurrency={formatDuesCurrency}
             />
           ))
         )}
