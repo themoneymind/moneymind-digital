@@ -7,16 +7,19 @@ import { useState } from "react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
+import { CalendarIcon } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { DueTransaction } from "@/types/dues";
 import { DuesStatusBadge } from "./DuesStatusBadge";
 import { DuesActionButtons } from "./DuesActionButtons";
+import { DuesPaymentSourceDialog } from "./DuesPaymentSourceDialog";
 
 export const DuesTransactionsList = () => {
-  const { transactions, refreshData } = useFinance();
+  const { transactions, refreshData, addTransaction } = useFinance();
   const [selectedTransaction, setSelectedTransaction] = useState<DueTransaction | null>(null);
   const [showPartialDialog, setShowPartialDialog] = useState(false);
+  const [showPaymentSourceDialog, setShowPaymentSourceDialog] = useState(false);
   const [partialAmount, setPartialAmount] = useState("");
   const [excuseReason, setExcuseReason] = useState("");
   const [showExcuseDialog, setShowExcuseDialog] = useState(false);
@@ -28,6 +31,68 @@ export const DuesTransactionsList = () => {
       currency: "INR",
       maximumFractionDigits: 0,
     }).format(amount);
+  };
+
+  const handlePaymentSourceSelect = async (sourceId: string) => {
+    if (!selectedTransaction) return;
+
+    try {
+      // Create the repayment transaction
+      await addTransaction({
+        type: selectedTransaction.type === 'expense' ? 'income' : 'expense',
+        amount: selectedTransaction.remaining_balance || selectedTransaction.amount,
+        category: "Dues Repayment",
+        source: sourceId,
+        description: `Repayment for: ${selectedTransaction.description}`,
+        reference_type: "due_repayment",
+        reference_id: selectedTransaction.id,
+      });
+
+      // Update the due transaction status
+      await updateTransactionStatus(selectedTransaction.id, 'completed', {
+        remaining_balance: 0
+      });
+
+      toast.success("Payment completed successfully");
+    } catch (error) {
+      console.error("Error processing payment:", error);
+      toast.error("Failed to process payment");
+    }
+  };
+
+  const handlePartialPaymentSourceSelect = async (sourceId: string) => {
+    if (!selectedTransaction || !partialAmount) return;
+
+    const amount = Number(partialAmount);
+    if (isNaN(amount) || amount <= 0 || amount >= (selectedTransaction.remaining_balance || selectedTransaction.amount)) {
+      toast.error("Please enter a valid partial amount");
+      return;
+    }
+
+    try {
+      // Create the partial repayment transaction
+      await addTransaction({
+        type: selectedTransaction.type === 'expense' ? 'income' : 'expense',
+        amount: amount,
+        category: "Dues Partial Repayment",
+        source: sourceId,
+        description: `Partial repayment for: ${selectedTransaction.description}`,
+        reference_type: "due_repayment",
+        reference_id: selectedTransaction.id,
+      });
+
+      // Update the due transaction status
+      await updateTransactionStatus(selectedTransaction.id, 'partially_paid', {
+        remaining_balance: (selectedTransaction.remaining_balance || selectedTransaction.amount) - amount
+      });
+
+      setShowPartialDialog(false);
+      setPartialAmount("");
+      toast.success("Partial payment processed successfully");
+    } catch (error) {
+      console.error("Error processing partial payment:", error);
+      toast.error("Failed to process partial payment");
+    }
   };
 
   const updateTransactionStatus = async (id: string, status: string, updates: any = {}) => {
@@ -51,28 +116,14 @@ export const DuesTransactionsList = () => {
     }
   };
 
-  const handleComplete = async (id: string) => {
-    await updateTransactionStatus(id, 'completed', {
-      remaining_balance: 0
-    });
+  const handleComplete = async (transaction: DueTransaction) => {
+    setSelectedTransaction(transaction);
+    setShowPaymentSourceDialog(true);
   };
 
-  const handlePartialSubmit = async () => {
-    if (!selectedTransaction || !partialAmount) return;
-
-    const amount = Number(partialAmount);
-    if (isNaN(amount) || amount <= 0 || amount >= selectedTransaction.remaining_balance!) {
-      toast.error("Please enter a valid partial amount");
-      return;
-    }
-
-    await updateTransactionStatus(selectedTransaction.id, 'partially_paid', {
-      remaining_balance: selectedTransaction.remaining_balance! - amount
-    });
-
-    setShowPartialDialog(false);
-    setPartialAmount("");
-    setSelectedTransaction(null);
+  const handlePartial = (transaction: DueTransaction) => {
+    setSelectedTransaction(transaction);
+    setShowPartialDialog(true);
   };
 
   const handleExcuseSubmit = async () => {
@@ -146,10 +197,7 @@ export const DuesTransactionsList = () => {
               <DuesActionButtons
                 transaction={transaction}
                 onComplete={handleComplete}
-                onPartial={(t) => {
-                  setSelectedTransaction(t);
-                  setShowPartialDialog(true);
-                }}
+                onPartial={handlePartial}
                 onReschedule={(t) => {
                   setSelectedTransaction(t);
                   setShowExcuseDialog(true);
@@ -180,13 +228,30 @@ export const DuesTransactionsList = () => {
             </div>
             <Button 
               className="w-full"
-              onClick={handlePartialSubmit}
+              onClick={() => {
+                if (selectedTransaction) {
+                  setShowPaymentSourceDialog(true);
+                }
+              }}
+              disabled={!partialAmount}
             >
-              Confirm Partial Payment
+              Select Payment Source
             </Button>
           </div>
         </DialogContent>
       </Dialog>
+
+      {/* Payment Source Dialog */}
+      <DuesPaymentSourceDialog
+        isOpen={showPaymentSourceDialog}
+        onClose={() => {
+          setShowPaymentSourceDialog(false);
+          setShowPartialDialog(false);
+          setSelectedTransaction(null);
+        }}
+        onConfirm={partialAmount ? handlePartialPaymentSourceSelect : handlePaymentSourceSelect}
+        title={`Select ${selectedTransaction?.type === 'expense' ? 'Repayment' : 'Payment'} Source`}
+      />
 
       {/* Excuse Dialog */}
       <Dialog open={showExcuseDialog} onOpenChange={setShowExcuseDialog}>
@@ -209,7 +274,7 @@ export const DuesTransactionsList = () => {
                     !newRepaymentDate && "text-muted-foreground"
                   )}
                 >
-                  <Calendar className="mr-2 h-4 w-4" />
+                  <CalendarIcon className="mr-2 h-4 w-4" />
                   {newRepaymentDate ? format(newRepaymentDate, "PPP") : "Select new date"}
                 </Button>
               </PopoverTrigger>
