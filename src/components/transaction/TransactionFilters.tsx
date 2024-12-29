@@ -46,12 +46,17 @@ export const TransactionFilters = ({
             <Calendar className="h-4 w-4" />
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-auto p-0" align="start">
+        <PopoverContent 
+          className="w-auto p-0 bg-white border border-gray-200 shadow-lg rounded-[12px]" 
+          align="start"
+          side="bottom"
+        >
           <CalendarComponent
             mode="single"
             selected={currentMonth}
             onSelect={handleDateSelect}
             initialFocus
+            className="bg-white"
           />
         </PopoverContent>
       </Popover>
@@ -66,9 +71,11 @@ export const TransactionFilters = ({
             <Filter className="h-4 w-4" />
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent
-          align="end"
+        <DropdownMenuContent 
+          align="end" 
           className="w-56 bg-white border border-gray-200 shadow-lg rounded-[12px] p-1"
+          side="bottom"
+          sideOffset={5}
         >
           <DropdownMenuItem onClick={() => setFilter("all")}>
             All Transactions
@@ -93,20 +100,9 @@ export const TransactionFilters = ({
             Credit Card
           </DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem>Amount: ₹0-1000</DropdownMenuItem>
-          <DropdownMenuItem>Amount: ₹1000-5000</DropdownMenuItem>
-          <DropdownMenuItem>Amount: ₹5000+</DropdownMenuItem>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem>Morning Transactions</DropdownMenuItem>
-          <DropdownMenuItem>Afternoon Transactions</DropdownMenuItem>
-          <DropdownMenuItem>Evening Transactions</DropdownMenuItem>
-          <DropdownMenuItem>Night Transactions</DropdownMenuItem>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem>Pending Transactions</DropdownMenuItem>
-          <DropdownMenuItem>Completed Transactions</DropdownMenuItem>
-          <DropdownMenuItem>Failed Transactions</DropdownMenuItem>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem>Recurring Transactions</DropdownMenuItem>
+          <DropdownMenuItem onClick={() => {}}>Amount: ₹0-1000</DropdownMenuItem>
+          <DropdownMenuItem onClick={() => {}}>Amount: ₹1000-5000</DropdownMenuItem>
+          <DropdownMenuItem onClick={() => {}}>Amount: ₹5000+</DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
     </div>
