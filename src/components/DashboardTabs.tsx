@@ -36,7 +36,6 @@ export const DashboardTabs = () => {
           <MonthSelector />
           <BalanceCard />
           <PaymentSources />
-          <RecentTransactions />
         </div>
       </TabsContent>
 
