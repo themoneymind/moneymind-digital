@@ -12,8 +12,10 @@ import { cn } from "@/lib/utils";
 import { DuesMessage } from "./DuesMessage";
 import { toast } from "sonner";
 import { DueTransaction } from "@/types/dues";
+import { useAuth } from "@/contexts/AuthContext";
 
 export const DuesForm = () => {
+  const { user } = useAuth();
   const { getFormattedPaymentSources, addTransaction } = useFinance();
   const [type, setType] = useState<"given" | "received">("given");
   const [amount, setAmount] = useState("");
@@ -27,7 +29,7 @@ export const DuesForm = () => {
   const formattedSources = getFormattedPaymentSources();
 
   const handleSubmit = async () => {
-    if (!amount || !personName || !source || !repaymentDate) {
+    if (!amount || !personName || !source || !repaymentDate || !user) {
       toast.error("Please fill in all required fields");
       return;
     }
@@ -43,7 +45,7 @@ export const DuesForm = () => {
       const dueNote = `${description || "No description"}${upiId ? `, UPI: ${upiId}` : ''}`;
       const currentDate = new Date();
 
-      await addTransaction({
+      const newTransaction: Omit<DueTransaction, 'id' | 'created_at' | 'updated_at'> = {
         type: type === "given" ? "expense" : "income",
         amount: Number(amount),
         category: "Dues",
@@ -52,12 +54,15 @@ export const DuesForm = () => {
         reference_type: "due",
         reference_id: crypto.randomUUID(),
         status: 'pending',
-        date: currentDate.toISOString(), // Set current date as given/received date
+        date: currentDate,
+        user_id: user.id,
         repayment_date: repaymentDate.toISOString(),
         remaining_balance: Number(amount),
         next_reminder_date: repaymentDate.toISOString(),
         reminder_count: 0,
-      } as DueTransaction);
+      };
+
+      await addTransaction(newTransaction);
 
       // Reset form after successful submission
       setAmount("");
