@@ -39,7 +39,7 @@ export const DashboardTabs = () => {
         </div>
       </TabsContent>
 
-      <TabsContent value="credit-cards" className="mt-6 h-[calc(100vh-14rem)] overflow-y-auto">
+      <TabsContent value="credit-cards" className="mt-6">
         <div className="px-6">
           <MonthSelector />
         </div>
@@ -50,7 +50,7 @@ export const DashboardTabs = () => {
         </div>
       </TabsContent>
 
-      <TabsContent value="transactions" className="mt-6 h-[calc(100vh-14rem)] overflow-y-auto">
+      <TabsContent value="transactions" className="mt-6">
         <div className="px-6">
           <MonthSelector />
           <RecentTransactions />
