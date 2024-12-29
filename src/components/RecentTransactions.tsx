@@ -69,9 +69,9 @@ export const RecentTransactions = ({
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 bg-white rounded-[20px] py-6 shadow-sm">
       <div className="px-6">
-        <h2 className="text-lg font-semibold">Recent Transactions</h2>
+        <h2 className="text-xl font-semibold text-gray-900">Recent Transactions</h2>
         <TransactionFilters
           filter={filter}
           setFilter={setFilter}
@@ -81,9 +81,9 @@ export const RecentTransactions = ({
         />
       </div>
       
-      <div className="px-6 space-y-4">
+      <div className="px-6 space-y-2">
         {recentTransactions.length === 0 ? (
-          <div className="text-center py-8 text-muted-foreground">
+          <div className="text-center py-8 text-muted-foreground bg-gray-50 rounded-xl border border-gray-100">
             No transactions yet
           </div>
         ) : (

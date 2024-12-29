@@ -37,14 +37,16 @@ export const TransactionFilters = ({
   return (
     <div className="space-y-4">
       {filter === "date" && !isToday(currentMonth) && (
-        <div className="text-sm text-gray-500">
+        <div className="text-sm text-gray-500 mt-2">
           Showing transactions for {format(currentMonth, "MMMM d, yyyy")}
         </div>
       )}
       <div className="flex gap-2 mb-4 flex-nowrap overflow-visible">
         <Button
-          className={`rounded-full px-3 py-1.5 text-xs ${
-            filter === "all" ? "bg-[#7F3DFF] text-white" : "bg-gray-100 text-gray-600"
+          className={`rounded-full px-4 py-2 text-sm font-medium ${
+            filter === "all" 
+              ? "bg-[#7F3DFF] text-white hover:bg-[#7F3DFF]/90" 
+              : "bg-gray-100 text-gray-600 hover:bg-gray-200"
           }`}
           variant={filter === "all" ? "default" : "outline"}
           onClick={() => {
@@ -55,8 +57,10 @@ export const TransactionFilters = ({
           All
         </Button>
         <Button
-          className={`rounded-full px-3 py-1.5 text-xs ${
-            filter === "income" ? "bg-[#7F3DFF] text-white" : "bg-gray-100 text-gray-600"
+          className={`rounded-full px-4 py-2 text-sm font-medium ${
+            filter === "income" 
+              ? "bg-[#7F3DFF] text-white hover:bg-[#7F3DFF]/90" 
+              : "bg-gray-100 text-gray-600 hover:bg-gray-200"
           }`}
           variant={filter === "income" ? "default" : "outline"}
           onClick={() => setFilter("income")}
@@ -64,8 +68,10 @@ export const TransactionFilters = ({
           Income
         </Button>
         <Button
-          className={`rounded-full px-3 py-1.5 text-xs ${
-            filter === "expense" ? "bg-[#7F3DFF] text-white" : "bg-gray-100 text-gray-600"
+          className={`rounded-full px-4 py-2 text-sm font-medium ${
+            filter === "expense" 
+              ? "bg-[#7F3DFF] text-white hover:bg-[#7F3DFF]/90" 
+              : "bg-gray-100 text-gray-600 hover:bg-gray-200"
           }`}
           variant={filter === "expense" ? "default" : "outline"}
           onClick={() => setFilter("expense")}
