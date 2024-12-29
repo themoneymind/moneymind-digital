@@ -51,7 +51,10 @@ export const DashboardTabs = () => {
       </TabsContent>
 
       <TabsContent value="transactions" className="space-y-6 mt-6">
-        <RecentTransactions showViewAll />
+        <div className="px-6">
+          <MonthSelector />
+          <RecentTransactions />
+        </div>
       </TabsContent>
     </Tabs>
   );

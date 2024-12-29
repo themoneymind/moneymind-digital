@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Transaction } from "@/types/transactions";
 import { TransactionEditDialog } from "./transaction/TransactionEditDialog";
 import { TransactionFilters } from "./transaction/TransactionFilters";
-import { startOfDay, endOfDay, isEqual } from "date-fns";
+import { startOfDay, isSameDay } from "date-fns";
 
 interface RecentTransactionsProps {
   showViewAll?: boolean;
@@ -17,7 +17,7 @@ export const RecentTransactions = ({
   const { transactions, paymentSources, currentMonth } = useFinance();
   const [selectedTransaction, setSelectedTransaction] = useState<Transaction | null>(null);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
-  const [filter, setFilter] = useState<"all" | "income" | "expense" | "date">("all");
+  const [filter, setFilter] = useState<"all" | "income" | "expense" | "date">("date"); // Set default to "date"
   const [selectedSource, setSelectedSource] = useState<string | null>(null);
   
   let filteredTransactions = transactions;
@@ -28,7 +28,7 @@ export const RecentTransactions = ({
   
   filteredTransactions = transactions.filter(t => {
     const transactionDate = new Date(t.date);
-    return isEqual(startOfDay(transactionDate), startOfDay(selectedDate));
+    return isSameDay(transactionDate, selectedDate); // Use isSameDay instead of isEqual
   });
 
   // Apply source type filter (Credit Card)
