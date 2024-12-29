@@ -1,6 +1,7 @@
 import { Transaction } from "@/types/transactions";
 import { ArrowUpRight, ArrowDownLeft } from "lucide-react";
 import { format } from "date-fns";
+import { useFinance } from "@/contexts/FinanceContext";
 
 type TransactionItemProps = {
   transaction: Transaction;
@@ -16,21 +17,24 @@ export const TransactionItem = ({
   formatCurrency,
   toSentenceCase,
 }: TransactionItemProps) => {
+  const { paymentSources } = useFinance();
+  const source = paymentSources.find(s => s.id === transaction.source);
+
   return (
     <div 
-      className="flex items-center justify-between p-4 hover:bg-gray-50 transition-colors rounded-xl border border-gray-100 cursor-pointer"
+      className="flex items-center justify-between p-4 hover:bg-gray-50 transition-colors rounded-xl border border-gray-100 cursor-pointer bg-white"
       onClick={() => onEdit(transaction)}
     >
       <div className="flex items-center gap-3">
-        <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
+        <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
           transaction.type === "expense" 
             ? "bg-red-50" 
             : "bg-green-50"
         }`}>
           {transaction.type === "expense" ? (
-            <ArrowUpRight className="w-4 h-4 text-red-500" />
+            <ArrowUpRight className="w-5 h-5 text-red-500" />
           ) : (
-            <ArrowDownLeft className="w-4 h-4 text-green-500" />
+            <ArrowDownLeft className="w-5 h-5 text-green-500" />
           )}
         </div>
         <div className="flex flex-col">
@@ -38,7 +42,15 @@ export const TransactionItem = ({
             {toSentenceCase(transaction.category)}
           </span>
           <span className="text-xs text-gray-500">
-            {format(new Date(transaction.date), "MMM d, yyyy")}
+            {source?.name}
+          </span>
+          {transaction.description && (
+            <span className="text-xs text-gray-500">
+              {transaction.description}
+            </span>
+          )}
+          <span className="text-xs text-gray-400">
+            {format(new Date(transaction.date), "h:mm a")}
           </span>
         </div>
       </div>
