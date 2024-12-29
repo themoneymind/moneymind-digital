@@ -7,7 +7,7 @@ import { MonthSelector } from "./MonthSelector";
 
 export const DashboardTabs = () => {
   return (
-    <Tabs defaultValue="overview" className="w-full h-[calc(100vh-8rem)] flex flex-col">
+    <Tabs defaultValue="overview" className="w-full">
       <div className="px-6">
         <TabsList className="w-full bg-transparent border-b border-gray-200">
           <TabsTrigger
@@ -31,33 +31,31 @@ export const DashboardTabs = () => {
         </TabsList>
       </div>
 
-      <div className="flex-1 overflow-y-auto">
-        <TabsContent value="overview" className="mt-6 h-full">
-          <div className="px-6">
-            <MonthSelector />
-            <BalanceCard />
-            <PaymentSources />
-          </div>
-        </TabsContent>
+      <TabsContent value="overview" className="mt-6">
+        <div className="px-6">
+          <MonthSelector />
+          <BalanceCard />
+          <PaymentSources />
+        </div>
+      </TabsContent>
 
-        <TabsContent value="credit-cards" className="mt-6 h-full">
-          <div className="px-6">
-            <MonthSelector />
-          </div>
-          <CreditCards />
-          <div className="px-6">
-            <h3 className="text-lg font-semibold mb-4">Card Transactions</h3>
-            <RecentTransactions showViewAll={false} filterByType="Credit Card" />
-          </div>
-        </TabsContent>
+      <TabsContent value="credit-cards" className="mt-6 h-[calc(100vh-14rem)] overflow-y-auto">
+        <div className="px-6">
+          <MonthSelector />
+        </div>
+        <CreditCards />
+        <div className="px-6">
+          <h3 className="text-lg font-semibold mb-4">Card Transactions</h3>
+          <RecentTransactions showViewAll={false} filterByType="Credit Card" />
+        </div>
+      </TabsContent>
 
-        <TabsContent value="transactions" className="mt-6 h-full">
-          <div className="px-6">
-            <MonthSelector />
-            <RecentTransactions />
-          </div>
-        </TabsContent>
-      </div>
+      <TabsContent value="transactions" className="mt-6 h-[calc(100vh-14rem)] overflow-y-auto">
+        <div className="px-6">
+          <MonthSelector />
+          <RecentTransactions />
+        </div>
+      </TabsContent>
     </Tabs>
   );
 };
