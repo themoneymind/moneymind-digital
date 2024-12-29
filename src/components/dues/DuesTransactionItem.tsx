@@ -8,7 +8,7 @@ type DuesTransactionItemProps = {
   onComplete: (transaction: DueTransaction) => void;
   onPartial: (transaction: DueTransaction) => void;
   onReschedule: (transaction: DueTransaction) => void;
-  onEdit: (transaction: DueTransaction) => void;
+  onReject: (id: string) => void;
   onUndo: (transaction: DueTransaction) => void;
   onDelete: (transaction: DueTransaction) => void;
   formatCurrency: (amount: number) => string;
@@ -19,7 +19,7 @@ export const DuesTransactionItem = ({
   onComplete,
   onPartial,
   onReschedule,
-  onEdit,
+  onReject,
   onUndo,
   onDelete,
   formatCurrency,
@@ -67,7 +67,7 @@ export const DuesTransactionItem = ({
         onComplete={onComplete}
         onPartial={onPartial}
         onReschedule={onReschedule}
-        onEdit={onEdit}
+        onReject={onReject}
         onUndo={onUndo}
         onDelete={onDelete}
       />
