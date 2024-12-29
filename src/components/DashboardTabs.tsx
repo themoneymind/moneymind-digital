@@ -7,8 +7,8 @@ import { MonthSelector } from "./MonthSelector";
 
 export const DashboardTabs = () => {
   return (
-    <Tabs defaultValue="overview" className="w-full">
-      <div className="px-6">
+    <Tabs defaultValue="overview" className="w-full overflow-x-hidden">
+      <div className="px-6 w-full">
         <TabsList className="w-full bg-transparent border-b border-gray-200">
           <TabsTrigger
             value="overview"
@@ -31,7 +31,7 @@ export const DashboardTabs = () => {
         </TabsList>
       </div>
 
-      <TabsContent value="overview" className="mt-6">
+      <TabsContent value="overview" className="mt-6 w-full">
         <div className="px-6">
           <MonthSelector />
           <BalanceCard />
@@ -39,7 +39,7 @@ export const DashboardTabs = () => {
         </div>
       </TabsContent>
 
-      <TabsContent value="credit-cards" className="mt-6">
+      <TabsContent value="credit-cards" className="mt-6 w-full">
         <div className="px-6">
           <MonthSelector />
         </div>
@@ -50,7 +50,7 @@ export const DashboardTabs = () => {
         </div>
       </TabsContent>
 
-      <TabsContent value="transactions" className="mt-6">
+      <TabsContent value="transactions" className="mt-6 w-full">
         <div className="px-6">
           <MonthSelector />
           <RecentTransactions />

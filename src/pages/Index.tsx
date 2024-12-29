@@ -12,9 +12,9 @@ const Index = () => {
   }
 
   return (
-    <div className="flex flex-col min-h-screen max-w-md mx-auto font-sans">
+    <div className="flex flex-col min-h-screen max-w-md mx-auto font-sans overflow-x-hidden">
       <Header />
-      <main className="flex-1 bg-[#F5F5F7] dark:bg-gray-900 rounded-t-[28px] -mt-6 relative pb-20">
+      <main className="flex-1 bg-[#F5F5F7] dark:bg-gray-900 rounded-t-[28px] -mt-6 relative pb-20 w-full overflow-x-hidden">
         <div className="mt-6">
           <DashboardTabs />
         </div>
