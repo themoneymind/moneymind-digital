@@ -57,40 +57,29 @@ export const DuesDialogs = ({
       <Dialog open={showPartialDialog} onOpenChange={setShowPartialDialog}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Payment Options</DialogTitle>
+            <DialogTitle>Enter Partial Payment Amount</DialogTitle>
           </DialogHeader>
           <div className="space-y-4 p-4">
-            <Button 
-              className="w-full h-14 bg-blue-600 hover:bg-blue-700 rounded-[12px]"
-              onClick={() => {
-                if (selectedTransaction) {
-                  setShowPartialDialog(false);
-                  setShowPaymentSourceDialog(true);
-                }
-              }}
-            >
-              Full Payment
-            </Button>
             <div className="relative">
               <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500">₹</span>
               <Input
                 type="number"
-                placeholder="Enter partial amount"
-                className="text-2xl pl-8 h-14 border-gray-200 rounded-[12px]"
+                placeholder="0"
+                className="pl-8"
                 value={partialAmount}
                 onChange={(e) => setPartialAmount(e.target.value)}
               />
             </div>
             <Button 
-              className="w-full h-14 bg-blue-600 hover:bg-blue-700 rounded-[12px]"
+              className="w-full"
               onClick={() => {
-                if (selectedTransaction && partialAmount) {
+                if (selectedTransaction) {
                   setShowPaymentSourceDialog(true);
                 }
               }}
               disabled={!partialAmount}
             >
-              Make Partial Payment
+              Select Payment Source
             </Button>
           </div>
         </DialogContent>
