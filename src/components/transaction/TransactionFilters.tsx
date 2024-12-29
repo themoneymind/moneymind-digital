@@ -35,6 +35,12 @@ export const TransactionFilters = ({
 
   return (
     <div className="flex items-center gap-2 mb-4">
+      <DateFilterButton
+        currentMonth={currentMonth}
+        onDateSelect={handleDateSelect}
+        isActive={filter === "date"}
+      />
+      
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button 
@@ -43,31 +49,36 @@ export const TransactionFilters = ({
           >
             <ListFilter className="w-4 h-4" />
             <span>
-              {filter === "all" && "All Transactions"}
+              {filter === "all" && "All"}
               {filter === "income" && "Income"}
               {filter === "expense" && "Expense"}
-              {filter === "date" && format(currentMonth, "MMM d, yyyy")}
             </span>
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="start" className="w-56">
-          <DropdownMenuItem onClick={() => setFilter("all")}>
+        <DropdownMenuContent 
+          align="start" 
+          className="w-56 bg-white border border-gray-200 shadow-lg rounded-lg"
+        >
+          <DropdownMenuItem 
+            onClick={() => setFilter("all")}
+            className="focus:bg-gray-50"
+          >
             All Transactions
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => setFilter("income")}>
+          <DropdownMenuItem 
+            onClick={() => setFilter("income")}
+            className="focus:bg-gray-50"
+          >
             Income
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => setFilter("expense")}>
+          <DropdownMenuItem 
+            onClick={() => setFilter("expense")}
+            className="focus:bg-gray-50"
+          >
             Expense
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
-      
-      <DateFilterButton
-        currentMonth={currentMonth}
-        onDateSelect={handleDateSelect}
-        isActive={filter === "date"}
-      />
       
       <div className="ml-auto">
         <PaymentSourceFilterDropdown onSourceSelect={onSourceSelect} />

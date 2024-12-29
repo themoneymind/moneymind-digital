@@ -30,7 +30,10 @@ export const DateFilterButton = ({
           <span>{format(currentMonth, "MMM d, yyyy")}</span>
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-auto p-0" align="start">
+      <PopoverContent 
+        className="w-auto p-0 bg-white border border-gray-200 shadow-lg rounded-lg" 
+        align="start"
+      >
         <Calendar
           mode="single"
           selected={currentMonth}

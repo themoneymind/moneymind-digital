@@ -54,7 +54,7 @@ export const RecentTransactions = ({
   };
 
   return (
-    <div className="bg-white rounded-apple shadow-sm space-y-4">
+    <div className="bg-white rounded-apple shadow-sm space-y-4 mb-6">
       <div className="flex items-center justify-between p-6">
         <h2 className="text-lg font-semibold text-gray-900">Recent Transactions</h2>
       </div>
@@ -69,7 +69,7 @@ export const RecentTransactions = ({
         />
       </div>
       
-      <div className="px-6 pb-6">
+      <div className="px-6 pb-6 max-h-[500px] overflow-y-auto">
         <TransactionList
           transactions={availableTransactions}
           filter={filter}
