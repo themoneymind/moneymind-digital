@@ -23,7 +23,6 @@ export const DuesActionButtons = ({
 }: DuesActionButtonsProps) => {
   const isCompleted = transaction.status === 'completed';
   const showUndo = isCompleted && transaction.previous_status;
-  const canDelete = !transaction.status || transaction.status === 'pending';
 
   if (showUndo) {
     return (
@@ -40,62 +39,51 @@ export const DuesActionButtons = ({
   }
 
   return (
-    <div className="space-y-2">
-      <div className="flex gap-2">
-        <Button 
-          variant="outline" 
-          size="sm"
-          className="flex-1 gap-2"
-          onClick={() => onComplete(transaction)}
-          disabled={isCompleted}
-        >
-          <CheckCircle2 className="w-4 h-4 text-green-600" />
-          Complete
-        </Button>
-        <Button 
-          variant="outline" 
-          size="sm"
-          className="flex-1 gap-2"
-          onClick={() => onPartial(transaction)}
-          disabled={isCompleted}
-        >
-          <Percent className="w-4 h-4 text-yellow-600" />
-          Partial
-        </Button>
-      </div>
-      <div className="flex gap-2">
-        <Button 
-          variant="outline" 
-          size="sm"
-          className="flex-1 gap-2"
-          onClick={() => onReschedule(transaction)}
-          disabled={isCompleted}
-        >
-          <Calendar className="w-4 h-4 text-blue-600" />
-          Reschedule
-        </Button>
-        <Button 
-          variant="outline" 
-          size="sm"
-          className="flex-1 gap-2"
-          onClick={() => onEdit(transaction)}
-          disabled={isCompleted}
-        >
-          <PencilIcon className="w-4 h-4 text-purple-600" />
-          Edit
-        </Button>
-      </div>
-      {canDelete && (
-        <Button 
-          variant="outline" 
-          size="sm"
-          className="w-full gap-2 border-red-200 hover:bg-red-50"
-          onClick={() => onDelete(transaction)}
-        >
-          <Trash2 className="w-4 h-4 text-red-600" />
-          Delete
-        </Button>
-      )}
+    <div className="flex justify-between gap-2">
+      <Button 
+        variant="outline" 
+        size="sm"
+        className="flex-1 gap-2 p-0 h-10"
+        onClick={() => onComplete(transaction)}
+        disabled={isCompleted}
+      >
+        <CheckCircle2 className="w-5 h-5 text-green-600" />
+      </Button>
+      <Button 
+        variant="outline" 
+        size="sm"
+        className="flex-1 gap-2 p-0 h-10"
+        onClick={() => onPartial(transaction)}
+        disabled={isCompleted}
+      >
+        <Percent className="w-5 h-5 text-yellow-600" />
+      </Button>
+      <Button 
+        variant="outline" 
+        size="sm"
+        className="flex-1 gap-2 p-0 h-10"
+        onClick={() => onReschedule(transaction)}
+        disabled={isCompleted}
+      >
+        <Calendar className="w-5 h-5 text-blue-600" />
+      </Button>
+      <Button 
+        variant="outline" 
+        size="sm"
+        className="flex-1 gap-2 p-0 h-10"
+        onClick={() => onEdit(transaction)}
+        disabled={isCompleted}
+      >
+        <PencilIcon className="w-5 h-5 text-purple-600" />
+      </Button>
+      <Button 
+        variant="outline" 
+        size="sm"
+        className="flex-1 gap-2 p-0 h-10 hover:bg-red-50"
+        onClick={() => onDelete(transaction)}
+      >
+        <Trash2 className="w-5 h-5 text-red-600" />
+      </Button>
     </div>
   );
 };

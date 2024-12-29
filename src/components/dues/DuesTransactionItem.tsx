@@ -25,52 +25,54 @@ export const DuesTransactionItem = ({
   formatCurrency,
 }: DuesTransactionItemProps) => {
   return (
-    <div className="bg-white p-4 rounded-[12px] border border-gray-200 space-y-3">
-      <div className="flex justify-between items-start">
-        <div>
-          <p className="font-medium">{transaction.description}</p>
-          <div className="flex items-center gap-2 text-sm text-gray-500">
-            <span>{format(new Date(transaction.date), 'PPP')}</span>
-            {transaction.repayment_date && (
-              <>
-                <span>•</span>
-                <span>Due: {format(new Date(transaction.repayment_date), 'PPP')}</span>
-              </>
-            )}
+    <div className="bg-white rounded-apple border border-gray-200 overflow-hidden">
+      <div className="p-4 space-y-3">
+        {/* Header with amount */}
+        <div className="flex justify-between items-start">
+          <div className="space-y-1">
+            <h3 className="text-gray-500">
+              Due Given to: <span className="text-black font-medium">{transaction.description}</span>
+            </h3>
+            <div className="space-y-0.5">
+              <div className="text-gray-500 text-sm">
+                Given Date: {format(new Date(transaction.date), 'do MMMM, yyyy')}
+              </div>
+              {transaction.repayment_date && (
+                <div className="text-gray-500 text-sm">
+                  Due Date: <span className="text-blue-500">{format(new Date(transaction.repayment_date), 'do MMMM, yyyy')}</span>
+                </div>
+              )}
+            </div>
+          </div>
+          <div className="text-right space-y-2">
+            <p className={`text-xl font-semibold ${
+              transaction.type === 'expense' ? 'text-red-600' : 'text-green-600'
+            }`}>
+              {transaction.type === 'expense' ? '-' : '+'}
+              {formatCurrency(Number(transaction.remaining_balance || transaction.amount))}
+            </p>
+            <DuesStatusBadge transaction={transaction} />
           </div>
         </div>
-        <div className="text-right">
-          <p className={`font-semibold ${
-            transaction.type === 'expense' ? 'text-red-600' : 'text-green-600'
-          }`}>
-            {transaction.type === 'expense' ? '-' : '+'}
-            {formatCurrency(Number(transaction.amount))}
+
+        {/* Excuse reason if exists */}
+        {transaction.excuse_reason && (
+          <p className="text-sm text-gray-600 bg-gray-50 p-2 rounded">
+            Reason: {transaction.excuse_reason}
           </p>
-          <DuesStatusBadge transaction={transaction} />
-        </div>
+        )}
+
+        {/* Action buttons */}
+        <DuesActionButtons
+          transaction={transaction}
+          onComplete={onComplete}
+          onPartial={onPartial}
+          onReschedule={onReschedule}
+          onEdit={onEdit}
+          onUndo={onUndo}
+          onDelete={onDelete}
+        />
       </div>
-      
-      {transaction.excuse_reason && (
-        <p className="text-sm text-gray-600 bg-gray-50 p-2 rounded">
-          Reason: {transaction.excuse_reason}
-        </p>
-      )}
-
-      {transaction.audit_trail && transaction.audit_trail.length > 0 && (
-        <div className="text-sm text-gray-500 italic">
-          Last action: {transaction.audit_trail[transaction.audit_trail.length - 1]?.action}
-        </div>
-      )}
-
-      <DuesActionButtons
-        transaction={transaction}
-        onComplete={onComplete}
-        onPartial={onPartial}
-        onReschedule={onReschedule}
-        onEdit={onEdit}
-        onUndo={onUndo}
-        onDelete={onDelete}
-      />
     </div>
   );
 };
