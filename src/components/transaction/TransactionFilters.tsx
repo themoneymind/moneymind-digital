@@ -10,6 +10,7 @@ import {
 import { startOfDay } from "date-fns";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar as CalendarComponent } from "@/components/ui/calendar";
+import { useFinance } from "@/contexts/FinanceContext";
 
 type TransactionFiltersProps = {
   filter: "all" | "income" | "expense" | "date";
@@ -26,6 +27,8 @@ export const TransactionFilters = ({
   setCurrentMonth,
   onSourceSelect,
 }: TransactionFiltersProps) => {
+  const { paymentSources } = useFinance();
+  
   const handleDateSelect = (date: Date | undefined) => {
     if (date) {
       const newDate = startOfDay(date);
@@ -103,24 +106,15 @@ export const TransactionFilters = ({
           >
             All Payment Methods
           </DropdownMenuItem>
-          <DropdownMenuItem 
-            className="px-3 py-2 text-sm cursor-pointer hover:bg-gray-50 rounded-[8px]"
-            onClick={() => onSourceSelect("upi")}
-          >
-            UPI
-          </DropdownMenuItem>
-          <DropdownMenuItem 
-            className="px-3 py-2 text-sm cursor-pointer hover:bg-gray-50 rounded-[8px]"
-            onClick={() => onSourceSelect("bank")}
-          >
-            Bank Account
-          </DropdownMenuItem>
-          <DropdownMenuItem 
-            className="px-3 py-2 text-sm cursor-pointer hover:bg-gray-50 rounded-[8px]"
-            onClick={() => onSourceSelect("credit")}
-          >
-            Credit Card
-          </DropdownMenuItem>
+          {paymentSources.map((source) => (
+            <DropdownMenuItem 
+              key={source.id}
+              className="px-3 py-2 text-sm cursor-pointer hover:bg-gray-50 rounded-[8px]"
+              onClick={() => onSourceSelect(source.id)}
+            >
+              {source.name}
+            </DropdownMenuItem>
+          ))}
         </DropdownMenuContent>
       </DropdownMenu>
     </div>

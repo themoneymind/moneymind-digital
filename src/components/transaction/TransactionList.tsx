@@ -1,6 +1,6 @@
 import { Transaction } from "@/types/transactions";
 import { TransactionItem } from "./TransactionItem";
-import { isSameDayUTC } from "@/utils/dateUtils";
+import { format, isSameDay } from "date-fns";
 
 type TransactionListProps = {
   transactions: Transaction[];
@@ -29,7 +29,7 @@ export const TransactionList = ({
   if (filter === "date") {
     filteredTransactions = transactions.filter((t) => {
       const transactionDate = new Date(t.date);
-      return isSameDayUTC(transactionDate, selectedDate);
+      return isSameDay(transactionDate, selectedDate);
     });
   }
 
@@ -45,10 +45,13 @@ export const TransactionList = ({
     filteredTransactions = filteredTransactions.filter(t => t.source === selectedSource);
   }
 
+  // Sort transactions by date (most recent first)
+  filteredTransactions.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+
   if (filteredTransactions.length === 0) {
     return (
       <div className="text-center py-8 text-gray-500">
-        No transactions for {filter === "date" ? "selected date" : "today"}
+        No transactions found
       </div>
     );
   }
