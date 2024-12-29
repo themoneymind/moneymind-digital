@@ -41,6 +41,7 @@ export const DuesForm = () => {
     try {
       const dueDescription = `Due ${type === "given" ? "Given to" : "Received from"}: ${personName}`;
       const dueNote = `${description || "No description"}${upiId ? `, UPI: ${upiId}` : ''}`;
+      const currentDate = new Date();
 
       await addTransaction({
         type: type === "given" ? "expense" : "income",
@@ -51,6 +52,7 @@ export const DuesForm = () => {
         reference_type: "due",
         reference_id: crypto.randomUUID(),
         status: 'pending',
+        date: currentDate.toISOString(), // Set current date as given/received date
         repayment_date: repaymentDate.toISOString(),
         remaining_balance: Number(amount),
         next_reminder_date: repaymentDate.toISOString(),

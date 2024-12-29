@@ -126,6 +126,22 @@ export const DuesTransactionsList = () => {
     if (!selectedTransaction) return;
 
     try {
+      // If the transaction has a repayment transaction, delete it first
+      const { data: repaymentTransaction } = await supabase
+        .from('transactions')
+        .select('*')
+        .eq('reference_type', 'due_repayment')
+        .eq('reference_id', selectedTransaction.id)
+        .single();
+
+      if (repaymentTransaction) {
+        await supabase
+          .from('transactions')
+          .delete()
+          .eq('id', repaymentTransaction.id);
+      }
+
+      // Delete the main transaction
       const { error } = await supabase
         .from('transactions')
         .delete()

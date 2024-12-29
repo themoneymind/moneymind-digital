@@ -24,14 +24,17 @@ export const DuesTransactionItem = ({
   onDelete,
   formatCurrency,
 }: DuesTransactionItemProps) => {
+  const personName = transaction.description?.replace(/^Due (Given to|Received from): /, '') || '';
+  const isExpense = transaction.type === 'expense';
+  const prefix = isExpense ? 'Given to' : 'Received from';
+
   return (
-    <div className="bg-white rounded-apple border border-gray-200 overflow-hidden">
+    <div className="bg-white rounded-[12px] border border-gray-200 overflow-hidden">
       <div className="p-4 space-y-3">
-        {/* Header with amount */}
         <div className="flex justify-between items-start">
           <div className="space-y-1">
-            <h3 className="text-gray-500">
-              Due Given to: <span className="text-black font-medium">{transaction.description}</span>
+            <h3 className="text-gray-900 font-medium">
+              {`${prefix}: ${personName}`}
             </h3>
             <div className="space-y-0.5">
               <div className="text-gray-500 text-sm">
@@ -39,30 +42,32 @@ export const DuesTransactionItem = ({
               </div>
               {transaction.repayment_date && (
                 <div className="text-gray-500 text-sm">
-                  Due Date: <span className="text-blue-500">{format(new Date(transaction.repayment_date), 'do MMMM, yyyy')}</span>
+                  Due Date: <span className="text-blue-500">
+                    {format(new Date(transaction.repayment_date), 'do MMMM, yyyy')}
+                  </span>
                 </div>
               )}
             </div>
           </div>
           <div className="text-right space-y-2">
             <p className={`text-xl font-semibold ${
-              transaction.type === 'expense' ? 'text-red-600' : 'text-green-600'
+              isExpense ? 'text-red-600' : 'text-green-600'
             }`}>
-              {transaction.type === 'expense' ? '-' : '+'}
+              {isExpense ? '-' : '+'}
               {formatCurrency(Number(transaction.remaining_balance || transaction.amount))}
             </p>
             <DuesStatusBadge transaction={transaction} />
           </div>
         </div>
 
-        {/* Excuse reason if exists */}
         {transaction.excuse_reason && (
-          <p className="text-sm text-gray-600 bg-gray-50 p-2 rounded">
+          <div className="text-sm text-gray-600 bg-gray-50 p-2 rounded-lg">
             Reason: {transaction.excuse_reason}
-          </p>
+          </div>
         )}
 
-        {/* Action buttons */}
+        <div className="h-[1px] bg-gray-200 my-3" />
+
         <DuesActionButtons
           transaction={transaction}
           onComplete={onComplete}

@@ -97,7 +97,7 @@ export const DuesDialogs = ({
       />
 
       <Dialog open={showExcuseDialog} onOpenChange={setShowExcuseDialog}>
-        <DialogContent>
+        <DialogContent className="bg-white">
           <DialogHeader>
             <DialogTitle>Reschedule Payment</DialogTitle>
           </DialogHeader>
@@ -120,13 +120,14 @@ export const DuesDialogs = ({
                   {newRepaymentDate ? format(newRepaymentDate, "PPP") : "Select new date"}
                 </Button>
               </PopoverTrigger>
-              <PopoverContent className="w-auto p-0" align="start">
+              <PopoverContent className="w-auto p-0 bg-white" align="start">
                 <Calendar
                   mode="single"
                   selected={newRepaymentDate}
                   onSelect={setNewRepaymentDate}
                   initialFocus
                   disabled={(date) => date < new Date()}
+                  className="bg-white"
                 />
               </PopoverContent>
             </Popover>
