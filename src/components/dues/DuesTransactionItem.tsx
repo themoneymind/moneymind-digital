@@ -2,7 +2,7 @@ import { format } from "date-fns";
 import { DueTransaction } from "@/types/dues";
 import { DuesStatusBadge } from "./DuesStatusBadge";
 import { Button } from "@/components/ui/button";
-import { Edit2, Trash2, Check } from "lucide-react";
+import { Edit2, Trash2, Check, RotateCcw } from "lucide-react";
 
 type DuesTransactionItemProps = {
   transaction: DueTransaction;
@@ -21,6 +21,7 @@ export const DuesTransactionItem = ({
   onPartial,
   onEdit,
   onDelete,
+  onUndo,
   formatCurrency,
 }: DuesTransactionItemProps) => {
   const description = transaction.description?.replace(/^Due (Given to|Received from): /, '') || '';
@@ -84,6 +85,17 @@ export const DuesTransactionItem = ({
           >
             <Check className="w-4 h-4 mr-2" />
             Complete
+          </Button>
+        )}
+        {isCompleted && (
+          <Button
+            variant="outline"
+            size="sm"
+            className="text-blue-600 border-blue-200 hover:bg-blue-50"
+            onClick={() => onUndo(transaction)}
+          >
+            <RotateCcw className="w-4 h-4 mr-2" />
+            Undo
           </Button>
         )}
         {!isCompleted && (
