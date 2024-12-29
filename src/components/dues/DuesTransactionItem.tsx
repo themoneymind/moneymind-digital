@@ -2,7 +2,7 @@ import { format } from "date-fns";
 import { DueTransaction } from "@/types/dues";
 import { DuesStatusBadge } from "./DuesStatusBadge";
 import { Button } from "@/components/ui/button";
-import { Edit2, Trash2, Check } from "lucide-react";
+import { Edit2, Trash2, CircleDollarSign } from "lucide-react";
 
 type DuesTransactionItemProps = {
   transaction: DueTransaction;
@@ -28,6 +28,7 @@ export const DuesTransactionItem = ({
   const canDelete = !transaction.status || transaction.status === 'pending';
 
   const handlePayClick = () => {
+    // This will now open a dialog asking if it's full or partial payment
     if (transaction.remaining_balance === transaction.amount) {
       onComplete(transaction);
     } else {
@@ -50,7 +51,7 @@ export const DuesTransactionItem = ({
               <span>Given: {format(new Date(transaction.date), 'PP')}</span>
               {transaction.repayment_date && (
                 <>
-                  <span className="mx-2">•</span>
+                  <span>•</span>
                   <span>Due: {format(new Date(transaction.repayment_date), 'PP')}</span>
                 </>
               )}
@@ -82,8 +83,8 @@ export const DuesTransactionItem = ({
             className="text-green-600 border-green-200 hover:bg-green-50"
             onClick={handlePayClick}
           >
-            <Check className="w-4 h-4 mr-2" />
-            Complete
+            <CircleDollarSign className="w-4 h-4 mr-2" />
+            Pay
           </Button>
         )}
         {!isCompleted && (

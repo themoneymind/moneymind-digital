@@ -65,13 +65,13 @@ export const DuesDialogs = ({
               <Input
                 type="number"
                 placeholder="0"
-                className="text-2xl pl-8 h-14 border-gray-200 rounded-[12px]"
+                className="pl-8"
                 value={partialAmount}
                 onChange={(e) => setPartialAmount(e.target.value)}
               />
             </div>
             <Button 
-              className="w-full h-14 bg-blue-600 hover:bg-blue-700 rounded-[12px]"
+              className="w-full"
               onClick={() => {
                 if (selectedTransaction) {
                   setShowPaymentSourceDialog(true);
