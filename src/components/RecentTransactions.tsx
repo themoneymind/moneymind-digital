@@ -4,6 +4,7 @@ import { Transaction } from "@/types/transactions";
 import { TransactionEditDialog } from "./transaction/TransactionEditDialog";
 import { TransactionFilters } from "./transaction/TransactionFilters";
 import { TransactionList } from "./transaction/TransactionList";
+import { startOfDay } from "date-fns";
 
 interface RecentTransactionsProps {
   filterByType?: string;
@@ -12,11 +13,12 @@ interface RecentTransactionsProps {
 export const RecentTransactions = ({ 
   filterByType
 }: RecentTransactionsProps) => {
-  const { transactions, paymentSources, currentMonth } = useFinance();
+  const { transactions, paymentSources } = useFinance();
   const [selectedTransaction, setSelectedTransaction] = useState<Transaction | null>(null);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [filter, setFilter] = useState<"all" | "income" | "expense" | "date">("date");
   const [selectedSource, setSelectedSource] = useState<string | null>(null);
+  const [currentMonth, setCurrentMonth] = useState<Date>(startOfDay(new Date()));
   
   // Filter credit card transactions if needed
   let availableTransactions = transactions;
@@ -62,7 +64,7 @@ export const RecentTransactions = ({
           filter={filter}
           setFilter={setFilter}
           currentMonth={currentMonth}
-          setCurrentMonth={() => {}}
+          setCurrentMonth={setCurrentMonth}
           onSourceSelect={setSelectedSource}
         />
       </div>
