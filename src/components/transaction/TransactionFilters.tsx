@@ -41,14 +41,14 @@ export const TransactionFilters = ({
           <Button
             variant="outline"
             size="icon"
-            className="rounded-full w-9 h-9 bg-gray-100 border-0 hover:bg-gray-200"
+            className="rounded-full w-8 h-8 bg-gray-100 border-0 hover:bg-gray-200"
           >
-            <Calendar className="h-4 w-4" />
+            <Calendar className="h-3.5 w-3.5" />
           </Button>
         </PopoverTrigger>
         <PopoverContent 
           className="w-auto p-0 bg-white border border-gray-200 shadow-lg rounded-[12px]" 
-          align="start"
+          align="end"
           side="bottom"
           sideOffset={5}
         >
@@ -67,9 +67,9 @@ export const TransactionFilters = ({
           <Button
             variant="outline"
             size="icon"
-            className="rounded-full w-9 h-9 bg-gray-100 border-0 hover:bg-gray-200"
+            className="rounded-full w-8 h-8 bg-gray-100 border-0 hover:bg-gray-200"
           >
-            <Filter className="h-4 w-4" />
+            <Filter className="h-3.5 w-3.5" />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent 

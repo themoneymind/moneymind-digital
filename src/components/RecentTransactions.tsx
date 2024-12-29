@@ -22,7 +22,6 @@ export const RecentTransactions = ({
   const [selectedSource, setSelectedSource] = useState<string | null>(null);
   const [currentMonth, setCurrentMonth] = useState<Date>(startOfDay(new Date()));
   
-  // Filter credit card transactions if needed
   let availableTransactions = transactions;
   if (filterByType === "Credit Card") {
     const creditCardIds = paymentSources
@@ -56,7 +55,7 @@ export const RecentTransactions = ({
   };
 
   return (
-    <div className="bg-white rounded-apple shadow-sm mb-6">
+    <div className="bg-white rounded-apple">
       <div className="flex items-center justify-between p-6">
         <h2 className="text-lg font-semibold text-gray-900">Recent Transactions</h2>
         {showViewAll && (
