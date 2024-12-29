@@ -54,7 +54,7 @@ export const TransactionList = ({
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 pb-6">
       {filteredTransactions.map((transaction) => (
         <TransactionItem
           key={transaction.id}

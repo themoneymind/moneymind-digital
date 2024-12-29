@@ -35,13 +35,13 @@ export const TransactionFilters = ({
   };
 
   return (
-    <div className="flex items-center gap-2 mb-2">
+    <div className="flex items-center gap-2">
       <Popover>
         <PopoverTrigger asChild>
           <Button
             variant="outline"
             size="icon"
-            className="rounded-full w-9 h-9 bg-gray-100 border-0"
+            className="rounded-full w-9 h-9 bg-gray-100 border-0 hover:bg-gray-200"
           >
             <Calendar className="h-4 w-4" />
           </Button>
@@ -50,13 +50,14 @@ export const TransactionFilters = ({
           className="w-auto p-0 bg-white border border-gray-200 shadow-lg rounded-[12px]" 
           align="start"
           side="bottom"
+          sideOffset={5}
         >
           <CalendarComponent
             mode="single"
             selected={currentMonth}
             onSelect={handleDateSelect}
             initialFocus
-            className="bg-white"
+            className="bg-white rounded-[12px]"
           />
         </PopoverContent>
       </Popover>
@@ -66,7 +67,7 @@ export const TransactionFilters = ({
           <Button
             variant="outline"
             size="icon"
-            className="rounded-full w-9 h-9 bg-gray-100 border-0"
+            className="rounded-full w-9 h-9 bg-gray-100 border-0 hover:bg-gray-200"
           >
             <Filter className="h-4 w-4" />
           </Button>
@@ -77,32 +78,49 @@ export const TransactionFilters = ({
           side="bottom"
           sideOffset={5}
         >
-          <DropdownMenuItem onClick={() => setFilter("all")}>
+          <DropdownMenuItem 
+            className="px-3 py-2 text-sm cursor-pointer hover:bg-gray-50 rounded-[8px]"
+            onClick={() => setFilter("all")}
+          >
             All Transactions
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => setFilter("income")}>
+          <DropdownMenuItem 
+            className="px-3 py-2 text-sm cursor-pointer hover:bg-gray-50 rounded-[8px]"
+            onClick={() => setFilter("income")}
+          >
             Income Only
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => setFilter("expense")}>
+          <DropdownMenuItem 
+            className="px-3 py-2 text-sm cursor-pointer hover:bg-gray-50 rounded-[8px]"
+            onClick={() => setFilter("expense")}
+          >
             Expense Only
           </DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={() => onSourceSelect(null)}>
+          <DropdownMenuItem 
+            className="px-3 py-2 text-sm cursor-pointer hover:bg-gray-50 rounded-[8px]"
+            onClick={() => onSourceSelect(null)}
+          >
             All Payment Methods
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => onSourceSelect("upi")}>
+          <DropdownMenuItem 
+            className="px-3 py-2 text-sm cursor-pointer hover:bg-gray-50 rounded-[8px]"
+            onClick={() => onSourceSelect("upi")}
+          >
             UPI
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => onSourceSelect("bank")}>
+          <DropdownMenuItem 
+            className="px-3 py-2 text-sm cursor-pointer hover:bg-gray-50 rounded-[8px]"
+            onClick={() => onSourceSelect("bank")}
+          >
             Bank Account
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => onSourceSelect("credit")}>
+          <DropdownMenuItem 
+            className="px-3 py-2 text-sm cursor-pointer hover:bg-gray-50 rounded-[8px]"
+            onClick={() => onSourceSelect("credit")}
+          >
             Credit Card
           </DropdownMenuItem>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={() => {}}>Amount: ₹0-1000</DropdownMenuItem>
-          <DropdownMenuItem onClick={() => {}}>Amount: ₹1000-5000</DropdownMenuItem>
-          <DropdownMenuItem onClick={() => {}}>Amount: ₹5000+</DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
     </div>

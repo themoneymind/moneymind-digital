@@ -59,10 +59,7 @@ export const RecentTransactions = ({
     <div className="bg-white rounded-apple shadow-sm mb-6">
       <div className="flex items-center justify-between p-6">
         <h2 className="text-lg font-semibold text-gray-900">Recent Transactions</h2>
-      </div>
-      
-      {showViewAll && (
-        <div className="px-6">
+        {showViewAll && (
           <TransactionFilters
             filter={filter}
             setFilter={setFilter}
@@ -70,21 +67,23 @@ export const RecentTransactions = ({
             setCurrentMonth={setCurrentMonth}
             onSourceSelect={setSelectedSource}
           />
+        )}
+      </div>
+      
+      {showViewAll && (
+        <div className="px-6">
+          <TransactionList
+            transactions={availableTransactions}
+            filter={filter}
+            selectedDate={currentMonth}
+            selectedSource={selectedSource}
+            onEdit={handleEdit}
+            onDelete={handleDelete}
+            formatCurrency={formatCurrency}
+            toSentenceCase={toSentenceCase}
+          />
         </div>
       )}
-      
-      <div className="px-6 pb-6 overflow-y-auto max-h-[calc(100vh-400px)] no-scrollbar">
-        <TransactionList
-          transactions={availableTransactions}
-          filter={filter}
-          selectedDate={currentMonth}
-          selectedSource={selectedSource}
-          onEdit={handleEdit}
-          onDelete={handleDelete}
-          formatCurrency={formatCurrency}
-          toSentenceCase={toSentenceCase}
-        />
-      </div>
 
       {selectedTransaction && (
         <TransactionEditDialog
