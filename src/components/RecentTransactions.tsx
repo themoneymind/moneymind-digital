@@ -1,11 +1,10 @@
 import { useFinance } from "@/contexts/FinanceContext";
 import { TransactionItem } from "./transaction/TransactionItem";
-import { Button } from "./ui/button";
-import { useNavigate } from "react-router-dom";
-import { Transaction } from "@/types/transactions";
 import { useState } from "react";
+import { Transaction } from "@/types/transactions";
 import { TransactionEditDialog } from "./transaction/TransactionEditDialog";
 import { TransactionFilters } from "./transaction/TransactionFilters";
+import { startOfDay, endOfDay, isEqual } from "date-fns";
 
 interface RecentTransactionsProps {
   showViewAll?: boolean;
@@ -13,11 +12,9 @@ interface RecentTransactionsProps {
 }
 
 export const RecentTransactions = ({ 
-  showViewAll = false,
   filterByType
 }: RecentTransactionsProps) => {
   const { transactions, paymentSources, currentMonth } = useFinance();
-  const navigate = useNavigate();
   const [selectedTransaction, setSelectedTransaction] = useState<Transaction | null>(null);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [filter, setFilter] = useState<"all" | "income" | "expense" | "date">("all");
@@ -25,13 +22,22 @@ export const RecentTransactions = ({
   
   let filteredTransactions = transactions;
   
+  // Filter by date (today by default)
+  const today = new Date();
+  const selectedDate = filter === "date" ? currentMonth : today;
+  
+  filteredTransactions = transactions.filter(t => {
+    const transactionDate = new Date(t.date);
+    return isEqual(startOfDay(transactionDate), startOfDay(selectedDate));
+  });
+
   // Apply source type filter (Credit Card)
   if (filterByType === "Credit Card") {
     const creditCardIds = paymentSources
       .filter(source => source.type === "Credit Card")
       .map(source => source.id);
     
-    filteredTransactions = transactions.filter(t => 
+    filteredTransactions = filteredTransactions.filter(t => 
       creditCardIds.includes(t.source)
     );
   }
@@ -47,8 +53,6 @@ export const RecentTransactions = ({
   if (selectedSource) {
     filteredTransactions = filteredTransactions.filter(t => t.source === selectedSource);
   }
-  
-  const recentTransactions = filteredTransactions.slice(0, showViewAll ? undefined : 5);
 
   const handleEdit = (transaction: Transaction) => {
     setSelectedTransaction(transaction);
@@ -72,19 +76,10 @@ export const RecentTransactions = ({
   };
 
   return (
-    <div className="space-y-4">
-      {showViewAll && (
-        <div className="flex items-center justify-between px-6">
-          <h2 className="text-lg font-semibold">Recent Transactions</h2>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => navigate("/app/transactions")}
-          >
-            View All
-          </Button>
-        </div>
-      )}
+    <div className="bg-white rounded-apple shadow-sm space-y-4">
+      <div className="flex items-center justify-between p-6">
+        <h2 className="text-lg font-semibold text-gray-900">Recent Transactions</h2>
+      </div>
       
       <div className="px-6">
         <TransactionFilters
@@ -96,13 +91,13 @@ export const RecentTransactions = ({
         />
       </div>
       
-      <div className="px-6 space-y-4">
-        {recentTransactions.length === 0 ? (
+      <div className="px-6 pb-6 space-y-4">
+        {filteredTransactions.length === 0 ? (
           <div className="text-center py-8 text-muted-foreground">
-            No transactions yet
+            No transactions for {filter === "date" ? "selected date" : "today"}
           </div>
         ) : (
-          recentTransactions.map((transaction) => (
+          filteredTransactions.map((transaction) => (
             <TransactionItem
               key={transaction.id}
               transaction={transaction}

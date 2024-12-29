@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { DateFilterButton } from "./DateFilterButton";
 import { PaymentSourceFilterDropdown } from "./PaymentSourceFilterDropdown";
-import { startOfDay, endOfDay, isEqual } from "date-fns";
+import { startOfDay, endOfDay, format } from "date-fns";
 
 type TransactionFiltersProps = {
   filter: "all" | "income" | "expense" | "date";
@@ -30,21 +30,14 @@ export const TransactionFilters = ({
     }
   };
 
-  const isToday = (date: Date) => {
-    return isEqual(startOfDay(date), startOfDay(new Date()));
-  };
-
   return (
-    <div className="flex gap-2 mb-4 flex-nowrap overflow-visible">
+    <div className="flex items-center gap-2 mb-4">
       <Button
         className={`rounded-full px-3 py-1.5 text-xs ${
           filter === "all" ? "bg-blue-600 text-white" : "bg-gray-100 text-gray-600"
         }`}
         variant={filter === "all" ? "default" : "outline"}
-        onClick={() => {
-          setFilter("all");
-          setCurrentMonth(startOfDay(new Date()));
-        }}
+        onClick={() => setFilter("all")}
       >
         All
       </Button>
@@ -66,12 +59,20 @@ export const TransactionFilters = ({
       >
         Expense
       </Button>
-      <DateFilterButton
-        currentMonth={currentMonth}
-        onDateSelect={handleDateSelect}
-        isActive={filter === "date" && !isToday(currentMonth)}
-      />
-      <PaymentSourceFilterDropdown onSourceSelect={onSourceSelect} />
+      
+      <div className="flex items-center gap-2 ml-auto">
+        {filter === "date" && (
+          <span className="text-xs text-gray-600">
+            {format(currentMonth, "MMM d, yyyy")}
+          </span>
+        )}
+        <DateFilterButton
+          currentMonth={currentMonth}
+          onDateSelect={handleDateSelect}
+          isActive={filter === "date"}
+        />
+        <PaymentSourceFilterDropdown onSourceSelect={onSourceSelect} />
+      </div>
     </div>
   );
 };
