@@ -29,61 +29,71 @@ export const DuesActionButtons = ({
     return (
       <Button 
         variant="outline" 
-        size="icon"
-        className="w-full gap-2 text-blue-600 border-blue-200 hover:bg-blue-50"
+        size="sm"
+        className="w-full gap-2"
         onClick={() => onUndo(transaction)}
       >
-        <RotateCcw className="w-4 h-4" />
+        <RotateCcw className="w-4 h-4 text-blue-600" />
+        Undo Complete
       </Button>
     );
   }
 
   return (
-    <div className="flex gap-2">
-      <Button 
-        variant="outline" 
-        size="icon"
-        className="text-green-600 border-green-200 hover:bg-green-50"
-        onClick={() => onComplete(transaction)}
-        disabled={isCompleted}
-      >
-        <CheckCircle2 className="w-4 h-4" />
-      </Button>
-      <Button 
-        variant="outline" 
-        size="icon"
-        className="text-yellow-600 border-yellow-200 hover:bg-yellow-50"
-        onClick={() => onPartial(transaction)}
-        disabled={isCompleted}
-      >
-        <Percent className="w-4 h-4" />
-      </Button>
-      <Button 
-        variant="outline" 
-        size="icon"
-        className="text-blue-600 border-blue-200 hover:bg-blue-50"
-        onClick={() => onReschedule(transaction)}
-        disabled={isCompleted}
-      >
-        <Calendar className="w-4 h-4" />
-      </Button>
-      <Button 
-        variant="outline" 
-        size="icon"
-        className="text-purple-600 border-purple-200 hover:bg-purple-50"
-        onClick={() => onEdit(transaction)}
-        disabled={isCompleted}
-      >
-        <PencilIcon className="w-4 h-4" />
-      </Button>
+    <div className="space-y-2">
+      <div className="flex gap-2">
+        <Button 
+          variant="outline" 
+          size="sm"
+          className="flex-1 gap-2"
+          onClick={() => onComplete(transaction)}
+          disabled={isCompleted}
+        >
+          <CheckCircle2 className="w-4 h-4 text-green-600" />
+          Complete
+        </Button>
+        <Button 
+          variant="outline" 
+          size="sm"
+          className="flex-1 gap-2"
+          onClick={() => onPartial(transaction)}
+          disabled={isCompleted}
+        >
+          <Percent className="w-4 h-4 text-yellow-600" />
+          Partial
+        </Button>
+      </div>
+      <div className="flex gap-2">
+        <Button 
+          variant="outline" 
+          size="sm"
+          className="flex-1 gap-2"
+          onClick={() => onReschedule(transaction)}
+          disabled={isCompleted}
+        >
+          <Calendar className="w-4 h-4 text-blue-600" />
+          Reschedule
+        </Button>
+        <Button 
+          variant="outline" 
+          size="sm"
+          className="flex-1 gap-2"
+          onClick={() => onEdit(transaction)}
+          disabled={isCompleted}
+        >
+          <PencilIcon className="w-4 h-4 text-purple-600" />
+          Edit
+        </Button>
+      </div>
       {canDelete && (
         <Button 
           variant="outline" 
-          size="icon"
-          className="text-red-600 border-red-200 hover:bg-red-50"
+          size="sm"
+          className="w-full gap-2 border-red-200 hover:bg-red-50"
           onClick={() => onDelete(transaction)}
         >
-          <Trash2 className="w-4 h-4" />
+          <Trash2 className="w-4 h-4 text-red-600" />
+          Delete
         </Button>
       )}
     </div>
