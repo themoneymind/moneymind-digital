@@ -8,10 +8,12 @@ import { startOfDay } from "date-fns";
 
 interface RecentTransactionsProps {
   filterByType?: string;
+  showViewAll?: boolean;
 }
 
 export const RecentTransactions = ({ 
-  filterByType
+  filterByType,
+  showViewAll = true
 }: RecentTransactionsProps) => {
   const { transactions, paymentSources } = useFinance();
   const [selectedTransaction, setSelectedTransaction] = useState<Transaction | null>(null);
@@ -59,15 +61,17 @@ export const RecentTransactions = ({
         <h2 className="text-lg font-semibold text-gray-900">Recent Transactions</h2>
       </div>
       
-      <div className="px-6">
-        <TransactionFilters
-          filter={filter}
-          setFilter={setFilter}
-          currentMonth={currentMonth}
-          setCurrentMonth={setCurrentMonth}
-          onSourceSelect={setSelectedSource}
-        />
-      </div>
+      {showViewAll && (
+        <div className="px-6">
+          <TransactionFilters
+            filter={filter}
+            setFilter={setFilter}
+            currentMonth={currentMonth}
+            setCurrentMonth={setCurrentMonth}
+            onSourceSelect={setSelectedSource}
+          />
+        </div>
+      )}
       
       <div className="px-6 pb-6 max-h-[500px] overflow-y-auto">
         <TransactionList
