@@ -1,41 +1,40 @@
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ArrowBigLeft, ArrowBigRight } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { useFinance } from "@/contexts/FinanceContext";
-import { format, addMonths, subMonths, startOfMonth } from "date-fns";
+import { format } from "date-fns";
 
 export const MonthSelector = () => {
   const { currentMonth, setCurrentMonth } = useFinance();
 
-  if (!currentMonth || !setCurrentMonth) {
-    return null;
-  }
-
-  const handlePrevMonth = () => {
-    setCurrentMonth(startOfMonth(subMonths(currentMonth, 1)));
+  const handlePreviousMonth = () => {
+    setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1));
   };
 
   const handleNextMonth = () => {
-    setCurrentMonth(startOfMonth(addMonths(currentMonth, 1)));
+    setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1));
   };
 
   return (
-    <div className="flex items-center justify-between bg-white rounded-apple shadow-sm p-4 w-full mb-4">
-      <button 
-        className="p-2 hover:bg-gray-50 rounded-full transition-colors" 
-        onClick={handlePrevMonth}
-        aria-label="Previous month"
+    <div className="flex items-center justify-between mb-6">
+      <Button
+        variant="ghost"
+        size="icon"
+        onClick={handlePreviousMonth}
+        className="hover:bg-gray-100"
       >
-        <ChevronLeft className="w-4 h-4 text-gray-600" />
-      </button>
-      <span className="text-sm font-medium text-gray-900">
+        <ArrowBigLeft className="w-6 h-6 text-gray-600" />
+      </Button>
+      <h2 className="text-lg font-semibold">
         {format(currentMonth, "MMMM yyyy")}
-      </span>
-      <button 
-        className="p-2 hover:bg-gray-50 rounded-full transition-colors" 
+      </h2>
+      <Button
+        variant="ghost"
+        size="icon"
         onClick={handleNextMonth}
-        aria-label="Next month"
+        className="hover:bg-gray-100"
       >
-        <ChevronRight className="w-4 h-4 text-gray-600" />
-      </button>
+        <ArrowBigRight className="w-6 h-6 text-gray-600" />
+      </Button>
     </div>
   );
 };

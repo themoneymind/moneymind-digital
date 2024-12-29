@@ -36,7 +36,7 @@ export const PaymentSources = () => {
   });
 
   return (
-    <div className="bg-white rounded-apple shadow-sm mt-8 mb-24">
+    <div className="bg-white rounded-apple shadow-sm mt-8">
       <div className="flex items-center justify-between p-6">
         <h2 className="text-lg font-semibold text-gray-900">Payment Sources</h2>
         <Button
@@ -48,7 +48,7 @@ export const PaymentSources = () => {
           <Plus className="w-5 h-5 text-gray-700" />
         </Button>
       </div>
-      <div className="px-6 pb-6 space-y-3">
+      <div className="px-6 pb-4 space-y-3">
         {sourcesWithBalances.map((source) => (
           <PaymentSourceCard key={source.id} source={source} />
         ))}
