@@ -12,7 +12,7 @@ export const CreditCards = () => {
   const creditCards = paymentSources.filter(source => source.type === "Credit Card");
 
   return (
-    <div className="space-y-4 w-full overflow-x-hidden">
+    <div className="space-y-4">
       <div className="flex items-center justify-between px-6">
         <h2 className="text-lg font-semibold">Credit Cards</h2>
         <Button
