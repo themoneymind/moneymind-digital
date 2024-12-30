@@ -1,3 +1,6 @@
+import { PaymentSource } from "@/types/finance";
+import { Transaction } from "@/types/transactions";
+
 export const useFinanceUtils = (
   paymentSources: PaymentSource[],
   transactions: Transaction[]
