@@ -18,8 +18,8 @@ export const PaymentSourceInfo = ({
   showUpiList,
   onUpiToggle,
 }: PaymentSourceInfoProps) => {
-  // Format bank name to always include "Bank" if not present
-  const displayName = name.toLowerCase().includes("bank") ? name : `${name} Bank`;
+  // Use the name directly as it should already be properly formatted
+  const displayName = name;
 
   // For UPI variations: remove "Bank" from the name
   const getUpiDisplayName = (upiApp: string) => {
