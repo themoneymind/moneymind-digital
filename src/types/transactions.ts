@@ -25,7 +25,7 @@ export type Transaction = {
   type: TransactionType;
   amount: number;
   category: string;
-  source: string;
+  source: string; // This is used for display purposes
   description?: string;
   date: Date;
   user_id: string;
@@ -37,7 +37,7 @@ export type Transaction = {
   parent_transaction_id?: string;
   audit_trail?: AuditTrailEntry[];
   previous_status?: string;
-  base_source_id: string;
+  base_source_id: string; // This is what's actually stored in the database
   display_source?: string;
   repeat_frequency?: RepeatOption;
 };

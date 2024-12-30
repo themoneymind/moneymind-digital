@@ -64,14 +64,17 @@ export const useTransactionEdit = (
         );
       }
 
-      const formattedUpdates = {
-        ...updates,
-        source: updates.source ? getBaseSourceId(updates.source) : updates.source,
+      // Prepare the data for Supabase
+      const { source, ...updateData } = updates;
+      const supabaseData = {
+        ...updateData,
+        date: updates.date ? updates.date.toISOString() : undefined,
+        base_source_id: updates.source ? getBaseSourceId(updates.source) : undefined,
       };
 
       const { error: updateError } = await supabase
         .from("transactions")
-        .update(formattedUpdates)
+        .update(supabaseData)
         .eq("id", id);
 
       if (updateError) throw updateError;

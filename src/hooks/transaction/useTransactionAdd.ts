@@ -30,13 +30,18 @@ export const useTransactionAdd = (
         );
       }
 
+      // Prepare the data for Supabase by converting Date to ISO string
+      const { source, ...transactionData } = transaction;
+      const supabaseData = {
+        ...transactionData,
+        date: transaction.date.toISOString(),
+        base_source_id: baseSourceId,
+        user_id: user.id,
+      };
+
       const { error: transactionError } = await supabase
         .from("transactions")
-        .insert({
-          ...transaction,
-          source: baseSourceId,
-          user_id: user.id,
-        });
+        .insert(supabaseData);
 
       if (transactionError) throw transactionError;
 
