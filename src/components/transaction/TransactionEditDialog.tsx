@@ -23,7 +23,7 @@ export const TransactionEditDialog = ({
   const formattedSources = getFormattedPaymentSources();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [currentAmount, setCurrentAmount] = useState(transaction.amount);
-  const [selectedDate, setSelectedDate] = useState(new Date(transaction.date));
+  const [selectedDate, setSelectedDate] = useState<Date>(new Date(transaction.date));
   const [repeatOption, setRepeatOption] = useState<RepeatOption>(transaction.repeat_frequency || "never");
   const dialogState = useDialogState(onOpenChange);
 
@@ -91,7 +91,14 @@ export const TransactionEditDialog = ({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     console.log("Form submitted with date:", selectedDate);
-    await onSubmit(e);
+    
+    // Create a new transaction object with the updated date
+    const updatedTransaction = {
+      ...transaction,
+      date: selectedDate,
+    };
+    
+    await onSubmit(e, updatedTransaction);
   };
 
   const handleDateChange = (newDate: Date) => {

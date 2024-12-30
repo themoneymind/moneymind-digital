@@ -19,7 +19,7 @@ export const useTransactionEditForm = (
     setDescription(transaction.description || "");
   }, [transaction]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent, updatedTransaction?: Partial<Transaction>) => {
     e.preventDefault();
     
     if (!selectedSource) {
@@ -42,13 +42,15 @@ export const useTransactionEditForm = (
       originalAmount: transaction.amount,
       operation,
       changeAmount: numAmount,
-      finalAmount
+      finalAmount,
+      updatedTransaction
     });
 
     await editTransaction(transaction.id, {
       amount: finalAmount,
       source: selectedSource,
       description,
+      ...updatedTransaction // Spread any additional updates
     });
 
     onSuccess();
