@@ -7,7 +7,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { startOfDay, startOfMonth, endOfMonth } from "date-fns";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar as CalendarPicker } from "@/components/ui/calendar";
 import { useFinance } from "@/contexts/FinanceContext";
@@ -29,22 +28,10 @@ export const TransactionFilters = ({
   
   const handleDateSelect = (date: Date | undefined) => {
     if (date) {
-      const today = new Date();
-      // If selected month is current month, use today's date
-      // Otherwise use the selected date
-      const newDate = startOfDay(
-        date.getMonth() === today.getMonth() && date.getFullYear() === today.getFullYear()
-          ? today
-          : date
-      );
-      setCurrentMonth(newDate);
+      setCurrentMonth(date);
       setFilter("date");
     }
   };
-
-  // Calculate the valid date range for the current month
-  const fromDate = startOfMonth(currentMonth);
-  const toDate = endOfMonth(currentMonth);
 
   return (
     <div className="flex items-center gap-2">
@@ -69,8 +56,6 @@ export const TransactionFilters = ({
             selected={currentMonth}
             onSelect={handleDateSelect}
             defaultMonth={currentMonth}
-            fromDate={fromDate}
-            toDate={toDate}
             initialFocus
             className="bg-white rounded-[12px]"
           />
