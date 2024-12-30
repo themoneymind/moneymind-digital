@@ -6,6 +6,8 @@ export const useFinanceUtils = (
   transactions: Transaction[]
 ) => {
   const formatSourceName = (sourceName: string, isUpi: boolean = false, upiApp?: string) => {
+    console.log("formatSourceName - Input:", { sourceName, isUpi, upiApp });
+    
     // Remove any UUID-like patterns and clean up the name
     const cleanName = sourceName
       .replace(/[a-f0-9]{4,}/gi, '')  // Remove UUID-like patterns
@@ -15,16 +17,23 @@ export const useFinanceUtils = (
     // For UPI apps, remove "Bank" and append the UPI app name if provided
     if (isUpi) {
       const nameWithoutBank = cleanName.replace(/\s*bank\s*/i, '');
-      return upiApp ? `${nameWithoutBank} ${upiApp}` : nameWithoutBank;
+      const finalName = upiApp ? `${nameWithoutBank} ${upiApp}` : nameWithoutBank;
+      console.log("formatSourceName - UPI name result:", finalName);
+      return finalName;
     }
     
     // For regular bank names, ensure they end with "Bank"
-    return cleanName.toLowerCase().includes('bank') 
+    const finalName = cleanName.toLowerCase().includes('bank') 
       ? cleanName 
       : `${cleanName} Bank`;
+    
+    console.log("formatSourceName - Bank name result:", finalName);
+    return finalName;
   };
 
   const getFormattedPaymentSources = () => {
+    console.log("getFormattedPaymentSources - Input sources:", paymentSources);
+    
     const formattedSources: { id: string; name: string }[] = [];
     
     paymentSources.forEach(source => {
@@ -50,6 +59,7 @@ export const useFinanceUtils = (
       }
     });
 
+    console.log("getFormattedPaymentSources - Output:", formattedSources);
     return formattedSources;
   };
 
