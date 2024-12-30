@@ -9,6 +9,26 @@ import { RepeatSelector } from "./RepeatSelector";
 import { Plus } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
+const DEFAULT_CATEGORIES = {
+  expense: [
+    "Food",
+    "Transportation",
+    "Shopping",
+    "Entertainment",
+    "Bills",
+    "Health",
+    "Education",
+    "Others"
+  ],
+  income: [
+    "Salary",
+    "Business",
+    "Investment",
+    "Gift",
+    "Others"
+  ]
+};
+
 type TransactionFormProps = {
   type: TransactionType;
   amount: string;
@@ -46,6 +66,11 @@ export const TransactionForm = ({
   formattedSources,
 }: TransactionFormProps) => {
   const navigate = useNavigate();
+  
+  const allCategories = {
+    expense: [...DEFAULT_CATEGORIES.expense, ...customCategories.expense],
+    income: [...DEFAULT_CATEGORIES.income, ...customCategories.income],
+  };
 
   return (
     <div className="space-y-4">
@@ -64,7 +89,7 @@ export const TransactionForm = ({
         type={type}
         category={category}
         onCategoryChange={onCategoryChange}
-        customCategories={customCategories}
+        customCategories={allCategories}
         onAddCustomCategory={onAddCustomCategory}
       />
       <div className="flex gap-2">
