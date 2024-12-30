@@ -4,6 +4,7 @@ import { DueTransaction } from "@/types/dues";
 import { toast } from "sonner";
 import { cleanSourceId, createAuditEntry } from "@/utils/duesUtils";
 import { useFinance } from "@/contexts/FinanceContext";
+import { getBaseSourceId } from "@/utils/paymentSourceUtils";
 
 export const useDuesOperations = (refreshData: () => Promise<void>) => {
   const { addTransaction } = useFinance();
@@ -58,6 +59,7 @@ export const useDuesOperations = (refreshData: () => Promise<void>) => {
 
     try {
       const cleanedSourceId = cleanSourceId(sourceId);
+      const baseSourceId = getBaseSourceId(sourceId);
       console.log("Processing payment with source:", sourceId, "cleaned:", cleanedSourceId);
 
       await addTransaction({
@@ -68,6 +70,8 @@ export const useDuesOperations = (refreshData: () => Promise<void>) => {
         description: `Repayment for: ${selectedTransaction.description}`,
         reference_type: "due_repayment",
         reference_id: selectedTransaction.id,
+        base_source_id: baseSourceId,
+        display_source: cleanedSourceId,
       });
 
       await updateTransactionStatus(selectedTransaction.id, 'completed', {
@@ -94,6 +98,7 @@ export const useDuesOperations = (refreshData: () => Promise<void>) => {
 
     try {
       const cleanedSourceId = cleanSourceId(sourceId);
+      const baseSourceId = getBaseSourceId(sourceId);
       console.log("Processing partial payment with source:", sourceId, "cleaned:", cleanedSourceId);
 
       await addTransaction({
@@ -104,6 +109,8 @@ export const useDuesOperations = (refreshData: () => Promise<void>) => {
         description: `Partial repayment for: ${selectedTransaction.description}`,
         reference_type: "due_repayment",
         reference_id: selectedTransaction.id,
+        base_source_id: baseSourceId,
+        display_source: cleanedSourceId,
       });
 
       await updateTransactionStatus(selectedTransaction.id, 'partially_paid', {

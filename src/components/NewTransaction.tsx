@@ -3,6 +3,7 @@ import { useFinance } from "@/contexts/FinanceContext";
 import { TransactionType } from "@/types/finance";
 import { TransactionForm } from "./transaction/TransactionForm";
 import { useTransactionValidation } from "@/hooks/useTransactionValidation";
+import { getBaseSourceId } from "@/utils/paymentSourceUtils";
 
 export const NewTransaction = () => {
   const { addTransaction, getFormattedPaymentSources, paymentSources } = useFinance();
@@ -49,8 +50,10 @@ export const NewTransaction = () => {
         type,
         amount: validAmount,
         category,
-        source: source, // Use the full source ID including UPI app if present
+        source: source,
         description,
+        base_source_id: baseSourceId,
+        display_source: source,
       });
 
       // Reset form after successful submission
