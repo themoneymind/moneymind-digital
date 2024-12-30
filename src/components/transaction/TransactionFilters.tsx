@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { startOfDay, startOfMonth, endOfMonth } from "date-fns";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { CalendarComponent } from "@/components/ui/calendar";
+import { Calendar as CalendarComponent } from "@/components/ui/calendar";
 import { useFinance } from "@/contexts/FinanceContext";
 
 type TransactionFiltersProps = {

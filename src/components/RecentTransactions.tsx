@@ -41,10 +41,6 @@ export const RecentTransactions = ({
     setIsEditDialogOpen(true);
   };
 
-  const handleDelete = (id: string) => {
-    console.log('Delete transaction:', id);
-  };
-
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat("en-IN", {
       style: "currency",
@@ -78,7 +74,6 @@ export const RecentTransactions = ({
           selectedDate={currentMonth}
           selectedSource={selectedSource}
           onEdit={handleEdit}
-          onDelete={handleDelete}
           formatCurrency={formatCurrency}
           toSentenceCase={toSentenceCase}
         />
