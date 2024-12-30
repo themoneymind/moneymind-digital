@@ -2,11 +2,11 @@ import { Transaction } from "@/types/transactions";
 import { ArrowUpRight, ArrowDownLeft } from "lucide-react";
 import { format } from "date-fns";
 import { useFinance } from "@/contexts/FinanceContext";
+import { getBaseSourceId } from "@/utils/paymentSourceUtils";
 
 type TransactionItemProps = {
   transaction: Transaction;
   onEdit: (transaction: Transaction) => void;
-  onDelete: (id: string) => void;
   formatCurrency: (amount: number) => string;
   toSentenceCase: (str: string) => string;
 };
@@ -19,7 +19,19 @@ export const TransactionItem = ({
 }: TransactionItemProps) => {
   const { paymentSources } = useFinance();
   
-  const paymentSource = paymentSources.find(source => source.id === transaction.source);
+  const getFormattedSourceName = () => {
+    const baseSourceId = getBaseSourceId(transaction.source);
+    const source = paymentSources.find(s => s.id === baseSourceId);
+    if (!source) return "";
+
+    // Check if the transaction source includes a UPI app
+    const sourceIdParts = transaction.source.split("-");
+    if (sourceIdParts.length > 1) {
+      const upiApp = sourceIdParts[1];
+      return `${source.name} ${upiApp}`;
+    }
+    return source.name;
+  };
 
   return (
     <div 
@@ -42,14 +54,9 @@ export const TransactionItem = ({
           <span className="text-sm font-medium text-gray-900">
             {toSentenceCase(transaction.category)}
           </span>
-          <div className="flex items-center gap-2 text-xs text-gray-500">
+          <div className="flex flex-col text-xs text-gray-500">
             <span>{format(new Date(transaction.date), 'MMM d, yyyy')}</span>
-            {paymentSource && (
-              <>
-                <span>•</span>
-                <span>{paymentSource.name}</span>
-              </>
-            )}
+            <span>{getFormattedSourceName()}</span>
           </div>
         </div>
       </div>

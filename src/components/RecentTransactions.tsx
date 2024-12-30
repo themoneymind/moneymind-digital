@@ -71,20 +71,18 @@ export const RecentTransactions = ({
         )}
       </div>
       
-      {showViewAll && (
-        <div className="px-6">
-          <TransactionList
-            transactions={availableTransactions}
-            filter={filter}
-            selectedDate={currentMonth}
-            selectedSource={selectedSource}
-            onEdit={handleEdit}
-            onDelete={handleDelete}
-            formatCurrency={formatCurrency}
-            toSentenceCase={toSentenceCase}
-          />
-        </div>
-      )}
+      <div className="px-6 overflow-x-hidden">
+        <TransactionList
+          transactions={availableTransactions}
+          filter={filter}
+          selectedDate={currentMonth}
+          selectedSource={selectedSource}
+          onEdit={handleEdit}
+          onDelete={handleDelete}
+          formatCurrency={formatCurrency}
+          toSentenceCase={toSentenceCase}
+        />
+      </div>
 
       {selectedTransaction && (
         <TransactionEditDialog
