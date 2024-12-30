@@ -90,7 +90,13 @@ export const TransactionEditDialog = ({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    console.log("Form submitted with date:", selectedDate);
     await onSubmit(e);
+  };
+
+  const handleDateChange = (newDate: Date) => {
+    console.log("Date changed to:", newDate);
+    setSelectedDate(newDate);
   };
 
   return (
@@ -133,7 +139,7 @@ export const TransactionEditDialog = ({
           currentAmount={currentAmount}
           onDelete={handleDelete}
           selectedDate={selectedDate}
-          onDateChange={setSelectedDate}
+          onDateChange={handleDateChange}
           repeatOption={repeatOption}
           onRepeatOptionChange={setRepeatOption}
         />
