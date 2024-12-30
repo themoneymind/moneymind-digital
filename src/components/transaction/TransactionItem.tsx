@@ -1,5 +1,5 @@
 import { Transaction } from "@/types/transactions";
-import { ArrowUpRight, ArrowDownLeft } from "lucide-react";
+import { ArrowUpRight, ArrowDownLeft, Repeat } from "lucide-react";
 import { format } from "date-fns";
 
 type TransactionItemProps = {
@@ -33,9 +33,14 @@ export const TransactionItem = ({
           )}
         </div>
         <div className="flex flex-col">
-          <span className="text-sm font-medium text-gray-900">
-            {toSentenceCase(transaction.category)}
-          </span>
+          <div className="flex items-center gap-2">
+            <span className="text-sm font-medium text-gray-900">
+              {toSentenceCase(transaction.category)}
+            </span>
+            {transaction.repeat_frequency && transaction.repeat_frequency !== "never" && (
+              <Repeat className="w-3 h-3 text-blue-500" />
+            )}
+          </div>
           <div className="flex flex-col text-xs text-gray-500">
             <span>{transaction.display_source || "Unknown Source"}</span>
             <span>{format(new Date(transaction.date), 'MMM d, yyyy')}</span>
