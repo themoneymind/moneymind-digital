@@ -71,8 +71,49 @@ export const useTransactions = () => {
     }
   }, [user, toast]);
 
+  const editTransaction = useCallback(async (id: string, updates: Partial<Omit<Transaction, "id" | "created_at" | "updated_at">>) => {
+    if (!user) return;
+
+    try {
+      // If source is being updated, update base_source_id and display_source
+      if (updates.source) {
+        const baseSourceId = getBaseSourceId(updates.source);
+        updates.base_source_id = baseSourceId;
+        updates.display_source = updates.source;
+      }
+
+      const { error } = await supabase
+        .from("transactions")
+        .update({
+          ...updates,
+          updated_at: new Date().toISOString()
+        })
+        .eq("id", id)
+        .eq("user_id", user.id);
+
+      if (error) {
+        console.error("Error editing transaction:", error);
+        toast({
+          title: "Error",
+          description: "Failed to edit transaction",
+          variant: "destructive",
+        });
+        throw error;
+      }
+
+      toast({
+        title: "Success",
+        description: "Transaction updated successfully",
+      });
+    } catch (error) {
+      console.error("Error in editTransaction:", error);
+      throw error;
+    }
+  }, [user, toast]);
+
   return {
     fetchTransactions,
     addTransaction,
+    editTransaction,
   };
 };
