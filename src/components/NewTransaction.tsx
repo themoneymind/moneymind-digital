@@ -14,6 +14,7 @@ export const NewTransaction = () => {
   const [category, setCategory] = useState("");
   const [source, setSource] = useState("");
   const [description, setDescription] = useState("");
+  const [selectedDate, setSelectedDate] = useState(new Date());
   const [customCategories, setCustomCategories] = useState<{
     expense: string[];
     income: string[];
@@ -23,7 +24,6 @@ export const NewTransaction = () => {
   });
 
   const formattedSources = getFormattedPaymentSources();
-  console.log("Available formatted sources:", formattedSources);
 
   const handleAddCustomCategory = (newCategory: string) => {
     setCustomCategories((prev) => ({
@@ -45,7 +45,6 @@ export const NewTransaction = () => {
 
     if (!validateExpenseBalance(baseSource, validAmount, type)) return;
 
-    // Find the selected source from formatted sources to get the display name
     const selectedSource = formattedSources.find(s => s.id === source);
     const displaySourceName = selectedSource ? selectedSource.name : source;
 
@@ -58,6 +57,7 @@ export const NewTransaction = () => {
         description,
         base_source_id: baseSourceId,
         display_source: displaySourceName,
+        date: selectedDate,
       });
 
       // Reset form after successful submission
@@ -65,6 +65,7 @@ export const NewTransaction = () => {
       setCategory("");
       setSource("");
       setDescription("");
+      setSelectedDate(new Date());
     } catch (error) {
       console.error("Error adding transaction:", error);
     }
