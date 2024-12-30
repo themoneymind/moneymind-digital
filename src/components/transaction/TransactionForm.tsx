@@ -7,6 +7,8 @@ import { PaymentSourceSelector } from "./PaymentSourceSelector";
 import { TransactionDateSelector } from "./TransactionDateSelector";
 import { RepeatSelector, RepeatOption } from "./RepeatSelector";
 import { useState } from "react";
+import { Plus } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 type TransactionFormProps = {
   type: TransactionType;
@@ -46,6 +48,7 @@ export const TransactionForm = ({
 }: TransactionFormProps) => {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [repeatOption, setRepeatOption] = useState<RepeatOption>("never");
+  const navigate = useNavigate();
 
   const defaultExpenseCategories = [
     "Food",
@@ -96,11 +99,21 @@ export const TransactionForm = ({
         }}
         onAddCustomCategory={onAddCustomCategory}
       />
-      <PaymentSourceSelector
-        source={source}
-        onSourceChange={onSourceChange}
-        formattedSources={formattedSources}
-      />
+      <div className="flex gap-2">
+        <PaymentSourceSelector
+          source={source}
+          onSourceChange={onSourceChange}
+          formattedSources={formattedSources}
+        />
+        <Button
+          variant="outline"
+          size="icon"
+          className="h-14 w-14 border-gray-200 rounded-[12px] flex-shrink-0"
+          onClick={() => navigate("/payment-source")}
+        >
+          <Plus className="h-4 w-4" />
+        </Button>
+      </div>
       <TransactionDateSelector
         selectedDate={selectedDate}
         onDateChange={(date) => date && setSelectedDate(date)}

@@ -88,7 +88,7 @@ export const CategorySelector = ({
         <SelectTrigger className="w-full h-14 border-gray-200 rounded-[12px]">
           <SelectValue placeholder="Select category" />
         </SelectTrigger>
-        <SelectContent className="bg-white border border-gray-200 shadow-lg rounded-[12px] z-50">
+        <SelectContent className="bg-white border border-gray-200 shadow-lg rounded-[12px] max-h-[300px] overflow-y-auto z-50">
           {uniqueCategories.map(({ id, name }) => (
             <SelectItem 
               key={id}

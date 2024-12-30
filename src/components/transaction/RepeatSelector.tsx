@@ -32,7 +32,7 @@ export const RepeatSelector = ({ value, onValueChange }: RepeatSelectorProps) =>
       <SelectTrigger className="h-14 rounded-[12px] border-gray-200">
         <SelectValue placeholder="Select repeat frequency" />
       </SelectTrigger>
-      <SelectContent>
+      <SelectContent className="bg-white border border-gray-200 shadow-lg rounded-[12px] max-h-[300px] overflow-y-auto">
         <SelectItem value="never">Never Repeat</SelectItem>
         <SelectItem value="daily">Every Day</SelectItem>
         <SelectItem value="workdays">Every Work Day</SelectItem>
