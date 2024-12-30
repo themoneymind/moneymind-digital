@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { startOfDay, startOfMonth, endOfMonth } from "date-fns";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Calendar as CalendarComponent } from "@/components/ui/calendar";
+import { Calendar as CalendarPicker } from "@/components/ui/calendar";
 import { useFinance } from "@/contexts/FinanceContext";
 
 type TransactionFiltersProps = {
@@ -57,7 +57,7 @@ export const TransactionFilters = ({
           side="bottom"
           sideOffset={5}
         >
-          <CalendarComponent
+          <CalendarPicker
             mode="single"
             selected={currentMonth}
             onSelect={handleDateSelect}
