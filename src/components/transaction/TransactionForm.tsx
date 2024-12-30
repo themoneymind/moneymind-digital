@@ -1,6 +1,7 @@
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { TransactionType, RepeatOption } from "@/types/finance";
+import { TransactionType } from "@/types/finance";
+import { RepeatOption } from "@/types/transactions";
 import { TransactionTypeSelector } from "./TransactionTypeSelector";
 import { PaymentSourceSelector } from "./PaymentSourceSelector";
 import { CategoryManager } from "./category/CategoryManager";
