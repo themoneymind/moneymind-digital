@@ -42,7 +42,6 @@ export const useTransactionValidation = () => {
     }
 
     try {
-      // Get the base source ID for validation, but keep the original source ID
       const baseSourceId = getBaseSourceId(source);
       console.log("Validating payment source:", {
         sourceId: source,
@@ -62,8 +61,7 @@ export const useTransactionValidation = () => {
         return null;
       }
 
-      // Return both the original source and base source for balance validation
-      return { sourceId: source, baseSourceId, baseSource };
+      return { baseSourceId, baseSource };
     } catch (error) {
       console.error("Error validating payment source:", error);
       toast({
