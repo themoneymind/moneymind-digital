@@ -54,6 +54,8 @@ export const TransactionEditDialog = ({
       setCurrentAmount(transaction.amount);
       setSelectedDate(new Date(transaction.date));
       setRepeatOption(transaction.repeat_frequency || "never");
+      // Initialize with display_source if available, otherwise use source
+      setSelectedSource(transaction.display_source || transaction.source);
     }
   }, [open, resetForm, transaction]);
 
@@ -92,10 +94,13 @@ export const TransactionEditDialog = ({
     e.preventDefault();
     console.log("Form submitted with date:", selectedDate);
     
-    // Create a new transaction object with the updated date
+    // Create a new transaction object with the updated date and source information
     const updatedTransaction = {
       ...transaction,
       date: selectedDate,
+      source: selectedSource,
+      display_source: selectedSource, // Preserve the display source
+      repeat_frequency: repeatOption,
     };
     
     await onSubmit(e, updatedTransaction);

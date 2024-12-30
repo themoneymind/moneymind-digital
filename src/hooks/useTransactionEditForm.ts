@@ -9,13 +9,13 @@ export const useTransactionEditForm = (
   const { editTransaction } = useFinance();
   const [operation, setOperation] = useState<"add" | "subtract">("add");
   const [amount, setAmount] = useState("");
-  const [selectedSource, setSelectedSource] = useState(transaction.source);
+  const [selectedSource, setSelectedSource] = useState(transaction.display_source || transaction.source);
   const [description, setDescription] = useState(transaction.description || "");
 
   const resetForm = useCallback(() => {
     setAmount("");
     setOperation("add");
-    setSelectedSource(transaction.source);
+    setSelectedSource(transaction.display_source || transaction.source);
     setDescription(transaction.description || "");
   }, [transaction]);
 
@@ -43,14 +43,16 @@ export const useTransactionEditForm = (
       operation,
       changeAmount: numAmount,
       finalAmount,
+      selectedSource,
       updatedTransaction
     });
 
     await editTransaction(transaction.id, {
       amount: finalAmount,
       source: selectedSource,
+      display_source: selectedSource, // Preserve the display source
       description,
-      ...updatedTransaction // Spread any additional updates
+      ...updatedTransaction
     });
 
     onSuccess();
