@@ -31,8 +31,10 @@ export const PaymentSource = () => {
   };
 
   const formatSourceName = (bankName: string) => {
+    // Clean the bank name by removing any numbers and extra spaces
+    const cleanName = bankName.replace(/\d+/g, '').trim();
     // Ensure bank name has "Bank" suffix if not present
-    return bankName.toLowerCase().includes("bank") ? bankName : `${bankName} Bank`;
+    return cleanName.toLowerCase().includes('bank') ? cleanName : `${cleanName} Bank`;
   };
 
   const handleAddSource = async () => {
@@ -47,9 +49,9 @@ export const PaymentSource = () => {
       return;
     }
 
-    // Format source name based on type
+    // Format source name based on type and clean the bank name
     const sourceName = selectedType === "credit" 
-      ? `${bankName} Credit Card`
+      ? `${formatSourceName(bankName)} Credit Card`
       : formatSourceName(bankName);
 
     const checkDuplicateSource = (sourceName: string) => {

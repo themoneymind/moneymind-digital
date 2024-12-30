@@ -23,7 +23,7 @@ export const PaymentSourceInfo = ({
 
   // For UPI variations: remove "Bank" from the name
   const getUpiDisplayName = (upiApp: string) => {
-    const baseName = name.replace(" Bank", "");
+    const baseName = name.replace(/\s*bank\s*/i, "").trim();
     return `${baseName} ${upiApp}`;
   };
 
