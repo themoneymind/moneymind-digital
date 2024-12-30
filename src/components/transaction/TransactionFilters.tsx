@@ -47,7 +47,7 @@ export const TransactionFilters = ({
           </Button>
         </PopoverTrigger>
         <PopoverContent 
-          className="w-auto p-0 bg-white border border-gray-200 shadow-lg rounded-[12px]" 
+          className="w-auto p-0 bg-white border border-gray-200 shadow-lg rounded-[12px] z-50" 
           align="end"
           side="bottom"
           sideOffset={5}
@@ -75,7 +75,7 @@ export const TransactionFilters = ({
         </DropdownMenuTrigger>
         <DropdownMenuContent 
           align="end" 
-          className="w-56 bg-white border border-gray-200 shadow-lg rounded-[12px] p-1"
+          className="w-56 bg-white border border-gray-200 shadow-lg rounded-[12px] p-1 z-50"
           side="bottom"
           sideOffset={5}
         >

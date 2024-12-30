@@ -258,7 +258,9 @@ export type Database = {
           excuse_reason: string | null
           id: string
           last_reminder_sent: string | null
+          next_occurrence_date: string | null
           next_reminder_date: string | null
+          original_transaction_id: string | null
           parent_transaction_id: string | null
           previous_status: string | null
           reference_id: string | null
@@ -266,6 +268,8 @@ export type Database = {
           remaining_balance: number | null
           reminder_count: number | null
           repayment_date: string | null
+          repeat_frequency: string | null
+          repeat_until: string | null
           source: string
           status: string | null
           type: string
@@ -284,7 +288,9 @@ export type Database = {
           excuse_reason?: string | null
           id?: string
           last_reminder_sent?: string | null
+          next_occurrence_date?: string | null
           next_reminder_date?: string | null
+          original_transaction_id?: string | null
           parent_transaction_id?: string | null
           previous_status?: string | null
           reference_id?: string | null
@@ -292,6 +298,8 @@ export type Database = {
           remaining_balance?: number | null
           reminder_count?: number | null
           repayment_date?: string | null
+          repeat_frequency?: string | null
+          repeat_until?: string | null
           source: string
           status?: string | null
           type: string
@@ -310,7 +318,9 @@ export type Database = {
           excuse_reason?: string | null
           id?: string
           last_reminder_sent?: string | null
+          next_occurrence_date?: string | null
           next_reminder_date?: string | null
+          original_transaction_id?: string | null
           parent_transaction_id?: string | null
           previous_status?: string | null
           reference_id?: string | null
@@ -318,6 +328,8 @@ export type Database = {
           remaining_balance?: number | null
           reminder_count?: number | null
           repayment_date?: string | null
+          repeat_frequency?: string | null
+          repeat_until?: string | null
           source?: string
           status?: string | null
           type?: string
@@ -330,6 +342,13 @@ export type Database = {
             columns: ["base_source_id"]
             isOneToOne: false
             referencedRelation: "payment_sources"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "transactions_original_transaction_id_fkey"
+            columns: ["original_transaction_id"]
+            isOneToOne: false
+            referencedRelation: "transactions"
             referencedColumns: ["id"]
           },
           {

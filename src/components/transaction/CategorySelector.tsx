@@ -88,11 +88,12 @@ export const CategorySelector = ({
         <SelectTrigger className="w-full h-14 border-gray-200 rounded-[12px]">
           <SelectValue placeholder="Select category" />
         </SelectTrigger>
-        <SelectContent className="rounded-[12px] bg-white border-gray-200">
+        <SelectContent className="bg-white border border-gray-200 shadow-lg rounded-[12px] z-50">
           {uniqueCategories.map(({ id, name }) => (
             <SelectItem 
               key={id}
               value={name.toLowerCase()}
+              className="hover:bg-gray-50"
             >
               {name}
             </SelectItem>
@@ -112,7 +113,7 @@ export const CategorySelector = ({
           </Button>
         </DialogTrigger>
         <DialogContent 
-          className="sm:max-w-[425px] rounded-[20px]"
+          className="sm:max-w-[425px] bg-white rounded-[20px] shadow-lg border border-gray-200"
           onPointerDownOutside={(e) => {
             if (isSubmitting) {
               e.preventDefault();
