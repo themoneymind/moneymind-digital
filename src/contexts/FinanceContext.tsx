@@ -19,7 +19,7 @@ type FinanceContextType = {
   paymentSources: PaymentSource[];
   isLoading: boolean;
   refreshData: () => Promise<void>;
-  addTransaction: (transaction: Omit<Transaction, "id" | "date" | "user_id" | "created_at" | "updated_at">) => Promise<void>;
+  addTransaction: (transaction: Omit<Transaction, "id" | "user_id" | "created_at" | "updated_at">) => Promise<void>;
   editTransaction: (id: string, updates: Partial<Omit<Transaction, "id" | "created_at" | "updated_at">>) => Promise<void>;
   deleteTransaction: (id: string) => Promise<void>;
   addPaymentSource: (source: Omit<PaymentSource, "id">) => Promise<void>;
