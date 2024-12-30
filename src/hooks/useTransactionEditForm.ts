@@ -14,13 +14,6 @@ export const useTransactionEditForm = (
   const [selectedSource, setSelectedSource] = useState(transaction.source);
   const [description, setDescription] = useState(transaction.description || "");
 
-  console.log("Transaction Edit Form Init:", {
-    transaction,
-    selectedSource,
-    source: transaction.source,
-    display_source: transaction.display_source
-  });
-
   const resetForm = useCallback(() => {
     setAmount("");
     setOperation("add");
@@ -31,12 +24,6 @@ export const useTransactionEditForm = (
   const handleSubmit = async (e: React.FormEvent, updatedTransaction?: Partial<Transaction>) => {
     e.preventDefault();
     
-    console.log("Submitting transaction edit:", {
-      selectedSource,
-      updatedTransaction,
-      source: transaction.source
-    });
-
     if (!selectedSource) {
       console.error("Source validation failed:", { selectedSource });
       toast({
@@ -63,20 +50,12 @@ export const useTransactionEditForm = (
         : Number(transaction.amount) - numAmount
     ) : Number(transaction.amount);
 
-    console.log("Transaction edit calculation:", {
-      originalAmount: transaction.amount,
-      operation,
-      changeAmount: numAmount,
-      finalAmount,
-      selectedSource,
-      updatedTransaction
-    });
-
     try {
       await editTransaction(transaction.id, {
         amount: finalAmount,
         source: selectedSource,
         description,
+        display_source: transaction.display_source, // Preserve the original display source
         ...updatedTransaction
       });
 

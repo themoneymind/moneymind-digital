@@ -17,6 +17,7 @@ export const TransactionEditDialogContent = ({
 }: TransactionEditDialogContentProps) => {
   const { getFormattedPaymentSources } = useFinance();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [selectedDate, setSelectedDate] = useState(new Date(transaction.date));
   
   const {
     operation,
@@ -34,13 +35,14 @@ export const TransactionEditDialogContent = ({
 
   const formattedSources = getFormattedPaymentSources();
 
-  console.log("TransactionEditDialogContent formattedSources:", formattedSources);
-
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
     try {
-      await handleSubmit(e);
+      await handleSubmit(e, {
+        date: selectedDate,
+        display_source: transaction.display_source // Preserve the original display source
+      });
     } finally {
       setIsSubmitting(false);
     }
@@ -64,13 +66,11 @@ export const TransactionEditDialogContent = ({
           setDescription={setDescription}
           formattedSources={formattedSources}
           onDropdownOpenChange={() => {}}
-          selectedDate={new Date(transaction.date)}
-          onDateChange={(date: Date) => {
-            // Handle date change
-          }}
+          selectedDate={selectedDate}
+          onDateChange={setSelectedDate}
           repeatFrequency={transaction.repeat_frequency || "never"}
-          onRepeatChange={(frequency: string) => {
-            // Handle repeat frequency change
+          onRepeatChange={(frequency) => {
+            // Handle repeat frequency change if needed
           }}
         />
         <div className="flex gap-2">
