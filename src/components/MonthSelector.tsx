@@ -1,6 +1,6 @@
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useFinance } from "@/contexts/FinanceContext";
-import { format, addMonths, subMonths, startOfMonth } from "date-fns";
+import { format, addMonths, subMonths, isSameMonth } from "date-fns";
 
 export const MonthSelector = () => {
   const { currentMonth, setCurrentMonth } = useFinance();
@@ -11,24 +11,19 @@ export const MonthSelector = () => {
 
   const handlePrevMonth = () => {
     const newDate = subMonths(currentMonth, 1);
-    // Keep the day of the month when navigating
-    const newDateWithSameDay = new Date(
-      newDate.getFullYear(),
-      newDate.getMonth(),
-      currentMonth.getDate()
-    );
-    setCurrentMonth(newDateWithSameDay);
+    setCurrentMonth(newDate);
   };
 
   const handleNextMonth = () => {
     const newDate = addMonths(currentMonth, 1);
-    // Keep the day of the month when navigating
-    const newDateWithSameDay = new Date(
-      newDate.getFullYear(),
-      newDate.getMonth(),
-      currentMonth.getDate()
-    );
-    setCurrentMonth(newDateWithSameDay);
+    
+    // If we're moving to the current month, reset to today's date
+    const today = new Date();
+    if (isSameMonth(newDate, today)) {
+      setCurrentMonth(today);
+    } else {
+      setCurrentMonth(newDate);
+    }
   };
 
   return (
