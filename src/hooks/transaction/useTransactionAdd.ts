@@ -31,11 +31,12 @@ export const useTransactionAdd = (
       }
 
       // Prepare the data for Supabase by converting Date to ISO string
-      const { source, ...transactionData } = transaction;
+      const { source: displaySource, ...transactionData } = transaction;
       const supabaseData = {
         ...transactionData,
         date: transaction.date.toISOString(),
         base_source_id: baseSourceId,
+        source: baseSourceId, // Set source equal to base_source_id for database consistency
         user_id: user.id,
       };
 
