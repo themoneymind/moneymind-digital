@@ -11,13 +11,13 @@ export const useTransactionEditForm = (
   const { toast } = useToast();
   const [operation, setOperation] = useState<"add" | "subtract">("add");
   const [amount, setAmount] = useState("");
-  const [selectedSource, setSelectedSource] = useState(transaction.display_source || transaction.source);
+  const [selectedSource, setSelectedSource] = useState(transaction.source);
   const [description, setDescription] = useState(transaction.description || "");
 
   const resetForm = useCallback(() => {
     setAmount("");
     setOperation("add");
-    setSelectedSource(transaction.display_source || transaction.source);
+    setSelectedSource(transaction.source);
     setDescription(transaction.description || "");
   }, [transaction]);
 
@@ -25,7 +25,7 @@ export const useTransactionEditForm = (
     e.preventDefault();
     
     // Validate source selection
-    if (!selectedSource || selectedSource.trim() === "") {
+    if (!selectedSource) {
       toast({
         title: "Error",
         description: "Please select a payment source",
@@ -60,12 +60,9 @@ export const useTransactionEditForm = (
       updatedTransaction
     });
 
-    // Ensure we're using both display_source and base_source_id
     await editTransaction(transaction.id, {
       amount: finalAmount,
-      source: transaction.base_source_id, // Use the UUID
-      display_source: selectedSource, // Use the display name
-      base_source_id: transaction.base_source_id,
+      source: selectedSource,
       description,
       ...updatedTransaction
     });
