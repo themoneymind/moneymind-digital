@@ -28,7 +28,7 @@ export const TransactionItem = ({
     const sourceIdParts = transaction.source.split("-");
     if (sourceIdParts.length > 1) {
       const upiApp = sourceIdParts[1];
-      return `${source.name} ${upiApp}`;
+      return `${source.name} via ${upiApp}`;
     }
     return source.name;
   };
@@ -55,8 +55,8 @@ export const TransactionItem = ({
             {toSentenceCase(transaction.category)}
           </span>
           <div className="flex flex-col text-xs text-gray-500">
-            <span>{format(new Date(transaction.date), 'MMM d, yyyy')}</span>
             <span>{getFormattedSourceName()}</span>
+            <span>{format(new Date(transaction.date), 'MMM d, yyyy')}</span>
           </div>
         </div>
       </div>

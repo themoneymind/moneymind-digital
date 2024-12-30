@@ -8,7 +8,6 @@ type TransactionListProps = {
   selectedDate: Date;
   selectedSource: string | null;
   onEdit: (transaction: Transaction) => void;
-  onDelete: (id: string) => void;
   formatCurrency: (amount: number) => string;
   toSentenceCase: (str: string) => string;
 };
@@ -19,7 +18,6 @@ export const TransactionList = ({
   selectedDate,
   selectedSource,
   onEdit,
-  onDelete,
   formatCurrency,
   toSentenceCase,
 }: TransactionListProps) => {

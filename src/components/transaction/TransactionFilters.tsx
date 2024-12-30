@@ -7,9 +7,9 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { startOfDay } from "date-fns";
+import { startOfDay, startOfMonth, endOfMonth } from "date-fns";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Calendar as CalendarComponent } from "@/components/ui/calendar";
+import { CalendarComponent } from "@/components/ui/calendar";
 import { useFinance } from "@/contexts/FinanceContext";
 
 type TransactionFiltersProps = {
@@ -35,6 +35,10 @@ export const TransactionFilters = ({
     }
   };
 
+  // Calculate the valid date range for the current month
+  const fromDate = startOfMonth(currentMonth);
+  const toDate = endOfMonth(currentMonth);
+
   return (
     <div className="flex items-center gap-2">
       <Popover>
@@ -57,6 +61,9 @@ export const TransactionFilters = ({
             mode="single"
             selected={currentMonth}
             onSelect={handleDateSelect}
+            defaultMonth={currentMonth}
+            fromDate={fromDate}
+            toDate={toDate}
             initialFocus
             className="bg-white rounded-[12px]"
           />
