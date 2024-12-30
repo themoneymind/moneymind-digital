@@ -3,6 +3,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { TransactionAmountOperations } from "../TransactionAmountOperations";
 import { TransactionDatePopover } from "../date-selector/TransactionDatePopover";
 import { RepeatSelector } from "../RepeatSelector";
+import { RepeatOption } from "@/types/transactions";
 
 interface TransactionEditFormProps {
   currentAmount: number;
@@ -16,8 +17,8 @@ interface TransactionEditFormProps {
   setDescription: (description: string) => void;
   selectedDate: Date;
   setSelectedDate: (date: Date) => void;
-  repeatOption: string;
-  setRepeatOption: (option: string) => void;
+  repeatOption: RepeatOption;
+  setRepeatOption: (option: RepeatOption) => void;
   formattedSources: { id: string; name: string }[];
   onDropdownOpenChange: (open: boolean) => void;
 }

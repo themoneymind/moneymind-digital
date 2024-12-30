@@ -1,7 +1,7 @@
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { useFinance } from "@/contexts/FinanceContext";
 import { useState, useEffect } from "react";
-import { Transaction } from "@/types/transactions";
+import { Transaction, RepeatOption } from "@/types/transactions";
 import { useToast } from "@/hooks/use-toast";
 import { useTransactionEditForm } from "@/hooks/useTransactionEditForm";
 import { TransactionEditDialogContent } from "./TransactionEditDialogContent";
@@ -24,7 +24,7 @@ export const TransactionEditDialog = ({
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [currentAmount, setCurrentAmount] = useState(transaction.amount);
   const [selectedDate, setSelectedDate] = useState(new Date(transaction.date));
-  const [repeatOption, setRepeatOption] = useState(transaction.repeat_frequency || "never");
+  const [repeatOption, setRepeatOption] = useState<RepeatOption>(transaction.repeat_frequency || "never");
   const dialogState = useDialogState(onOpenChange);
 
   const {
