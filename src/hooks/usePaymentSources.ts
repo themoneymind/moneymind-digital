@@ -45,13 +45,36 @@ export const usePaymentSources = () => {
 
     console.log("Updating payment source:", updatedSource);
 
+    // Remove generated columns and only include updatable fields
+    const { 
+      id,
+      name,
+      type,
+      amount,
+      linked,
+      upi_apps,
+      credit_limit,
+      statement_date,
+      due_date,
+      interest_rate,
+      last_four_digits
+    } = updatedSource;
+
     const { error } = await supabase
       .from("payment_sources")
       .update({
-        ...updatedSource,
-        amount: Number(updatedSource.amount)
+        name,
+        type,
+        amount: Number(amount),
+        linked,
+        upi_apps,
+        credit_limit,
+        statement_date,
+        due_date,
+        interest_rate,
+        last_four_digits
       })
-      .eq("id", updatedSource.id);
+      .eq("id", id);
 
     if (error) {
       console.error("Error updating payment source:", error);
