@@ -10,7 +10,6 @@ import {
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar as CalendarPicker } from "@/components/ui/calendar";
 import { useFinance } from "@/contexts/FinanceContext";
-import { isSameMonth } from "date-fns";
 
 type TransactionFiltersProps = {
   filter: "all" | "income" | "expense" | "date";
@@ -29,15 +28,9 @@ export const TransactionFilters = ({
   
   const handleDateSelect = (date: Date | undefined) => {
     if (date) {
-      // If selecting a date in the current month, update both month and date
-      const today = new Date();
-      if (isSameMonth(date, today)) {
-        setCurrentMonth(today);
-        setFilter("date");
-      } else {
-        setCurrentMonth(date);
-        setFilter("date");
-      }
+      // Always update to the selected date when manually picking from calendar
+      setCurrentMonth(date);
+      setFilter("date");
     }
   };
 

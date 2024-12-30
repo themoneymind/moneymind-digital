@@ -17,7 +17,7 @@ export const MonthSelector = () => {
   const handleNextMonth = () => {
     const newDate = addMonths(currentMonth, 1);
     
-    // If we're moving to the current month, reset to today's date
+    // Only reset to today when explicitly navigating to current month via arrows
     const today = new Date();
     if (isSameMonth(newDate, today)) {
       setCurrentMonth(today);
