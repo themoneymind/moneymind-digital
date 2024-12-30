@@ -1,6 +1,9 @@
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { TransactionAmountOperations } from "./TransactionAmountOperations";
+import { TransactionDateSelector } from "./TransactionDateSelector";
+import { RepeatSelector } from "./RepeatSelector";
+import { useState } from "react";
 
 interface TransactionEditDialogFormProps {
   currentAmount: number;
@@ -14,6 +17,10 @@ interface TransactionEditDialogFormProps {
   setDescription: (description: string) => void;
   formattedSources: { id: string; name: string }[];
   onDropdownOpenChange: (open: boolean) => void;
+  selectedDate: Date;
+  onDateChange: (date: Date) => void;
+  repeatOption: string;
+  onRepeatOptionChange: (option: string) => void;
 }
 
 export const TransactionEditDialogForm = ({
@@ -28,12 +35,11 @@ export const TransactionEditDialogForm = ({
   setDescription,
   formattedSources,
   onDropdownOpenChange,
+  selectedDate,
+  onDateChange,
+  repeatOption,
+  onRepeatOptionChange,
 }: TransactionEditDialogFormProps) => {
-  // Set the initial amount to 10000 (the difference we want to subtract)
-  const handleAmountChange = (newAmount: string) => {
-    setAmount(newAmount);
-  };
-
   return (
     <div className="space-y-6">
       <TransactionAmountOperations
@@ -41,7 +47,7 @@ export const TransactionEditDialogForm = ({
         operation={operation}
         setOperation={setOperation}
         amount={amount}
-        setAmount={handleAmountChange}
+        setAmount={setAmount}
       />
 
       <div className="space-y-2">
@@ -56,7 +62,7 @@ export const TransactionEditDialogForm = ({
           <SelectTrigger className="h-12 rounded-[12px]">
             <SelectValue placeholder="Select payment source" />
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent className="bg-white border border-gray-200 shadow-lg">
             {formattedSources.map((source) => (
               <SelectItem key={source.id} value={source.id}>
                 {source.name}
@@ -64,6 +70,22 @@ export const TransactionEditDialogForm = ({
             ))}
           </SelectContent>
         </Select>
+      </div>
+
+      <div className="space-y-2">
+        <label className="text-sm font-medium">Date</label>
+        <TransactionDateSelector
+          selectedDate={selectedDate}
+          onDateChange={(date) => date && onDateChange(date)}
+        />
+      </div>
+
+      <div className="space-y-2">
+        <label className="text-sm font-medium">Repeat</label>
+        <RepeatSelector
+          value={repeatOption}
+          onValueChange={onRepeatOptionChange}
+        />
       </div>
 
       <div className="space-y-2">

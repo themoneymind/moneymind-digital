@@ -28,7 +28,7 @@ export const TransactionDateSelector = ({
             {selectedDate ? format(selectedDate, "PPP") : "Select date"}
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-auto p-0" align="start">
+        <PopoverContent className="w-auto p-0 bg-white border border-gray-200 shadow-lg" align="start">
           <Calendar
             mode="single"
             selected={selectedDate}
