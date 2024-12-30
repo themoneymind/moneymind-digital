@@ -1,0 +1,89 @@
+import { useAuth } from "@/contexts/AuthContext";
+import { supabase } from "@/integrations/supabase/client";
+import { Transaction } from "@/types/transactions";
+import { toast } from "sonner";
+import { getBaseSourceId } from "@/utils/paymentSourceUtils";
+import { useTransactionSourceUpdate } from "./useTransactionSourceUpdate";
+import { PaymentSource, TransactionType } from "@/types/finance";
+
+export const useTransactionEdit = (
+  paymentSources: PaymentSource[],
+  refreshData: () => Promise<void>
+) => {
+  const { user } = useAuth();
+  const { updatePaymentSourceAmount } = useTransactionSourceUpdate(paymentSources);
+
+  const editTransaction = async (
+    id: string,
+    updates: Partial<Omit<Transaction, "id" | "created_at" | "updated_at">>
+  ) => {
+    if (!user) return;
+
+    try {
+      const { data: originalTransaction, error: fetchError } = await supabase
+        .from("transactions")
+        .select("*")
+        .eq("id", id)
+        .single();
+
+      if (fetchError) throw fetchError;
+
+      // If the transaction is being rejected, reverse its effect on the payment source
+      if (updates.status === 'rejected' && originalTransaction.status !== 'rejected') {
+        await updatePaymentSourceAmount(
+          originalTransaction.source,
+          Number(originalTransaction.amount),
+          originalTransaction.type as TransactionType,
+          true
+        );
+      }
+      // If a rejected transaction is being un-rejected, apply its effect
+      else if (originalTransaction.status === 'rejected' && updates.status && updates.status !== 'rejected') {
+        await updatePaymentSourceAmount(
+          originalTransaction.source,
+          Number(originalTransaction.amount),
+          originalTransaction.type as TransactionType,
+          false
+        );
+      }
+      // For normal updates (not involving rejection)
+      else if (updates.amount !== undefined && originalTransaction.status !== 'rejected') {
+        await updatePaymentSourceAmount(
+          originalTransaction.source,
+          Number(originalTransaction.amount),
+          originalTransaction.type as TransactionType,
+          true
+        );
+
+        const targetSource = updates.source ? getBaseSourceId(updates.source) : originalTransaction.source;
+        await updatePaymentSourceAmount(
+          targetSource,
+          Number(updates.amount),
+          (updates.type || originalTransaction.type) as TransactionType,
+          false
+        );
+      }
+
+      const formattedUpdates = {
+        ...updates,
+        source: updates.source ? getBaseSourceId(updates.source) : updates.source,
+      };
+
+      const { error: updateError } = await supabase
+        .from("transactions")
+        .update(formattedUpdates)
+        .eq("id", id);
+
+      if (updateError) throw updateError;
+
+      await refreshData();
+      toast.success("Transaction updated successfully");
+    } catch (error) {
+      console.error("Error updating transaction:", error);
+      toast.error("Failed to update transaction");
+      throw error;
+    }
+  };
+
+  return { editTransaction };
+};
