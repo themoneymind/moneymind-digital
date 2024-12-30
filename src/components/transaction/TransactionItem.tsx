@@ -26,11 +26,11 @@ export const TransactionItem = ({
 
     // Check if the transaction source includes a UPI app
     const sourceIdParts = transaction.source.split("-");
-    if (sourceIdParts.length > 1) {
-      const upiApp = sourceIdParts[1];
-      return `${source.name} via ${upiApp}`;
+    if (sourceIdParts.length > 1 && source.type !== "Bank") {
+      const upiApp = sourceIdParts[1].toUpperCase();
+      return `${source.name} ${upiApp}`;
     }
-    return source.name;
+    return source.type === "Bank" ? `${source.name} BANK` : source.name;
   };
 
   return (

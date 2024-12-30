@@ -29,7 +29,14 @@ export const TransactionFilters = ({
   
   const handleDateSelect = (date: Date | undefined) => {
     if (date) {
-      const newDate = startOfDay(date);
+      const today = new Date();
+      // If selected month is current month, use today's date
+      // Otherwise use the selected date
+      const newDate = startOfDay(
+        date.getMonth() === today.getMonth() && date.getFullYear() === today.getFullYear()
+          ? today
+          : date
+      );
       setCurrentMonth(newDate);
       setFilter("date");
     }
