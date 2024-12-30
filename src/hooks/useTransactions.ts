@@ -74,6 +74,5 @@ export const useTransactions = () => {
   return {
     fetchTransactions,
     addTransaction,
-    editTransaction,
   };
 };
