@@ -16,11 +16,12 @@ export const TransactionItem = ({
   formatCurrency,
   toSentenceCase,
 }: TransactionItemProps) => {
-  const { paymentSources } = useFinance();
+  const { paymentSources, getFormattedPaymentSources } = useFinance();
   
   const getFormattedSourceName = () => {
-    const source = paymentSources.find(s => s.id === transaction.source);
-    return source?.display_name || source?.name || "";
+    const formattedSources = getFormattedPaymentSources();
+    const source = formattedSources.find(s => s.id === transaction.source);
+    return source?.name || "";
   };
 
   return (

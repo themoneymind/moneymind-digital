@@ -49,7 +49,7 @@ export const NewTransaction = () => {
         type,
         amount: validAmount,
         category,
-        source: baseSourceId,
+        source: source, // Use the full source ID including UPI app if present
         description,
       });
 
