@@ -19,10 +19,6 @@ export const TransactionItem = ({
   const { paymentSources, getFormattedPaymentSources } = useFinance();
   
   const getFormattedSourceName = () => {
-    // Use display_source if available, otherwise fall back to formatted sources
-    if (transaction.display_source) {
-      return transaction.display_source;
-    }
     const formattedSources = getFormattedPaymentSources();
     const source = formattedSources.find(s => s.id === transaction.source);
     return source?.name || "";

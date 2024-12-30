@@ -4,7 +4,6 @@ import { DueTransaction } from "@/types/dues";
 import { toast } from "sonner";
 import { cleanSourceId, createAuditEntry } from "@/utils/duesUtils";
 import { useFinance } from "@/contexts/FinanceContext";
-import { getBaseSourceId } from "@/utils/paymentSourceUtils";
 
 export const useDuesOperations = (refreshData: () => Promise<void>) => {
   const { addTransaction } = useFinance();
@@ -58,19 +57,17 @@ export const useDuesOperations = (refreshData: () => Promise<void>) => {
     if (!selectedTransaction) return;
 
     try {
-      const baseSourceId = getBaseSourceId(sourceId);
-      console.log("Processing payment with source:", sourceId, "cleaned:", baseSourceId);
+      const cleanedSourceId = cleanSourceId(sourceId);
+      console.log("Processing payment with source:", sourceId, "cleaned:", cleanedSourceId);
 
       await addTransaction({
         type: selectedTransaction.type === 'expense' ? 'income' : 'expense',
         amount: selectedTransaction.remaining_balance || selectedTransaction.amount,
         category: "Dues Repayment",
-        source: sourceId,
+        source: cleanedSourceId,
         description: `Repayment for: ${selectedTransaction.description}`,
         reference_type: "due_repayment",
         reference_id: selectedTransaction.id,
-        base_source_id: baseSourceId,
-        display_source: sourceId,
       });
 
       await updateTransactionStatus(selectedTransaction.id, 'completed', {
@@ -96,19 +93,17 @@ export const useDuesOperations = (refreshData: () => Promise<void>) => {
     }
 
     try {
-      const baseSourceId = getBaseSourceId(sourceId);
-      console.log("Processing partial payment with source:", sourceId, "cleaned:", baseSourceId);
+      const cleanedSourceId = cleanSourceId(sourceId);
+      console.log("Processing partial payment with source:", sourceId, "cleaned:", cleanedSourceId);
 
       await addTransaction({
         type: selectedTransaction.type === 'expense' ? 'income' : 'expense',
         amount: amount,
         category: "Dues Partial Repayment",
-        source: sourceId,
+        source: cleanedSourceId,
         description: `Partial repayment for: ${selectedTransaction.description}`,
         reference_type: "due_repayment",
         reference_id: selectedTransaction.id,
-        base_source_id: baseSourceId,
-        display_source: sourceId,
       });
 
       await updateTransactionStatus(selectedTransaction.id, 'partially_paid', {

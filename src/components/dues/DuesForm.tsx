@@ -13,7 +13,6 @@ import { DuesMessage } from "./DuesMessage";
 import { toast } from "sonner";
 import { DueTransaction } from "@/types/dues";
 import { useAuth } from "@/contexts/AuthContext";
-import { getBaseSourceId } from "@/utils/paymentSourceUtils";
 
 export const DuesForm = () => {
   const { user } = useAuth();
@@ -45,7 +44,6 @@ export const DuesForm = () => {
       const dueDescription = `Due ${type === "given" ? "Given to" : "Received from"}: ${personName}`;
       const dueNote = `${description || "No description"}${upiId ? `, UPI: ${upiId}` : ''}`;
       const currentDate = new Date();
-      const baseSourceId = getBaseSourceId(source);
 
       const newTransaction: Omit<DueTransaction, 'id' | 'created_at' | 'updated_at'> = {
         type: type === "given" ? "expense" : "income",
@@ -62,8 +60,6 @@ export const DuesForm = () => {
         remaining_balance: Number(amount),
         next_reminder_date: repaymentDate.toISOString(),
         reminder_count: 0,
-        base_source_id: baseSourceId,
-        display_source: source,
       };
 
       await addTransaction(newTransaction);

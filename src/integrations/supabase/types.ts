@@ -249,12 +249,10 @@ export type Database = {
         Row: {
           amount: number
           audit_trail: Json[] | null
-          base_source_id: string
           category: string
           created_at: string
           date: string
           description: string | null
-          display_source: string | null
           excuse_reason: string | null
           id: string
           last_reminder_sent: string | null
@@ -275,12 +273,10 @@ export type Database = {
         Insert: {
           amount: number
           audit_trail?: Json[] | null
-          base_source_id: string
           category: string
           created_at?: string
           date?: string
           description?: string | null
-          display_source?: string | null
           excuse_reason?: string | null
           id?: string
           last_reminder_sent?: string | null
@@ -301,12 +297,10 @@ export type Database = {
         Update: {
           amount?: number
           audit_trail?: Json[] | null
-          base_source_id?: string
           category?: string
           created_at?: string
           date?: string
           description?: string | null
-          display_source?: string | null
           excuse_reason?: string | null
           id?: string
           last_reminder_sent?: string | null
@@ -326,17 +320,17 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: "transactions_base_source_fkey"
-            columns: ["base_source_id"]
-            isOneToOne: false
-            referencedRelation: "payment_sources"
-            referencedColumns: ["id"]
-          },
-          {
             foreignKeyName: "transactions_parent_transaction_id_fkey"
             columns: ["parent_transaction_id"]
             isOneToOne: false
             referencedRelation: "transactions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "transactions_source_fkey"
+            columns: ["source"]
+            isOneToOne: false
+            referencedRelation: "payment_sources"
             referencedColumns: ["id"]
           },
           {
