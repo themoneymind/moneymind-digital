@@ -1,7 +1,5 @@
 export type TransactionType = "income" | "expense";
 
-export type RepeatOption = "never" | "daily" | "weekly" | "monthly" | "yearly";
-
 export type AuditTrailEntry = {
   action: string;
   timestamp: string;
@@ -26,8 +24,6 @@ export type Transaction = {
   previous_status?: string;
   base_source_id: string;
   display_source?: string;
-  repeat_frequency?: RepeatOption;
-  repeat_until?: string;
 };
 
 export type NewTransaction = Omit<Transaction, "id" | "date" | "user_id" | "created_at" | "updated_at">;

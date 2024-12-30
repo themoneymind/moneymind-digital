@@ -1,7 +1,7 @@
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { useFinance } from "@/contexts/FinanceContext";
 import { useState, useEffect } from "react";
-import { Transaction, RepeatOption } from "@/types/transactions";
+import { Transaction } from "@/types/transactions";
 import { useToast } from "@/hooks/use-toast";
 import { useTransactionEditForm } from "@/hooks/useTransactionEditForm";
 import { TransactionEditDialogContent } from "./TransactionEditDialogContent";
@@ -23,8 +23,6 @@ export const TransactionEditDialog = ({
   const formattedSources = getFormattedPaymentSources();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [currentAmount, setCurrentAmount] = useState(transaction.amount);
-  const [selectedDate, setSelectedDate] = useState(new Date(transaction.date));
-  const [repeatOption, setRepeatOption] = useState<RepeatOption>(transaction.repeat_frequency || "never");
   const dialogState = useDialogState(onOpenChange);
 
   const {
@@ -52,10 +50,8 @@ export const TransactionEditDialog = ({
       dialogState.reset();
       setIsDropdownOpen(false);
       setCurrentAmount(transaction.amount);
-      setSelectedDate(new Date(transaction.date));
-      setRepeatOption(transaction.repeat_frequency || "never");
     }
-  }, [open, resetForm, transaction]);
+  }, [open, resetForm, transaction.amount]);
 
   useEffect(() => {
     const numAmount = Number(amount);
@@ -121,10 +117,6 @@ export const TransactionEditDialog = ({
           setSelectedSource={setSelectedSource}
           description={description}
           setDescription={setDescription}
-          selectedDate={selectedDate}
-          setSelectedDate={setSelectedDate}
-          repeatOption={repeatOption}
-          setRepeatOption={setRepeatOption}
           formattedSources={formattedSources}
           onSubmit={onSubmit}
           isSubmitting={dialogState.isSubmitting}

@@ -1,13 +1,14 @@
+import { useAuth } from "@/contexts/AuthContext";
 import { useTransactions } from "./useTransactions";
 import { usePaymentSources } from "./usePaymentSources";
 import { supabase } from "@/integrations/supabase/client";
-import { Transaction, AuditTrailEntry, RepeatOption } from "@/types/transactions";
+import { Transaction, AuditTrailEntry } from "@/types/transactions";
 import { PaymentSource } from "@/types/finance";
 
 type DataSyncProps = {
-  setTransactions: React.Dispatch<React.SetStateAction<Transaction[]>>;
-  setPaymentSources: React.Dispatch<React.SetStateAction<PaymentSource[]>>;
-  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
+  setTransactions: (transactions: Transaction[]) => void;
+  setPaymentSources: (sources: PaymentSource[]) => void;
+  setIsLoading: (loading: boolean) => void;
 };
 
 export const useFinanceDataSync = ({
@@ -15,29 +16,31 @@ export const useFinanceDataSync = ({
   setPaymentSources,
   setIsLoading,
 }: DataSyncProps) => {
+  const { user } = useAuth();
   const { fetchTransactions } = useTransactions();
   const { fetchPaymentSources } = usePaymentSources();
 
   const refreshData = async () => {
+    if (!user) return;
+    
     try {
       setIsLoading(true);
-      const [txnsData, sourcesData] = await Promise.all([
+      const [txnsData, sources] = await Promise.all([
         fetchTransactions(),
         fetchPaymentSources()
       ]);
 
-      // Transform the data with proper typing
+      // Transform the audit_trail to match our TypeScript type
       const txns = txnsData.map(t => ({
         ...t,
         audit_trail: t.audit_trail?.map((entry: any) => ({
           action: entry.action,
           timestamp: entry.timestamp
-        })) as AuditTrailEntry[],
-        repeat_frequency: (t.repeat_frequency || 'never') as RepeatOption
+        })) as AuditTrailEntry[]
       }));
 
       setTransactions(txns);
-      setPaymentSources(sourcesData);
+      setPaymentSources(sources);
     } catch (error) {
       console.error("Error refreshing data:", error);
     } finally {
@@ -46,28 +49,43 @@ export const useFinanceDataSync = ({
   };
 
   const setupSubscriptions = () => {
-    // Subscribe to changes in transactions and payment sources using channels
-    const channel = supabase
-      .channel('db-changes')
+    if (!user) return;
+
+    const transactionsSubscription = supabase
+      .channel('transactions_changes')
       .on(
         'postgres_changes',
-        { event: '*', schema: 'public', table: 'transactions' },
-        () => refreshData()
+        {
+          event: '*',
+          schema: 'public',
+          table: 'transactions'
+        },
+        () => {
+          refreshData();
+        }
       )
+      .subscribe();
+
+    const sourcesSubscription = supabase
+      .channel('sources_changes')
       .on(
         'postgres_changes',
-        { event: '*', schema: 'public', table: 'payment_sources' },
-        () => refreshData()
+        {
+          event: '*',
+          schema: 'public',
+          table: 'payment_sources'
+        },
+        () => {
+          refreshData();
+        }
       )
       .subscribe();
 
     return () => {
-      supabase.channel('db-changes').unsubscribe();
+      transactionsSubscription.unsubscribe();
+      sourcesSubscription.unsubscribe();
     };
   };
 
-  return {
-    refreshData,
-    setupSubscriptions,
-  };
+  return { refreshData, setupSubscriptions };
 };

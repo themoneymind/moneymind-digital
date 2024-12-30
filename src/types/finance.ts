@@ -1,5 +1,3 @@
-import { RepeatOption } from "./transactions";
-
 export type TransactionType = "income" | "expense";
 
 export type Transaction = {
@@ -17,7 +15,6 @@ export type Transaction = {
   reference_id?: string;
   status?: string;
   parent_transaction_id?: string;
-  repeat_frequency?: RepeatOption;
 };
 
 export type PaymentSource = {

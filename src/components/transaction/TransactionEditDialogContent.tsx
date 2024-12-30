@@ -1,7 +1,7 @@
 import { DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { TransactionEditForm } from "./edit/TransactionEditForm";
-import { Transaction, RepeatOption } from "@/types/transactions";
+import { TransactionEditDialogForm } from "./TransactionEditDialogForm";
+import { Transaction } from "@/types/transactions";
 
 interface TransactionEditDialogContentProps {
   transaction: Transaction;
@@ -13,10 +13,6 @@ interface TransactionEditDialogContentProps {
   setSelectedSource: (source: string) => void;
   description: string;
   setDescription: (description: string) => void;
-  selectedDate: Date;
-  setSelectedDate: (date: Date) => void;
-  repeatOption: RepeatOption;
-  setRepeatOption: (option: RepeatOption) => void;
   formattedSources: { id: string; name: string }[];
   onSubmit: (e: React.FormEvent) => Promise<void>;
   isSubmitting: boolean;
@@ -35,10 +31,6 @@ export const TransactionEditDialogContent = ({
   setSelectedSource,
   description,
   setDescription,
-  selectedDate,
-  setSelectedDate,
-  repeatOption,
-  setRepeatOption,
   formattedSources,
   onSubmit,
   isSubmitting,
@@ -52,7 +44,7 @@ export const TransactionEditDialogContent = ({
         <DialogTitle className="text-xl font-semibold">Edit Transaction</DialogTitle>
       </DialogHeader>
       <form onSubmit={onSubmit} className="space-y-4">
-        <TransactionEditForm
+        <TransactionEditDialogForm
           currentAmount={currentAmount}
           operation={operation}
           setOperation={setOperation}
@@ -62,10 +54,6 @@ export const TransactionEditDialogContent = ({
           setSelectedSource={setSelectedSource}
           description={description}
           setDescription={setDescription}
-          selectedDate={selectedDate}
-          setSelectedDate={setSelectedDate}
-          repeatOption={repeatOption}
-          setRepeatOption={setRepeatOption}
           formattedSources={formattedSources}
           onDropdownOpenChange={onDropdownOpenChange}
         />

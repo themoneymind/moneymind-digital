@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Transaction, AuditTrailEntry, RepeatOption } from "@/types/transactions";
+import { Transaction, AuditTrailEntry } from "@/types/transactions";
 import { useTransactions } from "./useTransactions";
 import { format, startOfDay, startOfWeek, startOfMonth, startOfYear } from "date-fns";
 
@@ -16,14 +16,13 @@ export const useReport = () => {
       setIsLoading(true);
       try {
         const data = await fetchTransactions();
-        // Transform the data with proper typing
+        // Transform the audit_trail to match our TypeScript type
         const txns = data.map(t => ({
           ...t,
           audit_trail: t.audit_trail?.map((entry: any) => ({
             action: entry.action,
             timestamp: entry.timestamp
-          })) as AuditTrailEntry[],
-          repeat_frequency: (t.repeat_frequency || 'never') as RepeatOption
+          })) as AuditTrailEntry[]
         }));
         setTransactions(txns);
       } catch (error) {
