@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
-import { Transaction, RepeatOption } from "@/types/transactions";
+import { Transaction, RepeatOption, AuditTrailEntry } from "@/types/transactions";
 
 type TimeframeType = "daily" | "weekly" | "monthly" | "yearly";
 
@@ -27,6 +27,10 @@ export const useReport = () => {
         const txns = txnsData.map(t => ({
           ...t,
           date: new Date(t.date),
+          audit_trail: (t.audit_trail || []).map((entry: any) => ({
+            action: entry.action as string,
+            timestamp: entry.timestamp as string
+          })) as AuditTrailEntry[],
           repeat_frequency: (t.repeat_frequency || 'never') as RepeatOption
         }));
 
