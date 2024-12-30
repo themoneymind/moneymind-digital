@@ -33,7 +33,7 @@ export const NewTransaction = () => {
   };
 
   const handleSubmit = async () => {
-    console.log("Submitting transaction with source:", source);
+    console.log("Submitting transaction with date:", selectedDate);
     
     const validAmount = validateAmount(amount);
     if (!validAmount) return;
@@ -80,11 +80,13 @@ export const NewTransaction = () => {
         category={category}
         source={source}
         description={description}
+        selectedDate={selectedDate}
         onTypeChange={setType}
         onAmountChange={setAmount}
         onCategoryChange={setCategory}
         onSourceChange={setSource}
         onDescriptionChange={setDescription}
+        onDateChange={setSelectedDate}
         onSubmit={handleSubmit}
         customCategories={customCategories}
         onAddCustomCategory={handleAddCustomCategory}

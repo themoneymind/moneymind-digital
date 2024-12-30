@@ -3,7 +3,7 @@ import { format, addDays, subDays } from "date-fns";
 
 interface TransactionDateSelectorProps {
   selectedDate: Date;
-  onDateChange: (date: Date | undefined) => void;
+  onDateChange: (date: Date) => void;
 }
 
 export const TransactionDateSelector = ({
