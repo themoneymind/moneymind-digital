@@ -29,13 +29,14 @@ export const TransactionItem = ({
     // Check if the transaction source includes a UPI app
     const sourceIdParts = transaction.source.split("-");
     if (sourceIdParts.length > 1) {
-      // For UPI transactions
+      // For UPI transactions, use the display_name if available
       const upiApp = sourceIdParts[1];
-      return formatSourceName(source.name, true, upiApp);
+      const baseName = source.display_name || formatSourceName(source.name, true);
+      return `${baseName.replace(/\s*bank\s*/i, '')} ${upiApp}`;
     }
     
-    // For regular bank transactions, clean up and format the name
-    return formatSourceName(source.name);
+    // For regular bank transactions, use display_name if available
+    return source.display_name || formatSourceName(source.name);
   };
 
   return (
