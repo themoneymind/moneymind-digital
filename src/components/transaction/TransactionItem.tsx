@@ -1,6 +1,7 @@
 import { Transaction } from "@/types/transactions";
 import { ArrowUpRight, ArrowDownLeft } from "lucide-react";
 import { format } from "date-fns";
+import { useFinance } from "@/contexts/FinanceContext";
 
 type TransactionItemProps = {
   transaction: Transaction;
@@ -16,6 +17,10 @@ export const TransactionItem = ({
   formatCurrency,
   toSentenceCase,
 }: TransactionItemProps) => {
+  const { paymentSources } = useFinance();
+  
+  const paymentSource = paymentSources.find(source => source.id === transaction.source);
+
   return (
     <div 
       className="flex items-center justify-between p-4 hover:bg-gray-50 transition-colors rounded-xl border border-gray-100 cursor-pointer"
@@ -37,9 +42,15 @@ export const TransactionItem = ({
           <span className="text-sm font-medium text-gray-900">
             {toSentenceCase(transaction.category)}
           </span>
-          <span className="text-xs text-gray-500">
-            {format(new Date(transaction.date), "MMM d, yyyy")}
-          </span>
+          <div className="flex items-center gap-2 text-xs text-gray-500">
+            <span>{format(new Date(transaction.date), 'MMM d, yyyy')}</span>
+            {paymentSource && (
+              <>
+                <span>•</span>
+                <span>{paymentSource.name}</span>
+              </>
+            )}
+          </div>
         </div>
       </div>
       <span

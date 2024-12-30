@@ -4,7 +4,7 @@ import { Transaction } from "@/types/transactions";
 import { TransactionEditDialog } from "./transaction/TransactionEditDialog";
 import { TransactionFilters } from "./transaction/TransactionFilters";
 import { TransactionList } from "./transaction/TransactionList";
-import { startOfDay } from "date-fns";
+import { startOfDay, startOfMonth, endOfMonth, isSameMonth } from "date-fns";
 
 interface RecentTransactionsProps {
   filterByType?: string;
@@ -15,20 +15,23 @@ export const RecentTransactions = ({
   filterByType,
   showViewAll = true
 }: RecentTransactionsProps) => {
-  const { transactions, paymentSources } = useFinance();
+  const { transactions, paymentSources, currentMonth } = useFinance();
   const [selectedTransaction, setSelectedTransaction] = useState<Transaction | null>(null);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [filter, setFilter] = useState<"all" | "income" | "expense" | "date">("date");
   const [selectedSource, setSelectedSource] = useState<string | null>(null);
-  const [currentMonth, setCurrentMonth] = useState<Date>(startOfDay(new Date()));
   
-  let availableTransactions = transactions;
+  let availableTransactions = transactions.filter(transaction => {
+    const transactionDate = new Date(transaction.date);
+    return isSameMonth(transactionDate, currentMonth);
+  });
+
   if (filterByType === "Credit Card") {
     const creditCardIds = paymentSources
       .filter(source => source.type === "Credit Card")
       .map(source => source.id);
     
-    availableTransactions = transactions.filter(t => 
+    availableTransactions = availableTransactions.filter(t => 
       creditCardIds.includes(t.source)
     );
   }
@@ -63,7 +66,6 @@ export const RecentTransactions = ({
             filter={filter}
             setFilter={setFilter}
             currentMonth={currentMonth}
-            setCurrentMonth={setCurrentMonth}
             onSourceSelect={setSelectedSource}
           />
         )}
