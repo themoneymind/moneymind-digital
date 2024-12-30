@@ -6,18 +6,21 @@ export const useFinanceUtils = (
   transactions: Transaction[]
 ) => {
   const formatSourceName = (sourceName: string, isUpi: boolean = false, upiApp?: string) => {
-    // Remove any numbers or special characters
-    const cleanName = sourceName.replace(/[0-9]+|[^\w\s]/g, '').trim();
+    // First, remove any UUID parts that might be in the name
+    const cleanName = sourceName.replace(/[a-f0-9]{4,}/gi, '').trim();
+    
+    // Then remove any remaining numbers and special characters
+    const finalName = cleanName.replace(/[0-9]+|[^\w\s]/g, '').trim();
     
     // For UPI apps, remove "Bank" and append the UPI app name
     if (isUpi && upiApp) {
-      return `${cleanName.replace(/\s*bank\s*/i, '')} ${upiApp}`;
+      return `${finalName.replace(/\s*bank\s*/i, '')} ${upiApp}`;
     }
     
     // For regular bank names, ensure they end with "Bank"
-    return cleanName.toLowerCase().includes('bank') 
-      ? cleanName 
-      : `${cleanName} Bank`;
+    return finalName.toLowerCase().includes('bank') 
+      ? finalName 
+      : `${finalName} Bank`;
   };
 
   const getFormattedPaymentSources = () => {
@@ -51,6 +54,6 @@ export const useFinanceUtils = (
   return {
     getFormattedPaymentSources,
     getTransactionsBySource,
-    formatSourceName, // Export this so other components can use it directly
+    formatSourceName,
   };
 };
