@@ -29,4 +29,5 @@ export type PaymentSource = {
   due_date?: string;
   interest_rate?: number;
   last_four_digits?: string;
+  display_name?: string;
 };

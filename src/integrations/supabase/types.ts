@@ -125,6 +125,7 @@ export type Database = {
           amount: number | null
           created_at: string
           credit_limit: number | null
+          display_name: string | null
           due_date: string | null
           id: string
           interest_rate: number | null
@@ -141,6 +142,7 @@ export type Database = {
           amount?: number | null
           created_at?: string
           credit_limit?: number | null
+          display_name?: string | null
           due_date?: string | null
           id?: string
           interest_rate?: number | null
@@ -157,6 +159,7 @@ export type Database = {
           amount?: number | null
           created_at?: string
           credit_limit?: number | null
+          display_name?: string | null
           due_date?: string | null
           id?: string
           interest_rate?: number | null
