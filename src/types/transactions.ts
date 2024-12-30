@@ -1,6 +1,19 @@
 export type TransactionType = "income" | "expense";
 
-export type RepeatOption = "never" | "daily" | "weekly" | "monthly" | "yearly";
+export type RepeatOption =
+  | "never"
+  | "daily"
+  | "workdays"
+  | "weekly"
+  | "biweekly"
+  | "triweekly"
+  | "monthly"
+  | "bimonthly"
+  | "quarterly"
+  | "firstofmonth"
+  | "lastofmonth"
+  | "semiannually"
+  | "annually";
 
 export type AuditTrailEntry = {
   action: string;

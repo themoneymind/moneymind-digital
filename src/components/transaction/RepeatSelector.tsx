@@ -5,21 +5,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-
-export type RepeatOption =
-  | "never"
-  | "daily"
-  | "workdays"
-  | "weekly"
-  | "biweekly"
-  | "triweekly"
-  | "monthly"
-  | "bimonthly"
-  | "quarterly"
-  | "firstofmonth"
-  | "lastofmonth"
-  | "semiannually"
-  | "annually";
+import { RepeatOption } from "@/types/transactions";
 
 interface RepeatSelectorProps {
   value: RepeatOption;

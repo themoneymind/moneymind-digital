@@ -2,7 +2,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useTransactions } from "./useTransactions";
 import { usePaymentSources } from "./usePaymentSources";
 import { supabase } from "@/integrations/supabase/client";
-import { Transaction, AuditTrailEntry } from "@/types/transactions";
+import { Transaction, AuditTrailEntry, RepeatOption } from "@/types/transactions";
 import { PaymentSource } from "@/types/finance";
 
 type DataSyncProps = {
@@ -30,16 +30,17 @@ export const useFinanceDataSync = ({
         fetchPaymentSources()
       ]);
 
-      // Transform the audit_trail to match our TypeScript type
+      // Transform the transactions to match our TypeScript type
       const txns = txnsData.map(t => ({
         ...t,
         audit_trail: t.audit_trail?.map((entry: any) => ({
           action: entry.action,
           timestamp: entry.timestamp
-        })) as AuditTrailEntry[]
+        })) as AuditTrailEntry[],
+        repeat_frequency: (t.repeat_frequency || 'never') as RepeatOption
       }));
 
-      setTransactions(txns);
+      setTransactions(txns as Transaction[]);
       setPaymentSources(sources);
     } catch (error) {
       console.error("Error refreshing data:", error);
