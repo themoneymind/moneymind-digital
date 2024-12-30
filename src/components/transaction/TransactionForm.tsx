@@ -8,6 +8,7 @@ import { TransactionDateSelector } from "./TransactionDateSelector";
 import { RepeatSelector } from "./RepeatSelector";
 import { Plus } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 
 const DEFAULT_CATEGORIES = {
   expense: [
@@ -66,6 +67,7 @@ export const TransactionForm = ({
   formattedSources,
 }: TransactionFormProps) => {
   const navigate = useNavigate();
+  const [selectedDate, setSelectedDate] = useState(new Date());
   
   const allCategories = {
     expense: [...DEFAULT_CATEGORIES.expense, ...customCategories.expense],
@@ -108,8 +110,8 @@ export const TransactionForm = ({
         </Button>
       </div>
       <TransactionDateSelector
-        selectedDate={new Date()}
-        onDateChange={() => {}}
+        selectedDate={selectedDate}
+        onDateChange={setSelectedDate}
       />
       <Input
         placeholder="Description or note (Optional)"
