@@ -11,12 +11,24 @@ export const MonthSelector = () => {
 
   const handlePrevMonth = () => {
     const newDate = subMonths(currentMonth, 1);
-    setCurrentMonth(startOfMonth(newDate));
+    // Keep the day of the month when navigating
+    const newDateWithSameDay = new Date(
+      newDate.getFullYear(),
+      newDate.getMonth(),
+      currentMonth.getDate()
+    );
+    setCurrentMonth(newDateWithSameDay);
   };
 
   const handleNextMonth = () => {
     const newDate = addMonths(currentMonth, 1);
-    setCurrentMonth(startOfMonth(newDate));
+    // Keep the day of the month when navigating
+    const newDateWithSameDay = new Date(
+      newDate.getFullYear(),
+      newDate.getMonth(),
+      currentMonth.getDate()
+    );
+    setCurrentMonth(newDateWithSameDay);
   };
 
   return (

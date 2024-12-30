@@ -28,6 +28,7 @@ export const TransactionFilters = ({
   
   const handleDateSelect = (date: Date | undefined) => {
     if (date) {
+      // Keep the selected date as is, without forcing start of month
       setCurrentMonth(date);
       setFilter("date");
     }
