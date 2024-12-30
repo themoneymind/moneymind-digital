@@ -30,16 +30,10 @@ export const PaymentSource = () => {
     setShowBankSearch(false);
   };
 
-  const handleUpiToggle = (upiApp: string) => {
-    setSelectedUpiApps((prev) =>
-      prev.includes(upiApp)
-        ? prev.filter((app) => app !== upiApp)
-        : [...prev, upiApp]
-    );
-  };
-
-  const checkDuplicateSource = (sourceName: string) => {
-    return paymentSources.some(source => source.name === sourceName);
+  const formatSourceName = (bankName: string, upiApp?: string) => {
+    // Remove "Bank" if UPI app is present
+    const baseName = upiApp ? bankName.replace(" Bank", "") : bankName;
+    return upiApp ? `${baseName} ${upiApp}` : baseName;
   };
 
   const handleAddSource = async () => {
@@ -54,9 +48,16 @@ export const PaymentSource = () => {
       return;
     }
 
+    // Format source name based on type and UPI apps
     const sourceName = selectedType === "credit" 
       ? `${bankName} Credit Card`
-      : bankName;
+      : selectedUpiApps.length > 0 
+        ? formatSourceName(bankName, selectedUpiApps[0])
+        : bankName;
+
+    const checkDuplicateSource = (sourceName: string) => {
+      return paymentSources.some(source => source.name === sourceName);
+    };
 
     if (checkDuplicateSource(sourceName)) {
       toast({
@@ -131,7 +132,13 @@ export const PaymentSource = () => {
             onBankSelect={handleBankSelect}
             setCustomBankName={setCustomBankName}
             setCustomUpi={setCustomUpi}
-            onUpiToggle={handleUpiToggle}
+            onUpiToggle={(upiApp: string) => {
+              setSelectedUpiApps((prev) =>
+                prev.includes(upiApp)
+                  ? prev.filter((app) => app !== upiApp)
+                  : [...prev, upiApp]
+              );
+            }}
             showBankSearch={showBankSearch}
             setShowBankSearch={setShowBankSearch}
           />
