@@ -18,11 +18,14 @@ export const PaymentSourceInfo = ({
   showUpiList,
   onUpiToggle,
 }: PaymentSourceInfoProps) => {
+  // Format bank name to always include "Bank" if not present
+  const displayName = name.toLowerCase().includes("bank") ? name : `${name} Bank`;
+
   return (
     <div className="min-w-0 flex-1">
       <div className="flex flex-col justify-center">
         <p className="text-sm font-medium text-gray-900 leading-tight">
-          {name}
+          {displayName}
         </p>
         <span className="text-xs text-gray-500 leading-tight">{type}</span>
         {linked && upiApps && upiApps.length > 0 && (
