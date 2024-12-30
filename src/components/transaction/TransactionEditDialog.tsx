@@ -23,6 +23,8 @@ export const TransactionEditDialog = ({
   const formattedSources = getFormattedPaymentSources();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [currentAmount, setCurrentAmount] = useState(transaction.amount);
+  const [selectedDate, setSelectedDate] = useState(new Date(transaction.date));
+  const [repeatOption, setRepeatOption] = useState(transaction.repeat_frequency || "never");
   const dialogState = useDialogState(onOpenChange);
 
   const {
@@ -50,8 +52,10 @@ export const TransactionEditDialog = ({
       dialogState.reset();
       setIsDropdownOpen(false);
       setCurrentAmount(transaction.amount);
+      setSelectedDate(new Date(transaction.date));
+      setRepeatOption(transaction.repeat_frequency || "never");
     }
-  }, [open, resetForm, transaction.amount]);
+  }, [open, resetForm, transaction]);
 
   useEffect(() => {
     const numAmount = Number(amount);
@@ -117,6 +121,10 @@ export const TransactionEditDialog = ({
           setSelectedSource={setSelectedSource}
           description={description}
           setDescription={setDescription}
+          selectedDate={selectedDate}
+          setSelectedDate={setSelectedDate}
+          repeatOption={repeatOption}
+          setRepeatOption={setRepeatOption}
           formattedSources={formattedSources}
           onSubmit={onSubmit}
           isSubmitting={dialogState.isSubmitting}
