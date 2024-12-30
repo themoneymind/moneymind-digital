@@ -7,7 +7,6 @@ import { getBaseSourceId } from "@/utils/paymentSourceUtils";
 
 export const useTransactions = () => {
   const { user } = useAuth();
-  const { toast } = useToast();
 
   const fetchTransactions = useCallback(async () => {
     if (!user) return [];
@@ -53,23 +52,16 @@ export const useTransactions = () => {
 
       if (error) {
         console.error("Error adding transaction:", error);
-        toast({
-          title: "Error",
-          description: "Failed to add transaction",
-          variant: "destructive",
-        });
+        toast.error("Failed to add transaction");
         throw error;
       }
 
-      toast({
-        title: "Success",
-        description: "Transaction added successfully",
-      });
+      toast.success("Transaction added successfully");
     } catch (error) {
       console.error("Error in addTransaction:", error);
       throw error;
     }
-  }, [user, toast]);
+  }, [user]);
 
   const editTransaction = useCallback(async (id: string, updates: Partial<Omit<Transaction, "id" | "created_at" | "updated_at">>) => {
     if (!user) return;
@@ -85,30 +77,23 @@ export const useTransactions = () => {
         formattedUpdates.display_source = updates.source;
       }
 
-      const { error } = await supabase
+      const { error: updateError } = await supabase
         .from("transactions")
         .update(formattedUpdates)
         .eq("id", id);
 
-      if (error) {
-        console.error("Error updating transaction:", error);
-        toast({
-          title: "Error",
-          description: "Failed to update transaction",
-          variant: "destructive",
-        });
-        throw error;
+      if (updateError) {
+        console.error("Error updating transaction:", updateError);
+        toast.error("Failed to update transaction");
+        throw updateError;
       }
 
-      toast({
-        title: "Success",
-        description: "Transaction updated successfully",
-      });
+      toast.success("Transaction updated successfully");
     } catch (error) {
       console.error("Error in editTransaction:", error);
       throw error;
     }
-  }, [user, toast]);
+  }, [user]);
 
   return {
     fetchTransactions,
