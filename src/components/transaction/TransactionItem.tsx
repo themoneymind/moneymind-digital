@@ -2,8 +2,6 @@ import { Transaction } from "@/types/transactions";
 import { ArrowUpRight, ArrowDownLeft } from "lucide-react";
 import { format } from "date-fns";
 import { useFinance } from "@/contexts/FinanceContext";
-import { getBaseSourceId } from "@/utils/paymentSourceUtils";
-import { useFinanceUtils } from "@/hooks/useFinanceUtils";
 
 type TransactionItemProps = {
   transaction: Transaction;
@@ -19,25 +17,10 @@ export const TransactionItem = ({
   toSentenceCase,
 }: TransactionItemProps) => {
   const { paymentSources } = useFinance();
-  const { formatSourceName } = useFinanceUtils(paymentSources, []);
   
   const getFormattedSourceName = () => {
-    const baseSourceId = getBaseSourceId(transaction.source);
-    const source = paymentSources.find(s => s.id === baseSourceId);
-    if (!source) return "";
-
-    // Check if the transaction source includes a UPI app
-    const sourceIdParts = transaction.source.split("-");
-    if (sourceIdParts.length > 1) {
-      // For UPI transactions
-      const upiApp = sourceIdParts[1];
-      // Use display_name if available, otherwise use the cleaned name
-      const baseName = source.display_name || formatSourceName(source.name, true);
-      return `${baseName} ${upiApp}`;
-    }
-    
-    // For regular transactions, use display_name if available, otherwise use the cleaned name
-    return source.display_name || formatSourceName(source.name, false);
+    const source = paymentSources.find(s => s.id === transaction.source);
+    return source?.display_name || source?.name || "";
   };
 
   return (

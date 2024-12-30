@@ -18,20 +18,11 @@ export const PaymentSourceInfo = ({
   showUpiList,
   onUpiToggle,
 }: PaymentSourceInfoProps) => {
-  // Use the name directly as it should already be properly formatted
-  const displayName = name;
-
-  // For UPI variations: remove "Bank" from the name
-  const getUpiDisplayName = (upiApp: string) => {
-    const baseName = name.replace(/\s*bank\s*/i, "").trim();
-    return `${baseName} ${upiApp}`;
-  };
-
   return (
     <div className="min-w-0 flex-1">
       <div className="flex flex-col justify-center">
         <p className="text-sm font-medium text-gray-900 leading-tight">
-          {displayName}
+          {name}
         </p>
         <span className="text-xs text-gray-500 leading-tight">{type}</span>
         {linked && upiApps && upiApps.length > 0 && (
@@ -55,7 +46,7 @@ export const PaymentSourceInfo = ({
               key={app}
               className="text-xs text-gray-600 pl-2 leading-tight"
             >
-              {getUpiDisplayName(app)}
+              {`${name} ${app}`}
             </div>
           ))}
         </div>
