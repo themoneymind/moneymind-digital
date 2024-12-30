@@ -19,9 +19,8 @@ export const TransactionItem = ({
   const { paymentSources, getFormattedPaymentSources } = useFinance();
   
   const getFormattedSourceName = () => {
-    const formattedSources = getFormattedPaymentSources();
-    const source = formattedSources.find(s => s.id === transaction.source);
-    return source?.name || "";
+    // Use display_source directly as it contains the full source name including UPI app
+    return transaction.display_source || "";
   };
 
   return (
