@@ -63,7 +63,6 @@ export const TransactionList = ({
           key={transaction.id}
           transaction={transaction}
           onEdit={onEdit}
-          onDelete={onDelete}
           formatCurrency={formatCurrency}
           toSentenceCase={toSentenceCase}
         />
