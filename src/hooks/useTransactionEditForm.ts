@@ -60,14 +60,24 @@ export const useTransactionEditForm = (
       updatedTransaction
     });
 
-    await editTransaction(transaction.id, {
-      amount: finalAmount,
-      source: selectedSource,
-      description,
-      ...updatedTransaction
-    });
+    try {
+      await editTransaction(transaction.id, {
+        amount: finalAmount,
+        source: selectedSource,
+        description,
+        ...updatedTransaction
+      });
 
-    onSuccess();
+      onSuccess();
+    } catch (error) {
+      console.error("Error updating transaction:", error);
+      toast({
+        title: "Error",
+        description: "Failed to update transaction",
+        variant: "destructive",
+      });
+      throw error;
+    }
   };
 
   return {
