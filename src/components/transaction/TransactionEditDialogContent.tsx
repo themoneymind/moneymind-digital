@@ -64,6 +64,14 @@ export const TransactionEditDialogContent = ({
           setDescription={setDescription}
           formattedSources={formattedSources}
           onDropdownOpenChange={() => {}}
+          selectedDate={new Date(transaction.date)}
+          onDateChange={(date: Date) => {
+            // Handle date change
+          }}
+          repeatFrequency={transaction.repeat_frequency || "never"}
+          onRepeatChange={(frequency: string) => {
+            // Handle repeat frequency change
+          }}
         />
         <div className="flex gap-2">
           <Button 
