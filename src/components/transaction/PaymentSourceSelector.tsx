@@ -22,8 +22,12 @@ export const PaymentSourceSelector = ({
     onSourceChange(newSource);
   };
 
+  // Find the current source in formatted sources to ensure it exists
+  const currentSource = formattedSources.find(s => s.id === source);
+  const effectiveSource = currentSource ? source : formattedSources[0]?.id;
+
   return (
-    <Select value={source} onValueChange={handleSourceChange}>
+    <Select value={effectiveSource} onValueChange={handleSourceChange}>
       <SelectTrigger className="h-14 border-gray-200 rounded-[12px]">
         <SelectValue placeholder="Select payment source" />
       </SelectTrigger>

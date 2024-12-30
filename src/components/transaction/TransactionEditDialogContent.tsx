@@ -19,6 +19,16 @@ export const TransactionEditDialogContent = ({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [selectedDate, setSelectedDate] = useState(new Date(transaction.date));
   
+  // Extract UPI app from display source if present
+  const getInitialSource = () => {
+    if (!transaction.display_source) return transaction.source;
+    
+    const formattedSources = getFormattedPaymentSources();
+    // Try to find a matching source based on display name
+    const matchingSource = formattedSources.find(s => s.name === transaction.display_source);
+    return matchingSource ? matchingSource.id : transaction.source;
+  };
+
   const {
     operation,
     setOperation,
@@ -36,7 +46,8 @@ export const TransactionEditDialogContent = ({
   console.log("TransactionEditDialogContent - Original transaction:", {
     source: transaction.source,
     display_source: transaction.display_source,
-    base_source_id: transaction.base_source_id
+    base_source_id: transaction.base_source_id,
+    initialSource: getInitialSource()
   });
 
   const formattedSources = getFormattedPaymentSources();
@@ -67,7 +78,7 @@ export const TransactionEditDialogContent = ({
           setOperation={setOperation}
           amount={amount}
           setAmount={setAmount}
-          selectedSource={transaction.source}
+          selectedSource={getInitialSource()}
           setSelectedSource={setSelectedSource}
           description={description}
           setDescription={setDescription}
