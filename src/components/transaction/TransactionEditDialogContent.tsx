@@ -48,7 +48,7 @@ export const TransactionEditDialogContent = ({
     try {
       await handleSubmit(e, {
         date: selectedDate,
-        display_source: transaction.display_source // Preserve the original display source
+        display_source: transaction.display_source
       });
     } finally {
       setIsSubmitting(false);
@@ -67,7 +67,7 @@ export const TransactionEditDialogContent = ({
           setOperation={setOperation}
           amount={amount}
           setAmount={setAmount}
-          selectedSource={transaction.source} // Use original source instead of base_source_id
+          selectedSource={transaction.source}
           setSelectedSource={setSelectedSource}
           description={description}
           setDescription={setDescription}
