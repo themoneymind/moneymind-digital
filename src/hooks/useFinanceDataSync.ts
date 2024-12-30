@@ -1,4 +1,3 @@
-import { useAuth } from "@/contexts/AuthContext";
 import { useTransactions } from "./useTransactions";
 import { usePaymentSources } from "./usePaymentSources";
 import { supabase } from "@/integrations/supabase/client";
@@ -6,9 +5,9 @@ import { Transaction, AuditTrailEntry, RepeatOption } from "@/types/transactions
 import { PaymentSource } from "@/types/finance";
 
 type DataSyncProps = {
-  setTransactions: (transactions: Transaction[]) => void;
-  setPaymentSources: (sources: PaymentSource[]) => void;
-  setIsLoading: (loading: boolean) => void;
+  setTransactions: React.Dispatch<React.SetStateAction<Transaction[]>>;
+  setPaymentSources: React.Dispatch<React.SetStateAction<PaymentSource[]>>;
+  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 export const useFinanceDataSync = ({
@@ -16,21 +15,18 @@ export const useFinanceDataSync = ({
   setPaymentSources,
   setIsLoading,
 }: DataSyncProps) => {
-  const { user } = useAuth();
   const { fetchTransactions } = useTransactions();
   const { fetchPaymentSources } = usePaymentSources();
 
   const refreshData = async () => {
-    if (!user) return;
-    
     try {
       setIsLoading(true);
-      const [txnsData, sources] = await Promise.all([
+      const [txnsData, sourcesData] = await Promise.all([
         fetchTransactions(),
         fetchPaymentSources()
       ]);
 
-      // Transform the audit_trail and ensure repeat_frequency is properly typed
+      // Transform the data with proper typing
       const txns = txnsData.map(t => ({
         ...t,
         audit_trail: t.audit_trail?.map((entry: any) => ({
@@ -41,7 +37,7 @@ export const useFinanceDataSync = ({
       }));
 
       setTransactions(txns);
-      setPaymentSources(sources);
+      setPaymentSources(sourcesData);
     } catch (error) {
       console.error("Error refreshing data:", error);
     } finally {
@@ -50,43 +46,29 @@ export const useFinanceDataSync = ({
   };
 
   const setupSubscriptions = () => {
-    if (!user) return;
-
-    const transactionsSubscription = supabase
-      .channel('transactions_changes')
-      .on(
-        'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
-          table: 'transactions'
-        },
-        () => {
-          refreshData();
-        }
-      )
+    // Subscribe to changes in transactions and payment sources
+    const transactionSubscription = supabase
+      .from('transactions')
+      .on('*', payload => {
+        refreshData();
+      })
       .subscribe();
 
-    const sourcesSubscription = supabase
-      .channel('sources_changes')
-      .on(
-        'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
-          table: 'payment_sources'
-        },
-        () => {
-          refreshData();
-        }
-      )
+    const paymentSourceSubscription = supabase
+      .from('payment_sources')
+      .on('*', payload => {
+        refreshData();
+      })
       .subscribe();
 
     return () => {
-      transactionsSubscription.unsubscribe();
-      sourcesSubscription.unsubscribe();
+      supabase.removeSubscription(transactionSubscription);
+      supabase.removeSubscription(paymentSourceSubscription);
     };
   };
 
-  return { refreshData, setupSubscriptions };
+  return {
+    refreshData,
+    setupSubscriptions,
+  };
 };
