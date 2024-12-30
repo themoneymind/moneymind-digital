@@ -90,7 +90,7 @@ export const TransactionEditDialog = ({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    await onSubmit(e, selectedDate, repeatOption);
+    await onSubmit(e);
   };
 
   return (

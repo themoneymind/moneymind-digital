@@ -1,11 +1,12 @@
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { TransactionType } from "@/types/finance";
+import { RepeatOption } from "@/types/transactions";
 import { TransactionTypeSelector } from "./TransactionTypeSelector";
 import { CategorySelector } from "./CategorySelector";
 import { PaymentSourceSelector } from "./PaymentSourceSelector";
 import { TransactionDateSelector } from "./TransactionDateSelector";
-import { RepeatSelector, RepeatOption } from "./RepeatSelector";
+import { RepeatSelector } from "./RepeatSelector";
 import { useState } from "react";
 import { Plus } from "lucide-react";
 import { useNavigate } from "react-router-dom";
