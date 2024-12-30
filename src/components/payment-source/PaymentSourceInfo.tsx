@@ -21,6 +21,12 @@ export const PaymentSourceInfo = ({
   // Format bank name to always include "Bank" if not present
   const displayName = name.toLowerCase().includes("bank") ? name : `${name} Bank`;
 
+  // For UPI variations: remove "Bank" from the name
+  const getUpiDisplayName = (upiApp: string) => {
+    const baseName = name.replace(" Bank", "");
+    return `${baseName} ${upiApp}`;
+  };
+
   return (
     <div className="min-w-0 flex-1">
       <div className="flex flex-col justify-center">
@@ -49,7 +55,7 @@ export const PaymentSourceInfo = ({
               key={app}
               className="text-xs text-gray-600 pl-2 leading-tight"
             >
-              {app}
+              {getUpiDisplayName(app)}
             </div>
           ))}
         </div>

@@ -30,10 +30,9 @@ export const PaymentSource = () => {
     setShowBankSearch(false);
   };
 
-  const formatSourceName = (bankName: string, upiApp?: string) => {
-    // Remove "Bank" if UPI app is present
-    const baseName = upiApp ? bankName.replace(" Bank", "") : bankName;
-    return upiApp ? `${baseName} ${upiApp}` : baseName;
+  const formatSourceName = (bankName: string) => {
+    // Ensure bank name has "Bank" suffix if not present
+    return bankName.toLowerCase().includes("bank") ? bankName : `${bankName} Bank`;
   };
 
   const handleAddSource = async () => {
@@ -48,12 +47,10 @@ export const PaymentSource = () => {
       return;
     }
 
-    // Format source name based on type and UPI apps
+    // Format source name based on type
     const sourceName = selectedType === "credit" 
       ? `${bankName} Credit Card`
-      : selectedUpiApps.length > 0 
-        ? formatSourceName(bankName, selectedUpiApps[0])
-        : bankName;
+      : formatSourceName(bankName);
 
     const checkDuplicateSource = (sourceName: string) => {
       return paymentSources.some(source => source.name === sourceName);
