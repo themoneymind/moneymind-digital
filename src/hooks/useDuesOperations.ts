@@ -72,6 +72,7 @@ export const useDuesOperations = (refreshData: () => Promise<void>) => {
         reference_id: selectedTransaction.id,
         base_source_id: baseSourceId,
         display_source: cleanedSourceId,
+        date: new Date(),
       });
 
       await updateTransactionStatus(selectedTransaction.id, 'completed', {
@@ -111,6 +112,7 @@ export const useDuesOperations = (refreshData: () => Promise<void>) => {
         reference_id: selectedTransaction.id,
         base_source_id: baseSourceId,
         display_source: cleanedSourceId,
+        date: new Date(),
       });
 
       await updateTransactionStatus(selectedTransaction.id, 'partially_paid', {
