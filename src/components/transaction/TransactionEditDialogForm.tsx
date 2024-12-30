@@ -50,55 +50,39 @@ export const TransactionEditDialogForm = ({
         setAmount={setAmount}
       />
 
-      <div className="space-y-2">
-        <label htmlFor="source" className="text-sm font-medium">
-          Payment Source
-        </label>
-        <Select 
-          value={selectedSource} 
-          onValueChange={setSelectedSource}
-          onOpenChange={onDropdownOpenChange}
-        >
-          <SelectTrigger className="h-12 rounded-[12px]">
-            <SelectValue placeholder="Select payment source" />
-          </SelectTrigger>
-          <SelectContent className="bg-white border border-gray-200 shadow-lg">
-            {formattedSources.map((source) => (
-              <SelectItem key={source.id} value={source.id}>
-                {source.name}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
+      <Select 
+        value={selectedSource} 
+        onValueChange={setSelectedSource}
+        onOpenChange={onDropdownOpenChange}
+      >
+        <SelectTrigger className="h-12 rounded-[12px]">
+          <SelectValue placeholder="Select payment source" />
+        </SelectTrigger>
+        <SelectContent className="bg-white border border-gray-200 shadow-lg">
+          {formattedSources.map((source) => (
+            <SelectItem key={source.id} value={source.id}>
+              {source.name}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
 
-      <div className="space-y-2">
-        <label className="text-sm font-medium">Date</label>
-        <TransactionDateSelector
-          selectedDate={selectedDate}
-          onDateChange={onDateChange}
-        />
-      </div>
+      <TransactionDateSelector
+        selectedDate={selectedDate}
+        onDateChange={onDateChange}
+      />
 
-      <div className="space-y-2">
-        <label className="text-sm font-medium">Repeat</label>
-        <RepeatSelector
-          value={repeatOption}
-          onValueChange={onRepeatOptionChange}
-        />
-      </div>
+      <RepeatSelector
+        value={repeatOption}
+        onValueChange={onRepeatOptionChange}
+      />
 
-      <div className="space-y-2">
-        <label htmlFor="description" className="text-sm font-medium">
-          Description
-        </label>
-        <Input
-          id="description"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          className="h-12 rounded-[12px]"
-        />
-      </div>
+      <Input
+        value={description}
+        onChange={(e) => setDescription(e.target.value)}
+        className="h-12 rounded-[12px]"
+        placeholder="Description"
+      />
     </div>
   );
 };
