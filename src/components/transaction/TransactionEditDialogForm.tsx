@@ -1,9 +1,6 @@
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { TransactionAmountOperations } from "./TransactionAmountOperations";
-import { TransactionDateSelector } from "./TransactionDateSelector";
-import { RepeatSelector } from "./RepeatSelector";
-import { RepeatOption } from "@/types/transactions";
 
 interface TransactionEditDialogFormProps {
   currentAmount: number;
@@ -17,10 +14,6 @@ interface TransactionEditDialogFormProps {
   setDescription: (description: string) => void;
   formattedSources: { id: string; name: string }[];
   onDropdownOpenChange: (open: boolean) => void;
-  selectedDate: Date;
-  onDateChange: (date: Date) => void;
-  repeatOption: RepeatOption;
-  onRepeatOptionChange: (option: RepeatOption) => void;
 }
 
 export const TransactionEditDialogForm = ({
@@ -35,10 +28,6 @@ export const TransactionEditDialogForm = ({
   setDescription,
   formattedSources,
   onDropdownOpenChange,
-  selectedDate,
-  onDateChange,
-  repeatOption,
-  onRepeatOptionChange,
 }: TransactionEditDialogFormProps) => {
   return (
     <div className="space-y-6">
@@ -66,16 +55,6 @@ export const TransactionEditDialogForm = ({
           ))}
         </SelectContent>
       </Select>
-
-      <TransactionDateSelector
-        selectedDate={selectedDate}
-        onDateChange={onDateChange}
-      />
-
-      <RepeatSelector
-        value={repeatOption}
-        onValueChange={onRepeatOptionChange}
-      />
 
       <Input
         value={description}

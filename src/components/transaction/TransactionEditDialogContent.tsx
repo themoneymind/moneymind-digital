@@ -1,51 +1,49 @@
+import { useState } from "react";
 import { DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { TransactionEditDialogForm } from "./TransactionEditDialogForm";
-import { Transaction, RepeatOption } from "@/types/transactions";
+import { Transaction } from "@/types/transactions";
+import { useFinance } from "@/contexts/FinanceContext";
+import { useTransactionEditForm } from "@/hooks/useTransactionEditForm";
 
 interface TransactionEditDialogContentProps {
   transaction: Transaction;
-  operation: "add" | "subtract";
-  setOperation: (op: "add" | "subtract") => void;
-  amount: string;
-  setAmount: (amount: string) => void;
-  selectedSource: string;
-  setSelectedSource: (source: string) => void;
-  description: string;
-  setDescription: (description: string) => void;
-  formattedSources: { id: string; name: string }[];
-  onSubmit: (e: React.FormEvent) => Promise<void>;
-  isSubmitting: boolean;
-  onDropdownOpenChange: (open: boolean) => void;
-  currentAmount: number;
-  onDelete?: () => void;
-  selectedDate: Date;
-  onDateChange: (date: Date) => void;
-  repeatOption: RepeatOption;
-  onRepeatOptionChange: (option: RepeatOption) => void;
+  onOpenChange: (open: boolean) => void;
 }
 
 export const TransactionEditDialogContent = ({
   transaction,
-  operation,
-  setOperation,
-  amount,
-  setAmount,
-  selectedSource,
-  setSelectedSource,
-  description,
-  setDescription,
-  formattedSources,
-  onSubmit,
-  isSubmitting,
-  onDropdownOpenChange,
-  currentAmount,
-  onDelete,
-  selectedDate,
-  onDateChange,
-  repeatOption,
-  onRepeatOptionChange,
+  onOpenChange,
 }: TransactionEditDialogContentProps) => {
+  const { getFormattedPaymentSources } = useFinance();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  
+  const {
+    operation,
+    setOperation,
+    amount,
+    setAmount,
+    selectedSource,
+    setSelectedSource,
+    description,
+    setDescription,
+    handleSubmit,
+  } = useTransactionEditForm(transaction, () => {
+    onOpenChange(false);
+  });
+
+  const formattedSources = getFormattedPaymentSources();
+
+  const onSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    try {
+      await handleSubmit(e);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
     <>
       <DialogHeader>
@@ -53,7 +51,7 @@ export const TransactionEditDialogContent = ({
       </DialogHeader>
       <form onSubmit={onSubmit} className="space-y-4">
         <TransactionEditDialogForm
-          currentAmount={currentAmount}
+          currentAmount={Number(transaction.amount)}
           operation={operation}
           setOperation={setOperation}
           amount={amount}
@@ -63,11 +61,7 @@ export const TransactionEditDialogContent = ({
           description={description}
           setDescription={setDescription}
           formattedSources={formattedSources}
-          onDropdownOpenChange={onDropdownOpenChange}
-          selectedDate={selectedDate}
-          onDateChange={onDateChange}
-          repeatOption={repeatOption}
-          onRepeatOptionChange={onRepeatOptionChange}
+          onDropdownOpenChange={() => {}}
         />
         <div className="flex gap-2">
           <Button 
@@ -77,16 +71,6 @@ export const TransactionEditDialogContent = ({
           >
             {isSubmitting ? "Saving..." : "Save Changes"}
           </Button>
-          {onDelete && (
-            <Button 
-              type="button"
-              variant="destructive"
-              onClick={onDelete}
-              className="flex-1 h-12 rounded-[12px] bg-red-600 hover:bg-red-700"
-            >
-              Delete
-            </Button>
-          )}
         </div>
       </form>
     </>
