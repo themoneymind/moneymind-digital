@@ -4,51 +4,13 @@ import { Transaction, TransactionType } from "@/types/transactions";
 import { PaymentSource } from "@/types/finance";
 import { toast } from "sonner";
 import { getBaseSourceId } from "@/utils/paymentSourceUtils";
+import { updatePaymentSourceAmount } from "@/utils/paymentSourceUtils";
 
 export const useTransactionOperations = (
   paymentSources: PaymentSource[],
   refreshData: () => Promise<void>
 ) => {
   const { user } = useAuth();
-
-  const updatePaymentSourceAmount = async (
-    sourceId: string,
-    amount: number,
-    type: TransactionType,
-    isReversal: boolean = false
-  ) => {
-    const baseSourceId = getBaseSourceId(sourceId);
-    console.log("Updating payment source:", { sourceId, baseSourceId, amount, type, isReversal });
-    
-    const source = paymentSources.find(s => s.id === baseSourceId);
-    if (!source) return;
-
-    let newAmount;
-    if (isReversal) {
-      // For reversals (including rejections), we need to reverse the original transaction effect
-      newAmount = type === "income" 
-        ? Number(source.amount) - Number(amount)
-        : Number(source.amount) + Number(amount);
-    } else {
-      newAmount = type === "income" 
-        ? Number(source.amount) + Number(amount)
-        : Number(source.amount) - Number(amount);
-    }
-
-    console.log("New amount calculation:", {
-      currentAmount: source.amount,
-      operation: isReversal ? "reverse" : "apply",
-      change: amount,
-      result: newAmount
-    });
-
-    const { error } = await supabase
-      .from("payment_sources")
-      .update({ amount: newAmount })
-      .eq("id", baseSourceId);
-
-    if (error) throw error;
-  };
 
   const addTransaction = async (
     transaction: Omit<Transaction, "id" | "date" | "user_id" | "created_at" | "updated_at">
@@ -71,7 +33,8 @@ export const useTransactionOperations = (
         .from("transactions")
         .insert({
           ...transaction,
-          source: baseSourceId,
+          base_source_id: baseSourceId,
+          display_source: transaction.source, // Save the full source identifier
           user_id: user.id,
           date: new Date().toISOString(),
         });
@@ -105,7 +68,7 @@ export const useTransactionOperations = (
       // If the transaction is being rejected, reverse its effect on the payment source
       if (updates.status === 'rejected' && originalTransaction.status !== 'rejected') {
         await updatePaymentSourceAmount(
-          originalTransaction.source,
+          originalTransaction.base_source_id,
           Number(originalTransaction.amount),
           originalTransaction.type as TransactionType,
           true
@@ -114,7 +77,7 @@ export const useTransactionOperations = (
       // If a rejected transaction is being un-rejected, apply its effect
       else if (originalTransaction.status === 'rejected' && updates.status && updates.status !== 'rejected') {
         await updatePaymentSourceAmount(
-          originalTransaction.source,
+          originalTransaction.base_source_id,
           Number(originalTransaction.amount),
           originalTransaction.type as TransactionType,
           false
@@ -123,15 +86,15 @@ export const useTransactionOperations = (
       // For normal updates (not involving rejection)
       else if (updates.amount !== undefined && originalTransaction.status !== 'rejected') {
         await updatePaymentSourceAmount(
-          originalTransaction.source,
+          originalTransaction.base_source_id,
           Number(originalTransaction.amount),
           originalTransaction.type as TransactionType,
           true
         );
 
-        const targetSource = updates.source ? getBaseSourceId(updates.source) : originalTransaction.source;
+        const baseSourceId = updates.source ? getBaseSourceId(updates.source) : originalTransaction.base_source_id;
         await updatePaymentSourceAmount(
-          targetSource,
+          baseSourceId,
           Number(updates.amount),
           (updates.type || originalTransaction.type) as TransactionType,
           false
@@ -141,7 +104,8 @@ export const useTransactionOperations = (
       // Convert Date to ISO string if it exists in updates
       const formattedUpdates = {
         ...updates,
-        source: updates.source ? getBaseSourceId(updates.source) : updates.source,
+        base_source_id: updates.source ? getBaseSourceId(updates.source) : undefined,
+        display_source: updates.source || undefined,
         date: updates.date ? new Date(updates.date).toISOString() : undefined
       };
 
@@ -176,7 +140,7 @@ export const useTransactionOperations = (
       // Only reverse the payment source if the transaction wasn't rejected
       if (transaction.status !== 'rejected') {
         await updatePaymentSourceAmount(
-          transaction.source,
+          transaction.base_source_id,
           Number(transaction.amount),
           transaction.type as TransactionType,
           true
