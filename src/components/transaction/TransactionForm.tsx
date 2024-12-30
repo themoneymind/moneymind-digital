@@ -4,6 +4,9 @@ import { TransactionType } from "@/types/finance";
 import { TransactionTypeSelector } from "./TransactionTypeSelector";
 import { CategorySelector } from "./CategorySelector";
 import { PaymentSourceSelector } from "./PaymentSourceSelector";
+import { TransactionDateSelector } from "./TransactionDateSelector";
+import { RepeatSelector, RepeatOption } from "./RepeatSelector";
+import { useState } from "react";
 
 type TransactionFormProps = {
   type: TransactionType;
@@ -41,6 +44,9 @@ export const TransactionForm = ({
   onAddCustomCategory,
   formattedSources,
 }: TransactionFormProps) => {
+  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+  const [repeatOption, setRepeatOption] = useState<RepeatOption>("never");
+
   const defaultExpenseCategories = [
     "Food",
     "Transport",
@@ -95,11 +101,19 @@ export const TransactionForm = ({
         onSourceChange={onSourceChange}
         formattedSources={formattedSources}
       />
+      <TransactionDateSelector
+        selectedDate={selectedDate}
+        onDateChange={(date) => date && setSelectedDate(date)}
+      />
       <Input
         placeholder="Description or note (Optional)"
         className="h-14 border-gray-200 rounded-[12px]"
         value={description}
         onChange={(e) => onDescriptionChange(e.target.value)}
+      />
+      <RepeatSelector
+        value={repeatOption}
+        onValueChange={setRepeatOption}
       />
       <Button
         className="w-full h-14 bg-blue-600 hover:bg-blue-700 rounded-[12px]"
