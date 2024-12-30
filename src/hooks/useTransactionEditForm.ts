@@ -11,19 +11,20 @@ export const useTransactionEditForm = (
   const { toast } = useToast();
   const [operation, setOperation] = useState<"add" | "subtract">("add");
   const [amount, setAmount] = useState("");
-  const [selectedSource, setSelectedSource] = useState(transaction.base_source_id);
+  const [selectedSource, setSelectedSource] = useState(transaction.source);
   const [description, setDescription] = useState(transaction.description || "");
 
   console.log("Transaction Edit Form Init:", {
     transaction,
     selectedSource,
-    base_source_id: transaction.base_source_id
+    source: transaction.source,
+    display_source: transaction.display_source
   });
 
   const resetForm = useCallback(() => {
     setAmount("");
     setOperation("add");
-    setSelectedSource(transaction.base_source_id);
+    setSelectedSource(transaction.source);
     setDescription(transaction.description || "");
   }, [transaction]);
 
@@ -33,10 +34,9 @@ export const useTransactionEditForm = (
     console.log("Submitting transaction edit:", {
       selectedSource,
       updatedTransaction,
-      base_source_id: transaction.base_source_id
+      source: transaction.source
     });
 
-    // Validate source selection
     if (!selectedSource) {
       console.error("Source validation failed:", { selectedSource });
       toast({
@@ -57,7 +57,6 @@ export const useTransactionEditForm = (
       throw new Error("Please enter a valid amount");
     }
 
-    // Calculate the new final amount based on the operation
     const finalAmount = amount ? (
       operation === "add" 
         ? Number(transaction.amount) + numAmount 

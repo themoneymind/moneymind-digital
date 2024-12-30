@@ -1,151 +1,60 @@
-import { Dialog, DialogContent } from "@/components/ui/dialog";
-import { useFinance } from "@/contexts/FinanceContext";
-import { useState, useEffect } from "react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { TransactionEditDialogForm } from "./TransactionEditDialogForm";
 import { Transaction, RepeatOption } from "@/types/transactions";
-import { useToast } from "@/hooks/use-toast";
-import { useTransactionEditForm } from "@/hooks/useTransactionEditForm";
-import { TransactionEditDialogContent } from "./TransactionEditDialogContent";
-import { useDialogState } from "@/hooks/useDialogState";
+import { useFinance } from "@/contexts/FinanceContext";
 
-type TransactionEditDialogProps = {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
+interface TransactionEditDialogContentProps {
   transaction: Transaction;
-};
+  operation: "add" | "subtract";
+  setOperation: (op: "add" | "subtract") => void;
+  amount: string;
+  setAmount: (amount: string) => void;
+  selectedSource: string;
+  setSelectedSource: (source: string) => void;
+  description: string;
+  setDescription: (description: string) => void;
+  formattedSources: { id: string; name: string }[];
+  onSubmit: (e: React.FormEvent) => Promise<void>;
+  isSubmitting: boolean;
+  onDropdownOpenChange: (open: boolean) => void;
+  currentAmount: number;
+  onDelete?: () => void;
+  selectedDate: Date;
+  onDateChange: (date: Date) => void;
+  repeatOption: RepeatOption;
+  onRepeatOptionChange: (option: RepeatOption) => void;
+}
 
-export const TransactionEditDialog = ({
-  open,
-  onOpenChange,
+export const TransactionEditDialogContent = ({
   transaction,
-}: TransactionEditDialogProps) => {
-  const { getFormattedPaymentSources, deleteTransaction } = useFinance();
-  const { toast } = useToast();
-  const formattedSources = getFormattedPaymentSources();
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [currentAmount, setCurrentAmount] = useState(transaction.amount);
-  const [selectedDate, setSelectedDate] = useState<Date>(new Date(transaction.date));
-  const [repeatOption, setRepeatOption] = useState<RepeatOption>(transaction.repeat_frequency || "never");
-  const dialogState = useDialogState(onOpenChange);
-
-  console.log("TransactionEditDialog Init:", {
-    transaction,
-    formattedSources,
-    base_source_id: transaction.base_source_id
-  });
-
-  const {
-    operation,
-    setOperation,
-    amount,
-    setAmount,
-    selectedSource,
-    setSelectedSource,
-    description,
-    setDescription,
-    handleSubmit: onSubmit,
-    resetForm,
-  } = useTransactionEditForm(transaction, () => {
-    toast({
-      title: "Success",
-      description: "Transaction updated successfully",
-    });
-    dialogState.initiateClose();
-  });
-
-  useEffect(() => {
-    if (open) {
-      console.log("Dialog opened, resetting form with transaction:", transaction);
-      resetForm();
-      dialogState.reset();
-      setIsDropdownOpen(false);
-      setCurrentAmount(transaction.amount);
-      setSelectedDate(new Date(transaction.date));
-      setRepeatOption(transaction.repeat_frequency || "never");
-      setSelectedSource(transaction.base_source_id);
-    }
-  }, [open, resetForm, transaction]);
-
-  useEffect(() => {
-    const numAmount = Number(amount);
-    if (!isNaN(numAmount)) {
-      if (operation === "add") {
-        setCurrentAmount(transaction.amount + numAmount);
-      } else {
-        setCurrentAmount(transaction.amount - numAmount);
-      }
-    } else {
-      setCurrentAmount(transaction.amount);
-    }
-  }, [amount, operation, transaction.amount]);
-
-  const handleDelete = async () => {
-    try {
-      await deleteTransaction(transaction.id);
-      toast({
-        title: "Success",
-        description: "Transaction deleted successfully",
-      });
-      dialogState.initiateClose();
-      onOpenChange(false);
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to delete transaction",
-        variant: "destructive",
-      });
-    }
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log("Form submitted with:", {
-      selectedDate,
-      selectedSource,
-      base_source_id: transaction.base_source_id
-    });
-    
-    // Create a new transaction object with the updated date and source information
-    const updatedTransaction = {
-      ...transaction,
-      date: selectedDate,
-      source: selectedSource,
-      display_source: selectedSource, // Preserve the display source
-      repeat_frequency: repeatOption,
-    };
-    
-    await onSubmit(e, updatedTransaction);
-  };
-
-  const handleDateChange = (newDate: Date) => {
-    console.log("Date changed to:", newDate);
-    setSelectedDate(newDate);
-  };
-
+  operation,
+  setOperation,
+  amount,
+  setAmount,
+  selectedSource,
+  setSelectedSource,
+  description,
+  setDescription,
+  formattedSources,
+  onSubmit,
+  isSubmitting,
+  onDropdownOpenChange,
+  currentAmount,
+  onDelete,
+  selectedDate,
+  onDateChange,
+  repeatOption,
+  onRepeatOptionChange,
+}: TransactionEditDialogContentProps) => {
   return (
-    <Dialog 
-      open={open} 
-      onOpenChange={(newOpen) => {
-        if (!newOpen && !dialogState.isSubmitting && !dialogState.isClosing) {
-          dialogState.initiateClose();
-          onOpenChange(false);
-        }
-      }}
-    >
-      <DialogContent 
-        className="sm:max-w-[425px]"
-        onPointerDownOutside={(e) => {
-          if (dialogState.isSubmitting || dialogState.isClosing || isDropdownOpen) {
-            e.preventDefault();
-          }
-        }}
-        onEscapeKeyDown={(e) => {
-          if (dialogState.isSubmitting || dialogState.isClosing || isDropdownOpen) {
-            e.preventDefault();
-          }
-        }}
-      >
-        <TransactionEditDialogContent
-          transaction={transaction}
+    <>
+      <DialogHeader>
+        <DialogTitle className="text-xl font-semibold">Edit Transaction</DialogTitle>
+      </DialogHeader>
+      <form onSubmit={onSubmit} className="space-y-4">
+        <TransactionEditDialogForm
+          currentAmount={currentAmount}
           operation={operation}
           setOperation={setOperation}
           amount={amount}
@@ -155,17 +64,32 @@ export const TransactionEditDialog = ({
           description={description}
           setDescription={setDescription}
           formattedSources={formattedSources}
-          onSubmit={handleSubmit}
-          isSubmitting={dialogState.isSubmitting}
-          onDropdownOpenChange={setIsDropdownOpen}
-          currentAmount={currentAmount}
-          onDelete={handleDelete}
+          onDropdownOpenChange={onDropdownOpenChange}
           selectedDate={selectedDate}
-          onDateChange={handleDateChange}
+          onDateChange={onDateChange}
           repeatOption={repeatOption}
-          onRepeatOptionChange={setRepeatOption}
+          onRepeatOptionChange={onRepeatOptionChange}
         />
-      </DialogContent>
-    </Dialog>
+        <div className="flex gap-2">
+          <Button 
+            type="submit" 
+            className="flex-1 h-12 rounded-[12px]"
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? "Saving..." : "Save Changes"}
+          </Button>
+          {onDelete && (
+            <Button 
+              type="button"
+              variant="destructive"
+              onClick={onDelete}
+              className="flex-1 h-12 rounded-[12px] bg-red-600 hover:bg-red-700"
+            >
+              Delete
+            </Button>
+          )}
+        </div>
+      </form>
+    </>
   );
 };
