@@ -16,7 +16,6 @@ type TransactionFiltersProps = {
   filter: "all" | "income" | "expense" | "date";
   setFilter: (filter: "all" | "income" | "expense" | "date") => void;
   currentMonth: Date;
-  setCurrentMonth: (date: Date) => void;
   onSourceSelect: (sourceId: string | null) => void;
 };
 
@@ -24,10 +23,9 @@ export const TransactionFilters = ({
   filter,
   setFilter,
   currentMonth,
-  setCurrentMonth,
   onSourceSelect,
 }: TransactionFiltersProps) => {
-  const { paymentSources } = useFinance();
+  const { paymentSources, setCurrentMonth } = useFinance();
   
   const handleDateSelect = (date: Date | undefined) => {
     if (date) {
