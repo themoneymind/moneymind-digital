@@ -33,7 +33,14 @@ export const TransactionEditDialogContent = ({
     onOpenChange(false);
   });
 
+  console.log("TransactionEditDialogContent - Original transaction:", {
+    source: transaction.source,
+    display_source: transaction.display_source,
+    base_source_id: transaction.base_source_id
+  });
+
   const formattedSources = getFormattedPaymentSources();
+  console.log("TransactionEditDialogContent - Available sources:", formattedSources);
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -60,7 +67,7 @@ export const TransactionEditDialogContent = ({
           setOperation={setOperation}
           amount={amount}
           setAmount={setAmount}
-          selectedSource={selectedSource}
+          selectedSource={transaction.source} // Use original source instead of base_source_id
           setSelectedSource={setSelectedSource}
           description={description}
           setDescription={setDescription}
