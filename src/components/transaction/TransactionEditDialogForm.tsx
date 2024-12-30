@@ -26,9 +26,18 @@ export const TransactionEditDialogForm = ({
   setSelectedSource,
   description,
   setDescription,
-  formattedSources,
+  formattedSources = [],
   onDropdownOpenChange,
 }: TransactionEditDialogFormProps) => {
+  console.log("TransactionEditDialogForm props:", {
+    currentAmount,
+    operation,
+    amount,
+    selectedSource,
+    description,
+    formattedSources
+  });
+
   return (
     <div className="space-y-6">
       <TransactionAmountOperations

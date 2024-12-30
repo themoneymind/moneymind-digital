@@ -6,7 +6,7 @@ import { Transaction } from "@/types/transactions";
 import { useFinance } from "@/contexts/FinanceContext";
 import { useTransactionEditForm } from "@/hooks/useTransactionEditForm";
 
-interface TransactionEditDialogContentProps {
+export interface TransactionEditDialogContentProps {
   transaction: Transaction;
   onOpenChange: (open: boolean) => void;
 }
@@ -33,6 +33,8 @@ export const TransactionEditDialogContent = ({
   });
 
   const formattedSources = getFormattedPaymentSources();
+
+  console.log("TransactionEditDialogContent formattedSources:", formattedSources);
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
