@@ -3,7 +3,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { TransactionAmountOperations } from "./TransactionAmountOperations";
 import { TransactionDateSelector } from "./TransactionDateSelector";
 import { RepeatSelector } from "./RepeatSelector";
-import { useState } from "react";
+import { RepeatOption } from "@/types/transactions";
 
 interface TransactionEditDialogFormProps {
   currentAmount: number;
@@ -19,8 +19,8 @@ interface TransactionEditDialogFormProps {
   onDropdownOpenChange: (open: boolean) => void;
   selectedDate: Date;
   onDateChange: (date: Date) => void;
-  repeatOption: string;
-  onRepeatOptionChange: (option: string) => void;
+  repeatOption: RepeatOption;
+  onRepeatOptionChange: (option: RepeatOption) => void;
 }
 
 export const TransactionEditDialogForm = ({
@@ -76,7 +76,7 @@ export const TransactionEditDialogForm = ({
         <label className="text-sm font-medium">Date</label>
         <TransactionDateSelector
           selectedDate={selectedDate}
-          onDateChange={(date) => date && onDateChange(date)}
+          onDateChange={onDateChange}
         />
       </div>
 

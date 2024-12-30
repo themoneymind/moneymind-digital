@@ -1,7 +1,7 @@
 import { DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { TransactionEditDialogForm } from "./TransactionEditDialogForm";
-import { Transaction } from "@/types/transactions";
+import { Transaction, RepeatOption } from "@/types/transactions";
 
 interface TransactionEditDialogContentProps {
   transaction: Transaction;
@@ -19,6 +19,10 @@ interface TransactionEditDialogContentProps {
   onDropdownOpenChange: (open: boolean) => void;
   currentAmount: number;
   onDelete?: () => void;
+  selectedDate: Date;
+  onDateChange: (date: Date) => void;
+  repeatOption: RepeatOption;
+  onRepeatOptionChange: (option: RepeatOption) => void;
 }
 
 export const TransactionEditDialogContent = ({
@@ -37,6 +41,10 @@ export const TransactionEditDialogContent = ({
   onDropdownOpenChange,
   currentAmount,
   onDelete,
+  selectedDate,
+  onDateChange,
+  repeatOption,
+  onRepeatOptionChange,
 }: TransactionEditDialogContentProps) => {
   return (
     <>
@@ -56,6 +64,10 @@ export const TransactionEditDialogContent = ({
           setDescription={setDescription}
           formattedSources={formattedSources}
           onDropdownOpenChange={onDropdownOpenChange}
+          selectedDate={selectedDate}
+          onDateChange={onDateChange}
+          repeatOption={repeatOption}
+          onRepeatOptionChange={onRepeatOptionChange}
         />
         <div className="flex gap-2">
           <Button 
