@@ -45,6 +45,10 @@ export const NewTransaction = () => {
 
     if (!validateExpenseBalance(baseSource, validAmount, type)) return;
 
+    // Find the selected source from formatted sources to get the display name
+    const selectedSource = formattedSources.find(s => s.id === source);
+    const displaySourceName = selectedSource ? selectedSource.name : source;
+
     try {
       await addTransaction({
         type,
@@ -53,7 +57,7 @@ export const NewTransaction = () => {
         source: source,
         description,
         base_source_id: baseSourceId,
-        display_source: source,
+        display_source: displaySourceName,
       });
 
       // Reset form after successful submission

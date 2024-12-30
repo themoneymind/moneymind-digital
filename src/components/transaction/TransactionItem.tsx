@@ -1,7 +1,6 @@
 import { Transaction } from "@/types/transactions";
 import { ArrowUpRight, ArrowDownLeft } from "lucide-react";
 import { format } from "date-fns";
-import { useFinance } from "@/contexts/FinanceContext";
 
 type TransactionItemProps = {
   transaction: Transaction;
@@ -16,13 +15,6 @@ export const TransactionItem = ({
   formatCurrency,
   toSentenceCase,
 }: TransactionItemProps) => {
-  const { paymentSources, getFormattedPaymentSources } = useFinance();
-  
-  const getFormattedSourceName = () => {
-    // Use display_source directly as it contains the full source name including UPI app
-    return transaction.display_source || "";
-  };
-
   return (
     <div 
       className="flex items-center justify-between p-4 hover:bg-gray-50 transition-colors rounded-xl border border-gray-100 cursor-pointer"
@@ -45,7 +37,7 @@ export const TransactionItem = ({
             {toSentenceCase(transaction.category)}
           </span>
           <div className="flex flex-col text-xs text-gray-500">
-            <span>{getFormattedSourceName()}</span>
+            <span>{transaction.display_source || "Unknown Source"}</span>
             <span>{format(new Date(transaction.date), 'MMM d, yyyy')}</span>
           </div>
         </div>
