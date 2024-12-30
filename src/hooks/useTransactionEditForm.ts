@@ -63,9 +63,9 @@ export const useTransactionEditForm = (
     // Ensure we're using both display_source and base_source_id
     await editTransaction(transaction.id, {
       amount: finalAmount,
-      source: selectedSource,
-      display_source: selectedSource,
-      base_source_id: transaction.base_source_id, // Preserve the base source ID
+      source: transaction.base_source_id, // Use the UUID
+      display_source: selectedSource, // Use the display name
+      base_source_id: transaction.base_source_id,
       description,
       ...updatedTransaction
     });
