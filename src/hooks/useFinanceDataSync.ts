@@ -46,24 +46,23 @@ export const useFinanceDataSync = ({
   };
 
   const setupSubscriptions = () => {
-    // Subscribe to changes in transactions and payment sources
-    const transactionSubscription = supabase
-      .from('transactions')
-      .on('*', payload => {
-        refreshData();
-      })
-      .subscribe();
-
-    const paymentSourceSubscription = supabase
-      .from('payment_sources')
-      .on('*', payload => {
-        refreshData();
-      })
+    // Subscribe to changes in transactions and payment sources using channels
+    const channel = supabase
+      .channel('db-changes')
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'transactions' },
+        () => refreshData()
+      )
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'payment_sources' },
+        () => refreshData()
+      )
       .subscribe();
 
     return () => {
-      supabase.removeSubscription(transactionSubscription);
-      supabase.removeSubscription(paymentSourceSubscription);
+      supabase.channel('db-changes').unsubscribe();
     };
   };
 
