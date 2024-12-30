@@ -3,8 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Transaction, TransactionType } from "@/types/transactions";
 import { PaymentSource } from "@/types/finance";
 import { toast } from "sonner";
-import { getBaseSourceId } from "@/utils/paymentSourceUtils";
-import { updatePaymentSourceAmount } from "@/utils/paymentSourceUtils";
+import { getBaseSourceId, updatePaymentSourceAmount } from "@/utils/paymentSourceUtils";
 
 export const useTransactionOperations = (
   paymentSources: PaymentSource[],

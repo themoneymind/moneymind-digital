@@ -22,6 +22,8 @@ export type Transaction = {
   parent_transaction_id?: string;
   audit_trail?: AuditTrailEntry[];
   previous_status?: string;
+  display_source?: string;
+  base_source_id: string;
 };
 
 export type NewTransaction = Omit<Transaction, "id" | "date" | "user_id" | "created_at" | "updated_at">;
