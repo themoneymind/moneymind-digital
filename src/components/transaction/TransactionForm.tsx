@@ -1,6 +1,6 @@
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { TransactionType } from "@/types/finance";
+import { TransactionType, RepeatOption } from "@/types/finance";
 import { TransactionTypeSelector } from "./TransactionTypeSelector";
 import { PaymentSourceSelector } from "./PaymentSourceSelector";
 import { CategoryManager } from "./category/CategoryManager";
@@ -47,7 +47,7 @@ export const TransactionForm = ({
   formattedSources,
 }: TransactionFormProps) => {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
-  const [repeatOption, setRepeatOption] = useState("never");
+  const [repeatOption, setRepeatOption] = useState<RepeatOption>("never");
   const navigate = useNavigate();
 
   return (
@@ -83,7 +83,7 @@ export const TransactionForm = ({
           variant="outline"
           size="icon"
           className="h-14 w-14 border-gray-200 rounded-[12px] flex-shrink-0"
-          onClick={() => navigate("/payment-source")}
+          onClick={() => navigate("/app/payment-source")}
         >
           <Plus className="h-4 w-4" />
         </Button>
