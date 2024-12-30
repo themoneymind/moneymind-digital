@@ -11,21 +11,34 @@ export const useTransactionEditForm = (
   const { toast } = useToast();
   const [operation, setOperation] = useState<"add" | "subtract">("add");
   const [amount, setAmount] = useState("");
-  const [selectedSource, setSelectedSource] = useState(transaction.source);
+  const [selectedSource, setSelectedSource] = useState(transaction.base_source_id);
   const [description, setDescription] = useState(transaction.description || "");
+
+  console.log("Transaction Edit Form Init:", {
+    transaction,
+    selectedSource,
+    base_source_id: transaction.base_source_id
+  });
 
   const resetForm = useCallback(() => {
     setAmount("");
     setOperation("add");
-    setSelectedSource(transaction.source);
+    setSelectedSource(transaction.base_source_id);
     setDescription(transaction.description || "");
   }, [transaction]);
 
   const handleSubmit = async (e: React.FormEvent, updatedTransaction?: Partial<Transaction>) => {
     e.preventDefault();
     
+    console.log("Submitting transaction edit:", {
+      selectedSource,
+      updatedTransaction,
+      base_source_id: transaction.base_source_id
+    });
+
     // Validate source selection
     if (!selectedSource) {
+      console.error("Source validation failed:", { selectedSource });
       toast({
         title: "Error",
         description: "Please select a payment source",

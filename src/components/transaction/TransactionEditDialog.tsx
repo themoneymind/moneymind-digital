@@ -27,6 +27,12 @@ export const TransactionEditDialog = ({
   const [repeatOption, setRepeatOption] = useState<RepeatOption>(transaction.repeat_frequency || "never");
   const dialogState = useDialogState(onOpenChange);
 
+  console.log("TransactionEditDialog Init:", {
+    transaction,
+    formattedSources,
+    base_source_id: transaction.base_source_id
+  });
+
   const {
     operation,
     setOperation,
@@ -48,14 +54,14 @@ export const TransactionEditDialog = ({
 
   useEffect(() => {
     if (open) {
+      console.log("Dialog opened, resetting form with transaction:", transaction);
       resetForm();
       dialogState.reset();
       setIsDropdownOpen(false);
       setCurrentAmount(transaction.amount);
       setSelectedDate(new Date(transaction.date));
       setRepeatOption(transaction.repeat_frequency || "never");
-      // Initialize with display_source if available, otherwise use source
-      setSelectedSource(transaction.display_source || transaction.source);
+      setSelectedSource(transaction.base_source_id);
     }
   }, [open, resetForm, transaction]);
 
@@ -92,7 +98,11 @@ export const TransactionEditDialog = ({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Form submitted with date:", selectedDate);
+    console.log("Form submitted with:", {
+      selectedDate,
+      selectedSource,
+      base_source_id: transaction.base_source_id
+    });
     
     // Create a new transaction object with the updated date and source information
     const updatedTransaction = {
