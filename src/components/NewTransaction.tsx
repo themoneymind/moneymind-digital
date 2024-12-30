@@ -40,7 +40,7 @@ export const NewTransaction = () => {
     const sourceValidation = validatePaymentSource(source, paymentSources);
     if (!sourceValidation) return;
 
-    const { baseSourceId, baseSource } = sourceValidation;
+    const { sourceId, baseSource } = sourceValidation;
 
     if (!validateExpenseBalance(baseSource, validAmount, type)) return;
 
@@ -49,7 +49,7 @@ export const NewTransaction = () => {
         type,
         amount: validAmount,
         category,
-        source: source, // Use the full source ID including UPI app if present
+        source: sourceId, // Use the full source ID including UPI app
         description,
       });
 
