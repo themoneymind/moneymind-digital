@@ -4,6 +4,7 @@ import { TransactionType } from "@/types/finance";
 import { TransactionForm } from "./transaction/TransactionForm";
 import { useTransactionValidation } from "@/hooks/useTransactionValidation";
 import { X } from "lucide-react";
+import { toast } from "sonner";
 
 type NewTransactionProps = {
   onClose: () => void;
@@ -39,8 +40,16 @@ export const NewTransaction = ({ onClose }: NewTransactionProps) => {
   };
 
   const handleSubmit = async () => {
-    console.log("Submitting transaction with date:", selectedDate);
-    
+    if (!category) {
+      toast.error("Please select a category");
+      return;
+    }
+
+    if (!source) {
+      toast.error("Please select a payment source");
+      return;
+    }
+
     const validAmount = validateAmount(amount);
     if (!validAmount) return;
 
@@ -51,9 +60,6 @@ export const NewTransaction = ({ onClose }: NewTransactionProps) => {
 
     if (!validateExpenseBalance(baseSource, validAmount, type)) return;
 
-    const selectedSource = formattedSources.find(s => s.id === source);
-    const displaySourceName = selectedSource ? selectedSource.name : source;
-
     try {
       await addTransaction({
         type,
@@ -62,7 +68,7 @@ export const NewTransaction = ({ onClose }: NewTransactionProps) => {
         source: source,
         description,
         base_source_id: baseSourceId,
-        display_source: displaySourceName,
+        display_source: source,
         date: selectedDate,
       });
 
@@ -72,8 +78,10 @@ export const NewTransaction = ({ onClose }: NewTransactionProps) => {
       setDescription("");
       setSelectedDate(new Date());
       onClose();
+      toast.success("Transaction added successfully");
     } catch (error) {
       console.error("Error adding transaction:", error);
+      toast.error("Failed to add transaction");
     }
   };
 

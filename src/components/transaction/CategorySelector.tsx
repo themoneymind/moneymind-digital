@@ -19,7 +19,7 @@ interface CategorySelectorProps {
   customCategories: {
     expense: string[];
     income: string[];
-    transfer: string[];  // Added this line to fix the type error
+    transfer: string[];
   };
   onAddCustomCategory: (category: string) => void;
 }
@@ -62,13 +62,11 @@ export const CategorySelector = ({
   const [showAddCategory, setShowAddCategory] = useState(false);
   const [newCategory, setNewCategory] = useState("");
   
-  const allCategories = {
-    expense: [...DEFAULT_CATEGORIES.expense, ...customCategories.expense],
-    income: [...DEFAULT_CATEGORIES.income, ...customCategories.income],
-    transfer: [...DEFAULT_CATEGORIES.transfer, ...customCategories.transfer],
-  };
-
-  const categories = allCategories[type] || [];
+  // Ensure categories are unique by using Set
+  const uniqueCategories = Array.from(new Set([
+    ...DEFAULT_CATEGORIES[type],
+    ...customCategories[type]
+  ]));
 
   const handleAddCategory = () => {
     if (newCategory.trim()) {
@@ -86,7 +84,7 @@ export const CategorySelector = ({
             <SelectValue placeholder="Select category" />
           </SelectTrigger>
           <SelectContent className="bg-white border border-gray-200 shadow-lg rounded-xl max-h-[300px] overflow-y-auto">
-            {categories.map((cat) => (
+            {uniqueCategories.map((cat) => (
               <SelectItem key={cat} value={cat} className="cursor-pointer">
                 {cat}
               </SelectItem>
