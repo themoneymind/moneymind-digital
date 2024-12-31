@@ -62,7 +62,7 @@ export const useTransactionEditForm = (
         amount: finalAmount,
         source: selectedSource,
         description,
-        date: selectedDate.toISOString(),
+        date: selectedDate.toISOString(), // Convert Date to ISO string for storage
         repeat_frequency: repeatFrequency,
         display_source: transaction.display_source,
         ...updatedTransaction
