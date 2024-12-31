@@ -2,6 +2,7 @@ import { useState, useCallback } from "react";
 import { useFinance } from "@/contexts/FinanceContext";
 import { Transaction } from "@/types/transactions";
 import { useToast } from "@/hooks/use-toast";
+import { RepeatOption } from "@/types/transactions";
 
 export const useTransactionEditForm = (
   transaction: Transaction,
@@ -13,12 +14,18 @@ export const useTransactionEditForm = (
   const [amount, setAmount] = useState("");
   const [selectedSource, setSelectedSource] = useState(transaction.source);
   const [description, setDescription] = useState(transaction.description || "");
+  const [selectedDate, setSelectedDate] = useState<Date>(new Date(transaction.date));
+  const [repeatFrequency, setRepeatFrequency] = useState<RepeatOption>(
+    transaction.repeat_frequency as RepeatOption || "never"
+  );
 
   const resetForm = useCallback(() => {
     setAmount("");
     setOperation("add");
     setSelectedSource(transaction.source);
     setDescription(transaction.description || "");
+    setSelectedDate(new Date(transaction.date));
+    setRepeatFrequency(transaction.repeat_frequency as RepeatOption || "never");
   }, [transaction]);
 
   const handleSubmit = async (e: React.FormEvent, updatedTransaction?: Partial<Transaction>) => {
@@ -55,7 +62,9 @@ export const useTransactionEditForm = (
         amount: finalAmount,
         source: selectedSource,
         description,
-        display_source: transaction.display_source, // Preserve the original display source
+        date: selectedDate.toISOString(),
+        repeat_frequency: repeatFrequency,
+        display_source: transaction.display_source,
         ...updatedTransaction
       });
 
@@ -80,6 +89,10 @@ export const useTransactionEditForm = (
     setSelectedSource,
     description,
     setDescription,
+    selectedDate,
+    setSelectedDate,
+    repeatFrequency,
+    setRepeatFrequency,
     handleSubmit,
     resetForm,
   };

@@ -29,6 +29,10 @@ export const TransactionEditDialogContent = ({
     setSelectedSource,
     description,
     setDescription,
+    selectedDate,
+    setSelectedDate,
+    repeatFrequency,
+    setRepeatFrequency,
     handleSubmit,
   } = useTransactionEditForm(transaction, () => {
     onOpenChange(false);
@@ -85,10 +89,10 @@ export const TransactionEditDialogContent = ({
           setDescription={setDescription}
           formattedSources={formattedSources}
           onDropdownOpenChange={() => {}}
-          selectedDate={new Date(transaction.date)}
-          onDateChange={() => {}}
-          repeatFrequency={transaction.repeat_frequency || "never"}
-          onRepeatChange={() => {}}
+          selectedDate={selectedDate}
+          onDateChange={setSelectedDate}
+          repeatFrequency={repeatFrequency}
+          onRepeatChange={setRepeatFrequency}
           transactionType={transaction.type}
           initialSource={transaction.source}
           initialDisplaySource={transaction.display_source}
