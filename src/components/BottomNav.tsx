@@ -76,7 +76,7 @@ export const BottomNav = () => {
 
       {/* Transaction Dialog */}
       <Dialog open={showTransactionDialog} onOpenChange={setShowTransactionDialog}>
-        <DialogContent className="p-6 rounded-[20px] border-none bg-white max-w-[400px]">
+        <DialogContent className="p-6 rounded-[20px] border-none bg-white max-w-[360px]">
           <NewTransaction onClose={() => setShowTransactionDialog(false)} />
         </DialogContent>
       </Dialog>
