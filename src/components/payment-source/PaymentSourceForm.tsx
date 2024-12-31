@@ -47,6 +47,10 @@ export const PaymentSourceForm = ({
   showBankSearch,
   setShowBankSearch,
 }: PaymentSourceFormProps) => {
+  const handleCustomUpiChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setCustomUpi(e.target.value);
+  };
+
   return (
     <div className="space-y-4">
       <PaymentSourceTypeSelector
@@ -76,7 +80,7 @@ export const PaymentSourceForm = ({
                 <Input
                   placeholder="Enter UPI app name"
                   value={customUpi}
-                  onChange={(e) => setCustomUpi(e.target.value)}
+                  onChange={handleCustomUpiChange}
                   className="h-14 rounded-[12px] bg-white"
                 />
               </div>
