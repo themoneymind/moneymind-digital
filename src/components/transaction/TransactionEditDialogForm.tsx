@@ -4,6 +4,7 @@ import { TransactionAmountOperations } from "./TransactionAmountOperations";
 import { TransactionDateSelector } from "./TransactionDateSelector";
 import { RepeatSelector } from "./RepeatSelector";
 import { RepeatOption } from "@/types/transactions";
+import { TransactionType } from "@/types/finance";
 
 interface TransactionEditDialogFormProps {
   currentAmount: number;
@@ -21,6 +22,7 @@ interface TransactionEditDialogFormProps {
   onDateChange: (date: Date) => void;
   repeatFrequency: RepeatOption;
   onRepeatChange: (frequency: RepeatOption) => void;
+  transactionType?: TransactionType;
 }
 
 export const TransactionEditDialogForm = ({
@@ -39,6 +41,7 @@ export const TransactionEditDialogForm = ({
   onDateChange,
   repeatFrequency,
   onRepeatChange,
+  transactionType,
 }: TransactionEditDialogFormProps) => {
   console.log("TransactionEditDialogForm props:", {
     currentAmount,
@@ -46,7 +49,8 @@ export const TransactionEditDialogForm = ({
     amount,
     selectedSource,
     description,
-    formattedSources
+    formattedSources,
+    transactionType,
   });
 
   return (
