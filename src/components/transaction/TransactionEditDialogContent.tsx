@@ -56,6 +56,9 @@ export const TransactionEditDialogContent = ({
     }
   };
 
+  // Initialize with display_source if available, otherwise use source
+  const initialSource = transaction.display_source || transaction.source;
+
   return (
     <>
       <DialogHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
@@ -79,7 +82,7 @@ export const TransactionEditDialogContent = ({
           setOperation={setOperation}
           amount={amount}
           setAmount={setAmount}
-          selectedSource={selectedSource}
+          selectedSource={initialSource}
           setSelectedSource={setSelectedSource}
           description={description}
           setDescription={setDescription}
