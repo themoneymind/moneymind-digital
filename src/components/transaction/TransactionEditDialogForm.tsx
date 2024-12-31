@@ -23,6 +23,7 @@ interface TransactionEditDialogFormProps {
   repeatFrequency: RepeatOption;
   onRepeatChange: (frequency: RepeatOption) => void;
   transactionType?: TransactionType;
+  initialSource?: string;
 }
 
 export const TransactionEditDialogForm = ({
@@ -42,10 +43,8 @@ export const TransactionEditDialogForm = ({
   repeatFrequency,
   onRepeatChange,
   transactionType,
+  initialSource,
 }: TransactionEditDialogFormProps) => {
-  // Find the exact source with UPI variant
-  const currentSource = formattedSources.find(s => s.id === selectedSource);
-
   return (
     <div className="space-y-4">
       {transactionType !== "transfer" && (
@@ -78,7 +77,7 @@ export const TransactionEditDialogForm = ({
       ) : null}
 
       <PaymentSourceSelector
-        source={selectedSource}
+        source={selectedSource || initialSource}
         onSourceChange={setSelectedSource}
         formattedSources={formattedSources}
         placeholder={transactionType === "transfer" ? "Transfer from" : "Select payment source"}

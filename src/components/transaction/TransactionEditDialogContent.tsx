@@ -56,9 +56,6 @@ export const TransactionEditDialogContent = ({
     }
   };
 
-  // Initialize with display_source if available, otherwise use source
-  const initialSource = transaction.display_source || transaction.source;
-
   return (
     <>
       <DialogHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
@@ -82,7 +79,7 @@ export const TransactionEditDialogContent = ({
           setOperation={setOperation}
           amount={amount}
           setAmount={setAmount}
-          selectedSource={initialSource}
+          selectedSource={selectedSource}
           setSelectedSource={setSelectedSource}
           description={description}
           setDescription={setDescription}
@@ -93,6 +90,7 @@ export const TransactionEditDialogContent = ({
           repeatFrequency={transaction.repeat_frequency || "never"}
           onRepeatChange={() => {}}
           transactionType={transaction.type}
+          initialSource={transaction.display_source}
         />
         <div className="flex gap-2">
           <Button 
