@@ -93,6 +93,7 @@ export const NewTransaction = ({ onClose }: NewTransactionProps) => {
           amount: validAmount,
           category: type === 'transfer' ? 'Transfer' : category,
           source: source,
+          base_source_id: source,
           description,
           date: selectedDate,
         });
