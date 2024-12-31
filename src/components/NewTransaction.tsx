@@ -49,6 +49,15 @@ export const NewTransaction = ({ onClose }: NewTransactionProps) => {
   };
 
   const handleSubmit = async () => {
+    console.log("Transfer Debug - Starting submission with:", { 
+      type, 
+      amount, 
+      category, 
+      source,
+      description,
+      selectedDate 
+    });
+
     if (!validateTransactionType(type)) return;
     if (!validateCategory(category, type)) return;
     if (!validateSource(source)) return;
@@ -56,14 +65,28 @@ export const NewTransaction = ({ onClose }: NewTransactionProps) => {
     const validAmount = validateAmount(amount);
     if (!validAmount) return;
 
+    console.log("Transfer Debug - Formatted sources:", formattedSources);
+    
     const selectedSource = formattedSources.find(s => s.id === source);
+    console.log("Transfer Debug - Selected source:", selectedSource);
+    
     if (!selectedSource) {
+      console.error("Transfer Debug - Source not found in formatted sources:", {
+        sourceId: source,
+        availableSources: formattedSources
+      });
       toast.error("Invalid payment source");
       return;
     }
 
     const baseSource = paymentSources.find(s => s.id === source);
+    console.log("Transfer Debug - Base source:", baseSource);
+    
     if (!baseSource) {
+      console.error("Transfer Debug - Base source not found:", {
+        sourceId: source,
+        availableSources: paymentSources
+      });
       toast.error("Payment source not found");
       return;
     }
@@ -73,7 +96,10 @@ export const NewTransaction = ({ onClose }: NewTransactionProps) => {
     try {
       if (type === 'transfer') {
         const toSource = formattedSources.find(s => s.id === source);
+        console.log("Transfer Debug - To source:", toSource);
+        
         if (!toSource) {
+          console.error("Transfer Debug - Destination source not found");
           toast.error("Invalid destination source");
           return;
         }
@@ -104,7 +130,7 @@ export const NewTransaction = ({ onClose }: NewTransactionProps) => {
       onClose();
       toast.success("Transaction added successfully");
     } catch (error) {
-      console.error("Error adding transaction:", error);
+      console.error("Transfer Debug - Error in transaction:", error);
       toast.error("Failed to add transaction");
     }
   };
