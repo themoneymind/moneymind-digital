@@ -11,11 +11,18 @@ export const useTransactionSourceUpdate = (paymentSources: PaymentSource[]) => {
     isTransfer: boolean = false
   ) => {
     const baseSourceId = getBaseSourceId(sourceId);
-    console.log("Updating payment source:", { sourceId, baseSourceId, amount, type, isReversal, isTransfer });
+    console.log("Transfer Debug - Updating payment source:", { 
+      sourceId, 
+      baseSourceId, 
+      amount, 
+      type, 
+      isReversal, 
+      isTransfer 
+    });
     
     const source = paymentSources.find(s => s.id === baseSourceId);
     if (!source) {
-      console.error("Source not found:", baseSourceId);
+      console.error("Transfer Debug - Source not found:", baseSourceId);
       return;
     }
 
@@ -24,16 +31,20 @@ export const useTransactionSourceUpdate = (paymentSources: PaymentSource[]) => {
     
     // If it's a credit card payment (transfer to credit card)
     if (source.type === 'credit' && type === 'expense') {
+      console.log("Transfer Debug - Credit card payment detected");
       // Credit card payments reduce the credit card balance
       newAmount = Number(source.amount) - Number(amount);
     }
     // For regular bank/UPI transfers
     else if (isTransfer) {
+      console.log("Transfer Debug - Regular transfer detected");
       if (type === 'expense') {
         // Source account (money going out)
+        console.log("Transfer Debug - Debiting source account");
         newAmount = Number(source.amount) - Number(amount);
       } else {
         // Destination account (money coming in)
+        console.log("Transfer Debug - Crediting destination account");
         newAmount = Number(source.amount) + Number(amount);
       }
     }
@@ -50,23 +61,27 @@ export const useTransactionSourceUpdate = (paymentSources: PaymentSource[]) => {
       }
     }
 
-    console.log("New amount calculation:", {
+    console.log("Transfer Debug - Amount calculation:", {
       sourceType: source.type,
       currentAmount: source.amount,
       operation: isReversal ? "reverse" : isTransfer ? "transfer" : "apply",
       change: amount,
-      result: newAmount
+      result: newAmount,
+      calculationType: isTransfer ? (type === 'expense' ? 'debit' : 'credit') : type
     });
 
-    const { error } = await supabase
+    const { data, error } = await supabase
       .from("payment_sources")
       .update({ amount: newAmount })
-      .eq("id", baseSourceId);
+      .eq("id", baseSourceId)
+      .select();
 
     if (error) {
-      console.error("Error updating payment source amount:", error);
+      console.error("Transfer Debug - Error updating payment source amount:", error);
       throw error;
     }
+
+    console.log("Transfer Debug - Update successful:", data);
   };
 
   return { updatePaymentSourceAmount };
