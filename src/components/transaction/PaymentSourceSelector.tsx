@@ -38,6 +38,7 @@ export const PaymentSourceSelector = ({
       <Select 
         value={source} 
         onValueChange={onSourceChange}
+        defaultValue={source}
       >
         <SelectTrigger className="h-12 border-gray-200 rounded-[12px] text-sm bg-white">
           <SelectValue placeholder={placeholder}>
