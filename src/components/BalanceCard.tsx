@@ -34,6 +34,8 @@ export const BalanceCard = () => {
 
   // Calculate total balance from all previous months (carryforward)
   const carryForwardBalance = allPreviousTransactions.reduce((acc, curr) => {
+    // Skip transfers when calculating total balance
+    if (curr.type === 'transfer') return acc;
     return curr.type === "income" ? acc + Number(curr.amount) : acc - Number(curr.amount);
   }, 0);
 
@@ -61,18 +63,21 @@ export const BalanceCard = () => {
     });
   });
 
-  // Calculate monthly income from income transactions
+  // Calculate monthly income from income transactions (excluding transfers)
   const monthlyIncome = monthlyTransactions.reduce((acc, curr) => {
+    if (curr.type === 'transfer') return acc;
     return curr.type === "income" ? acc + Number(curr.amount) : acc;
   }, 0);
 
-  // Calculate monthly expense
+  // Calculate monthly expense (excluding transfers)
   const monthlyExpense = monthlyTransactions.reduce((acc, curr) => {
+    if (curr.type === 'transfer') return acc;
     return curr.type === "expense" ? acc + Number(curr.amount) : acc;
   }, 0);
 
-  // Calculate last month's closing balance
+  // Calculate last month's closing balance (excluding transfers)
   const lastMonthClosingBalance = allPreviousTransactions.reduce((acc, curr) => {
+    if (curr.type === 'transfer') return acc;
     return curr.type === "income" ? acc + Number(curr.amount) : acc - Number(curr.amount);
   }, 0);
 
@@ -84,7 +89,7 @@ export const BalanceCard = () => {
     }).format(amount);
   };
 
-  // Calculate the display balance including carryforward
+  // Calculate the display balance including carryforward (excluding transfers)
   const displayBalance = carryForwardBalance + monthlyIncome - monthlyExpense;
 
   console.log("Balance calculation:", {

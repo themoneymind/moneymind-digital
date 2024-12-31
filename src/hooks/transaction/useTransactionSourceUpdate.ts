@@ -19,23 +19,39 @@ export const useTransactionSourceUpdate = (paymentSources: PaymentSource[]) => {
       return;
     }
 
+    // For transfers, we handle differently based on source type
     let newAmount;
-    if (isTransfer) {
-      // For transfers, we simply add or subtract based on whether it's the source or destination
-      newAmount = type === "expense" 
-        ? Number(source.amount) - Number(amount)  // Source account (money going out)
-        : Number(source.amount) + Number(amount); // Destination account (money coming in)
-    } else if (isReversal) {
-      newAmount = type === "income" 
-        ? Number(source.amount) - Number(amount)
-        : Number(source.amount) + Number(amount);
-    } else {
-      newAmount = type === "income" 
-        ? Number(source.amount) + Number(amount)
-        : Number(source.amount) - Number(amount);
+    
+    // If it's a credit card payment (transfer to credit card)
+    if (source.type === 'credit' && type === 'expense') {
+      // Credit card payments reduce the credit card balance
+      newAmount = Number(source.amount) - Number(amount);
+    }
+    // For regular bank/UPI transfers
+    else if (isTransfer) {
+      if (type === 'expense') {
+        // Source account (money going out)
+        newAmount = Number(source.amount) - Number(amount);
+      } else {
+        // Destination account (money coming in)
+        newAmount = Number(source.amount) + Number(amount);
+      }
+    }
+    // For regular income/expense
+    else {
+      if (isReversal) {
+        newAmount = type === 'income' 
+          ? Number(source.amount) - Number(amount)
+          : Number(source.amount) + Number(amount);
+      } else {
+        newAmount = type === 'income' 
+          ? Number(source.amount) + Number(amount)
+          : Number(source.amount) - Number(amount);
+      }
     }
 
     console.log("New amount calculation:", {
+      sourceType: source.type,
       currentAmount: source.amount,
       operation: isReversal ? "reverse" : isTransfer ? "transfer" : "apply",
       change: amount,
