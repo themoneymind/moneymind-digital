@@ -15,7 +15,7 @@ export const TransactionTypeSelector = ({ type, onTypeChange }: TransactionTypeS
         className={`flex-1 rounded-lg h-8 gap-1 text-xs px-2 ${
           type === "expense"
             ? "bg-white shadow-sm text-red-500"
-            : "hover:bg-white/50 text-gray-600"
+            : "hover:bg-[#F2E2E2] text-gray-600"
         }`}
         onClick={() => onTypeChange("expense")}
       >
@@ -27,7 +27,7 @@ export const TransactionTypeSelector = ({ type, onTypeChange }: TransactionTypeS
         className={`flex-1 rounded-lg h-8 gap-1 text-xs px-2 ${
           type === "income"
             ? "bg-white shadow-sm text-green-500"
-            : "hover:bg-white/50 text-gray-600"
+            : "hover:bg-[#F2FCE2] text-gray-600"
         }`}
         onClick={() => onTypeChange("income")}
       >
@@ -39,7 +39,7 @@ export const TransactionTypeSelector = ({ type, onTypeChange }: TransactionTypeS
         className={`flex-1 rounded-lg h-8 gap-1 text-xs px-2 ${
           type === "transfer"
             ? "bg-white shadow-sm text-[#7F3DFF]"
-            : "hover:bg-white/50 text-gray-600"
+            : "hover:bg-[#F2E2FC] text-gray-600"
         }`}
         onClick={() => onTypeChange("transfer")}
       >
