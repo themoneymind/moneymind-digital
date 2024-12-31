@@ -35,14 +35,12 @@ export const useTransactionEdit = (
             originalTransaction.source,
             Number(originalTransaction.amount),
             'expense',
-            true,
             true
           );
           await updatePaymentSourceAmount(
             originalTransaction.display_source,
             Number(originalTransaction.amount),
             'income',
-            true,
             true
           );
         } else {
@@ -61,15 +59,13 @@ export const useTransactionEdit = (
             originalTransaction.source,
             Number(originalTransaction.amount),
             'expense',
-            false,
-            true
+            false
           );
           await updatePaymentSourceAmount(
             originalTransaction.display_source,
             Number(originalTransaction.amount),
             'income',
-            false,
-            true
+            false
           );
         } else {
           await updatePaymentSourceAmount(
@@ -88,14 +84,12 @@ export const useTransactionEdit = (
             originalTransaction.source,
             Number(originalTransaction.amount),
             'expense',
-            true,
             true
           );
           await updatePaymentSourceAmount(
             originalTransaction.display_source,
             Number(originalTransaction.amount),
             'income',
-            true,
             true
           );
 
@@ -107,15 +101,13 @@ export const useTransactionEdit = (
             targetSource,
             Number(updates.amount),
             'expense',
-            false,
-            true
+            false
           );
           await updatePaymentSourceAmount(
             destinationSource,
             Number(updates.amount),
             'income',
-            false,
-            true
+            false
           );
         } else {
           // For non-transfer transactions

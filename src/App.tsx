@@ -23,13 +23,13 @@ const App: React.FC = () => {
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
         <AuthProvider>
-          <FinanceProvider>
-            <TooltipProvider>
+          <TooltipProvider>
+            <FinanceProvider>
               <AppRoutes />
               <Toaster />
               <Sonner />
-            </TooltipProvider>
-          </FinanceProvider>
+            </FinanceProvider>
+          </TooltipProvider>
         </AuthProvider>
       </BrowserRouter>
     </QueryClientProvider>
