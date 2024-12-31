@@ -4,6 +4,7 @@ import { useFinance } from "@/contexts/FinanceContext";
 import { useToast } from "@/hooks/use-toast";
 import { PaymentSourceInfo } from "./PaymentSourceInfo";
 import { ArrowDownLeft } from "lucide-react";
+import { formatDisplayName } from "@/utils/paymentSourceUtils";
 
 type PaymentSourceCardProps = {
   source: {
@@ -13,6 +14,7 @@ type PaymentSourceCardProps = {
     amount: number;
     linked?: boolean;
     upi_apps?: string[];
+    display_name?: string;
   };
 };
 
@@ -63,6 +65,8 @@ export const PaymentSourceCard = ({ source }: PaymentSourceCardProps) => {
     setShowUpiList(!showUpiList);
   };
 
+  const displayName = formatDisplayName(source.name, source.display_name);
+
   return (
     <div 
       className="flex items-center justify-between p-4 hover:bg-gray-50 transition-colors rounded-xl border border-gray-100 cursor-pointer space-y-0"
@@ -74,7 +78,7 @@ export const PaymentSourceCard = ({ source }: PaymentSourceCardProps) => {
         </div>
         
         <PaymentSourceInfo
-          name={source.name}
+          name={displayName}
           type={source.type}
           upiApps={source.upi_apps}
           linked={source.linked}
