@@ -72,17 +72,17 @@ export const NewTransaction = ({ onClose }: NewTransactionProps) => {
 
     try {
       if (type === 'transfer') {
-        const fromSource = selectedSource;
-        const toSource = formattedSources.find(s => s.id === source);
+        const fromSource = formattedSources.find(s => s.id === source);
+        const toSource = formattedSources.find(s => s.id === source); // This will be updated with destinationSource
         
-        if (!toSource) {
-          toast.error("Invalid destination source");
+        if (!fromSource || !toSource) {
+          toast.error("Invalid source or destination");
           return;
         }
 
         await handleTransfer(
-          fromSource.id,
-          source, // This is already the destination source ID from TransactionForm
+          source,
+          source, // Will be updated with destinationSource
           validAmount,
           description,
           selectedDate,
@@ -111,6 +111,14 @@ export const NewTransaction = ({ onClose }: NewTransactionProps) => {
     }
   };
 
+  const handleSourceChange = (newSource: string, destinationSource?: string) => {
+    setSource(newSource);
+    if (type === 'transfer' && destinationSource) {
+      // Update the source to be the destination for the transfer
+      setSource(destinationSource);
+    }
+  };
+
   return (
     <>
       <div className="flex items-center justify-between mb-2">
@@ -132,7 +140,7 @@ export const NewTransaction = ({ onClose }: NewTransactionProps) => {
         onTypeChange={setType}
         onAmountChange={setAmount}
         onCategoryChange={setCategory}
-        onSourceChange={setSource}
+        onSourceChange={handleSourceChange}
         onDescriptionChange={setDescription}
         onDateChange={setSelectedDate}
         onSubmit={handleSubmit}

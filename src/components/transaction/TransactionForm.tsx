@@ -46,7 +46,7 @@ type TransactionFormProps = {
   onTypeChange: (type: TransactionType) => void;
   onAmountChange: (amount: string) => void;
   onCategoryChange: (category: string) => void;
-  onSourceChange: (source: string) => void;
+  onSourceChange: (source: string, toSource?: string) => void;
   onDescriptionChange: (description: string) => void;
   onDateChange: (date: Date) => void;
   onSubmit: () => void;
@@ -78,7 +78,7 @@ export const TransactionForm = ({
   formattedSources,
 }: TransactionFormProps) => {
   const [destinationSource, setDestinationSource] = useState("");
-  
+
   const allCategories = {
     expense: [...DEFAULT_CATEGORIES.expense, ...customCategories.expense],
     income: [...DEFAULT_CATEGORIES.income, ...customCategories.income],
@@ -88,17 +88,13 @@ export const TransactionForm = ({
   const handleTypeChange = (newType: TransactionType) => {
     if (["expense", "income", "transfer"].includes(newType)) {
       onTypeChange(newType);
-      // Reset sources when changing type
-      if (newType === "transfer") {
-        setDestinationSource("");
-      }
+      setDestinationSource("");
     }
   };
 
   const handleSubmit = () => {
-    if (type === "transfer") {
-      // For transfers, pass both source and destination
-      onSourceChange(destinationSource);
+    if (type === "transfer" && destinationSource) {
+      onSourceChange(source, destinationSource);
     }
     onSubmit();
   };
