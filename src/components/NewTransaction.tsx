@@ -60,6 +60,13 @@ export const NewTransaction = ({ onClose }: NewTransactionProps) => {
 
     if (!validateExpenseBalance(baseSource, validAmount, type)) return;
 
+    // Find the selected source from formatted sources to get the display name
+    const selectedSource = formattedSources.find(s => s.id === source);
+    if (!selectedSource) {
+      toast.error("Invalid payment source");
+      return;
+    }
+
     try {
       await addTransaction({
         type,
@@ -68,7 +75,7 @@ export const NewTransaction = ({ onClose }: NewTransactionProps) => {
         source: source,
         description,
         base_source_id: baseSourceId,
-        display_source: source,
+        display_source: selectedSource.name,
         date: selectedDate,
       });
 

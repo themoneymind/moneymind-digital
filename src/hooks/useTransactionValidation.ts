@@ -1,5 +1,6 @@
 import { PaymentSource, TransactionType } from "@/types/finance";
 import { toast } from "sonner";
+import { getBaseSourceId } from "@/utils/paymentSourceUtils";
 
 export const useTransactionValidation = () => {
   const validateAmount = (amount: string) => {
@@ -17,14 +18,16 @@ export const useTransactionValidation = () => {
       return null;
     }
 
-    const baseSource = paymentSources.find(s => s.id === sourceId);
+    const baseSourceId = getBaseSourceId(sourceId);
+    const baseSource = paymentSources.find(s => s.id === baseSourceId);
+    
     if (!baseSource) {
       toast.error("Invalid payment source");
       return null;
     }
 
     return {
-      baseSourceId: sourceId,
+      baseSourceId,
       baseSource,
     };
   };
