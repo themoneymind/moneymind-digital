@@ -5,7 +5,11 @@ import { TransactionForm } from "./transaction/TransactionForm";
 import { useTransactionValidation } from "@/hooks/useTransactionValidation";
 import { X } from "lucide-react";
 
-export const NewTransaction = () => {
+type NewTransactionProps = {
+  onClose: () => void;
+};
+
+export const NewTransaction = ({ onClose }: NewTransactionProps) => {
   const { addTransaction, getFormattedPaymentSources, paymentSources } = useFinance();
   const { validateAmount, validatePaymentSource, validateExpenseBalance } = useTransactionValidation();
   
@@ -67,6 +71,7 @@ export const NewTransaction = () => {
       setSource("");
       setDescription("");
       setSelectedDate(new Date());
+      onClose();
     } catch (error) {
       console.error("Error adding transaction:", error);
     }
@@ -77,8 +82,8 @@ export const NewTransaction = () => {
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-base font-semibold">New Transaction</h2>
         <button 
-          onClick={() => window.history.back()}
-          className="text-red-500 hover:text-red-600 transition-colors"
+          onClick={onClose}
+          className="text-[#ea384c] hover:text-red-400 transition-colors"
         >
           <X className="w-4 h-4" />
         </button>
