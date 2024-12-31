@@ -6,8 +6,9 @@ import { CategorySelector } from "./CategorySelector";
 import { PaymentSourceSelector } from "./PaymentSourceSelector";
 import { TransactionDateSelector } from "./TransactionDateSelector";
 import { RepeatSelector } from "./RepeatSelector";
-import { ArrowLeftRight } from "lucide-react";
+import { ArrowLeftRight, Plus } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useNavigate } from "react-router-dom";
 
 type TransactionFormProps = {
   type: "income" | "expense" | "transfer";
@@ -53,6 +54,42 @@ export const TransactionForm = ({
   toSource,
   onToSourceChange,
 }: TransactionFormProps) => {
+  const navigate = useNavigate();
+
+  const handleAddSource = () => {
+    navigate("/app/payment-source");
+  };
+
+  // Filter sources for the "To" dropdown based on selected source
+  const getFilteredDestinationSources = () => {
+    if (!source) return formattedSources;
+
+    const selectedSource = formattedSources.find(s => s.id === source);
+    if (!selectedSource) return formattedSources;
+
+    // Get base name without UPI app
+    const baseName = selectedSource.name.split(' ')[0];
+
+    return formattedSources.filter(s => {
+      // Don't show the selected source
+      if (s.id === source) return false;
+
+      // If source is a bank account, filter out related UPI
+      if (selectedSource.name.toLowerCase().includes('bank')) {
+        return !s.name.toLowerCase().includes(baseName.toLowerCase()) || 
+               s.name.toLowerCase().includes('credit');
+      }
+
+      // If source is UPI, filter out related bank and UPIs
+      if (selectedSource.name.toLowerCase().includes('pay')) {
+        return !s.name.toLowerCase().includes(baseName.toLowerCase()) || 
+               s.name.toLowerCase().includes('credit');
+      }
+
+      return true;
+    });
+  };
+
   return (
     <form
       onSubmit={(e) => {
@@ -80,7 +117,7 @@ export const TransactionForm = ({
       {type === "transfer" ? (
         <div className="space-y-4">
           <div className="space-y-2">
-            <label className="text-sm text-gray-600">From</label>
+            <label className="text-sm text-gray-600">From Payment Source</label>
             <PaymentSourceSelector
               source={source}
               onSourceChange={onSourceChange}
@@ -89,14 +126,13 @@ export const TransactionForm = ({
           </div>
 
           <div className="space-y-2">
-            <label className="text-sm text-gray-600">To</label>
+            <label className="text-sm text-gray-600">To Payment Source</label>
             <Select value={toSource} onValueChange={onToSourceChange}>
               <SelectTrigger className="h-12 rounded-[12px]">
                 <SelectValue placeholder="Select destination" />
               </SelectTrigger>
               <SelectContent>
-                {formattedSources
-                  .filter(s => s.id !== source) // Exclude the source account
+                {getFilteredDestinationSources()
                   .map(source => (
                     <SelectItem key={source.id} value={source.id}>
                       {source.name}
@@ -116,11 +152,25 @@ export const TransactionForm = ({
             onAddCustomCategory={onAddCustomCategory}
           />
 
-          <PaymentSourceSelector
-            source={source}
-            onSourceChange={onSourceChange}
-            formattedSources={formattedSources}
-          />
+          <div className="space-y-2">
+            <div className="flex items-center justify-between">
+              <label className="text-sm text-gray-600">Payment Source</label>
+              <Button
+                type="button"
+                size="icon"
+                variant="ghost"
+                className="h-8 w-8 rounded-[12px]"
+                onClick={handleAddSource}
+              >
+                <Plus className="h-5 w-5" />
+              </Button>
+            </div>
+            <PaymentSourceSelector
+              source={source}
+              onSourceChange={onSourceChange}
+              formattedSources={formattedSources}
+            />
+          </div>
         </>
       )}
 
@@ -140,7 +190,13 @@ export const TransactionForm = ({
 
       <Button
         type="submit"
-        className="w-full h-12 rounded-[12px] bg-[#7F3DFF] hover:bg-[#7F3DFF]/90"
+        className={`w-full h-12 rounded-[12px] ${
+          type === "transfer"
+            ? "bg-[#7F3DFF] hover:bg-[#7F3DFF]/90"
+            : type === "income"
+            ? "bg-[#00A86B] hover:bg-[#00A86B]/90"
+            : "bg-[#FD3C4A] hover:bg-[#FD3C4A]/90"
+        }`}
       >
         {type === "transfer" ? (
           <div className="flex items-center gap-2">

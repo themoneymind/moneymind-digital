@@ -1,9 +1,10 @@
+import { ArrowDownIcon, ArrowUpIcon, ArrowLeftRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { ArrowDownLeft, ArrowUpRight, ArrowLeftRight } from "lucide-react";
+import { TransactionType } from "@/types/finance";
 
 type TransactionTypeSelectorProps = {
-  type: "income" | "expense" | "transfer";
-  onTypeChange: (type: "income" | "expense" | "transfer") => void;
+  type: TransactionType | "transfer";
+  onTypeChange: (type: TransactionType | "transfer") => void;
 };
 
 export const TransactionTypeSelector = ({
@@ -11,44 +12,41 @@ export const TransactionTypeSelector = ({
   onTypeChange,
 }: TransactionTypeSelectorProps) => {
   return (
-    <div className="flex gap-1 bg-muted p-1 rounded-lg">
+    <div className="flex gap-2">
       <Button
-        type="button"
-        variant={type === "income" ? "default" : "ghost"}
-        onClick={() => onTypeChange("income")}
-        className={`flex-1 h-9 gap-1.5 text-sm font-medium ${
+        variant="outline"
+        className={`flex-1 h-14 rounded-[12px] ${
           type === "income"
-            ? "bg-[#00A86B] hover:bg-[#00A86B]/90 shadow-none"
-            : "hover:bg-background/80"
+            ? "bg-[#00A86B] text-white hover:bg-[#00A86B]/90"
+            : ""
         }`}
+        onClick={() => onTypeChange("income")}
       >
-        <ArrowDownLeft className="w-4 h-4" />
+        <ArrowDownIcon className="w-5 h-5 mr-2" />
         Income
       </Button>
       <Button
-        type="button"
-        variant={type === "expense" ? "default" : "ghost"}
-        onClick={() => onTypeChange("expense")}
-        className={`flex-1 h-9 gap-1.5 text-sm font-medium ${
+        variant="outline"
+        className={`flex-1 h-14 rounded-[12px] ${
           type === "expense"
-            ? "bg-[#FD3C4A] hover:bg-[#FD3C4A]/90 shadow-none"
-            : "hover:bg-background/80"
+            ? "bg-[#FD3C4A] text-white hover:bg-[#FD3C4A]/90"
+            : ""
         }`}
+        onClick={() => onTypeChange("expense")}
       >
-        <ArrowUpRight className="w-4 h-4" />
+        <ArrowUpIcon className="w-5 h-5 mr-2" />
         Expense
       </Button>
       <Button
-        type="button"
-        variant={type === "transfer" ? "default" : "ghost"}
-        onClick={() => onTypeChange("transfer")}
-        className={`flex-1 h-9 gap-1.5 text-sm font-medium ${
+        variant="outline"
+        className={`flex-1 h-14 rounded-[12px] ${
           type === "transfer"
-            ? "bg-[#7F3DFF] hover:bg-[#7F3DFF]/90 shadow-none"
-            : "hover:bg-background/80"
+            ? "bg-[#7F3DFF] text-white hover:bg-[#7F3DFF]/90"
+            : ""
         }`}
+        onClick={() => onTypeChange("transfer")}
       >
-        <ArrowLeftRight className="w-4 h-4" />
+        <ArrowLeftRight className="w-5 h-5 mr-2" />
         Transfer
       </Button>
     </div>
