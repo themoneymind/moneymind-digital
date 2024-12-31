@@ -1,38 +1,55 @@
-import { ArrowUp, ArrowDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { TransactionType } from "@/types/finance";
+import { ArrowDownLeft, ArrowUpRight, ArrowLeftRight } from "lucide-react";
 
 type TransactionTypeSelectorProps = {
-  type: TransactionType;
-  onTypeChange: (type: TransactionType) => void;
+  type: "income" | "expense" | "transfer";
+  onTypeChange: (type: "income" | "expense" | "transfer") => void;
 };
 
-export const TransactionTypeSelector = ({ type, onTypeChange }: TransactionTypeSelectorProps) => {
+export const TransactionTypeSelector = ({
+  type,
+  onTypeChange,
+}: TransactionTypeSelectorProps) => {
   return (
-    <div className="flex gap-2 mb-6">
+    <div className="flex gap-2">
       <Button
-        variant="outline"
-        className={`flex-1 rounded-[12px] h-14 gap-2 ${
-          type === "expense"
-            ? "bg-red-50 text-red-500 border-red-100 hover:bg-red-50"
-            : "bg-white hover:bg-gray-50"
+        type="button"
+        variant={type === "income" ? "default" : "outline"}
+        onClick={() => onTypeChange("income")}
+        className={`flex-1 h-12 gap-2 rounded-[12px] ${
+          type === "income"
+            ? "bg-[#00A86B] hover:bg-[#00A86B]/90"
+            : "hover:bg-gray-100"
         }`}
-        onClick={() => onTypeChange("expense")}
       >
-        <ArrowUp className="w-4 h-4" />
+        <ArrowDownLeft className="w-5 h-5" />
+        Income
+      </Button>
+      <Button
+        type="button"
+        variant={type === "expense" ? "default" : "outline"}
+        onClick={() => onTypeChange("expense")}
+        className={`flex-1 h-12 gap-2 rounded-[12px] ${
+          type === "expense"
+            ? "bg-[#FD3C4A] hover:bg-[#FD3C4A]/90"
+            : "hover:bg-gray-100"
+        }`}
+      >
+        <ArrowUpRight className="w-5 h-5" />
         Expense
       </Button>
       <Button
-        variant="outline"
-        className={`flex-1 rounded-[12px] h-14 gap-2 ${
-          type === "income"
-            ? "bg-green-50 text-green-500 border-green-100 hover:bg-green-50"
-            : "bg-white hover:bg-gray-50"
+        type="button"
+        variant={type === "transfer" ? "default" : "outline"}
+        onClick={() => onTypeChange("transfer")}
+        className={`flex-1 h-12 gap-2 rounded-[12px] ${
+          type === "transfer"
+            ? "bg-[#7F3DFF] hover:bg-[#7F3DFF]/90"
+            : "hover:bg-gray-100"
         }`}
-        onClick={() => onTypeChange("income")}
       >
-        <ArrowDown className="w-4 h-4" />
-        Income
+        <ArrowLeftRight className="w-5 h-5" />
+        Transfer
       </Button>
     </div>
   );

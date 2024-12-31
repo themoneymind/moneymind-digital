@@ -1,42 +1,22 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { TransactionType } from "@/types/finance";
+import { Textarea } from "@/components/ui/textarea";
 import { TransactionTypeSelector } from "./TransactionTypeSelector";
 import { CategorySelector } from "./CategorySelector";
 import { PaymentSourceSelector } from "./PaymentSourceSelector";
 import { TransactionDateSelector } from "./TransactionDateSelector";
 import { RepeatSelector } from "./RepeatSelector";
-import { Plus } from "lucide-react";
-import { useNavigate } from "react-router-dom";
-
-const DEFAULT_CATEGORIES = {
-  expense: [
-    "Food",
-    "Transportation",
-    "Shopping",
-    "Entertainment",
-    "Bills",
-    "Health",
-    "Education",
-    "Others"
-  ],
-  income: [
-    "Salary",
-    "Business",
-    "Investment",
-    "Gift",
-    "Others"
-  ]
-};
+import { ArrowLeftRight } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 type TransactionFormProps = {
-  type: TransactionType;
+  type: "income" | "expense" | "transfer";
   amount: string;
   category: string;
   source: string;
   description: string;
   selectedDate: Date;
-  onTypeChange: (type: TransactionType) => void;
+  onTypeChange: (type: "income" | "expense" | "transfer") => void;
   onAmountChange: (amount: string) => void;
   onCategoryChange: (category: string) => void;
   onSourceChange: (source: string) => void;
@@ -49,6 +29,8 @@ type TransactionFormProps = {
   };
   onAddCustomCategory: (category: string) => void;
   formattedSources: { id: string; name: string }[];
+  toSource?: string;
+  onToSourceChange?: (source: string) => void;
 };
 
 export const TransactionForm = ({
@@ -68,69 +50,107 @@ export const TransactionForm = ({
   customCategories,
   onAddCustomCategory,
   formattedSources,
+  toSource,
+  onToSourceChange,
 }: TransactionFormProps) => {
-  const navigate = useNavigate();
-  
-  const allCategories = {
-    expense: [...DEFAULT_CATEGORIES.expense, ...customCategories.expense],
-    income: [...DEFAULT_CATEGORIES.income, ...customCategories.income],
-  };
-
   return (
-    <div className="space-y-4">
-      <TransactionTypeSelector type={type} onTypeChange={onTypeChange} />
+    <form
+      onSubmit={(e) => {
+        e.preventDefault();
+        onSubmit();
+      }}
+      className="space-y-6"
+    >
+      <TransactionTypeSelector
+        type={type}
+        onTypeChange={onTypeChange}
+      />
+
       <div className="relative">
         <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500">₹</span>
         <Input
           type="number"
           placeholder="0"
-          className="text-2xl pl-8 h-14 border-gray-200 rounded-[12px]"
           value={amount}
           onChange={(e) => onAmountChange(e.target.value)}
+          className="pl-8 h-12 text-lg rounded-[12px]"
         />
       </div>
-      <CategorySelector
-        type={type}
-        category={category}
-        onCategoryChange={onCategoryChange}
-        customCategories={allCategories}
-        onAddCustomCategory={onAddCustomCategory}
-      />
-      <div className="flex gap-2">
-        <PaymentSourceSelector
-          source={source}
-          onSourceChange={onSourceChange}
-          formattedSources={formattedSources}
-        />
-        <Button
-          variant="outline"
-          size="icon"
-          className="h-14 w-14 border-gray-200 rounded-[12px] flex-shrink-0"
-          onClick={() => navigate("/app/payment-source")}
-        >
-          <Plus className="h-4 w-4" />
-        </Button>
-      </div>
+
+      {type === "transfer" ? (
+        <div className="space-y-4">
+          <div className="space-y-2">
+            <label className="text-sm text-gray-600">From</label>
+            <PaymentSourceSelector
+              source={source}
+              onSourceChange={onSourceChange}
+              formattedSources={formattedSources}
+            />
+          </div>
+
+          <div className="space-y-2">
+            <label className="text-sm text-gray-600">To</label>
+            <Select value={toSource} onValueChange={onToSourceChange}>
+              <SelectTrigger className="h-12 rounded-[12px]">
+                <SelectValue placeholder="Select destination" />
+              </SelectTrigger>
+              <SelectContent>
+                {formattedSources
+                  .filter(s => s.id !== source) // Exclude the source account
+                  .map(source => (
+                    <SelectItem key={source.id} value={source.id}>
+                      {source.name}
+                    </SelectItem>
+                  ))}
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+      ) : (
+        <>
+          <CategorySelector
+            type={type}
+            category={category}
+            onCategoryChange={onCategoryChange}
+            customCategories={customCategories}
+            onAddCustomCategory={onAddCustomCategory}
+          />
+
+          <PaymentSourceSelector
+            source={source}
+            onSourceChange={onSourceChange}
+            formattedSources={formattedSources}
+          />
+        </>
+      )}
+
       <TransactionDateSelector
         selectedDate={selectedDate}
         onDateChange={onDateChange}
       />
-      <Input
-        placeholder="Description or note (Optional)"
-        className="h-14 border-gray-200 rounded-[12px]"
+
+      <Textarea
+        placeholder="Add a description"
         value={description}
         onChange={(e) => onDescriptionChange(e.target.value)}
+        className="rounded-[12px] resize-none"
       />
-      <RepeatSelector
-        value="never"
-        onValueChange={() => {}}
-      />
+
+      <RepeatSelector value="never" onValueChange={() => {}} />
+
       <Button
-        className="w-full h-14 bg-blue-600 hover:bg-blue-700 rounded-[12px]"
-        onClick={onSubmit}
+        type="submit"
+        className="w-full h-12 rounded-[12px] bg-[#7F3DFF] hover:bg-[#7F3DFF]/90"
       >
-        Add Transaction
+        {type === "transfer" ? (
+          <div className="flex items-center gap-2">
+            <ArrowLeftRight className="w-5 h-5" />
+            Transfer
+          </div>
+        ) : (
+          type === "income" ? "Add Income" : "Add Expense"
+        )}
       </Button>
-    </div>
+    </form>
   );
 };
