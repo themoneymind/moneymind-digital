@@ -46,10 +46,10 @@ export const CategorySelector = ({
     <div className="space-y-2">
       <div className="flex gap-2">
         <Select value={category} onValueChange={onCategoryChange}>
-          <SelectTrigger className="h-14 rounded-[12px] border-gray-200">
+          <SelectTrigger className="h-10 rounded-xl border-gray-200">
             <SelectValue placeholder="Select category" />
           </SelectTrigger>
-          <SelectContent className="bg-white border border-gray-200 shadow-lg rounded-[12px] max-h-[300px] overflow-y-auto">
+          <SelectContent className="bg-white border border-gray-200 shadow-lg rounded-xl max-h-[300px] overflow-y-auto">
             {categories.map((cat) => (
               <SelectItem key={cat} value={cat} className="cursor-pointer">
                 {cat}
@@ -61,7 +61,7 @@ export const CategorySelector = ({
           type="button"
           variant="outline"
           size="icon"
-          className="h-14 w-14 border-gray-200 rounded-[12px] flex-shrink-0"
+          className="h-10 w-10 border-gray-200 rounded-xl flex-shrink-0"
           onClick={() => setShowAddCategory(true)}
         >
           <Plus className="h-4 w-4" />
@@ -78,11 +78,11 @@ export const CategorySelector = ({
               value={newCategory}
               onChange={(e) => setNewCategory(e.target.value)}
               placeholder="Enter category name"
-              className="h-12 rounded-[12px]"
+              className="h-10 rounded-xl"
             />
             <Button 
               onClick={handleAddCategory}
-              className="w-full h-12 rounded-[12px]"
+              className="w-full h-10 rounded-xl"
               disabled={!newCategory.trim()}
             >
               Add Category
