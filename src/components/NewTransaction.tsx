@@ -104,7 +104,7 @@ export const NewTransaction = ({ onClose }: NewTransactionProps) => {
   };
 
   return (
-    <div className="w-[450px] max-w-full mx-auto"> {/* Increased width from 400px to 450px */}
+    <div className="w-[400px] max-w-full mx-auto"> {/* Increased width from default */}
       <div className="flex items-center justify-between mb-2">
         <h2 className="text-base font-semibold">New Transaction</h2>
         <button 
