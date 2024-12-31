@@ -31,13 +31,12 @@ export const PaymentSourceSelector = ({
   const filteredSources = filterSourcesForTransfer(formattedSources, fromSource);
 
   // Find the exact source including UPI variant
-  const currentSource = filteredSources.find(s => s.id === source) || 
-                       filteredSources.find(s => s.id.startsWith(source.split('-')[0]));
+  const currentSource = filteredSources.find(s => s.id === source);
 
   return (
     <div className="flex gap-2">
       <Select 
-        value={currentSource?.id || source} 
+        value={source} 
         onValueChange={onSourceChange}
       >
         <SelectTrigger className="h-12 border-gray-200 rounded-[12px] text-sm bg-white">
