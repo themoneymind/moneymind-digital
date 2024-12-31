@@ -58,14 +58,18 @@ export const useTransactionEditForm = (
     ) : Number(transaction.amount);
 
     try {
-      // Ensure selectedDate is a valid Date object before converting to ISO string
+      // Ensure selectedDate is a valid Date object
       const dateToSubmit = selectedDate instanceof Date ? selectedDate : new Date(selectedDate);
       
+      if (isNaN(dateToSubmit.getTime())) {
+        throw new Error("Invalid date");
+      }
+
       await editTransaction(transaction.id, {
         amount: finalAmount,
         source: selectedSource,
         description,
-        date: dateToSubmit.toISOString(),
+        date: dateToSubmit,
         repeat_frequency: repeatFrequency,
         display_source: transaction.display_source,
         ...updatedTransaction

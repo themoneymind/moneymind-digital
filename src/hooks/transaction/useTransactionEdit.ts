@@ -31,7 +31,6 @@ export const useTransactionEdit = (
       // If the transaction is being rejected, reverse its effect on the payment source
       if (updates.status === 'rejected' && originalTransaction.status !== 'rejected') {
         if (originalTransaction.type === 'transfer') {
-          // Reverse both source and destination for transfers
           await updatePaymentSourceAmount(
             originalTransaction.source,
             Number(originalTransaction.amount),
@@ -56,7 +55,6 @@ export const useTransactionEdit = (
       // If a rejected transaction is being un-rejected, apply its effect
       else if (originalTransaction.status === 'rejected' && updates.status && updates.status !== 'rejected') {
         if (originalTransaction.type === 'transfer') {
-          // Apply both source and destination for transfers
           await updatePaymentSourceAmount(
             originalTransaction.source,
             Number(originalTransaction.amount),
@@ -131,10 +129,10 @@ export const useTransactionEdit = (
       }
 
       // Prepare the data for Supabase update
-      const { source, ...updateData } = updates;
+      const { source, date, ...updateData } = updates;
       const supabaseData = {
         ...updateData,
-        date: updates.date ? updates.date.toISOString() : undefined,
+        date: date instanceof Date ? date.toISOString() : date,
         base_source_id: updates.source ? getBaseSourceId(updates.source) : undefined,
       };
 
