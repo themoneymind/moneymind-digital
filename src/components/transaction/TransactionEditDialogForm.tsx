@@ -85,7 +85,7 @@ export const TransactionEditDialogForm = ({
         <PaymentSourceSelector
           source={selectedSource}
           onSourceChange={setSelectedSource}
-          formattedSources={formattedSources}
+          formattedSources={formattedSources.filter(s => s.id !== selectedSource)}
           placeholder="Transfer to"
           isTransferTo={true}
           fromSource={selectedSource}

@@ -112,6 +112,7 @@ export const useTransactionEdit = (
             false
           );
         } else {
+          // For non-transfer transactions
           await updatePaymentSourceAmount(
             originalTransaction.source,
             Number(originalTransaction.amount),
@@ -119,7 +120,7 @@ export const useTransactionEdit = (
             true
           );
 
-          const targetSource = updates.source ? getBaseSourceId(updates.source) : originalTransaction.source;
+          const targetSource = updates.source || originalTransaction.source;
           await updatePaymentSourceAmount(
             targetSource,
             Number(updates.amount),
@@ -129,7 +130,7 @@ export const useTransactionEdit = (
         }
       }
 
-      // Prepare the data for Supabase
+      // Prepare the data for Supabase update
       const { source, ...updateData } = updates;
       const supabaseData = {
         ...updateData,

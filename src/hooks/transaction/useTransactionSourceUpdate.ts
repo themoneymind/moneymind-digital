@@ -13,7 +13,10 @@ export const useTransactionSourceUpdate = (paymentSources: PaymentSource[]) => {
     console.log("Updating payment source:", { sourceId, baseSourceId, amount, type, isReversal });
     
     const source = paymentSources.find(s => s.id === baseSourceId);
-    if (!source) return;
+    if (!source) {
+      console.error("Source not found:", baseSourceId);
+      return;
+    }
 
     let newAmount;
     if (isReversal) {
@@ -38,7 +41,10 @@ export const useTransactionSourceUpdate = (paymentSources: PaymentSource[]) => {
       .update({ amount: newAmount })
       .eq("id", baseSourceId);
 
-    if (error) throw error;
+    if (error) {
+      console.error("Error updating payment source amount:", error);
+      throw error;
+    }
   };
 
   return { updatePaymentSourceAmount };
