@@ -32,18 +32,20 @@ export const useTransactionSourceUpdate = (paymentSources: PaymentSource[]) => {
     
     // Handle transfers specifically
     if (isTransfer) {
-      // For transfers, debit source and credit destination
-      newAmount = type === 'transfer' 
-        ? Number(source.amount) - Number(amount)  // Debit from source
-        : Number(source.amount) + Number(amount); // Credit to destination
-      
-      console.log("Transfer Debug - Transfer calculation:", {
-        sourceType: source.type,
-        operation: type === 'transfer' ? 'debit' : 'credit',
-        currentAmount: source.amount,
-        changeAmount: amount,
-        newAmount
-      });
+      if (type === 'transfer') {
+        // For transfer type, we simply subtract from source and add to destination
+        newAmount = type === 'expense' 
+          ? Number(source.amount) - Number(amount)  // Source account (money going out)
+          : Number(source.amount) + Number(amount); // Destination account (money coming in)
+        
+        console.log("Transfer Debug - Transfer calculation:", {
+          sourceType: source.type,
+          operation: type === 'expense' ? 'debit' : 'credit',
+          currentAmount: source.amount,
+          changeAmount: amount,
+          newAmount
+        });
+      }
     }
     // Handle credit card payments
     else if (source.type === 'credit' && type === 'expense') {
@@ -73,7 +75,7 @@ export const useTransactionSourceUpdate = (paymentSources: PaymentSource[]) => {
       operation: isReversal ? "reverse" : isTransfer ? "transfer" : "apply",
       change: amount,
       result: newAmount,
-      calculationType: isTransfer ? (type === 'transfer' ? 'debit' : 'credit') : type
+      calculationType: isTransfer ? (type === 'expense' ? 'debit' : 'credit') : type
     });
 
     const { data, error } = await supabase
