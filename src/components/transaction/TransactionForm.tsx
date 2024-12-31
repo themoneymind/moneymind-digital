@@ -85,14 +85,14 @@ export const TransactionForm = ({
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 max-w-sm mx-auto">
       <TransactionTypeSelector type={type} onTypeChange={onTypeChange} />
       <div className="relative">
-        <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500">₹</span>
+        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">₹</span>
         <Input
           type="number"
           placeholder="0"
-          className="text-2xl pl-8 h-14 border-gray-200 rounded-[12px]"
+          className="text-xl pl-7 h-12 border-gray-200 rounded-xl"
           value={amount}
           onChange={(e) => onAmountChange(e.target.value)}
         />
@@ -117,7 +117,7 @@ export const TransactionForm = ({
               <Button
                 variant="outline"
                 size="icon"
-                className="h-14 w-14 border-gray-200 rounded-[12px] flex-shrink-0"
+                className="h-12 w-12 border-gray-200 rounded-xl flex-shrink-0"
                 onClick={() => navigate("/app/payment-source")}
               >
                 <Plus className="h-4 w-4" />
@@ -143,7 +143,7 @@ export const TransactionForm = ({
           <Button
             variant="outline"
             size="icon"
-            className="h-14 w-14 border-gray-200 rounded-[12px] flex-shrink-0"
+            className="h-12 w-12 border-gray-200 rounded-xl flex-shrink-0"
             onClick={() => navigate("/app/payment-source")}
           >
             <Plus className="h-4 w-4" />
@@ -156,7 +156,7 @@ export const TransactionForm = ({
       />
       <Input
         placeholder="Description or note (Optional)"
-        className="h-14 border-gray-200 rounded-[12px]"
+        className="h-12 border-gray-200 rounded-xl"
         value={description}
         onChange={(e) => onDescriptionChange(e.target.value)}
       />
@@ -165,7 +165,7 @@ export const TransactionForm = ({
         onValueChange={() => {}}
       />
       <Button
-        className="w-full h-14 bg-blue-600 hover:bg-blue-700 rounded-[12px]"
+        className="w-full h-12 bg-blue-600 hover:bg-blue-700 rounded-xl"
         onClick={onSubmit}
       >
         Add Transaction

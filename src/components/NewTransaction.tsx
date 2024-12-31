@@ -74,26 +74,28 @@ export const NewTransaction = () => {
   };
 
   return (
-    <div className="p-6 mx-4 bg-white rounded-[20px]">
-      <h2 className="mb-6 text-base font-semibold">New Transaction</h2>
-      <TransactionForm
-        type={type}
-        amount={amount}
-        category={category}
-        source={source}
-        description={description}
-        selectedDate={selectedDate}
-        onTypeChange={setType}
-        onAmountChange={setAmount}
-        onCategoryChange={setCategory}
-        onSourceChange={setSource}
-        onDescriptionChange={setDescription}
-        onDateChange={setSelectedDate}
-        onSubmit={handleSubmit}
-        customCategories={customCategories}
-        onAddCustomCategory={handleAddCustomCategory}
-        formattedSources={formattedSources}
-      />
+    <div className="fixed inset-0 flex items-center justify-center bg-black/50">
+      <div className="w-full max-w-md bg-white rounded-[20px] p-6 mx-4 md:mx-0">
+        <h2 className="mb-6 text-base font-semibold">New Transaction</h2>
+        <TransactionForm
+          type={type}
+          amount={amount}
+          category={category}
+          source={source}
+          description={description}
+          selectedDate={selectedDate}
+          onTypeChange={setType}
+          onAmountChange={setAmount}
+          onCategoryChange={setCategory}
+          onSourceChange={setSource}
+          onDescriptionChange={setDescription}
+          onDateChange={setSelectedDate}
+          onSubmit={handleSubmit}
+          customCategories={customCategories}
+          onAddCustomCategory={handleAddCustomCategory}
+          formattedSources={formattedSources}
+        />
+      </div>
     </div>
   );
 };
