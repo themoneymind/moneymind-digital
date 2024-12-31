@@ -26,6 +26,12 @@ const DEFAULT_CATEGORIES = {
     "Investment",
     "Gift",
     "Others"
+  ],
+  transfer: [
+    "Transfer",
+    "Move Money",
+    "Account Balance",
+    "Others"
   ]
 };
 
@@ -46,6 +52,7 @@ type TransactionFormProps = {
   customCategories: {
     expense: string[];
     income: string[];
+    transfer: string[];
   };
   onAddCustomCategory: (category: string) => void;
   formattedSources: { id: string; name: string }[];
@@ -74,6 +81,7 @@ export const TransactionForm = ({
   const allCategories = {
     expense: [...DEFAULT_CATEGORIES.expense, ...customCategories.expense],
     income: [...DEFAULT_CATEGORIES.income, ...customCategories.income],
+    transfer: [...DEFAULT_CATEGORIES.transfer, ...customCategories.transfer],
   };
 
   return (
@@ -96,21 +104,52 @@ export const TransactionForm = ({
         customCategories={allCategories}
         onAddCustomCategory={onAddCustomCategory}
       />
-      <div className="flex gap-2">
-        <PaymentSourceSelector
-          source={source}
-          onSourceChange={onSourceChange}
-          formattedSources={formattedSources}
-        />
-        <Button
-          variant="outline"
-          size="icon"
-          className="h-14 w-14 border-gray-200 rounded-[12px] flex-shrink-0"
-          onClick={() => navigate("/app/payment-source")}
-        >
-          <Plus className="h-4 w-4" />
-        </Button>
-      </div>
+      {type === "transfer" ? (
+        <>
+          <div className="space-y-2">
+            <label className="text-sm text-gray-500">From Account</label>
+            <div className="flex gap-2">
+              <PaymentSourceSelector
+                source={source}
+                onSourceChange={onSourceChange}
+                formattedSources={formattedSources}
+              />
+              <Button
+                variant="outline"
+                size="icon"
+                className="h-14 w-14 border-gray-200 rounded-[12px] flex-shrink-0"
+                onClick={() => navigate("/app/payment-source")}
+              >
+                <Plus className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
+          <div className="space-y-2">
+            <label className="text-sm text-gray-500">To Account</label>
+            <PaymentSourceSelector
+              source={source}
+              onSourceChange={onSourceChange}
+              formattedSources={formattedSources.filter(s => s.id !== source)}
+            />
+          </div>
+        </>
+      ) : (
+        <div className="flex gap-2">
+          <PaymentSourceSelector
+            source={source}
+            onSourceChange={onSourceChange}
+            formattedSources={formattedSources}
+          />
+          <Button
+            variant="outline"
+            size="icon"
+            className="h-14 w-14 border-gray-200 rounded-[12px] flex-shrink-0"
+            onClick={() => navigate("/app/payment-source")}
+          >
+            <Plus className="h-4 w-4" />
+          </Button>
+        </div>
+      )}
       <TransactionDateSelector
         selectedDate={selectedDate}
         onDateChange={onDateChange}

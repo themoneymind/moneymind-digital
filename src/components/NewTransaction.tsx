@@ -18,9 +18,11 @@ export const NewTransaction = () => {
   const [customCategories, setCustomCategories] = useState<{
     expense: string[];
     income: string[];
+    transfer: string[];
   }>({
     expense: [],
     income: [],
+    transfer: [],
   });
 
   const formattedSources = getFormattedPaymentSources();

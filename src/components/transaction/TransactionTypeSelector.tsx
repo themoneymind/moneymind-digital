@@ -1,4 +1,4 @@
-import { ArrowUp, ArrowDown } from "lucide-react";
+import { ArrowUp, ArrowDown, ArrowLeftRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { TransactionType } from "@/types/finance";
 
@@ -33,6 +33,18 @@ export const TransactionTypeSelector = ({ type, onTypeChange }: TransactionTypeS
       >
         <ArrowDown className="w-4 h-4" />
         Income
+      </Button>
+      <Button
+        variant="outline"
+        className={`flex-1 rounded-[12px] h-14 gap-2 ${
+          type === "transfer"
+            ? "bg-purple-50 text-[#7F3DFF] border-purple-100 hover:bg-purple-50"
+            : "bg-white hover:bg-gray-50"
+        }`}
+        onClick={() => onTypeChange("transfer")}
+      >
+        <ArrowLeftRight className="w-4 h-4" />
+        Transfer
       </Button>
     </div>
   );
