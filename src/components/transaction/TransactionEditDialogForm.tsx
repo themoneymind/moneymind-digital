@@ -1,10 +1,9 @@
+import { useState } from "react";
 import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { TransactionAmountOperations } from "./TransactionAmountOperations";
+import { TransactionType } from "@/types/finance";
+import { PaymentSourceSelector } from "./PaymentSourceSelector";
 import { TransactionDateSelector } from "./TransactionDateSelector";
 import { RepeatSelector } from "./RepeatSelector";
-import { RepeatOption } from "@/types/transactions";
-import { TransactionType } from "@/types/finance";
 
 interface TransactionEditDialogFormProps {
   currentAmount: number;
@@ -20,8 +19,8 @@ interface TransactionEditDialogFormProps {
   onDropdownOpenChange: (open: boolean) => void;
   selectedDate: Date;
   onDateChange: (date: Date) => void;
-  repeatFrequency: RepeatOption;
-  onRepeatChange: (frequency: RepeatOption) => void;
+  repeatFrequency: string;
+  onRepeatChange: (frequency: string) => void;
   transactionType?: TransactionType;
 }
 
@@ -35,7 +34,7 @@ export const TransactionEditDialogForm = ({
   setSelectedSource,
   description,
   setDescription,
-  formattedSources = [],
+  formattedSources,
   onDropdownOpenChange,
   selectedDate,
   onDateChange,
@@ -43,42 +42,25 @@ export const TransactionEditDialogForm = ({
   onRepeatChange,
   transactionType,
 }: TransactionEditDialogFormProps) => {
-  console.log("TransactionEditDialogForm props:", {
-    currentAmount,
-    operation,
-    amount,
-    selectedSource,
-    description,
-    formattedSources,
-    transactionType,
-  });
-
   return (
-    <div className="space-y-6">
-      <TransactionAmountOperations
-        currentAmount={currentAmount}
-        operation={operation}
-        setOperation={setOperation}
-        amount={amount}
-        setAmount={setAmount}
-      />
+    <div className="space-y-4">
+      <div className="relative">
+        <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500">₹</span>
+        <Input
+          type="number"
+          placeholder="0"
+          className="text-sm pl-8 h-12 border-gray-200 rounded-[12px] bg-white"
+          value={amount}
+          onChange={(e) => setAmount(e.target.value)}
+        />
+      </div>
 
-      <Select 
-        value={selectedSource} 
-        onValueChange={setSelectedSource}
-        onOpenChange={onDropdownOpenChange}
-      >
-        <SelectTrigger className="h-12 rounded-[12px]">
-          <SelectValue placeholder="Select payment source" />
-        </SelectTrigger>
-        <SelectContent className="bg-white border border-gray-200 shadow-lg">
-          {formattedSources.map((source) => (
-            <SelectItem key={source.id} value={source.id}>
-              {source.name}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
+      <PaymentSourceSelector
+        source={selectedSource}
+        onSourceChange={setSelectedSource}
+        formattedSources={formattedSources}
+        placeholder="Select payment source"
+      />
 
       <TransactionDateSelector
         selectedDate={selectedDate}
@@ -91,10 +73,10 @@ export const TransactionEditDialogForm = ({
       />
 
       <Input
+        placeholder="Add a description"
+        className="h-12 border-gray-200 rounded-[12px] text-sm bg-white"
         value={description}
         onChange={(e) => setDescription(e.target.value)}
-        className="h-12 rounded-[12px]"
-        placeholder="Description"
       />
     </div>
   );
