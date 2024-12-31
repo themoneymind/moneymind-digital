@@ -1,9 +1,9 @@
+import { useState } from "react";
 import { PaymentSourceTypeSelector } from "./PaymentSourceTypeSelector";
 import { CreditCardForm } from "./CreditCardForm";
 import { UpiAppsSelector } from "./UpiAppsSelector";
 import { BankSelectionDialog } from "./BankSelectionDialog";
 import { Input } from "@/components/ui/input";
-import { formatBankName } from "@/utils/paymentSourceUtils";
 
 const INDIAN_BANKS = [
   "HDFC Bank",
@@ -47,11 +47,6 @@ export const PaymentSourceForm = ({
   showBankSearch,
   setShowBankSearch,
 }: PaymentSourceFormProps) => {
-  const handleCustomNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const formattedName = formatBankName(e.target.value);
-    setCustomBankName(formattedName);
-  };
-
   return (
     <div className="space-y-4">
       <PaymentSourceTypeSelector
@@ -98,7 +93,7 @@ export const PaymentSourceForm = ({
           setShowBankSearch={setShowBankSearch}
           banks={INDIAN_BANKS}
           customBankName={customBankName}
-          setCustomBankName={handleCustomNameChange}
+          setCustomBankName={setCustomBankName}
         />
       )}
     </div>

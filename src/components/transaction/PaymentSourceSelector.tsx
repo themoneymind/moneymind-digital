@@ -2,7 +2,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { formatDisplayName } from "@/utils/paymentSourceUtils";
 
 type PaymentSourceSelectorProps = {
   source: string;
@@ -53,7 +52,7 @@ export const PaymentSourceSelector = ({
               value={source.id}
               className="hover:bg-gray-50 text-sm"
             >
-              {formatDisplayName(source.name, source.name)}
+              {source.name}
             </SelectItem>
           ))}
         </SelectContent>
