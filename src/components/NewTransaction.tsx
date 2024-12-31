@@ -56,16 +56,13 @@ export const NewTransaction = ({ onClose }: NewTransactionProps) => {
     const validAmount = validateAmount(amount);
     if (!validAmount) return;
 
-    // Find the selected source from formatted sources
     const selectedSource = formattedSources.find(s => s.id === source);
     if (!selectedSource) {
       toast.error("Invalid payment source");
       return;
     }
 
-    // Get the base source ID (without UPI app suffix if present)
-    const baseSourceId = source.split('-')[0];
-    const baseSource = paymentSources.find(s => s.id === baseSourceId);
+    const baseSource = paymentSources.find(s => s.id === source);
     if (!baseSource) {
       toast.error("Payment source not found");
       return;
@@ -75,23 +72,29 @@ export const NewTransaction = ({ onClose }: NewTransactionProps) => {
 
     try {
       if (type === 'transfer') {
+        const toSource = formattedSources.find(s => s.id === source);
+        if (!toSource) {
+          toast.error("Invalid destination source");
+          return;
+        }
+
         await handleTransfer(
-          baseSourceId,
           source,
+          toSource.id,
           validAmount,
           description,
           selectedDate,
-          baseSource.name,
-          selectedSource.name
+          selectedSource.name,
+          toSource.name
         );
       } else {
         const transactionType = type as Exclude<TransactionType, "transfer">;
         await addTransaction({
           type: transactionType,
           amount: validAmount,
-          category,
-          source,
-          base_source_id: baseSourceId,
+          category: category,
+          source: source,
+          base_source_id: source,
           description,
           date: selectedDate,
         });
