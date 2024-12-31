@@ -58,17 +58,24 @@ export const useTransactionEditForm = (
     ) : Number(transaction.amount);
 
     try {
+      // Ensure selectedDate is a valid Date object before converting to ISO string
+      const dateToSubmit = selectedDate instanceof Date ? selectedDate : new Date(selectedDate);
+      
       await editTransaction(transaction.id, {
         amount: finalAmount,
         source: selectedSource,
         description,
-        date: selectedDate.toISOString(), // Convert Date to ISO string for storage
+        date: dateToSubmit.toISOString(),
         repeat_frequency: repeatFrequency,
         display_source: transaction.display_source,
         ...updatedTransaction
       });
 
       onSuccess();
+      toast({
+        title: "Success",
+        description: "Transaction updated successfully",
+      });
     } catch (error) {
       console.error("Error updating transaction:", error);
       toast({
