@@ -11,44 +11,44 @@ export const TransactionTypeSelector = ({
   onTypeChange,
 }: TransactionTypeSelectorProps) => {
   return (
-    <div className="flex gap-2">
+    <div className="flex gap-1 bg-muted p-1 rounded-lg">
       <Button
         type="button"
-        variant={type === "income" ? "default" : "outline"}
+        variant={type === "income" ? "default" : "ghost"}
         onClick={() => onTypeChange("income")}
-        className={`flex-1 h-12 gap-2 rounded-[12px] ${
+        className={`flex-1 h-9 gap-1.5 text-sm font-medium ${
           type === "income"
-            ? "bg-[#00A86B] hover:bg-[#00A86B]/90"
-            : "hover:bg-gray-100"
+            ? "bg-[#00A86B] hover:bg-[#00A86B]/90 shadow-none"
+            : "hover:bg-background/80"
         }`}
       >
-        <ArrowDownLeft className="w-5 h-5" />
+        <ArrowDownLeft className="w-4 h-4" />
         Income
       </Button>
       <Button
         type="button"
-        variant={type === "expense" ? "default" : "outline"}
+        variant={type === "expense" ? "default" : "ghost"}
         onClick={() => onTypeChange("expense")}
-        className={`flex-1 h-12 gap-2 rounded-[12px] ${
+        className={`flex-1 h-9 gap-1.5 text-sm font-medium ${
           type === "expense"
-            ? "bg-[#FD3C4A] hover:bg-[#FD3C4A]/90"
-            : "hover:bg-gray-100"
+            ? "bg-[#FD3C4A] hover:bg-[#FD3C4A]/90 shadow-none"
+            : "hover:bg-background/80"
         }`}
       >
-        <ArrowUpRight className="w-5 h-5" />
+        <ArrowUpRight className="w-4 h-4" />
         Expense
       </Button>
       <Button
         type="button"
-        variant={type === "transfer" ? "default" : "outline"}
+        variant={type === "transfer" ? "default" : "ghost"}
         onClick={() => onTypeChange("transfer")}
-        className={`flex-1 h-12 gap-2 rounded-[12px] ${
+        className={`flex-1 h-9 gap-1.5 text-sm font-medium ${
           type === "transfer"
-            ? "bg-[#7F3DFF] hover:bg-[#7F3DFF]/90"
-            : "hover:bg-gray-100"
+            ? "bg-[#7F3DFF] hover:bg-[#7F3DFF]/90 shadow-none"
+            : "hover:bg-background/80"
         }`}
       >
-        <ArrowLeftRight className="w-5 h-5" />
+        <ArrowLeftRight className="w-4 h-4" />
         Transfer
       </Button>
     </div>
