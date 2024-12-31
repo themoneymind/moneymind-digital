@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { PaymentSourceTypeSelector } from "./PaymentSourceTypeSelector";
 import { CreditCardForm } from "./CreditCardForm";
 import { UpiAppsSelector } from "./UpiAppsSelector";
@@ -49,7 +48,8 @@ export const PaymentSourceForm = ({
   setShowBankSearch,
 }: PaymentSourceFormProps) => {
   const handleCustomNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setCustomBankName(formatBankName(e.target.value));
+    const formattedName = formatBankName(e.target.value);
+    setCustomBankName(formattedName);
   };
 
   return (
