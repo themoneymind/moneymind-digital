@@ -1,36 +1,45 @@
-import { useState } from "react";
 import { useFinance } from "@/contexts/FinanceContext";
 import { TransactionType } from "@/types/finance";
 import { TransactionForm } from "./transaction/TransactionForm";
-import { useTransactionValidation } from "@/hooks/useTransactionValidation";
 import { X } from "lucide-react";
 import { toast } from "sonner";
+import { useTransactionFormState } from "@/hooks/useTransactionFormState";
+import { useTransactionFormValidation } from "@/hooks/useTransactionFormValidation";
+import { useTransferHandling } from "@/hooks/useTransferHandling";
 
 type NewTransactionProps = {
   onClose: () => void;
 };
 
 export const NewTransaction = ({ onClose }: NewTransactionProps) => {
-  const { addTransaction, getFormattedPaymentSources, paymentSources } = useFinance();
-  const { validateAmount, validatePaymentSource, validateExpenseBalance } = useTransactionValidation();
-  
-  const [type, setType] = useState<TransactionType>("expense");
-  const [amount, setAmount] = useState("");
-  const [category, setCategory] = useState("");
-  const [source, setSource] = useState("");
-  const [description, setDescription] = useState("");
-  const [selectedDate, setSelectedDate] = useState(new Date());
-  const [customCategories, setCustomCategories] = useState<{
-    expense: string[];
-    income: string[];
-    transfer: string[];
-  }>({
-    expense: [],
-    income: [],
-    transfer: [],
-  });
-
+  const { getFormattedPaymentSources, paymentSources } = useFinance();
   const formattedSources = getFormattedPaymentSources();
+  const { handleTransfer } = useTransferHandling();
+  const {
+    validateTransactionType,
+    validateAmount,
+    validateCategory,
+    validateSource,
+    validateExpenseBalance,
+  } = useTransactionFormValidation();
+
+  const {
+    type,
+    setType,
+    amount,
+    setAmount,
+    category,
+    setCategory,
+    source,
+    setSource,
+    description,
+    setDescription,
+    selectedDate,
+    setSelectedDate,
+    customCategories,
+    setCustomCategories,
+    resetForm,
+  } = useTransactionFormState();
 
   const handleAddCustomCategory = (newCategory: string) => {
     setCustomCategories((prev) => ({
@@ -39,62 +48,57 @@ export const NewTransaction = ({ onClose }: NewTransactionProps) => {
     }));
   };
 
-  const validateTransactionType = (type: TransactionType): boolean => {
-    const validTypes: TransactionType[] = ["expense", "income", "transfer"];
-    if (!validTypes.includes(type)) {
-      toast.error("Invalid transaction type");
-      return false;
-    }
-    return true;
-  };
-
   const handleSubmit = async () => {
     if (!validateTransactionType(type)) return;
-
-    if (!category && type !== 'transfer') {
-      toast.error("Please select a category");
-      return;
-    }
-
-    if (!source) {
-      toast.error("Please select a payment source");
-      return;
-    }
+    if (!validateCategory(category, type)) return;
+    if (!validateSource(source)) return;
 
     const validAmount = validateAmount(amount);
     if (!validAmount) return;
 
-    const sourceValidation = validatePaymentSource(source, paymentSources);
-    if (!sourceValidation) return;
-
-    const { baseSourceId, baseSource } = sourceValidation;
-
-    if (type !== 'transfer' && !validateExpenseBalance(baseSource, validAmount, type)) return;
-
-    // Find the selected source from formatted sources to get the exact name
     const selectedSource = formattedSources.find(s => s.id === source);
     if (!selectedSource) {
       toast.error("Invalid payment source");
       return;
     }
 
-    try {
-      await addTransaction({
-        type,
-        amount: validAmount,
-        category: type === 'transfer' ? 'Transfer' : category,
-        source: source,
-        description,
-        base_source_id: baseSourceId,
-        display_source: selectedSource.name,
-        date: selectedDate,
-      });
+    const baseSource = paymentSources.find(s => s.id === source);
+    if (!baseSource) {
+      toast.error("Payment source not found");
+      return;
+    }
 
-      setAmount("");
-      setCategory("");
-      setSource("");
-      setDescription("");
-      setSelectedDate(new Date());
+    if (type !== 'transfer' && !validateExpenseBalance(baseSource, validAmount, type)) return;
+
+    try {
+      if (type === 'transfer') {
+        const toSource = formattedSources.find(s => s.id === source);
+        if (!toSource) {
+          toast.error("Invalid destination source");
+          return;
+        }
+
+        await handleTransfer(
+          source,
+          toSource.id,
+          validAmount,
+          description,
+          selectedDate,
+          selectedSource.name,
+          toSource.name
+        );
+      } else {
+        await addTransaction({
+          type,
+          amount: validAmount,
+          category: type === 'transfer' ? 'Transfer' : category,
+          source: source,
+          description,
+          date: selectedDate,
+        });
+      }
+
+      resetForm();
       onClose();
       toast.success("Transaction added successfully");
     } catch (error) {
