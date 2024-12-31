@@ -16,7 +16,7 @@ export const CreditCards = () => {
   };
 
   return (
-    <div className="space-y-4 overflow-x-hidden">
+    <div className="space-y-4">
       <div className="flex items-center justify-between px-6">
         <h2 className="text-lg font-semibold">Credit Cards</h2>
         <Button
@@ -30,7 +30,7 @@ export const CreditCards = () => {
       </div>
       
       <div className="relative w-full">
-        <ScrollArea className="w-full">
+        <ScrollArea className="w-full whitespace-nowrap">
           <div className="flex space-x-4 px-6 pb-4">
             {creditCards.length === 0 ? (
               <div className="text-center py-8 text-muted-foreground w-full">
