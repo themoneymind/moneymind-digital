@@ -30,7 +30,7 @@ export const PaymentSourceSelector = ({
 
   const filteredSources = filterSourcesForTransfer(formattedSources, fromSource);
 
-  // Find the exact source including UPI variant
+  // Find the exact source with UPI variant if it exists
   const currentSource = filteredSources.find(s => s.id === source);
 
   return (
