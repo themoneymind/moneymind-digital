@@ -21,20 +21,17 @@ export const PaymentSourceSelector = ({
     onSourceChange(newSource);
   };
 
-  const currentSource = formattedSources.find(s => s.id === source);
-  const effectiveSource = currentSource ? source : formattedSources[0]?.id;
-
   return (
-    <Select value={effectiveSource} onValueChange={handleSourceChange}>
-      <SelectTrigger className="h-10 border-gray-200 rounded-xl">
+    <Select value={source} onValueChange={handleSourceChange}>
+      <SelectTrigger className="h-10 border-gray-200 rounded-xl text-sm">
         <SelectValue placeholder={placeholder} />
       </SelectTrigger>
-      <SelectContent className="bg-white border border-gray-200 shadow-lg rounded-xl z-50">
+      <SelectContent className="bg-white border border-gray-200 shadow-lg rounded-xl">
         {formattedSources.map((source) => (
           <SelectItem 
             key={source.id} 
             value={source.id}
-            className="hover:bg-gray-50"
+            className="hover:bg-gray-50 text-sm"
           >
             {source.name}
           </SelectItem>

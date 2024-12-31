@@ -74,7 +74,7 @@ export const NewTransaction = () => {
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black/50 p-4">
-      <div className="relative w-full max-w-[400px] bg-white rounded-[20px] p-6">
+      <div className="relative w-full max-w-[320px] bg-white rounded-[20px] p-6">
         <h2 className="text-base font-semibold mb-6 text-center">New Transaction</h2>
         <TransactionForm
           type={type}
