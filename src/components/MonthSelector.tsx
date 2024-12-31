@@ -3,11 +3,14 @@ import { useFinance } from "@/contexts/FinanceContext";
 import { format, addMonths, subMonths, isSameMonth } from "date-fns";
 
 export const MonthSelector = () => {
-  const { currentMonth, setCurrentMonth } = useFinance();
+  const context = useFinance();
 
-  if (!currentMonth || !setCurrentMonth) {
+  // If context is not available, render nothing
+  if (!context || !context.currentMonth || !context.setCurrentMonth) {
     return null;
   }
+
+  const { currentMonth, setCurrentMonth } = context;
 
   const handlePrevMonth = () => {
     const newDate = subMonths(currentMonth, 1);
