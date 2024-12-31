@@ -62,7 +62,6 @@ export const CategorySelector = ({
   const [showAddCategory, setShowAddCategory] = useState(false);
   const [newCategory, setNewCategory] = useState("");
   
-  // Ensure categories are unique by using Set
   const uniqueCategories = Array.from(new Set([
     ...DEFAULT_CATEGORIES[type],
     ...customCategories[type]
@@ -80,7 +79,7 @@ export const CategorySelector = ({
     <div className="space-y-2">
       <div className="flex gap-2">
         <Select value={category} onValueChange={onCategoryChange}>
-          <SelectTrigger className="h-10 rounded-xl border-gray-200">
+          <SelectTrigger className="h-10 rounded-xl border-gray-200 bg-white">
             <SelectValue placeholder="Select category" />
           </SelectTrigger>
           <SelectContent className="bg-white border border-gray-200 shadow-lg rounded-xl max-h-[300px] overflow-y-auto">
@@ -112,7 +111,7 @@ export const CategorySelector = ({
               value={newCategory}
               onChange={(e) => setNewCategory(e.target.value)}
               placeholder="Enter category name"
-              className="h-10 rounded-xl"
+              className="h-10 rounded-xl bg-white"
             />
             <Button 
               onClick={handleAddCategory}

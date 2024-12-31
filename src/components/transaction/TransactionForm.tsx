@@ -109,7 +109,7 @@ export const TransactionForm = ({
         <Input
           type="number"
           placeholder="0"
-          className="text-sm pl-7 h-10 border-gray-200 rounded-xl"
+          className="text-sm pl-7 h-10 border-gray-200 rounded-xl bg-white"
           value={amount}
           onChange={(e) => onAmountChange(e.target.value)}
         />
@@ -163,7 +163,7 @@ export const TransactionForm = ({
       />
       <Input
         placeholder="Add a description"
-        className="h-10 border-gray-200 rounded-xl text-sm"
+        className="h-10 border-gray-200 rounded-xl text-sm bg-white"
         value={description}
         onChange={(e) => onDescriptionChange(e.target.value)}
       />

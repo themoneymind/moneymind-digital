@@ -25,21 +25,17 @@ export const PaymentSourceSelector = ({
   const filterSourcesForTransfer = (sources: { id: string; name: string }[], fromSourceId: string) => {
     if (!isTransferTo || !fromSourceId) return sources;
 
-    // Find the selected "from" source details
     const fromSourceDetails = sources.find(s => s.id === fromSourceId);
     if (!fromSourceDetails) return sources;
 
-    // Check if the source is a UPI app
     const isFromUpi = fromSourceDetails.name.toLowerCase().includes('gpay') || 
                      fromSourceDetails.name.toLowerCase().includes('phonepe') ||
                      fromSourceDetails.name.toLowerCase().includes('cred') ||
                      fromSourceDetails.name.toLowerCase().includes('ippopay');
 
-    // Extract bank name (e.g., "HDFC" from "HDFC GPay" or "HDFC Bank")
     const bankName = fromSourceDetails.name.split(' ')[0];
 
     return sources.filter(s => {
-      // Don't show the source itself
       if (s.id === fromSourceId) return false;
 
       const isUpi = s.name.toLowerCase().includes('gpay') || 
@@ -49,9 +45,6 @@ export const PaymentSourceSelector = ({
       
       const sameBank = s.name.startsWith(bankName);
 
-      // If from source is UPI, don't show:
-      // - Same bank's UPI apps
-      // - The bank account itself
       if (isFromUpi) {
         if (sameBank && (isUpi || s.name.includes('Bank'))) return false;
       }
@@ -65,7 +58,7 @@ export const PaymentSourceSelector = ({
   return (
     <div className="flex gap-2">
       <Select value={source} onValueChange={onSourceChange}>
-        <SelectTrigger className="h-10 border-gray-200 rounded-xl text-sm">
+        <SelectTrigger className="h-10 border-gray-200 rounded-xl text-sm bg-white">
           <SelectValue placeholder={placeholder} />
         </SelectTrigger>
         <SelectContent className="bg-white border border-gray-200 shadow-lg">
