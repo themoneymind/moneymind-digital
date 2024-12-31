@@ -7,7 +7,6 @@ import { CategorySelector } from "./CategorySelector";
 import { PaymentSourceSelector } from "./PaymentSourceSelector";
 import { TransactionDateSelector } from "./TransactionDateSelector";
 import { RepeatSelector } from "./RepeatSelector";
-import { useNavigate } from "react-router-dom";
 
 const DEFAULT_CATEGORIES = {
   expense: [
@@ -78,7 +77,6 @@ export const TransactionForm = ({
   onAddCustomCategory,
   formattedSources,
 }: TransactionFormProps) => {
-  const navigate = useNavigate();
   const [toSource, setToSource] = useState("");
   
   const allCategories = {
@@ -93,12 +91,11 @@ export const TransactionForm = ({
     }
   };
 
-  const handleFromSourceChange = (newSource: string) => {
-    onSourceChange(newSource);
-  };
-
-  const handleToSourceChange = (newSource: string) => {
-    setToSource(newSource);
+  const handleSubmit = () => {
+    if (type === "transfer") {
+      onSourceChange(toSource); // Pass the toSource before submitting
+    }
+    onSubmit();
   };
 
   return (
@@ -126,14 +123,14 @@ export const TransactionForm = ({
           <div className="space-y-4">
             <PaymentSourceSelector
               source={source}
-              onSourceChange={handleFromSourceChange}
+              onSourceChange={onSourceChange}
               formattedSources={formattedSources}
               placeholder="From payment source"
             />
             <PaymentSourceSelector
               source={toSource}
-              onSourceChange={handleToSourceChange}
-              formattedSources={formattedSources}
+              onSourceChange={setToSource}
+              formattedSources={formattedSources.filter(s => s.id !== source)}
               placeholder="To payment source"
               isTransferTo={true}
               fromSource={source}
@@ -173,7 +170,7 @@ export const TransactionForm = ({
       />
       <Button
         className="w-full h-10 bg-[#7F3DFF] hover:bg-[#7F3DFF]/90 rounded-xl text-sm"
-        onClick={onSubmit}
+        onClick={handleSubmit}
       >
         Add Transaction
       </Button>
