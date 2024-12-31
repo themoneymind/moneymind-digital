@@ -73,7 +73,7 @@ export const NewTransaction = () => {
   };
 
   return (
-    <div className="bg-white p-6 rounded-[20px] max-w-[320px] mx-auto relative">
+    <>
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-base font-semibold">New Transaction</h2>
         <button 
@@ -101,6 +101,6 @@ export const NewTransaction = () => {
         onAddCustomCategory={handleAddCustomCategory}
         formattedSources={formattedSources}
       />
-    </div>
+    </>
   );
 };
