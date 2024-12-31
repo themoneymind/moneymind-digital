@@ -109,9 +109,9 @@ export const NewTransaction = ({ onClose }: NewTransactionProps) => {
         <h2 className="text-base font-semibold">New Transaction</h2>
         <button 
           onClick={onClose}
-          className="p-1.5 rounded-full text-red-500 hover:bg-red-50 transition-colors"
+          className="p-2 rounded-full text-red-500 hover:bg-red-50 transition-colors"
         >
-          <X className="w-4 h-4" />
+          <X className="w-5 h-5" />
         </button>
       </div>
       <TransactionForm

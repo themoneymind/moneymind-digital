@@ -172,7 +172,7 @@ export const TransactionForm = ({
         onValueChange={() => {}}
       />
       <Button
-        className="w-full h-10 bg-blue-600 hover:bg-blue-700 rounded-xl text-sm"
+        className="w-full h-10 bg-[#7F3DFF] hover:bg-[#7F3DFF]/90 rounded-xl text-sm"
         onClick={onSubmit}
       >
         Add Transaction
