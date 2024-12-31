@@ -15,23 +15,35 @@ export const PaymentSources = () => {
 
   // Calculate balances for payment sources based on transactions
   const sourcesWithBalances = paymentSources.map(source => {
-    // Filter transactions for this source
-    const sourceTransactions = transactions.filter(t => {
+    // Get all transactions for this source up to the current month
+    const previousTransactions = transactions.filter(t => {
       const transactionDate = new Date(t.date);
-      return t.source === source.id && (
-        isBefore(transactionDate, endOfMonth(currentMonth)) || 
-        isEqual(startOfMonth(transactionDate), startOfMonth(currentMonth))
-      );
+      return t.source === source.id && isBefore(transactionDate, startOfMonth(currentMonth));
     });
 
-    // Calculate balance from transactions
-    const balance = sourceTransactions.reduce((acc, curr) => {
+    // Calculate carryforward balance
+    const carryForwardBalance = previousTransactions.reduce((acc, curr) => {
       return curr.type === "income" ? acc + Number(curr.amount) : acc - Number(curr.amount);
     }, 0);
 
+    // Get current month's transactions
+    const currentMonthTransactions = transactions.filter(t => {
+      const transactionDate = new Date(t.date);
+      return t.source === source.id && 
+        isEqual(startOfMonth(transactionDate), startOfMonth(currentMonth));
+    });
+
+    // Calculate current month's balance
+    const currentMonthBalance = currentMonthTransactions.reduce((acc, curr) => {
+      return curr.type === "income" ? acc + Number(curr.amount) : acc - Number(curr.amount);
+    }, 0);
+
+    // Total balance is carryforward + current month
+    const totalBalance = carryForwardBalance + currentMonthBalance;
+
     return {
       ...source,
-      amount: balance
+      amount: totalBalance
     };
   });
 

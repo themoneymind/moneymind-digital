@@ -7,7 +7,8 @@ import {
   subMonths, 
   isFuture, 
   isAfter, 
-  isEqual 
+  isEqual,
+  isBefore
 } from "date-fns";
 
 export const BalanceCard = () => {
@@ -25,8 +26,16 @@ export const BalanceCard = () => {
   const isCurrentMonthFuture = isAfter(startOfMonth(currentMonth), startOfMonth(new Date()));
   const isCurrentMonth = isEqual(startOfMonth(currentMonth), startOfMonth(new Date()));
 
-  // Calculate current total balance from payment sources
-  const currentTotalBalance = paymentSources.reduce((acc, curr) => acc + Number(curr.amount), 0);
+  // Filter transactions for all months up to the current selected month
+  const allPreviousTransactions = activeTransactions.filter(transaction => {
+    const transactionDate = new Date(transaction.date);
+    return isBefore(transactionDate, startOfMonth(currentMonth));
+  });
+
+  // Calculate total balance from all previous months (carryforward)
+  const carryForwardBalance = allPreviousTransactions.reduce((acc, curr) => {
+    return curr.type === "income" ? acc + Number(curr.amount) : acc - Number(curr.amount);
+  }, 0);
 
   // Filter transactions for the current month
   const monthlyTransactions = activeTransactions.filter(transaction => {
@@ -63,7 +72,7 @@ export const BalanceCard = () => {
   }, 0);
 
   // Calculate last month's closing balance
-  const lastMonthClosingBalance = lastMonthTransactions.reduce((acc, curr) => {
+  const lastMonthClosingBalance = allPreviousTransactions.reduce((acc, curr) => {
     return curr.type === "income" ? acc + Number(curr.amount) : acc - Number(curr.amount);
   }, 0);
 
@@ -75,22 +84,15 @@ export const BalanceCard = () => {
     }).format(amount);
   };
 
-  // Calculate the display balance based on the month
-  let displayBalance;
-  if (monthlyTransactions.length > 0) {
-    // If there are transactions in the current month, show income - expense
-    displayBalance = monthlyIncome - monthlyExpense;
-  } else {
-    // If no transactions in current month, show last month's closing balance
-    displayBalance = lastMonthClosingBalance;
-  }
+  // Calculate the display balance including carryforward
+  const displayBalance = carryForwardBalance + monthlyIncome - monthlyExpense;
 
   console.log("Balance calculation:", {
     monthlyIncome,
     monthlyExpense,
+    carryForwardBalance,
     netBalance: monthlyIncome - monthlyExpense,
     displayBalance,
-    currentTotalBalance,
     lastMonthClosingBalance,
     hasMonthlyTransactions: monthlyTransactions.length > 0
   });
