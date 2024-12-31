@@ -41,6 +41,7 @@ export const useTransactionEdit = (
         console.log("Transfer Debug - Rejecting transaction");
         if (originalTransaction.type === 'transfer') {
           console.log("Transfer Debug - Reversing transfer transaction");
+          // Reverse source account (debit)
           await updatePaymentSourceAmount(
             originalTransaction.source,
             Number(originalTransaction.amount),
@@ -48,6 +49,7 @@ export const useTransactionEdit = (
             true,
             true
           );
+          // Reverse destination account (credit)
           await updatePaymentSourceAmount(
             originalTransaction.display_source,
             Number(originalTransaction.amount),
@@ -69,6 +71,7 @@ export const useTransactionEdit = (
         console.log("Transfer Debug - Un-rejecting transaction");
         if (originalTransaction.type === 'transfer') {
           console.log("Transfer Debug - Applying transfer transaction");
+          // Apply to source account (debit)
           await updatePaymentSourceAmount(
             originalTransaction.source,
             Number(originalTransaction.amount),
@@ -76,6 +79,7 @@ export const useTransactionEdit = (
             false,
             true
           );
+          // Apply to destination account (credit)
           await updatePaymentSourceAmount(
             originalTransaction.display_source,
             Number(originalTransaction.amount),
@@ -98,6 +102,7 @@ export const useTransactionEdit = (
         if (originalTransaction.type === 'transfer') {
           console.log("Transfer Debug - Updating transfer transaction");
           // Reverse old amounts
+          // Reverse from source account
           await updatePaymentSourceAmount(
             originalTransaction.source,
             Number(originalTransaction.amount),
@@ -105,6 +110,7 @@ export const useTransactionEdit = (
             true,
             true
           );
+          // Reverse from destination account
           await updatePaymentSourceAmount(
             originalTransaction.display_source,
             Number(originalTransaction.amount),
@@ -123,6 +129,7 @@ export const useTransactionEdit = (
             amount: updates.amount
           });
 
+          // Apply to source account (debit)
           await updatePaymentSourceAmount(
             targetSource,
             Number(updates.amount),
@@ -130,6 +137,7 @@ export const useTransactionEdit = (
             false,
             true
           );
+          // Apply to destination account (credit)
           await updatePaymentSourceAmount(
             destinationSource,
             Number(updates.amount),
