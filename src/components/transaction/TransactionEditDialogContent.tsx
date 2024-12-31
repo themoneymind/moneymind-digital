@@ -90,7 +90,8 @@ export const TransactionEditDialogContent = ({
           repeatFrequency={transaction.repeat_frequency || "never"}
           onRepeatChange={() => {}}
           transactionType={transaction.type}
-          initialSource={transaction.display_source}
+          initialSource={transaction.source}
+          initialDisplaySource={transaction.display_source}
         />
         <div className="flex gap-2">
           <Button 

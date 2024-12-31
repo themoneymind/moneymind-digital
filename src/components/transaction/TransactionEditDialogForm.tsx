@@ -24,6 +24,7 @@ interface TransactionEditDialogFormProps {
   onRepeatChange: (frequency: RepeatOption) => void;
   transactionType?: TransactionType;
   initialSource?: string;
+  initialDisplaySource?: string;
 }
 
 export const TransactionEditDialogForm = ({
@@ -44,6 +45,7 @@ export const TransactionEditDialogForm = ({
   onRepeatChange,
   transactionType,
   initialSource,
+  initialDisplaySource,
 }: TransactionEditDialogFormProps) => {
   return (
     <div className="space-y-4">
@@ -81,6 +83,7 @@ export const TransactionEditDialogForm = ({
         onSourceChange={setSelectedSource}
         formattedSources={formattedSources}
         placeholder={transactionType === "transfer" ? "Transfer from" : "Select payment source"}
+        initialDisplaySource={initialDisplaySource}
       />
 
       {transactionType === "transfer" && (

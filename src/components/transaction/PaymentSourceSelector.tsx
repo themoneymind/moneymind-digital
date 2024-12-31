@@ -10,6 +10,7 @@ type PaymentSourceSelectorProps = {
   placeholder?: string;
   isTransferTo?: boolean;
   fromSource?: string;
+  initialDisplaySource?: string;
 };
 
 export const PaymentSourceSelector = ({
@@ -19,6 +20,7 @@ export const PaymentSourceSelector = ({
   placeholder = "Select payment source",
   isTransferTo = false,
   fromSource = "",
+  initialDisplaySource,
 }: PaymentSourceSelectorProps) => {
   const navigate = useNavigate();
   
@@ -31,21 +33,22 @@ export const PaymentSourceSelector = ({
   const filteredSources = filterSourcesForTransfer(formattedSources, fromSource);
 
   // Find the exact source with UPI variant if it exists
-  const currentSource = source ? {
-    id: source,
-    name: filteredSources.find(s => s.id === source)?.name || source
-  } : null;
+  const findDisplayName = () => {
+    if (initialDisplaySource) return initialDisplaySource;
+    const sourceItem = filteredSources.find(s => s.id === source);
+    return sourceItem?.name || placeholder;
+  };
 
   return (
     <div className="flex gap-2">
       <Select 
-        value={currentSource?.id || ""} 
+        value={source || ""} 
         onValueChange={onSourceChange}
-        defaultValue={currentSource?.id || ""}
+        defaultValue={source || ""}
       >
         <SelectTrigger className="h-12 border-gray-200 rounded-[12px] text-sm bg-white">
           <SelectValue placeholder={placeholder}>
-            {currentSource?.name || placeholder}
+            {findDisplayName()}
           </SelectValue>
         </SelectTrigger>
         <SelectContent className="bg-white border border-gray-200 shadow-lg">
