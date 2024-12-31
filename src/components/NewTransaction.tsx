@@ -51,7 +51,7 @@ export const NewTransaction = ({ onClose }: NewTransactionProps) => {
   const handleSubmit = async () => {
     if (!validateTransactionType(type)) return;
 
-    if (!category) {
+    if (!category && type !== 'transfer') {
       toast.error("Please select a category");
       return;
     }
@@ -69,7 +69,7 @@ export const NewTransaction = ({ onClose }: NewTransactionProps) => {
 
     const { baseSourceId, baseSource } = sourceValidation;
 
-    if (!validateExpenseBalance(baseSource, validAmount, type)) return;
+    if (type !== 'transfer' && !validateExpenseBalance(baseSource, validAmount, type)) return;
 
     // Find the selected source from formatted sources to get the exact name
     const selectedSource = formattedSources.find(s => s.id === source);
@@ -82,11 +82,11 @@ export const NewTransaction = ({ onClose }: NewTransactionProps) => {
       await addTransaction({
         type,
         amount: validAmount,
-        category,
+        category: type === 'transfer' ? 'Transfer' : category,
         source: source,
         description,
         base_source_id: baseSourceId,
-        display_source: selectedSource.name, // Using exact name from formatted sources
+        display_source: selectedSource.name,
         date: selectedDate,
       });
 

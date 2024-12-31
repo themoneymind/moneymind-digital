@@ -28,44 +28,35 @@ export const useTransactionSourceUpdate = (paymentSources: PaymentSource[]) => {
 
     console.log("Transfer Debug - Found source:", source);
 
-    // For transfers, we handle differently based on source type
     let newAmount;
     
-    // If it's a credit card payment (transfer to credit card)
-    if (source.type === 'credit' && type === 'expense') {
-      console.log("Transfer Debug - Credit card payment detected");
-      // Credit card payments reduce the credit card balance
+    // Handle transfers specifically
+    if (isTransfer) {
+      if (type === 'transfer') {
+        // For transfer type, we simply subtract from source and add to destination
+        newAmount = type === 'expense' 
+          ? Number(source.amount) - Number(amount)  // Source account (money going out)
+          : Number(source.amount) + Number(amount); // Destination account (money coming in)
+        
+        console.log("Transfer Debug - Transfer calculation:", {
+          sourceType: source.type,
+          operation: type === 'expense' ? 'debit' : 'credit',
+          currentAmount: source.amount,
+          changeAmount: amount,
+          newAmount
+        });
+      }
+    }
+    // Handle credit card payments
+    else if (source.type === 'credit' && type === 'expense') {
       newAmount = Number(source.amount) - Number(amount);
-      console.log("Transfer Debug - Credit card new amount calculation:", {
+      console.log("Transfer Debug - Credit card payment:", {
         currentAmount: source.amount,
         deductAmount: amount,
         newAmount
       });
     }
-    // For regular bank/UPI transfers
-    else if (isTransfer) {
-      console.log("Transfer Debug - Regular transfer detected");
-      if (type === 'expense') {
-        // Source account (money going out)
-        console.log("Transfer Debug - Debiting source account");
-        newAmount = Number(source.amount) - Number(amount);
-        console.log("Transfer Debug - Debit calculation:", {
-          currentAmount: source.amount,
-          deductAmount: amount,
-          newAmount
-        });
-      } else {
-        // Destination account (money coming in)
-        console.log("Transfer Debug - Crediting destination account");
-        newAmount = Number(source.amount) + Number(amount);
-        console.log("Transfer Debug - Credit calculation:", {
-          currentAmount: source.amount,
-          addAmount: amount,
-          newAmount
-        });
-      }
-    }
-    // For regular income/expense
+    // Handle regular income/expense
     else {
       if (isReversal) {
         newAmount = type === 'income' 
