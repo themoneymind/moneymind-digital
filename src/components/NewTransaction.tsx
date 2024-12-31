@@ -89,7 +89,7 @@ export const NewTransaction = ({ onClose }: NewTransactionProps) => {
         );
       } else {
         await addTransaction({
-          type,
+          type: type as Exclude<TransactionType, "transfer">,
           amount: validAmount,
           category: type === 'transfer' ? 'Transfer' : category,
           source: source,
