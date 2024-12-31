@@ -11,7 +11,7 @@ export const useTransactionSourceUpdate = (paymentSources: PaymentSource[]) => {
     isTransfer: boolean = false
   ) => {
     const baseSourceId = getBaseSourceId(sourceId);
-    console.log("Transfer Debug - Updating payment source:", { 
+    console.log("Transfer Debug - Starting source update:", { 
       sourceId, 
       baseSourceId, 
       amount, 
@@ -26,6 +26,8 @@ export const useTransactionSourceUpdate = (paymentSources: PaymentSource[]) => {
       return;
     }
 
+    console.log("Transfer Debug - Found source:", source);
+
     // For transfers, we handle differently based on source type
     let newAmount;
     
@@ -34,6 +36,11 @@ export const useTransactionSourceUpdate = (paymentSources: PaymentSource[]) => {
       console.log("Transfer Debug - Credit card payment detected");
       // Credit card payments reduce the credit card balance
       newAmount = Number(source.amount) - Number(amount);
+      console.log("Transfer Debug - Credit card new amount calculation:", {
+        currentAmount: source.amount,
+        deductAmount: amount,
+        newAmount
+      });
     }
     // For regular bank/UPI transfers
     else if (isTransfer) {
@@ -42,10 +49,20 @@ export const useTransactionSourceUpdate = (paymentSources: PaymentSource[]) => {
         // Source account (money going out)
         console.log("Transfer Debug - Debiting source account");
         newAmount = Number(source.amount) - Number(amount);
+        console.log("Transfer Debug - Debit calculation:", {
+          currentAmount: source.amount,
+          deductAmount: amount,
+          newAmount
+        });
       } else {
         // Destination account (money coming in)
         console.log("Transfer Debug - Crediting destination account");
         newAmount = Number(source.amount) + Number(amount);
+        console.log("Transfer Debug - Credit calculation:", {
+          currentAmount: source.amount,
+          addAmount: amount,
+          newAmount
+        });
       }
     }
     // For regular income/expense
@@ -61,7 +78,7 @@ export const useTransactionSourceUpdate = (paymentSources: PaymentSource[]) => {
       }
     }
 
-    console.log("Transfer Debug - Amount calculation:", {
+    console.log("Transfer Debug - Final amount calculation:", {
       sourceType: source.type,
       currentAmount: source.amount,
       operation: isReversal ? "reverse" : isTransfer ? "transfer" : "apply",
