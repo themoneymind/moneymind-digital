@@ -30,38 +30,103 @@ export const useTransactionEdit = (
 
       // If the transaction is being rejected, reverse its effect on the payment source
       if (updates.status === 'rejected' && originalTransaction.status !== 'rejected') {
-        await updatePaymentSourceAmount(
-          originalTransaction.source,
-          Number(originalTransaction.amount),
-          originalTransaction.type as TransactionType,
-          true
-        );
+        if (originalTransaction.type === 'transfer') {
+          // Reverse both source and destination for transfers
+          await updatePaymentSourceAmount(
+            originalTransaction.source,
+            Number(originalTransaction.amount),
+            'expense',
+            true
+          );
+          await updatePaymentSourceAmount(
+            originalTransaction.display_source,
+            Number(originalTransaction.amount),
+            'income',
+            true
+          );
+        } else {
+          await updatePaymentSourceAmount(
+            originalTransaction.source,
+            Number(originalTransaction.amount),
+            originalTransaction.type as TransactionType,
+            true
+          );
+        }
       }
       // If a rejected transaction is being un-rejected, apply its effect
       else if (originalTransaction.status === 'rejected' && updates.status && updates.status !== 'rejected') {
-        await updatePaymentSourceAmount(
-          originalTransaction.source,
-          Number(originalTransaction.amount),
-          originalTransaction.type as TransactionType,
-          false
-        );
+        if (originalTransaction.type === 'transfer') {
+          // Apply both source and destination for transfers
+          await updatePaymentSourceAmount(
+            originalTransaction.source,
+            Number(originalTransaction.amount),
+            'expense',
+            false
+          );
+          await updatePaymentSourceAmount(
+            originalTransaction.display_source,
+            Number(originalTransaction.amount),
+            'income',
+            false
+          );
+        } else {
+          await updatePaymentSourceAmount(
+            originalTransaction.source,
+            Number(originalTransaction.amount),
+            originalTransaction.type as TransactionType,
+            false
+          );
+        }
       }
       // For normal updates (not involving rejection)
       else if (updates.amount !== undefined && originalTransaction.status !== 'rejected') {
-        await updatePaymentSourceAmount(
-          originalTransaction.source,
-          Number(originalTransaction.amount),
-          originalTransaction.type as TransactionType,
-          true
-        );
+        if (originalTransaction.type === 'transfer') {
+          // Reverse old amounts
+          await updatePaymentSourceAmount(
+            originalTransaction.source,
+            Number(originalTransaction.amount),
+            'expense',
+            true
+          );
+          await updatePaymentSourceAmount(
+            originalTransaction.display_source,
+            Number(originalTransaction.amount),
+            'income',
+            true
+          );
 
-        const targetSource = updates.source ? getBaseSourceId(updates.source) : originalTransaction.source;
-        await updatePaymentSourceAmount(
-          targetSource,
-          Number(updates.amount),
-          (updates.type || originalTransaction.type) as TransactionType,
-          false
-        );
+          // Apply new amounts
+          const targetSource = updates.source || originalTransaction.source;
+          const destinationSource = updates.display_source || originalTransaction.display_source;
+          
+          await updatePaymentSourceAmount(
+            targetSource,
+            Number(updates.amount),
+            'expense',
+            false
+          );
+          await updatePaymentSourceAmount(
+            destinationSource,
+            Number(updates.amount),
+            'income',
+            false
+          );
+        } else {
+          await updatePaymentSourceAmount(
+            originalTransaction.source,
+            Number(originalTransaction.amount),
+            originalTransaction.type as TransactionType,
+            true
+          );
+
+          const targetSource = updates.source ? getBaseSourceId(updates.source) : originalTransaction.source;
+          await updatePaymentSourceAmount(
+            targetSource,
+            Number(updates.amount),
+            (updates.type || originalTransaction.type) as TransactionType,
+            false
+          );
+        }
       }
 
       // Prepare the data for Supabase

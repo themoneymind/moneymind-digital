@@ -25,32 +25,7 @@ export const PaymentSourceSelector = ({
   const filterSourcesForTransfer = (sources: { id: string; name: string }[], fromSourceId: string) => {
     if (!isTransferTo || !fromSourceId) return sources;
 
-    const fromSourceDetails = sources.find(s => s.id === fromSourceId);
-    if (!fromSourceDetails) return sources;
-
-    const isFromUpi = fromSourceDetails.name.toLowerCase().includes('gpay') || 
-                     fromSourceDetails.name.toLowerCase().includes('phonepe') ||
-                     fromSourceDetails.name.toLowerCase().includes('cred') ||
-                     fromSourceDetails.name.toLowerCase().includes('ippopay');
-
-    const bankName = fromSourceDetails.name.split(' ')[0];
-
-    return sources.filter(s => {
-      if (s.id === fromSourceId) return false;
-
-      const isUpi = s.name.toLowerCase().includes('gpay') || 
-                   s.name.toLowerCase().includes('phonepe') ||
-                   s.name.toLowerCase().includes('cred') ||
-                   s.name.toLowerCase().includes('ippopay');
-      
-      const sameBank = s.name.startsWith(bankName);
-
-      if (isFromUpi) {
-        if (sameBank && (isUpi || s.name.includes('Bank'))) return false;
-      }
-
-      return true;
-    });
+    return sources.filter(s => s.id !== fromSourceId);
   };
 
   const filteredSources = filterSourcesForTransfer(formattedSources, fromSource);
@@ -58,7 +33,7 @@ export const PaymentSourceSelector = ({
   return (
     <div className="flex gap-2">
       <Select value={source} onValueChange={onSourceChange}>
-        <SelectTrigger className="h-10 border-gray-200 rounded-xl text-sm bg-white">
+        <SelectTrigger className="h-12 border-gray-200 rounded-xl text-sm bg-white">
           <SelectValue placeholder={placeholder} />
         </SelectTrigger>
         <SelectContent className="bg-white border border-gray-200 shadow-lg">
@@ -77,7 +52,7 @@ export const PaymentSourceSelector = ({
         type="button"
         variant="outline"
         size="icon"
-        className="h-10 w-10 border-gray-200 rounded-xl flex-shrink-0"
+        className="h-12 w-12 border-gray-200 rounded-xl flex-shrink-0"
         onClick={() => navigate("/app/payment-source")}
       >
         <Plus className="h-4 w-4" />

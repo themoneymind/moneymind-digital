@@ -78,7 +78,7 @@ export const TransactionEditDialogForm = ({
         source={selectedSource}
         onSourceChange={setSelectedSource}
         formattedSources={formattedSources}
-        placeholder="Select payment source"
+        placeholder={transactionType === "transfer" ? "Transfer from" : "Select payment source"}
       />
 
       {transactionType === "transfer" && (
