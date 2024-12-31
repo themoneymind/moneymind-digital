@@ -3,6 +3,7 @@ import { useFinance } from "@/contexts/FinanceContext";
 import { TransactionType } from "@/types/finance";
 import { TransactionForm } from "./transaction/TransactionForm";
 import { useTransactionValidation } from "@/hooks/useTransactionValidation";
+import { X } from "lucide-react";
 
 export const NewTransaction = () => {
   const { addTransaction, getFormattedPaymentSources, paymentSources } = useFinance();
@@ -61,7 +62,6 @@ export const NewTransaction = () => {
         date: selectedDate,
       });
 
-      // Reset form after successful submission
       setAmount("");
       setCategory("");
       setSource("");
@@ -73,28 +73,34 @@ export const NewTransaction = () => {
   };
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black/50 p-4">
-      <div className="relative w-full max-w-[320px] bg-white rounded-[20px] p-6">
-        <h2 className="text-base font-semibold mb-6 text-center">New Transaction</h2>
-        <TransactionForm
-          type={type}
-          amount={amount}
-          category={category}
-          source={source}
-          description={description}
-          selectedDate={selectedDate}
-          onTypeChange={setType}
-          onAmountChange={setAmount}
-          onCategoryChange={setCategory}
-          onSourceChange={setSource}
-          onDescriptionChange={setDescription}
-          onDateChange={setSelectedDate}
-          onSubmit={handleSubmit}
-          customCategories={customCategories}
-          onAddCustomCategory={handleAddCustomCategory}
-          formattedSources={formattedSources}
-        />
+    <div className="relative bg-white p-6 max-w-[320px] mx-auto">
+      <div className="flex items-center justify-between mb-6">
+        <h2 className="text-base font-semibold">New Transaction</h2>
+        <button 
+          onClick={() => window.history.back()}
+          className="text-gray-500 hover:text-gray-700"
+        >
+          <X className="w-5 h-5" />
+        </button>
       </div>
+      <TransactionForm
+        type={type}
+        amount={amount}
+        category={category}
+        source={source}
+        description={description}
+        selectedDate={selectedDate}
+        onTypeChange={setType}
+        onAmountChange={setAmount}
+        onCategoryChange={setCategory}
+        onSourceChange={setSource}
+        onDescriptionChange={setDescription}
+        onDateChange={setSelectedDate}
+        onSubmit={handleSubmit}
+        customCategories={customCategories}
+        onAddCustomCategory={handleAddCustomCategory}
+        formattedSources={formattedSources}
+      />
     </div>
   );
 };

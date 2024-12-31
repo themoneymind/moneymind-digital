@@ -23,6 +23,34 @@ interface CategorySelectorProps {
   onAddCustomCategory: (category: string) => void;
 }
 
+const DEFAULT_CATEGORIES = {
+  expense: [
+    "Food",
+    "Transportation",
+    "Shopping",
+    "Entertainment",
+    "Bills",
+    "Health",
+    "Education",
+    "Others"
+  ],
+  income: [
+    "Salary",
+    "Business",
+    "Investment",
+    "Gift",
+    "Others"
+  ],
+  transfer: [
+    "Fund Transfer",
+    "Credit Card Payment",
+    "Transfer to Wallet",
+    "Investment Transfer",
+    "Loan Payment",
+    "Others"
+  ]
+};
+
 export const CategorySelector = ({
   type,
   category,
@@ -32,7 +60,14 @@ export const CategorySelector = ({
 }: CategorySelectorProps) => {
   const [showAddCategory, setShowAddCategory] = useState(false);
   const [newCategory, setNewCategory] = useState("");
-  const categories = type === "expense" ? customCategories.expense : customCategories.income;
+  
+  const allCategories = {
+    expense: [...DEFAULT_CATEGORIES.expense, ...customCategories.expense],
+    income: [...DEFAULT_CATEGORIES.income, ...customCategories.income],
+    transfer: [...DEFAULT_CATEGORIES.transfer, ...customCategories.transfer],
+  };
+
+  const categories = allCategories[type] || [];
 
   const handleAddCategory = () => {
     if (newCategory.trim()) {
