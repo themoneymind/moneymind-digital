@@ -7,10 +7,11 @@ export const useTransactionSourceUpdate = (paymentSources: PaymentSource[]) => {
     sourceId: string,
     amount: number,
     type: TransactionType,
-    isReversal: boolean = false
+    isReversal: boolean = false,
+    isTransfer: boolean = false
   ) => {
     const baseSourceId = getBaseSourceId(sourceId);
-    console.log("Updating payment source:", { sourceId, baseSourceId, amount, type, isReversal });
+    console.log("Updating payment source:", { sourceId, baseSourceId, amount, type, isReversal, isTransfer });
     
     const source = paymentSources.find(s => s.id === baseSourceId);
     if (!source) {
@@ -19,7 +20,12 @@ export const useTransactionSourceUpdate = (paymentSources: PaymentSource[]) => {
     }
 
     let newAmount;
-    if (isReversal) {
+    if (isTransfer) {
+      // For transfers, we simply add or subtract based on whether it's the source or destination
+      newAmount = type === "expense" 
+        ? Number(source.amount) - Number(amount)  // Source account (money going out)
+        : Number(source.amount) + Number(amount); // Destination account (money coming in)
+    } else if (isReversal) {
       newAmount = type === "income" 
         ? Number(source.amount) - Number(amount)
         : Number(source.amount) + Number(amount);
@@ -31,7 +37,7 @@ export const useTransactionSourceUpdate = (paymentSources: PaymentSource[]) => {
 
     console.log("New amount calculation:", {
       currentAmount: source.amount,
-      operation: isReversal ? "reverse" : "apply",
+      operation: isReversal ? "reverse" : isTransfer ? "transfer" : "apply",
       change: amount,
       result: newAmount
     });
