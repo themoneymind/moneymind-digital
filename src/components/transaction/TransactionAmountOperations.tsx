@@ -58,7 +58,7 @@ export const TransactionAmountOperations = ({
           placeholder="0"
           value={amount}
           onChange={(e) => setAmount(e.target.value)}
-          className="pl-8 h-12 text-lg rounded-[12px]"
+          className="pl-8 h-12 text-lg rounded-[12px] border-gray-200 bg-white"
         />
       </div>
     </div>

@@ -67,7 +67,7 @@ export const TransactionEditDialogContent = ({
           variant="ghost"
           size="icon"
           onClick={() => onOpenChange(false)}
-          className="h-10 w-10 rounded-full p-2"
+          className="h-10 w-10 rounded-full p-2 hover:bg-red-100 text-red-500 hover:text-red-600"
         >
           <X className="h-5 w-5" />
         </Button>
