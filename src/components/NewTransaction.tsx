@@ -4,6 +4,7 @@ import { TransactionType } from "@/types/finance";
 import { TransactionForm } from "./transaction/TransactionForm";
 import { useTransactionValidation } from "@/hooks/useTransactionValidation";
 import { getBaseSourceId } from "@/utils/paymentSourceUtils";
+import { X } from "lucide-react";
 
 export const NewTransaction = () => {
   const { addTransaction, getFormattedPaymentSources, paymentSources } = useFinance();
@@ -74,9 +75,16 @@ export const NewTransaction = () => {
   };
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black/50">
-      <div className="w-full max-w-md bg-white rounded-[20px] p-4 mx-4 md:mx-0">
-        <h2 className="mb-4 text-base font-semibold">New Transaction</h2>
+    <div className="fixed inset-0 flex items-center justify-center bg-black/50 p-4">
+      <div className="relative w-full max-w-[400px] bg-white rounded-[20px] p-6">
+        <button
+          onClick={() => window.history.back()}
+          className="absolute right-4 top-4 p-2 text-[#ea384c] hover:bg-red-50 rounded-full transition-colors"
+          aria-label="Close dialog"
+        >
+          <X className="h-6 w-6" />
+        </button>
+        <h2 className="text-base font-semibold mb-6">New Transaction</h2>
         <TransactionForm
           type={type}
           amount={amount}

@@ -28,9 +28,11 @@ const DEFAULT_CATEGORIES = {
     "Others"
   ],
   transfer: [
-    "Transfer",
-    "Move Money",
-    "Account Balance",
+    "Fund Transfer",
+    "Credit Card Payment",
+    "Loan Payment",
+    "Investment Transfer",
+    "Savings Transfer",
     "Others"
   ]
 };
@@ -85,7 +87,7 @@ export const TransactionForm = ({
   };
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-4">
       <TransactionTypeSelector type={type} onTypeChange={onTypeChange} />
       <div className="relative">
         <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">₹</span>
@@ -97,58 +99,56 @@ export const TransactionForm = ({
           onChange={(e) => onAmountChange(e.target.value)}
         />
       </div>
-      <CategorySelector
-        type={type}
-        category={category}
-        onCategoryChange={onCategoryChange}
-        customCategories={allCategories}
-        onAddCustomCategory={onAddCustomCategory}
-      />
       {type === "transfer" ? (
         <>
-          <div className="space-y-2">
-            <label className="text-sm text-gray-500">From Account</label>
-            <div className="flex gap-2">
-              <PaymentSourceSelector
-                source={source}
-                onSourceChange={onSourceChange}
-                formattedSources={formattedSources}
-              />
-              <Button
-                variant="outline"
-                size="icon"
-                className="h-10 w-10 border-gray-200 rounded-xl flex-shrink-0"
-                onClick={() => navigate("/app/payment-source")}
-              >
-                <Plus className="h-4 w-4" />
-              </Button>
-            </div>
-          </div>
-          <div className="space-y-2">
-            <label className="text-sm text-gray-500">To Account</label>
+          <CategorySelector
+            type={type}
+            category={category}
+            onCategoryChange={onCategoryChange}
+            customCategories={allCategories}
+            onAddCustomCategory={onAddCustomCategory}
+          />
+          <div className="space-y-4">
+            <PaymentSourceSelector
+              source={source}
+              onSourceChange={onSourceChange}
+              formattedSources={formattedSources}
+              placeholder="From payment source"
+            />
             <PaymentSourceSelector
               source={source}
               onSourceChange={onSourceChange}
               formattedSources={formattedSources.filter(s => s.id !== source)}
+              placeholder="To payment source"
             />
           </div>
         </>
       ) : (
-        <div className="flex gap-2">
-          <PaymentSourceSelector
-            source={source}
-            onSourceChange={onSourceChange}
-            formattedSources={formattedSources}
+        <>
+          <CategorySelector
+            type={type}
+            category={category}
+            onCategoryChange={onCategoryChange}
+            customCategories={allCategories}
+            onAddCustomCategory={onAddCustomCategory}
           />
-          <Button
-            variant="outline"
-            size="icon"
-            className="h-10 w-10 border-gray-200 rounded-xl flex-shrink-0"
-            onClick={() => navigate("/app/payment-source")}
-          >
-            <Plus className="h-4 w-4" />
-          </Button>
-        </div>
+          <div className="flex gap-2">
+            <PaymentSourceSelector
+              source={source}
+              onSourceChange={onSourceChange}
+              formattedSources={formattedSources}
+              placeholder="Select payment source"
+            />
+            <Button
+              variant="outline"
+              size="icon"
+              className="h-10 w-10 border-gray-200 rounded-xl flex-shrink-0"
+              onClick={() => navigate("/app/payment-source")}
+            >
+              <Plus className="h-4 w-4" />
+            </Button>
+          </div>
+        </>
       )}
       <TransactionDateSelector
         selectedDate={selectedDate}

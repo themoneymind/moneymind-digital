@@ -4,16 +4,15 @@ type PaymentSourceSelectorProps = {
   source: string;
   onSourceChange: (source: string) => void;
   formattedSources: { id: string; name: string }[];
+  placeholder?: string;
 };
 
 export const PaymentSourceSelector = ({
   source,
   onSourceChange,
   formattedSources,
+  placeholder = "Select payment source",
 }: PaymentSourceSelectorProps) => {
-  console.log("PaymentSourceSelector - Current source:", source);
-  console.log("PaymentSourceSelector - Available sources:", formattedSources);
-
   const handleSourceChange = (newSource: string) => {
     console.log("PaymentSourceSelector - Source changed to:", newSource);
     console.log("PaymentSourceSelector - Selected source details:", 
@@ -28,7 +27,7 @@ export const PaymentSourceSelector = ({
   return (
     <Select value={effectiveSource} onValueChange={handleSourceChange}>
       <SelectTrigger className="h-10 border-gray-200 rounded-xl">
-        <SelectValue placeholder="Select payment source" />
+        <SelectValue placeholder={placeholder} />
       </SelectTrigger>
       <SelectContent className="bg-white border border-gray-200 shadow-lg rounded-xl z-50">
         {formattedSources.map((source) => (
