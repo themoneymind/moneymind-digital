@@ -87,6 +87,13 @@ export const TransactionForm = ({
     transfer: [...DEFAULT_CATEGORIES.transfer, ...customCategories.transfer],
   };
 
+  // Ensure type is one of the valid values
+  const handleTypeChange = (newType: TransactionType) => {
+    if (["expense", "income", "transfer"].includes(newType)) {
+      onTypeChange(newType);
+    }
+  };
+
   const handleFromSourceChange = (newSource: string) => {
     onSourceChange(newSource);
   };
@@ -97,7 +104,7 @@ export const TransactionForm = ({
 
   return (
     <div className="space-y-4 max-w-[320px] mx-auto">
-      <TransactionTypeSelector type={type} onTypeChange={onTypeChange} />
+      <TransactionTypeSelector type={type} onTypeChange={handleTypeChange} />
       <div className="relative">
         <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-sm">₹</span>
         <Input
