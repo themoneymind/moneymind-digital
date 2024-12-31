@@ -9,11 +9,10 @@ export const NewTransaction = () => {
   const { addTransaction, getFormattedPaymentSources, paymentSources } = useFinance();
   const { validateAmount, validatePaymentSource, validateExpenseBalance } = useTransactionValidation();
   
-  const [type, setType] = useState<TransactionType | "transfer">("expense");
+  const [type, setType] = useState<TransactionType>("expense");
   const [amount, setAmount] = useState("");
   const [category, setCategory] = useState("");
   const [source, setSource] = useState("");
-  const [toSource, setToSource] = useState("");
   const [description, setDescription] = useState("");
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [customCategories, setCustomCategories] = useState<{
@@ -38,60 +37,6 @@ export const NewTransaction = () => {
     
     const validAmount = validateAmount(amount);
     if (!validAmount) return;
-
-    if (type === "transfer") {
-      if (!source || !toSource) {
-        console.error("Source and destination accounts are required for transfers");
-        return;
-      }
-
-      const sourceValidation = validatePaymentSource(source, paymentSources);
-      const destValidation = validatePaymentSource(toSource, paymentSources);
-      
-      if (!sourceValidation || !destValidation) return;
-
-      const { baseSource } = sourceValidation;
-      if (!validateExpenseBalance(baseSource, validAmount, "expense")) return;
-
-      try {
-        // Create the transfer-out transaction
-        await addTransaction({
-          type: "expense",
-          amount: validAmount,
-          category: "Transfer",
-          source: source,
-          description: `Transfer to ${formattedSources.find(s => s.id === toSource)?.name}`,
-          base_source_id: sourceValidation.baseSourceId,
-          display_source: formattedSources.find(s => s.id === source)?.name,
-          date: selectedDate,
-          reference_type: "transfer",
-        });
-
-        // Create the transfer-in transaction
-        await addTransaction({
-          type: "income",
-          amount: validAmount,
-          category: "Transfer",
-          source: toSource,
-          description: `Transfer from ${formattedSources.find(s => s.id === source)?.name}`,
-          base_source_id: destValidation.baseSourceId,
-          display_source: formattedSources.find(s => s.id === toSource)?.name,
-          date: selectedDate,
-          reference_type: "transfer",
-        });
-
-        // Reset form after successful submission
-        setAmount("");
-        setCategory("");
-        setSource("");
-        setToSource("");
-        setDescription("");
-        setSelectedDate(new Date());
-      } catch (error) {
-        console.error("Error adding transfer:", error);
-      }
-      return;
-    }
 
     const sourceValidation = validatePaymentSource(source, paymentSources);
     if (!sourceValidation) return;
@@ -146,8 +91,6 @@ export const NewTransaction = () => {
         customCategories={customCategories}
         onAddCustomCategory={handleAddCustomCategory}
         formattedSources={formattedSources}
-        toSource={toSource}
-        onToSourceChange={setToSource}
       />
     </div>
   );
