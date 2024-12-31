@@ -77,7 +77,7 @@ export const TransactionForm = ({
   onAddCustomCategory,
   formattedSources,
 }: TransactionFormProps) => {
-  const [toSource, setToSource] = useState("");
+  const [destinationSource, setDestinationSource] = useState("");
   
   const allCategories = {
     expense: [...DEFAULT_CATEGORIES.expense, ...customCategories.expense],
@@ -88,12 +88,17 @@ export const TransactionForm = ({
   const handleTypeChange = (newType: TransactionType) => {
     if (["expense", "income", "transfer"].includes(newType)) {
       onTypeChange(newType);
+      // Reset sources when changing type
+      if (newType === "transfer") {
+        setDestinationSource("");
+      }
     }
   };
 
   const handleSubmit = () => {
     if (type === "transfer") {
-      onSourceChange(toSource); // Pass the toSource before submitting
+      // For transfers, pass both source and destination
+      onSourceChange(destinationSource);
     }
     onSubmit();
   };
@@ -128,8 +133,8 @@ export const TransactionForm = ({
               placeholder="From payment source"
             />
             <PaymentSourceSelector
-              source={toSource}
-              onSourceChange={setToSource}
+              source={destinationSource}
+              onSourceChange={setDestinationSource}
               formattedSources={formattedSources.filter(s => s.id !== source)}
               placeholder="To payment source"
               isTransferTo={true}

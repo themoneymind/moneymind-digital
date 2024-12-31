@@ -72,7 +72,6 @@ export const NewTransaction = ({ onClose }: NewTransactionProps) => {
 
     try {
       if (type === 'transfer') {
-        // For transfers, source contains the "to" source ID
         const fromSource = selectedSource;
         const toSource = formattedSources.find(s => s.id === source);
         
@@ -83,7 +82,7 @@ export const NewTransaction = ({ onClose }: NewTransactionProps) => {
 
         await handleTransfer(
           fromSource.id,
-          toSource.id,
+          source, // This is already the destination source ID from TransactionForm
           validAmount,
           description,
           selectedDate,
@@ -107,6 +106,7 @@ export const NewTransaction = ({ onClose }: NewTransactionProps) => {
       onClose();
       toast.success("Transaction added successfully");
     } catch (error) {
+      console.error("Transaction error:", error);
       toast.error("Failed to add transaction");
     }
   };
