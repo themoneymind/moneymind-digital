@@ -40,7 +40,7 @@ export const NewTransaction = ({ onClose }: NewTransactionProps) => {
   };
 
   const validateTransactionType = (type: TransactionType): boolean => {
-    const validTypes = ["expense", "income", "transfer"] as const;
+    const validTypes: TransactionType[] = ["expense", "income", "transfer"];
     if (!validTypes.includes(type)) {
       toast.error("Invalid transaction type");
       return false;
