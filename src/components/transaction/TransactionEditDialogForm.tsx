@@ -43,6 +43,9 @@ export const TransactionEditDialogForm = ({
   onRepeatChange,
   transactionType,
 }: TransactionEditDialogFormProps) => {
+  // Find the exact source with UPI variant
+  const currentSource = formattedSources.find(s => s.id === selectedSource);
+
   return (
     <div className="space-y-4">
       {transactionType !== "transfer" && (
