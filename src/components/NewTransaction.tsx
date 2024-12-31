@@ -92,8 +92,8 @@ export const NewTransaction = ({ onClose }: NewTransactionProps) => {
         await addTransaction({
           type: transactionType,
           amount: validAmount,
-          category: category,
-          source: source,
+          category,
+          source,
           base_source_id: source,
           description,
           date: selectedDate,
