@@ -1,9 +1,7 @@
-import { useState } from "react";
 import { PaymentSourceTypeSelector } from "./PaymentSourceTypeSelector";
 import { CreditCardForm } from "./CreditCardForm";
-import { UpiAppsSelector } from "./UpiAppsSelector";
-import { BankSelectionDialog } from "./BankSelectionDialog";
-import { Input } from "@/components/ui/input";
+import { BankSection } from "./BankSection";
+import { UpiSection } from "./UpiSection";
 
 const INDIAN_BANKS = [
   "HDFC Bank",
@@ -47,10 +45,6 @@ export const PaymentSourceForm = ({
   showBankSearch,
   setShowBankSearch,
 }: PaymentSourceFormProps) => {
-  const handleCustomUpiChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setCustomUpi(e.target.value);
-  };
-
   return (
     <div className="space-y-4">
       <PaymentSourceTypeSelector
@@ -60,7 +54,7 @@ export const PaymentSourceForm = ({
 
       {selectedType === "bank" && (
         <div className="space-y-4">
-          <BankSelectionDialog
+          <BankSection
             selectedBank={selectedBank}
             onBankSelect={onBankSelect}
             showBankSearch={showBankSearch}
@@ -69,22 +63,13 @@ export const PaymentSourceForm = ({
           />
 
           {selectedBank && (
-            <div className="space-y-4">
-              <UpiAppsSelector
-                selectedUpiApps={selectedUpiApps}
-                onUpiToggle={onUpiToggle}
-              />
-
-              <div className="space-y-2">
-                <h3 className="font-medium">Add Custom UPI App</h3>
-                <Input
-                  placeholder="Enter UPI app name"
-                  value={customUpi}
-                  onChange={handleCustomUpiChange}
-                  className="h-14 rounded-[12px] bg-white"
-                />
-              </div>
-            </div>
+            <UpiSection
+              selectedBank={selectedBank}
+              customUpi={customUpi}
+              selectedUpiApps={selectedUpiApps}
+              onUpiToggle={onUpiToggle}
+              onCustomUpiChange={setCustomUpi}
+            />
           )}
         </div>
       )}
