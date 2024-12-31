@@ -39,6 +39,10 @@ export const PaymentSourceSelector = ({
       : fromSourceDetails.name.replace(/ Bank.*$/, ''); // Get bank name from bank account
 
     return sources.filter(s => {
+      // Don't filter out the same source if it's a credit card
+      const isCreditCard = s.name.toLowerCase().includes('credit card');
+      if (isCreditCard) return true;
+
       const isUpi = s.name.toLowerCase().includes('gpay') || 
                    s.name.toLowerCase().includes('phonepe') ||
                    s.name.toLowerCase().includes('cred') ||
@@ -48,18 +52,18 @@ export const PaymentSourceSelector = ({
 
       // If from source is a UPI, filter out:
       // - The UPI itself
-      // - The parent bank
       // - Other UPIs from same bank
       if (isFromUpi) {
+        if (s.id === fromSourceId) return false;
         if (isUpi && sameBank) return false;
-        if (s.name === `${baseBank} Bank`) return false;
         return true;
       }
 
       // If from source is a bank account, filter out:
       // - The bank account itself
       // - All UPIs from this bank
-      if (sameBank && (s.id === fromSourceId || isUpi)) return false;
+      if (s.id === fromSourceId) return false;
+      if (sameBank && isUpi) return false;
       return true;
     });
   };

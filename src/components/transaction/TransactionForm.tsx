@@ -70,19 +70,28 @@ export const TransactionForm = ({
   onAmountChange,
   onCategoryChange,
   onSourceChange,
-  onDescriptionChange,
   onDateChange,
+  onDescriptionChange,
   onSubmit,
   customCategories,
   onAddCustomCategory,
   formattedSources,
 }: TransactionFormProps) => {
   const navigate = useNavigate();
+  const [toSource, setToSource] = useState("");
   
   const allCategories = {
     expense: [...DEFAULT_CATEGORIES.expense, ...customCategories.expense],
     income: [...DEFAULT_CATEGORIES.income, ...customCategories.income],
     transfer: [...DEFAULT_CATEGORIES.transfer, ...customCategories.transfer],
+  };
+
+  const handleFromSourceChange = (newSource: string) => {
+    onSourceChange(newSource);
+  };
+
+  const handleToSourceChange = (newSource: string) => {
+    setToSource(newSource);
   };
 
   return (
@@ -110,13 +119,13 @@ export const TransactionForm = ({
           <div className="space-y-4">
             <PaymentSourceSelector
               source={source}
-              onSourceChange={onSourceChange}
+              onSourceChange={handleFromSourceChange}
               formattedSources={formattedSources}
               placeholder="From payment source"
             />
             <PaymentSourceSelector
-              source={source}
-              onSourceChange={onSourceChange}
+              source={toSource}
+              onSourceChange={handleToSourceChange}
               formattedSources={formattedSources}
               placeholder="To payment source"
               isTransferTo={true}
