@@ -117,8 +117,10 @@ export const TransactionForm = ({
             <PaymentSourceSelector
               source={source}
               onSourceChange={onSourceChange}
-              formattedSources={formattedSources.filter(s => s.id !== source)}
+              formattedSources={formattedSources}
               placeholder="To payment source"
+              isTransferTo={true}
+              fromSource={source}
             />
           </div>
         </>

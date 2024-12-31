@@ -8,6 +8,8 @@ type PaymentSourceSelectorProps = {
   onSourceChange: (source: string) => void;
   formattedSources: { id: string; name: string }[];
   placeholder?: string;
+  isTransferTo?: boolean;
+  fromSource?: string;
 };
 
 export const PaymentSourceSelector = ({
@@ -15,9 +17,53 @@ export const PaymentSourceSelector = ({
   onSourceChange,
   formattedSources,
   placeholder = "Select payment source",
+  isTransferTo = false,
+  fromSource = "",
 }: PaymentSourceSelectorProps) => {
   const navigate = useNavigate();
   
+  const filterSourcesForTransfer = (sources: { id: string; name: string }[], fromSourceId: string) => {
+    if (!isTransferTo || !fromSourceId) return sources;
+
+    // Find the selected "from" source details
+    const fromSourceDetails = sources.find(s => s.id === fromSourceId);
+    if (!fromSourceDetails) return sources;
+
+    const isFromUpi = fromSourceDetails.name.toLowerCase().includes('gpay') || 
+                     fromSourceDetails.name.toLowerCase().includes('phonepe') ||
+                     fromSourceDetails.name.toLowerCase().includes('cred') ||
+                     fromSourceDetails.name.toLowerCase().includes('ippopay');
+
+    const baseBank = isFromUpi 
+      ? fromSourceDetails.name.split(' ')[0] // Get bank name from UPI (e.g., "HDFC" from "HDFC GPay")
+      : fromSourceDetails.name.replace(/ Bank.*$/, ''); // Get bank name from bank account
+
+    return sources.filter(s => {
+      const isUpi = s.name.toLowerCase().includes('gpay') || 
+                   s.name.toLowerCase().includes('phonepe') ||
+                   s.name.toLowerCase().includes('cred') ||
+                   s.name.toLowerCase().includes('ippopay');
+      
+      const sameBank = s.name.startsWith(baseBank);
+
+      // If from source is a UPI, filter out:
+      // - The UPI itself
+      // - The parent bank
+      // - Other UPIs from same bank
+      if (isFromUpi) {
+        if (isUpi && sameBank) return false;
+        if (s.name === `${baseBank} Bank`) return false;
+        return true;
+      }
+
+      // If from source is a bank account, filter out:
+      // - The bank account itself
+      // - All UPIs from this bank
+      if (sameBank && (s.id === fromSourceId || isUpi)) return false;
+      return true;
+    });
+  };
+
   const handleSourceChange = (newSource: string) => {
     console.log("PaymentSourceSelector - Source changed to:", newSource);
     console.log("PaymentSourceSelector - Selected source details:", 
@@ -26,6 +72,8 @@ export const PaymentSourceSelector = ({
     onSourceChange(newSource);
   };
 
+  const filteredSources = filterSourcesForTransfer(formattedSources, fromSource);
+
   return (
     <div className="flex gap-2">
       <Select value={source} onValueChange={handleSourceChange}>
@@ -33,7 +81,7 @@ export const PaymentSourceSelector = ({
           <SelectValue placeholder={placeholder} />
         </SelectTrigger>
         <SelectContent className="bg-white border border-gray-200 shadow-lg rounded-xl">
-          {formattedSources.map((source) => (
+          {filteredSources.map((source) => (
             <SelectItem 
               key={source.id} 
               value={source.id}
