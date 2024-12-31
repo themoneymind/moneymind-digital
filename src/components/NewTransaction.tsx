@@ -12,7 +12,7 @@ type NewTransactionProps = {
 };
 
 export const NewTransaction = ({ onClose }: NewTransactionProps) => {
-  const { getFormattedPaymentSources, paymentSources } = useFinance();
+  const { getFormattedPaymentSources, paymentSources, addTransaction } = useFinance();
   const formattedSources = getFormattedPaymentSources();
   const { handleTransfer } = useTransferHandling();
   const {
