@@ -19,6 +19,7 @@ interface CategorySelectorProps {
   customCategories: {
     expense: string[];
     income: string[];
+    transfer: string[];  // Added this line to fix the type error
   };
   onAddCustomCategory: (category: string) => void;
 }
