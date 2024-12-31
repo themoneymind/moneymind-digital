@@ -9,13 +9,13 @@ type TransactionTypeSelectorProps = {
 
 export const TransactionTypeSelector = ({ type, onTypeChange }: TransactionTypeSelectorProps) => {
   return (
-    <div className="flex gap-2 mb-4">
+    <div className="flex gap-1 mb-4 p-1 bg-gray-100 rounded-xl">
       <Button
-        variant="outline"
-        className={`flex-1 rounded-xl h-10 gap-1.5 text-sm ${
+        variant="ghost"
+        className={`flex-1 rounded-lg h-9 gap-1.5 text-sm ${
           type === "expense"
-            ? "bg-red-50 text-red-500 border-red-100 hover:bg-red-50"
-            : "bg-white hover:bg-gray-50"
+            ? "bg-white shadow-sm text-red-500"
+            : "hover:bg-white/50 text-gray-600"
         }`}
         onClick={() => onTypeChange("expense")}
       >
@@ -23,11 +23,11 @@ export const TransactionTypeSelector = ({ type, onTypeChange }: TransactionTypeS
         Expense
       </Button>
       <Button
-        variant="outline"
-        className={`flex-1 rounded-xl h-10 gap-1.5 text-sm ${
+        variant="ghost"
+        className={`flex-1 rounded-lg h-9 gap-1.5 text-sm ${
           type === "income"
-            ? "bg-green-50 text-green-500 border-green-100 hover:bg-green-50"
-            : "bg-white hover:bg-gray-50"
+            ? "bg-white shadow-sm text-green-500"
+            : "hover:bg-white/50 text-gray-600"
         }`}
         onClick={() => onTypeChange("income")}
       >
@@ -35,11 +35,11 @@ export const TransactionTypeSelector = ({ type, onTypeChange }: TransactionTypeS
         Income
       </Button>
       <Button
-        variant="outline"
-        className={`flex-1 rounded-xl h-10 gap-1.5 text-sm ${
+        variant="ghost"
+        className={`flex-1 rounded-lg h-9 gap-1.5 text-sm ${
           type === "transfer"
-            ? "bg-purple-50 text-[#7F3DFF] border-purple-100 hover:bg-purple-50"
-            : "bg-white hover:bg-gray-50"
+            ? "bg-white shadow-sm text-[#7F3DFF]"
+            : "hover:bg-white/50 text-gray-600"
         }`}
         onClick={() => onTypeChange("transfer")}
       >
