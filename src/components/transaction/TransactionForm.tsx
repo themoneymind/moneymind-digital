@@ -102,14 +102,14 @@ export const TransactionForm = ({
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       <TransactionTypeSelector type={type} onTypeChange={handleTypeChange} />
       <div className="relative">
-        <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-lg">₹</span>
+        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-sm">₹</span>
         <Input
           type="number"
           placeholder="0"
-          className="text-lg pl-9 h-[50px] border-gray-200 rounded-[12px] bg-white placeholder:text-gray-300 shadow-sm"
+          className="text-sm pl-7 h-10 border-gray-200 rounded-xl bg-white"
           value={amount}
           onChange={(e) => onAmountChange(e.target.value)}
         />
@@ -163,7 +163,7 @@ export const TransactionForm = ({
       />
       <Input
         placeholder="Add a description"
-        className="h-[50px] border-gray-200 rounded-[12px] text-base bg-white placeholder:text-gray-300 shadow-sm"
+        className="h-10 border-gray-200 rounded-xl text-sm bg-white"
         value={description}
         onChange={(e) => onDescriptionChange(e.target.value)}
       />
@@ -172,7 +172,7 @@ export const TransactionForm = ({
         onValueChange={() => {}}
       />
       <Button
-        className="w-full h-[50px] bg-gradient-to-r from-[#7C3AED] to-[#6366F1] hover:opacity-90 rounded-[12px] text-base font-medium shadow-sm"
+        className="w-full h-10 bg-[#7F3DFF] hover:bg-[#7F3DFF]/90 rounded-xl text-sm"
         onClick={onSubmit}
       >
         Add Transaction
