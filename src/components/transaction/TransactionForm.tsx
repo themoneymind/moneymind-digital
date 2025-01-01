@@ -109,7 +109,7 @@ export const TransactionForm = ({
         <Input
           type="number"
           placeholder="0"
-          className="text-lg pl-9 h-[50px] border-gray-200 rounded-2xl bg-white placeholder:text-gray-300 shadow-sm"
+          className="text-lg pl-9 h-[50px] border-gray-200 rounded-[12px] bg-white placeholder:text-gray-300 shadow-sm"
           value={amount}
           onChange={(e) => onAmountChange(e.target.value)}
         />
@@ -163,7 +163,7 @@ export const TransactionForm = ({
       />
       <Input
         placeholder="Add a description"
-        className="h-[50px] border-gray-200 rounded-2xl text-base bg-white placeholder:text-gray-300 shadow-sm"
+        className="h-[50px] border-gray-200 rounded-[12px] text-base bg-white placeholder:text-gray-300 shadow-sm"
         value={description}
         onChange={(e) => onDescriptionChange(e.target.value)}
       />
@@ -172,7 +172,7 @@ export const TransactionForm = ({
         onValueChange={() => {}}
       />
       <Button
-        className="w-full h-[50px] bg-[#7F3DFF] hover:bg-[#7F3DFF]/90 rounded-2xl text-base font-medium"
+        className="w-full h-[50px] bg-gradient-to-r from-[#7C3AED] to-[#6366F1] hover:opacity-90 rounded-[12px] text-base font-medium shadow-sm"
         onClick={onSubmit}
       >
         Add Transaction

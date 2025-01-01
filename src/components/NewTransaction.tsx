@@ -105,7 +105,7 @@ export const NewTransaction = ({ onClose }: NewTransactionProps) => {
 
   return (
     <>
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex items-center justify-between mb-8">
         <h2 className="text-xl font-semibold text-gray-900">New Transaction</h2>
         <button 
           onClick={onClose}
@@ -114,24 +114,26 @@ export const NewTransaction = ({ onClose }: NewTransactionProps) => {
           <X className="w-6 h-6" />
         </button>
       </div>
-      <TransactionForm
-        type={type}
-        amount={amount}
-        category={category}
-        source={source}
-        description={description}
-        selectedDate={selectedDate}
-        onTypeChange={setType}
-        onAmountChange={setAmount}
-        onCategoryChange={setCategory}
-        onSourceChange={setSource}
-        onDescriptionChange={setDescription}
-        onDateChange={setSelectedDate}
-        onSubmit={handleSubmit}
-        customCategories={customCategories}
-        onAddCustomCategory={handleAddCustomCategory}
-        formattedSources={formattedSources}
-      />
+      <div className="overflow-y-auto max-h-[calc(90vh-120px)]">
+        <TransactionForm
+          type={type}
+          amount={amount}
+          category={category}
+          source={source}
+          description={description}
+          selectedDate={selectedDate}
+          onTypeChange={setType}
+          onAmountChange={setAmount}
+          onCategoryChange={setCategory}
+          onSourceChange={setSource}
+          onDescriptionChange={setDescription}
+          onDateChange={setSelectedDate}
+          onSubmit={handleSubmit}
+          customCategories={customCategories}
+          onAddCustomCategory={handleAddCustomCategory}
+          formattedSources={formattedSources}
+        />
+      </div>
     </>
   );
 };
