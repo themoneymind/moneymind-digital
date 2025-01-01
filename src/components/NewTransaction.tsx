@@ -103,34 +103,36 @@ export const NewTransaction = ({ onClose }: NewTransactionProps) => {
   };
 
   return (
-    <div className="px-4">
-      <div className="flex items-center justify-between mb-8">
-        <h2 className="text-xl font-semibold">New Transaction</h2>
-        <button 
-          onClick={onClose}
-          className="p-2 rounded-full text-gray-500 hover:bg-gray-100 transition-colors"
-        >
-          <X className="w-5 h-5" />
-        </button>
+    <div className="bg-white rounded-t-[28px]">
+      <div className="px-4">
+        <div className="flex items-center justify-between mb-8">
+          <h2 className="text-xl font-semibold">New Transaction</h2>
+          <button 
+            onClick={onClose}
+            className="p-2 rounded-full text-gray-500 hover:bg-gray-100 transition-colors"
+          >
+            <X className="w-5 h-5" />
+          </button>
+        </div>
+        <TransactionForm
+          type={type}
+          amount={amount}
+          category={category}
+          source={source}
+          description={description}
+          selectedDate={selectedDate}
+          onTypeChange={setType}
+          onAmountChange={setAmount}
+          onCategoryChange={setCategory}
+          onSourceChange={setSource}
+          onDescriptionChange={setDescription}
+          onDateChange={setSelectedDate}
+          onSubmit={handleSubmit}
+          customCategories={customCategories}
+          onAddCustomCategory={handleAddCustomCategory}
+          formattedSources={formattedSources}
+        />
       </div>
-      <TransactionForm
-        type={type}
-        amount={amount}
-        category={category}
-        source={source}
-        description={description}
-        selectedDate={selectedDate}
-        onTypeChange={setType}
-        onAmountChange={setAmount}
-        onCategoryChange={setCategory}
-        onSourceChange={setSource}
-        onDescriptionChange={setDescription}
-        onDateChange={setSelectedDate}
-        onSubmit={handleSubmit}
-        customCategories={customCategories}
-        onAddCustomCategory={handleAddCustomCategory}
-        formattedSources={formattedSources}
-      />
     </div>
   );
 };
