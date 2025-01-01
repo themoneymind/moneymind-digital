@@ -71,7 +71,6 @@ export const NewTransaction = ({ onClose }: NewTransactionProps) => {
 
     if (!validateExpenseBalance(baseSource, validAmount, type)) return;
 
-    // Find the selected source from formatted sources to get the exact name
     const selectedSource = formattedSources.find(s => s.id === source);
     if (!selectedSource) {
       toast.error("Invalid payment source");
@@ -86,7 +85,7 @@ export const NewTransaction = ({ onClose }: NewTransactionProps) => {
         source: source,
         description,
         base_source_id: baseSourceId,
-        display_source: selectedSource.name, // Using exact name from formatted sources
+        display_source: selectedSource.name,
         date: selectedDate,
       });
 
@@ -104,14 +103,14 @@ export const NewTransaction = ({ onClose }: NewTransactionProps) => {
   };
 
   return (
-    <>
-      <div className="flex items-center justify-between mb-2">
-        <h2 className="text-base font-semibold">New Transaction</h2>
+    <div className="px-2">
+      <div className="flex items-center justify-between mb-6">
+        <h2 className="text-xl font-semibold">New Transaction</h2>
         <button 
           onClick={onClose}
-          className="p-2 rounded-full text-red-500 hover:bg-red-50 transition-colors"
+          className="p-2 rounded-full text-gray-500 hover:bg-gray-100 transition-colors"
         >
-          <X className="w-5 h-5" />
+          <X className="w-6 h-6" />
         </button>
       </div>
       <TransactionForm
@@ -132,6 +131,6 @@ export const NewTransaction = ({ onClose }: NewTransactionProps) => {
         onAddCustomCategory={handleAddCustomCategory}
         formattedSources={formattedSources}
       />
-    </>
+    </div>
   );
 };
