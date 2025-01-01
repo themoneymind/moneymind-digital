@@ -24,7 +24,6 @@ export const PaymentSourceSelector = ({
 }: PaymentSourceSelectorProps) => {
   const navigate = useNavigate();
   
-  // Filter sources for transfer without modifying UPI variants
   const filterSourcesForTransfer = (sources: { id: string; name: string }[], fromSourceId: string) => {
     if (!isTransferTo || !fromSourceId) return sources;
     return sources.filter(s => !s.id.startsWith(fromSourceId.split('-')[0]));
@@ -32,7 +31,6 @@ export const PaymentSourceSelector = ({
 
   const filteredSources = filterSourcesForTransfer(formattedSources, fromSource);
 
-  // Find the exact source with UPI variant if it exists
   const findDisplayName = () => {
     if (initialDisplaySource) return initialDisplaySource;
     const sourceItem = filteredSources.find(s => s.id === source);
@@ -40,23 +38,23 @@ export const PaymentSourceSelector = ({
   };
 
   return (
-    <div className="flex gap-2">
+    <div className="flex gap-3">
       <Select 
         value={source || ""} 
         onValueChange={onSourceChange}
         defaultValue={source || ""}
       >
-        <SelectTrigger className="h-12 border-gray-200 rounded-[12px] text-sm bg-white">
+        <SelectTrigger className="h-[50px] border-gray-200 rounded-2xl text-base bg-white shadow-sm">
           <SelectValue placeholder={placeholder}>
             {findDisplayName()}
           </SelectValue>
         </SelectTrigger>
-        <SelectContent className="bg-white border border-gray-200 shadow-lg">
+        <SelectContent className="bg-white border border-gray-200 shadow-lg rounded-2xl">
           {filteredSources.map((source) => (
             <SelectItem 
               key={source.id} 
               value={source.id}
-              className="hover:bg-gray-50 text-sm"
+              className="hover:bg-gray-50 text-base py-2.5"
             >
               {source.name}
             </SelectItem>
@@ -67,10 +65,10 @@ export const PaymentSourceSelector = ({
         type="button"
         variant="outline"
         size="icon"
-        className="h-12 w-12 border-gray-200 rounded-[12px] flex-shrink-0"
+        className="h-[50px] w-[50px] border-gray-200 rounded-2xl flex-shrink-0 shadow-sm"
         onClick={() => navigate("/app/payment-source")}
       >
-        <Plus className="h-4 w-4" />
+        <Plus className="h-5 w-5" />
       </Button>
     </div>
   );

@@ -104,17 +104,17 @@ export const NewTransaction = ({ onClose }: NewTransactionProps) => {
   };
 
   return (
-    <div className="h-[85vh] flex flex-col">
-      <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
-        <h2 className="text-xl font-semibold">New Transaction</h2>
+    <>
+      <div className="flex items-center justify-between mb-8">
+        <h2 className="text-xl font-semibold text-gray-900">New Transaction</h2>
         <button 
           onClick={onClose}
-          className="p-2 rounded-full text-red-500 hover:bg-red-50 transition-colors"
+          className="p-2 rounded-full text-gray-400 hover:bg-gray-50 transition-colors"
         >
-          <X className="w-5 h-5" />
+          <X className="w-6 h-6" />
         </button>
       </div>
-      <div className="flex-1 overflow-y-auto">
+      <div className="overflow-y-auto max-h-[calc(90vh-120px)]">
         <TransactionForm
           type={type}
           amount={amount}
@@ -134,6 +134,6 @@ export const NewTransaction = ({ onClose }: NewTransactionProps) => {
           formattedSources={formattedSources}
         />
       </div>
-    </div>
+    </>
   );
 };

@@ -18,7 +18,7 @@ export const BottomNav = () => {
 
   return (
     <>
-      <nav className="fixed bottom-0 left-0 right-0">
+      <nav className="fixed bottom-0 left-0 right-0 z-40">
         <div className="max-w-md mx-auto">
           <div className="relative bg-white border-t border-gray-100 shadow-lg">
             <div className="flex justify-around items-center p-3">
@@ -32,7 +32,7 @@ export const BottomNav = () => {
                   key={item.label}
                   onClick={() => navigate(item.path)}
                   className={cn(
-                    "flex flex-col items-center z-10 transition-colors duration-200 relative",
+                    "flex flex-col items-center transition-colors duration-200 relative",
                     isActive(item.path) && "before:absolute before:-top-3 before:left-1/2 before:-translate-x-1/2 before:w-8 before:h-[2px] before:bg-[#7F3DFF]"
                   )}
                 >
@@ -65,10 +65,7 @@ export const BottomNav = () => {
       {!isSettingsRoute && (
         <button
           onClick={() => setShowTransactionDrawer(true)}
-          className="fixed bottom-20 right-4 w-14 h-14 rounded-full flex items-center justify-center shadow-lg hover:opacity-90 transition-all animate-fade-in z-50 md:right-8"
-          style={{
-            background: "linear-gradient(135deg, #7C3AED, #6366F1)"
-          }}
+          className="fixed bottom-20 right-4 w-14 h-14 rounded-full flex items-center justify-center shadow-lg hover:opacity-90 transition-all animate-fade-in z-50 md:right-8 bg-gradient-to-r from-[#7C3AED] to-[#6366F1]"
         >
           <Plus className="w-6 h-6 text-white stroke-[1.25]" />
         </button>
@@ -76,7 +73,7 @@ export const BottomNav = () => {
 
       {/* Transaction Bottom Sheet */}
       <Drawer open={showTransactionDrawer} onOpenChange={setShowTransactionDrawer}>
-        <DrawerContent className="p-6">
+        <DrawerContent className="p-6 rounded-t-[20px] max-h-[90vh] focus:outline-none">
           <NewTransaction onClose={() => setShowTransactionDrawer(false)} />
         </DrawerContent>
       </Drawer>
