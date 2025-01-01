@@ -76,7 +76,7 @@ export const BottomNav = () => {
 
       {/* Transaction Bottom Sheet */}
       <Drawer open={showTransactionDrawer} onOpenChange={setShowTransactionDrawer}>
-        <DrawerContent className="p-6">
+        <DrawerContent className="p-6 rounded-t-[20px] max-h-[90vh]">
           <NewTransaction onClose={() => setShowTransactionDrawer(false)} />
         </DrawerContent>
       </Drawer>

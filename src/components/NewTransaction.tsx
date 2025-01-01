@@ -105,11 +105,11 @@ export const NewTransaction = ({ onClose }: NewTransactionProps) => {
 
   return (
     <>
-      <div className="flex items-center justify-between mb-2">
-        <h2 className="text-base font-semibold">New Transaction</h2>
+      <div className="flex items-center justify-between mb-6">
+        <h2 className="text-lg font-semibold text-gray-900">New Transaction</h2>
         <button 
           onClick={onClose}
-          className="p-2 rounded-full text-red-500 hover:bg-red-50 transition-colors"
+          className="p-2 rounded-full text-gray-500 hover:bg-gray-50 transition-colors"
         >
           <X className="w-5 h-5" />
         </button>
