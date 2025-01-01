@@ -2,13 +2,13 @@ import { Home, Wallet2, LineChart, Settings, Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Drawer, DrawerContent } from "@/components/ui/drawer";
 import { NewTransaction } from "./NewTransaction";
 
 export const BottomNav = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const [showTransactionDialog, setShowTransactionDialog] = useState(false);
+  const [showTransactionDrawer, setShowTransactionDrawer] = useState(false);
 
   const isActive = (path: string) => {
     return location.pathname === path;
@@ -64,7 +64,7 @@ export const BottomNav = () => {
       {/* Floating FAB Button - Hidden on settings routes */}
       {!isSettingsRoute && (
         <button
-          onClick={() => setShowTransactionDialog(true)}
+          onClick={() => setShowTransactionDrawer(true)}
           className="fixed bottom-20 right-4 w-14 h-14 rounded-full flex items-center justify-center shadow-lg hover:opacity-90 transition-all animate-fade-in z-50 md:right-8"
           style={{
             background: "linear-gradient(135deg, #7C3AED, #6366F1)"
@@ -74,12 +74,12 @@ export const BottomNav = () => {
         </button>
       )}
 
-      {/* Transaction Dialog */}
-      <Dialog open={showTransactionDialog} onOpenChange={setShowTransactionDialog}>
-        <DialogContent className="p-6 rounded-[20px] border-none bg-white max-w-[360px]">
-          <NewTransaction onClose={() => setShowTransactionDialog(false)} />
-        </DialogContent>
-      </Dialog>
+      {/* Transaction Bottom Sheet */}
+      <Drawer open={showTransactionDrawer} onOpenChange={setShowTransactionDrawer}>
+        <DrawerContent className="p-6">
+          <NewTransaction onClose={() => setShowTransactionDrawer(false)} />
+        </DrawerContent>
+      </Drawer>
     </>
   );
 };
