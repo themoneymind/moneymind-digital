@@ -20,11 +20,6 @@ export const useTransactionEdit = (
     if (!user) return;
 
     try {
-      console.log("Transfer Debug - Starting transaction edit:", {
-        transactionId: id,
-        updates,
-      });
-
       const { data: originalTransaction, error: fetchError } = await supabase
         .from("transactions")
         .select("*")
@@ -33,28 +28,19 @@ export const useTransactionEdit = (
 
       if (fetchError) throw fetchError;
 
-      console.log("Transfer Debug - Original transaction:", originalTransaction);
-      console.log("Transfer Debug - Transaction type:", originalTransaction.type);
-
       // If the transaction is being rejected, reverse its effect on the payment source
       if (updates.status === 'rejected' && originalTransaction.status !== 'rejected') {
-        console.log("Transfer Debug - Rejecting transaction");
         if (originalTransaction.type === 'transfer') {
-          console.log("Transfer Debug - Reversing transfer transaction");
-          // Reverse source account (debit)
           await updatePaymentSourceAmount(
             originalTransaction.source,
             Number(originalTransaction.amount),
             'expense',
-            true,
             true
           );
-          // Reverse destination account (credit)
           await updatePaymentSourceAmount(
             originalTransaction.display_source,
             Number(originalTransaction.amount),
             'income',
-            true,
             true
           );
         } else {
@@ -68,24 +54,18 @@ export const useTransactionEdit = (
       }
       // If a rejected transaction is being un-rejected, apply its effect
       else if (originalTransaction.status === 'rejected' && updates.status && updates.status !== 'rejected') {
-        console.log("Transfer Debug - Un-rejecting transaction");
         if (originalTransaction.type === 'transfer') {
-          console.log("Transfer Debug - Applying transfer transaction");
-          // Apply to source account (debit)
           await updatePaymentSourceAmount(
             originalTransaction.source,
             Number(originalTransaction.amount),
             'expense',
-            false,
-            true
+            false
           );
-          // Apply to destination account (credit)
           await updatePaymentSourceAmount(
             originalTransaction.display_source,
             Number(originalTransaction.amount),
             'income',
-            false,
-            true
+            false
           );
         } else {
           await updatePaymentSourceAmount(
@@ -98,24 +78,18 @@ export const useTransactionEdit = (
       }
       // For normal updates (not involving rejection)
       else if (updates.amount !== undefined && originalTransaction.status !== 'rejected') {
-        console.log("Transfer Debug - Updating transaction amount");
         if (originalTransaction.type === 'transfer') {
-          console.log("Transfer Debug - Updating transfer transaction");
           // Reverse old amounts
-          // Reverse from source account
           await updatePaymentSourceAmount(
             originalTransaction.source,
             Number(originalTransaction.amount),
             'expense',
-            true,
             true
           );
-          // Reverse from destination account
           await updatePaymentSourceAmount(
             originalTransaction.display_source,
             Number(originalTransaction.amount),
             'income',
-            true,
             true
           );
 
@@ -123,27 +97,17 @@ export const useTransactionEdit = (
           const targetSource = updates.source || originalTransaction.source;
           const destinationSource = updates.display_source || originalTransaction.display_source;
           
-          console.log("Transfer Debug - Transfer details:", {
-            targetSource,
-            destinationSource,
-            amount: updates.amount
-          });
-
-          // Apply to source account (debit)
           await updatePaymentSourceAmount(
             targetSource,
             Number(updates.amount),
             'expense',
-            false,
-            true
+            false
           );
-          // Apply to destination account (credit)
           await updatePaymentSourceAmount(
             destinationSource,
             Number(updates.amount),
             'income',
-            false,
-            true
+            false
           );
         } else {
           // For non-transfer transactions
@@ -172,8 +136,6 @@ export const useTransactionEdit = (
         base_source_id: updates.source ? getBaseSourceId(updates.source) : undefined,
       };
 
-      console.log("Transfer Debug - Final update data:", supabaseData);
-
       const { error: updateError } = await supabase
         .from("transactions")
         .update(supabaseData)
@@ -184,7 +146,7 @@ export const useTransactionEdit = (
       await refreshData();
       toast.success("Transaction updated successfully");
     } catch (error) {
-      console.error("Transfer Debug - Error updating transaction:", error);
+      console.error("Error updating transaction:", error);
       toast.error("Failed to update transaction");
       throw error;
     }

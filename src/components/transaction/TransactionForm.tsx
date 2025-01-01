@@ -7,6 +7,7 @@ import { CategorySelector } from "./CategorySelector";
 import { PaymentSourceSelector } from "./PaymentSourceSelector";
 import { TransactionDateSelector } from "./TransactionDateSelector";
 import { RepeatSelector } from "./RepeatSelector";
+import { useNavigate } from "react-router-dom";
 
 const DEFAULT_CATEGORIES = {
   expense: [
@@ -46,7 +47,7 @@ type TransactionFormProps = {
   onTypeChange: (type: TransactionType) => void;
   onAmountChange: (amount: string) => void;
   onCategoryChange: (category: string) => void;
-  onSourceChange: (source: string, toSource?: string) => void;
+  onSourceChange: (source: string) => void;
   onDescriptionChange: (description: string) => void;
   onDateChange: (date: Date) => void;
   onSubmit: () => void;
@@ -77,8 +78,9 @@ export const TransactionForm = ({
   onAddCustomCategory,
   formattedSources,
 }: TransactionFormProps) => {
-  const [destinationSource, setDestinationSource] = useState("");
-
+  const navigate = useNavigate();
+  const [toSource, setToSource] = useState("");
+  
   const allCategories = {
     expense: [...DEFAULT_CATEGORIES.expense, ...customCategories.expense],
     income: [...DEFAULT_CATEGORIES.income, ...customCategories.income],
@@ -88,15 +90,15 @@ export const TransactionForm = ({
   const handleTypeChange = (newType: TransactionType) => {
     if (["expense", "income", "transfer"].includes(newType)) {
       onTypeChange(newType);
-      setDestinationSource("");
     }
   };
 
-  const handleSubmit = () => {
-    if (type === "transfer" && destinationSource) {
-      onSourceChange(source, destinationSource);
-    }
-    onSubmit();
+  const handleFromSourceChange = (newSource: string) => {
+    onSourceChange(newSource);
+  };
+
+  const handleToSourceChange = (newSource: string) => {
+    setToSource(newSource);
   };
 
   return (
@@ -124,14 +126,14 @@ export const TransactionForm = ({
           <div className="space-y-4">
             <PaymentSourceSelector
               source={source}
-              onSourceChange={onSourceChange}
+              onSourceChange={handleFromSourceChange}
               formattedSources={formattedSources}
               placeholder="From payment source"
             />
             <PaymentSourceSelector
-              source={destinationSource}
-              onSourceChange={setDestinationSource}
-              formattedSources={formattedSources.filter(s => s.id !== source)}
+              source={toSource}
+              onSourceChange={handleToSourceChange}
+              formattedSources={formattedSources}
               placeholder="To payment source"
               isTransferTo={true}
               fromSource={source}
@@ -171,7 +173,7 @@ export const TransactionForm = ({
       />
       <Button
         className="w-full h-10 bg-[#7F3DFF] hover:bg-[#7F3DFF]/90 rounded-xl text-sm"
-        onClick={handleSubmit}
+        onClick={onSubmit}
       >
         Add Transaction
       </Button>
