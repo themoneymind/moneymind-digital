@@ -103,7 +103,7 @@ export const NewTransaction = ({ onClose }: NewTransactionProps) => {
   };
 
   return (
-    <div className="bg-white rounded-t-[28px]">
+    <div className="bg-white rounded-t-[28px] pb-8">
       <div className="mx-auto h-2 w-[100px] rounded-full bg-gray-200 my-3" />
       <div className="px-6">
         <div className="flex items-center justify-between mb-8">
