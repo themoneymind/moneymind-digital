@@ -103,8 +103,8 @@ export const NewTransaction = ({ onClose }: NewTransactionProps) => {
   };
 
   return (
-    <div className="bg-white rounded-t-[28px]">
-      <div className="px-4">
+    <div className="rounded-t-[28px] overflow-hidden">
+      <div className="px-6 pt-6">
         <div className="flex items-center justify-between mb-8">
           <h2 className="text-xl font-semibold">New Transaction</h2>
           <button 
