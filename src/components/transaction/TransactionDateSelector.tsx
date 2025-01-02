@@ -25,10 +25,10 @@ export const TransactionDateSelector = ({
   };
 
   return (
-    <div className="flex items-center justify-between bg-white border border-gray-200 rounded-xl h-10">
+    <div className="flex items-center justify-between bg-white border border-gray-200 rounded-[12px] h-12">
       <button 
         type="button"
-        className="p-2 hover:bg-gray-50 rounded-l-xl h-full flex items-center justify-center px-4" 
+        className="p-2 hover:bg-gray-50 rounded-l-[12px] h-full flex items-center justify-center px-4" 
         onClick={handlePrevDay}
         aria-label="Previous day"
       >
@@ -39,7 +39,7 @@ export const TransactionDateSelector = ({
       </span>
       <button 
         type="button"
-        className="p-2 hover:bg-gray-50 rounded-r-xl h-full flex items-center justify-center px-4" 
+        className="p-2 hover:bg-gray-50 rounded-r-[12px] h-full flex items-center justify-center px-4" 
         onClick={handleNextDay}
         aria-label="Next day"
       >

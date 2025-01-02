@@ -24,7 +24,6 @@ export const PaymentSourceSelector = ({
 }: PaymentSourceSelectorProps) => {
   const navigate = useNavigate();
   
-  // Filter sources for transfer without modifying UPI variants
   const filterSourcesForTransfer = (sources: { id: string; name: string }[], fromSourceId: string) => {
     if (!isTransferTo || !fromSourceId) return sources;
     return sources.filter(s => !s.id.startsWith(fromSourceId.split('-')[0]));
@@ -32,7 +31,6 @@ export const PaymentSourceSelector = ({
 
   const filteredSources = filterSourcesForTransfer(formattedSources, fromSource);
 
-  // Find the exact source with UPI variant if it exists
   const findDisplayName = () => {
     if (initialDisplaySource) return initialDisplaySource;
     const sourceItem = filteredSources.find(s => s.id === source);
@@ -40,7 +38,7 @@ export const PaymentSourceSelector = ({
   };
 
   return (
-    <div className="flex gap-2">
+    <div className="flex gap-2 items-center">
       <Select 
         value={source || ""} 
         onValueChange={onSourceChange}

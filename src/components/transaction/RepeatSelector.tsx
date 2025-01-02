@@ -15,10 +15,10 @@ interface RepeatSelectorProps {
 export const RepeatSelector = ({ value, onValueChange }: RepeatSelectorProps) => {
   return (
     <Select value={value} onValueChange={onValueChange}>
-      <SelectTrigger className="h-10 rounded-xl border-gray-200">
+      <SelectTrigger className="h-12 rounded-[12px] border-gray-200 text-sm bg-white">
         <SelectValue placeholder="Select repeat frequency" />
       </SelectTrigger>
-      <SelectContent className="bg-white border border-gray-200 shadow-lg rounded-xl max-h-[300px] overflow-y-auto">
+      <SelectContent className="bg-white border border-gray-200 shadow-lg rounded-[12px] max-h-[300px] overflow-y-auto">
         <SelectItem value="never">Never Repeat</SelectItem>
         <SelectItem value="daily">Every Day</SelectItem>
         <SelectItem value="workdays">Every Work Day</SelectItem>
