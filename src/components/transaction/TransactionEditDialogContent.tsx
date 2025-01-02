@@ -1,4 +1,3 @@
-import { DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { TransactionEditDialogForm } from "./TransactionEditDialogForm";
 import { Transaction } from "@/types/transactions";
@@ -62,11 +61,11 @@ export const TransactionEditDialogContent = ({
 
   return (
     <>
-      <DialogHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
-        <DialogTitle className="flex items-center gap-2 text-xl font-semibold">
+      <div className="flex items-center justify-between pb-4">
+        <h2 className="flex items-center gap-2 text-xl font-semibold">
           {getIcon()}
           Edit {transaction.type.charAt(0).toUpperCase() + transaction.type.slice(1)}
-        </DialogTitle>
+        </h2>
         <Button
           variant="ghost"
           size="icon"
@@ -75,7 +74,7 @@ export const TransactionEditDialogContent = ({
         >
           <X className="h-5 w-5" />
         </Button>
-      </DialogHeader>
+      </div>
       <form onSubmit={handleSubmit} className="space-y-4">
         <TransactionEditDialogForm
           currentAmount={Number(transaction.amount)}
