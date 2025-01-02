@@ -1,6 +1,5 @@
-import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Transaction } from "@/types/transactions";
-import { TransactionEditDialogContent } from "./TransactionEditDialogContent";
+import { TransactionEditSheet } from "./TransactionEditSheet";
 
 interface TransactionEditDialogProps {
   open: boolean;
@@ -14,13 +13,10 @@ export const TransactionEditDialog = ({
   transaction,
 }: TransactionEditDialogProps) => {
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-md rounded-[20px]">
-        <TransactionEditDialogContent
-          transaction={transaction}
-          onOpenChange={onOpenChange}
-        />
-      </DialogContent>
-    </Dialog>
+    <TransactionEditSheet
+      open={open}
+      onOpenChange={onOpenChange}
+      transaction={transaction}
+    />
   );
 };

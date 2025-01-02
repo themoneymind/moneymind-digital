@@ -14,8 +14,8 @@ export const TransactionTypeSelector = ({ type, onTypeChange }: TransactionTypeS
         variant="ghost"
         className={`flex-1 rounded-lg h-8 gap-1 text-xs px-2 transition-all duration-200 ${
           type === "expense"
-            ? "bg-white shadow-sm text-red-500"
-            : "hover:bg-white/50 text-gray-600 hover:text-red-500"
+            ? "bg-white shadow-sm text-red-500 hover:bg-white"
+            : "text-gray-600 hover:text-red-500 hover:bg-white/80"
         }`}
         onClick={() => onTypeChange("expense")}
       >
@@ -26,8 +26,8 @@ export const TransactionTypeSelector = ({ type, onTypeChange }: TransactionTypeS
         variant="ghost"
         className={`flex-1 rounded-lg h-8 gap-1 text-xs px-2 transition-all duration-200 ${
           type === "income"
-            ? "bg-white shadow-sm text-green-500"
-            : "hover:bg-white/50 text-gray-600 hover:text-green-500"
+            ? "bg-white shadow-sm text-green-500 hover:bg-white"
+            : "text-gray-600 hover:text-green-500 hover:bg-white/80"
         }`}
         onClick={() => onTypeChange("income")}
       >
@@ -38,8 +38,8 @@ export const TransactionTypeSelector = ({ type, onTypeChange }: TransactionTypeS
         variant="ghost"
         className={`flex-1 rounded-lg h-8 gap-1 text-xs px-2 transition-all duration-200 ${
           type === "transfer"
-            ? "bg-white shadow-sm text-[#7F3DFF]"
-            : "hover:bg-white/50 text-gray-600 hover:text-[#7F3DFF]"
+            ? "bg-white shadow-sm text-[#7F3DFF] hover:bg-white"
+            : "text-gray-600 hover:text-[#7F3DFF] hover:bg-white/80"
         }`}
         onClick={() => onTypeChange("transfer")}
       >
