@@ -65,34 +65,31 @@ export const TransactionForm = ({
   const getBgColor = () => {
     switch (type) {
       case "expense":
-        return "bg-red-50/50";
+        return "bg-red-500";
       case "income":
-        return "bg-green-50/50";
+        return "bg-green-500";
       case "transfer":
-        return "bg-purple-50/50";
+        return "bg-purple-500";
       default:
         return "bg-white";
     }
   };
 
   return (
-    <div className="space-y-6">
-      <div className="relative mt-2 mb-8">
-        <div className="flex items-center border-b-2 border-gray-200 focus-within:border-primary pb-4">
-          <span className="text-4xl font-medium text-gray-400 mr-2">₹</span>
-          <input
-            type="number"
-            placeholder="0"
-            className="text-5xl font-medium w-full focus:outline-none bg-transparent placeholder:text-gray-300"
-            value={amount}
-            onChange={(e) => onAmountChange(e.target.value)}
-          />
+    <div className="space-y-4">
+      <div className="relative mt-2 mb-6">
+        <div className={`p-8 rounded-b-[20px] ${getBgColor()}`}>
+          <div className="flex items-center justify-center">
+            <span className="text-6xl font-medium text-white">
+              {amount || "0"}
+            </span>
+          </div>
         </div>
       </div>
 
       <TransactionTypeSelector type={type} onTypeChange={onTypeChange} />
 
-      <div className={`space-y-6 mt-6 p-5 rounded-2xl ${getBgColor()}`}>
+      <div className="space-y-4 mt-4">
         <CategorySelector
           type={type}
           category={category}
