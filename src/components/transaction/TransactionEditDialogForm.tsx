@@ -1,6 +1,5 @@
 import { Input } from "@/components/ui/input";
 import { TransactionType } from "@/types/finance";
-import { PaymentSourceSelector } from "./PaymentSourceSelector";
 import { TransactionDateSelector } from "./TransactionDateSelector";
 import { RepeatSelector } from "./RepeatSelector";
 import { RepeatOption } from "@/types/transactions";
@@ -78,23 +77,34 @@ export const TransactionEditDialogForm = ({
         </div>
       ) : null}
 
-      <PaymentSourceSelector
-        source={selectedSource || initialSource}
-        onSourceChange={setSelectedSource}
-        formattedSources={formattedSources}
-        placeholder={transactionType === "transfer" ? "Transfer from" : "Select payment source"}
-        initialDisplaySource={initialDisplaySource}
-      />
+      <select
+        value={selectedSource || initialSource || ""}
+        onChange={(e) => setSelectedSource(e.target.value)}
+        className="w-full h-12 px-4 rounded-[12px] border border-gray-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-[#7F3DFF] focus:border-transparent"
+      >
+        <option value="">Select payment source</option>
+        {formattedSources.map((source) => (
+          <option key={source.id} value={source.id}>
+            {source.name}
+          </option>
+        ))}
+      </select>
 
       {transactionType === "transfer" && (
-        <PaymentSourceSelector
-          source={selectedSource}
-          onSourceChange={setSelectedSource}
-          formattedSources={formattedSources.filter(s => s.id !== selectedSource)}
-          placeholder="Transfer to"
-          isTransferTo={true}
-          fromSource={selectedSource}
-        />
+        <select
+          value={selectedSource}
+          onChange={(e) => setSelectedSource(e.target.value)}
+          className="w-full h-12 px-4 rounded-[12px] border border-gray-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-[#7F3DFF] focus:border-transparent"
+        >
+          <option value="">Transfer to</option>
+          {formattedSources
+            .filter(s => s.id !== selectedSource)
+            .map((source) => (
+              <option key={source.id} value={source.id}>
+                {source.name}
+              </option>
+            ))}
+        </select>
       )}
 
       <TransactionDateSelector
