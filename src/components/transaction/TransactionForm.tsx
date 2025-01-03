@@ -50,18 +50,15 @@ export const TransactionForm = ({
     <div className="space-y-4">
       <TransactionTypeSelector type={type} onTypeChange={onTypeChange} />
       
-      <div className="flex justify-between items-center bg-gray-50 px-3 py-2 rounded-[12px]">
-        <span className="text-gray-500 text-sm">Transfer Amount</span>
-        <div className="flex items-center">
-          <span className="text-gray-500 text-sm mr-1">₹</span>
-          <Input
-            type="number"
-            placeholder="0"
-            className="text-sm w-24 border-gray-200 rounded-[12px] bg-white"
-            value={amount}
-            onChange={(e) => onAmountChange(e.target.value)}
-          />
-        </div>
+      <div className="relative">
+        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-sm">₹</span>
+        <Input
+          type="number"
+          placeholder="0"
+          className="text-sm pl-7 h-12 border-gray-200 rounded-[12px] bg-white"
+          value={amount}
+          onChange={(e) => onAmountChange(e.target.value)}
+        />
       </div>
 
       <CategorySelector
