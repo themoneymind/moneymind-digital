@@ -61,19 +61,20 @@ export const TransactionForm = ({
       <TransactionTypeSelector type={type} onTypeChange={onTypeChange} />
       
       {type === "transfer" ? (
-        <div className="relative">
-          <div className="flex items-center justify-between p-3 bg-gray-50 rounded-[12px] border border-gray-100 mb-4">
+        <div className="space-y-4">
+          <div className="flex items-center justify-between p-3 bg-gray-50 rounded-[12px] border border-gray-100">
             <p className="text-sm text-gray-500">Transfer Amount</p>
-            <div className="relative">
-              <span className="text-lg font-semibold">{formatCurrency(amount)}</span>
-              <Input
-                type="number"
-                placeholder="0"
-                className="absolute inset-0 opacity-0"
-                value={amount}
-                onChange={(e) => onAmountChange(e.target.value)}
-              />
-            </div>
+            <p className="text-lg font-semibold">{formatCurrency(amount)}</p>
+          </div>
+          <div className="relative">
+            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-sm">₹</span>
+            <Input
+              type="number"
+              placeholder="0"
+              className="text-sm pl-7 h-12 border-gray-200 rounded-[12px] bg-white"
+              value={amount}
+              onChange={(e) => onAmountChange(e.target.value)}
+            />
           </div>
         </div>
       ) : (
