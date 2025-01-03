@@ -5,8 +5,6 @@ import { CategorySelector } from "./CategorySelector";
 import { PaymentSourceSelector } from "./PaymentSourceSelector";
 import { TransactionDateSelector } from "./TransactionDateSelector";
 import { RepeatSelector } from "./RepeatSelector";
-import { ArrowLeftRight } from "lucide-react";
-import { useState } from "react";
 
 type TransactionFormProps = {
   type: TransactionType;
@@ -41,27 +39,12 @@ export const TransactionForm = ({
   onAmountChange,
   onCategoryChange,
   onSourceChange,
-  onDateChange,
   onDescriptionChange,
+  onDateChange,
   onSubmit,
   customCategories,
   formattedSources,
 }: TransactionFormProps) => {
-  const [fromSource, setFromSource] = useState(source);
-  const [toSource, setToSource] = useState("");
-
-  const handleFromSourceChange = (newSource: string) => {
-    setFromSource(newSource);
-    onSourceChange(newSource);
-  };
-
-  const handleToSourceChange = (newSource: string) => {
-    setToSource(newSource);
-    if (fromSource) {
-      onSourceChange(newSource);
-    }
-  };
-
   const getBgColor = () => {
     switch (type) {
       case "expense":
@@ -77,19 +60,17 @@ export const TransactionForm = ({
 
   return (
     <div className="space-y-4">
-      <div className="relative mt-2 mb-6">
-        <div className={`p-8 rounded-b-[20px] ${getBgColor()}`}>
-          <div className="flex items-center justify-center">
-            <span className="text-6xl font-medium text-white">
-              {amount || "0"}
-            </span>
-          </div>
+      <div className={`${getBgColor()} p-8 rounded-b-[20px]`}>
+        <div className="flex items-center justify-center">
+          <span className="text-6xl font-medium text-white">
+            {amount || "0"}
+          </span>
         </div>
       </div>
 
       <TransactionTypeSelector type={type} onTypeChange={onTypeChange} />
 
-      <div className="space-y-4 mt-4">
+      <div className="space-y-6 mt-6">
         <CategorySelector
           type={type}
           category={category}
@@ -97,59 +78,25 @@ export const TransactionForm = ({
           customCategories={customCategories}
         />
 
-        {type === "transfer" ? (
-          <div className="flex items-center gap-0">
-            <div className="w-[46%]">
-              <PaymentSourceSelector
-                source={fromSource}
-                onSourceChange={handleFromSourceChange}
-                formattedSources={formattedSources}
-                placeholder="From"
-                showAddButton={false}
-              />
-            </div>
-            <div className="flex-shrink-0 flex items-center justify-center w-[8%]">
-              <ArrowLeftRight className="h-5 w-5 text-gray-400" />
-            </div>
-            <div className="w-[46%]">
-              <PaymentSourceSelector
-                source={toSource}
-                onSourceChange={handleToSourceChange}
-                formattedSources={formattedSources}
-                placeholder="To"
-                isTransferTo={true}
-                fromSource={fromSource}
-                showAddButton={true}
-              />
-            </div>
-          </div>
-        ) : (
-          <PaymentSourceSelector
-            source={source}
-            onSourceChange={onSourceChange}
-            formattedSources={formattedSources}
-            placeholder="Select payment source"
-          />
-        )}
+        <PaymentSourceSelector
+          source={source}
+          onSourceChange={onSourceChange}
+          formattedSources={formattedSources}
+        />
 
         <TransactionDateSelector
           selectedDate={selectedDate}
           onDateChange={onDateChange}
         />
 
-        <div className="relative">
-          <input
-            placeholder="Add a description"
-            className="w-full py-3 px-0 text-sm bg-transparent border-b border-gray-200 focus:border-primary focus:outline-none transition-colors placeholder:text-gray-400"
-            value={description}
-            onChange={(e) => onDescriptionChange(e.target.value)}
-          />
-        </div>
-
-        <RepeatSelector
-          value="never"
-          onValueChange={() => {}}
+        <input
+          placeholder="Add a description"
+          className="w-full py-3 px-0 text-sm bg-transparent border-b border-gray-200 focus:border-primary focus:outline-none transition-colors placeholder:text-gray-400"
+          value={description}
+          onChange={(e) => onDescriptionChange(e.target.value)}
         />
+
+        <RepeatSelector value="never" onValueChange={() => {}} />
 
         <Button
           className={`w-full h-12 rounded-[12px] text-sm font-medium ${
