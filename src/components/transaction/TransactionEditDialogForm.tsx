@@ -61,8 +61,8 @@ export const TransactionEditDialogForm = ({
 
       {transactionType === "transfer" ? (
         <div className="space-y-4">
-          <div className="p-4 bg-gray-50 rounded-[12px] border border-gray-100">
-            <p className="text-sm text-gray-500 mb-1">Transfer Amount</p>
+          <div className="px-3 py-2 bg-gray-50 rounded-[12px] border border-gray-100 flex justify-between items-center">
+            <p className="text-sm text-gray-500">Transfer Amount</p>
             <p className="text-lg font-semibold">₹{currentAmount}</p>
           </div>
           <div className="relative">
