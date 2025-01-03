@@ -46,18 +46,10 @@ export const TransactionForm = ({
   formattedSources,
 }: TransactionFormProps) => {
   return (
-    <div className="space-y-4">
-      <div className="bg-[#FF3B30] p-8 rounded-b-[20px]">
-        <div className="flex items-center justify-center">
-          <span className="text-6xl font-medium text-white">
-            {amount || "0"}
-          </span>
-        </div>
-      </div>
-
+    <div className="space-y-3">
       <TransactionTypeSelector type={type} onTypeChange={onTypeChange} />
 
-      <div className="space-y-6 mt-6 px-4">
+      <div className="space-y-4 mt-4 px-4">
         <CategorySelector
           type={type}
           category={category}
