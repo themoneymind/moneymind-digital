@@ -70,8 +70,8 @@ export const TransactionForm = ({
       />
 
       {type === "transfer" ? (
-        <div className="flex items-center gap-2">
-          <div className="w-[45%]">
+        <div className="flex items-center gap-4">
+          <div className="w-[42%]">
             <PaymentSourceSelector
               source={source}
               onSourceChange={onSourceChange}
@@ -80,10 +80,10 @@ export const TransactionForm = ({
               showAddButton={false}
             />
           </div>
-          <div className="flex-shrink-0">
+          <div className="flex-shrink-0 flex items-center justify-center w-[8%]">
             <ArrowLeftRight className="h-5 w-5 text-gray-400" />
           </div>
-          <div className="w-[45%]">
+          <div className="w-[42%]">
             <PaymentSourceSelector
               source={source}
               onSourceChange={onSourceChange}
