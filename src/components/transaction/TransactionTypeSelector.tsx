@@ -35,8 +35,8 @@ export const TransactionTypeSelector = ({ type, onTypeChange }: TransactionTypeS
         variant="ghost"
         className={`flex-1 h-10 text-sm font-medium transition-all duration-200 rounded-full ${
           type === "transfer"
-            ? "bg-[#FF3B30] text-white shadow-sm hover:bg-[#FF3B30]"
-            : "text-gray-600 hover:text-[#FF3B30] hover:bg-white/80"
+            ? "bg-primary text-white shadow-sm hover:bg-primary/90"
+            : "text-gray-600 hover:text-primary hover:bg-white/80"
         }`}
         onClick={() => onTypeChange("transfer")}
       >

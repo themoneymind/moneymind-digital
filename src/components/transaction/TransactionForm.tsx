@@ -49,16 +49,13 @@ export const TransactionForm = ({
     <div className="space-y-3">
       <TransactionTypeSelector type={type} onTypeChange={onTypeChange} />
 
-      <div className="relative px-4 py-6">
-        <span className="absolute left-8 top-1/2 -translate-y-1/2 text-2xl text-gray-400">₹</span>
-        <input
-          type="number"
-          value={amount}
-          onChange={(e) => onAmountChange(e.target.value)}
-          className="w-full text-4xl font-medium text-center bg-transparent focus:outline-none"
-          placeholder="0"
-        />
-      </div>
+      <input
+        type="number"
+        value={amount}
+        onChange={(e) => onAmountChange(e.target.value)}
+        className="w-full text-4xl font-medium text-center bg-transparent focus:outline-none py-6 px-4"
+        placeholder="₹0"
+      />
 
       <div className="space-y-4 mt-4 px-4">
         <CategorySelector
@@ -108,7 +105,7 @@ export const TransactionForm = ({
         <RepeatSelector value="never" onValueChange={() => {}} />
 
         <Button
-          className="w-full h-12 rounded-[12px] text-sm font-medium bg-[#FF3B30] hover:bg-[#FF3B30]/90 text-white"
+          className="w-full h-12 rounded-[12px] text-sm font-medium bg-primary hover:bg-primary/90 text-white"
           onClick={onSubmit}
         >
           Add Transaction
