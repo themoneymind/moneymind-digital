@@ -6,7 +6,7 @@ type TransactionHeaderProps = {
 
 export const TransactionHeader = ({ onClose }: TransactionHeaderProps) => {
   return (
-    <div className="flex items-center justify-between mb-8 sticky top-0 bg-white pt-2">
+    <div className="flex items-center justify-between mb-4 sticky top-0 bg-white pt-2">
       <h2 className="text-xl font-semibold">New Transaction</h2>
       <button 
         onClick={onClose}
