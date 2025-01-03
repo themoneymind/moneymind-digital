@@ -60,7 +60,7 @@ export const CategorySelector = ({
       <select
         value={category}
         onChange={(e) => onCategoryChange(e.target.value)}
-        className="flex h-12 w-full rounded-[12px] border border-gray-200 bg-white px-3 py-2 text-sm ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-400 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+        className="flex h-12 w-full py-2 px-0 text-sm bg-transparent border-b-2 border-gray-200 focus:border-primary focus:outline-none transition-colors"
       >
         <option value="" disabled>
           Select category
@@ -92,7 +92,7 @@ export const CategorySelector = ({
               placeholder="Enter category name"
               value={newCategory}
               onChange={(e) => setNewCategory(e.target.value)}
-              className="h-12 border-gray-200 rounded-[12px]"
+              className="h-12 py-2 px-0 text-sm bg-transparent border-b-2 border-gray-200 focus:border-primary focus:outline-none transition-colors"
             />
             <Button onClick={handleAddCategory} className="w-full">
               Add Category

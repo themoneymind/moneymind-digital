@@ -85,71 +85,75 @@ export const TransactionForm = ({
         </div>
       </div>
 
-      <CategorySelector
-        type={type}
-        category={category}
-        onCategoryChange={onCategoryChange}
-        customCategories={customCategories}
-      />
-
-      {type === "transfer" ? (
-        <div className="flex items-center gap-0">
-          <div className="w-[46%]">
-            <PaymentSourceSelector
-              source={fromSource}
-              onSourceChange={handleFromSourceChange}
-              formattedSources={formattedSources}
-              placeholder="From"
-              showAddButton={false}
-            />
-          </div>
-          <div className="flex-shrink-0 flex items-center justify-center w-[8%]">
-            <ArrowLeftRight className="h-5 w-5 text-gray-400" />
-          </div>
-          <div className="w-[46%]">
-            <PaymentSourceSelector
-              source={toSource}
-              onSourceChange={handleToSourceChange}
-              formattedSources={filterSourcesForTransfer(formattedSources, fromSource)}
-              placeholder="To"
-              isTransferTo={true}
-              fromSource={fromSource}
-              showAddButton={true}
-            />
-          </div>
-        </div>
-      ) : (
-        <PaymentSourceSelector
-          source={source}
-          onSourceChange={onSourceChange}
-          formattedSources={formattedSources}
-          placeholder="Select payment source"
+      <div className="space-y-4">
+        <CategorySelector
+          type={type}
+          category={category}
+          onCategoryChange={onCategoryChange}
+          customCategories={customCategories}
         />
-      )}
 
-      <TransactionDateSelector
-        selectedDate={selectedDate}
-        onDateChange={onDateChange}
-      />
+        {type === "transfer" ? (
+          <div className="flex items-center gap-0">
+            <div className="w-[46%]">
+              <PaymentSourceSelector
+                source={fromSource}
+                onSourceChange={handleFromSourceChange}
+                formattedSources={formattedSources}
+                placeholder="From"
+                showAddButton={false}
+              />
+            </div>
+            <div className="flex-shrink-0 flex items-center justify-center w-[8%]">
+              <ArrowLeftRight className="h-5 w-5 text-gray-400" />
+            </div>
+            <div className="w-[46%]">
+              <PaymentSourceSelector
+                source={toSource}
+                onSourceChange={handleToSourceChange}
+                formattedSources={filterSourcesForTransfer(formattedSources, fromSource)}
+                placeholder="To"
+                isTransferTo={true}
+                fromSource={fromSource}
+                showAddButton={true}
+              />
+            </div>
+          </div>
+        ) : (
+          <PaymentSourceSelector
+            source={source}
+            onSourceChange={onSourceChange}
+            formattedSources={formattedSources}
+            placeholder="Select payment source"
+          />
+        )}
 
-      <Input
-        placeholder="Add a description"
-        className="h-12 border-gray-200 rounded-[12px] text-sm bg-white"
-        value={description}
-        onChange={(e) => onDescriptionChange(e.target.value)}
-      />
+        <TransactionDateSelector
+          selectedDate={selectedDate}
+          onDateChange={onDateChange}
+        />
 
-      <RepeatSelector
-        value="never"
-        onValueChange={() => {}}
-      />
+        <div className="relative">
+          <input
+            placeholder="Add a description"
+            className="w-full py-2 px-0 text-sm bg-transparent border-b-2 border-gray-200 focus:border-primary focus:outline-none transition-colors"
+            value={description}
+            onChange={(e) => onDescriptionChange(e.target.value)}
+          />
+        </div>
 
-      <Button
-        className="w-full h-12 bg-[#7F3DFF] hover:bg-[#7F3DFF]/90 rounded-[12px] text-sm"
-        onClick={onSubmit}
-      >
-        Add Transaction
-      </Button>
+        <RepeatSelector
+          value="never"
+          onValueChange={() => {}}
+        />
+
+        <Button
+          className="w-full h-12 bg-[#7F3DFF] hover:bg-[#7F3DFF]/90 rounded-[12px] text-sm"
+          onClick={onSubmit}
+        >
+          Add Transaction
+        </Button>
+      </div>
     </div>
   );
 };
