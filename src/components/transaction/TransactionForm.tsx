@@ -58,7 +58,6 @@ export const TransactionForm = ({
 
   const handleToSourceChange = (newSource: string) => {
     setToSource(newSource);
-    // For transfers, we combine both sources in a specific format
     if (fromSource) {
       onSourceChange(newSource);
     }
@@ -73,15 +72,17 @@ export const TransactionForm = ({
     <div className="space-y-4">
       <TransactionTypeSelector type={type} onTypeChange={onTypeChange} />
       
-      <div className="relative">
-        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-sm">₹</span>
-        <Input
-          type="number"
-          placeholder="0"
-          className="text-sm pl-7 h-12 border-gray-200 rounded-[12px] bg-white"
-          value={amount}
-          onChange={(e) => onAmountChange(e.target.value)}
-        />
+      <div className="relative mt-6 mb-8">
+        <div className="flex items-center border-b-2 border-gray-200 focus-within:border-primary py-2">
+          <span className="text-2xl font-semibold text-gray-500 mr-2">₹</span>
+          <input
+            type="number"
+            placeholder="0"
+            className="text-3xl font-semibold w-full focus:outline-none bg-transparent"
+            value={amount}
+            onChange={(e) => onAmountChange(e.target.value)}
+          />
+        </div>
       </div>
 
       <CategorySelector
