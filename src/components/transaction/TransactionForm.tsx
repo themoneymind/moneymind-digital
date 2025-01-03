@@ -49,6 +49,17 @@ export const TransactionForm = ({
     <div className="space-y-3">
       <TransactionTypeSelector type={type} onTypeChange={onTypeChange} />
 
+      <div className="relative px-4 py-6">
+        <span className="absolute left-8 top-1/2 -translate-y-1/2 text-2xl text-gray-400">₹</span>
+        <input
+          type="number"
+          value={amount}
+          onChange={(e) => onAmountChange(e.target.value)}
+          className="w-full text-4xl font-medium text-center bg-transparent focus:outline-none"
+          placeholder="0"
+        />
+      </div>
+
       <div className="space-y-4 mt-4 px-4">
         <CategorySelector
           type={type}
