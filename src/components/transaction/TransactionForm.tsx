@@ -48,20 +48,25 @@ export const TransactionForm = ({
   customCategories,
   formattedSources,
 }: TransactionFormProps) => {
+  const [fromSource, setFromSource] = useState(source);
   const [toSource, setToSource] = useState("");
 
   const handleFromSourceChange = (newSource: string) => {
+    setFromSource(newSource);
     onSourceChange(newSource);
-    // Reset toSource if it's the same as the new fromSource
-    if (toSource === newSource) {
-      setToSource("");
-    }
   };
 
   const handleToSourceChange = (newSource: string) => {
     setToSource(newSource);
-    // This ensures the final source value includes both from and to
-    onSourceChange(newSource);
+    // For transfers, we combine both sources in a specific format
+    if (fromSource) {
+      onSourceChange(newSource);
+    }
+  };
+
+  const filterSourcesForTransfer = (sources: { id: string; name: string }[], excludeSourceId: string) => {
+    if (!excludeSourceId) return sources;
+    return sources.filter(s => !s.id.startsWith(excludeSourceId.split('-')[0]));
   };
 
   return (
@@ -87,10 +92,10 @@ export const TransactionForm = ({
       />
 
       {type === "transfer" ? (
-        <div className="flex items-center">
+        <div className="flex items-center gap-0">
           <div className="w-[46%]">
             <PaymentSourceSelector
-              source={source}
+              source={fromSource}
               onSourceChange={handleFromSourceChange}
               formattedSources={formattedSources}
               placeholder="From"
@@ -104,10 +109,10 @@ export const TransactionForm = ({
             <PaymentSourceSelector
               source={toSource}
               onSourceChange={handleToSourceChange}
-              formattedSources={formattedSources.filter(s => s.id !== source)}
+              formattedSources={filterSourcesForTransfer(formattedSources, fromSource)}
               placeholder="To"
               isTransferTo={true}
-              fromSource={source}
+              fromSource={fromSource}
               showAddButton={true}
             />
           </div>
