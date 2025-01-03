@@ -69,12 +69,13 @@ export const TransactionForm = ({
         />
 
         {type === "transfer" ? (
-          <>
+          <div className="grid grid-cols-2 gap-4">
             <PaymentSourceSelector
               source={source}
               onSourceChange={onSourceChange}
               formattedSources={formattedSources}
               placeholder="Transfer from"
+              showAddButton={false}
             />
             <PaymentSourceSelector
               source={source}
@@ -83,8 +84,9 @@ export const TransactionForm = ({
               placeholder="Transfer to"
               isTransferTo={true}
               fromSource={source}
+              showAddButton={false}
             />
-          </>
+          </div>
         ) : (
           <PaymentSourceSelector
             source={source}
