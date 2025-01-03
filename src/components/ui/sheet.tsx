@@ -50,12 +50,13 @@ interface SheetContentProps
   extends React.ComponentPropsWithoutRef<typeof SheetPrimitive.Content>,
     VariantProps<typeof sheetVariants> {
   closeButton?: boolean;
+  onOpenChange?: (open: boolean) => void;
 }
 
 const SheetContent = React.forwardRef<
   React.ElementRef<typeof SheetPrimitive.Content>,
   SheetContentProps
->(({ side = "right", className, children, closeButton = true, ...props }, ref) => {
+>(({ side = "right", className, children, closeButton = true, onOpenChange, ...props }, ref) => {
   const [isDragging, setIsDragging] = React.useState(false);
   const [startY, setStartY] = React.useState(0);
   const [offsetY, setOffsetY] = React.useState(0);
@@ -78,7 +79,7 @@ const SheetContent = React.forwardRef<
 
   const handleTouchEnd = () => {
     if (offsetY > 100) {
-      props.onOpenChange?.(false);
+      onOpenChange?.(false);
     }
     setIsDragging(false);
     setOffsetY(0);
