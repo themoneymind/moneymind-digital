@@ -68,11 +68,30 @@ export const TransactionForm = ({
           customCategories={customCategories}
         />
 
-        <PaymentSourceSelector
-          source={source}
-          onSourceChange={onSourceChange}
-          formattedSources={formattedSources}
-        />
+        {type === "transfer" ? (
+          <>
+            <PaymentSourceSelector
+              source={source}
+              onSourceChange={onSourceChange}
+              formattedSources={formattedSources}
+              placeholder="Transfer from"
+            />
+            <PaymentSourceSelector
+              source={source}
+              onSourceChange={onSourceChange}
+              formattedSources={formattedSources.filter(s => s.id !== source)}
+              placeholder="Transfer to"
+              isTransferTo={true}
+              fromSource={source}
+            />
+          </>
+        ) : (
+          <PaymentSourceSelector
+            source={source}
+            onSourceChange={onSourceChange}
+            formattedSources={formattedSources}
+          />
+        )}
 
         <TransactionDateSelector
           selectedDate={selectedDate}
