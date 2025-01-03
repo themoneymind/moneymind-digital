@@ -37,7 +37,7 @@ export const PaymentSourceSelector = ({
       <select
         value={source || ""}
         onChange={(e) => onSourceChange(e.target.value)}
-        className="flex h-12 w-full py-2 px-0 text-sm bg-transparent border-b-2 border-gray-200 focus:border-primary focus:outline-none transition-colors"
+        className="flex h-12 w-full py-2 px-0 text-sm bg-transparent border-b border-gray-200 focus:border-[#FF3B30] focus:outline-none transition-colors"
       >
         <option value="" disabled>
           {placeholder}
@@ -53,7 +53,7 @@ export const PaymentSourceSelector = ({
           type="button"
           variant="outline"
           size="icon"
-          className="h-12 w-12 border-gray-200 rounded-[12px] flex-shrink-0"
+          className="h-10 w-10 border border-gray-200 rounded-[12px] flex-shrink-0 hover:bg-gray-50"
           onClick={() => navigate("/app/payment-source")}
         >
           <Plus className="h-4 w-4" />

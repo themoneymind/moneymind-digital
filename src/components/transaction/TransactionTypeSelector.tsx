@@ -8,13 +8,13 @@ type TransactionTypeSelectorProps = {
 
 export const TransactionTypeSelector = ({ type, onTypeChange }: TransactionTypeSelectorProps) => {
   return (
-    <div className="flex gap-2 p-1 bg-gray-100/50 rounded-full">
+    <div className="flex gap-2 p-1 bg-[#F1F1F1] rounded-full mx-4">
       <Button
         variant="ghost"
         className={`flex-1 h-10 text-sm font-medium transition-all duration-200 rounded-full ${
           type === "expense"
-            ? "bg-red-500 text-white shadow-sm hover:bg-red-500"
-            : "text-gray-600 hover:text-red-500 hover:bg-white/80"
+            ? "bg-[#FF3B30] text-white shadow-sm hover:bg-[#FF3B30]"
+            : "text-gray-600 hover:text-[#FF3B30] hover:bg-white/80"
         }`}
         onClick={() => onTypeChange("expense")}
       >
@@ -24,8 +24,8 @@ export const TransactionTypeSelector = ({ type, onTypeChange }: TransactionTypeS
         variant="ghost"
         className={`flex-1 h-10 text-sm font-medium transition-all duration-200 rounded-full ${
           type === "income"
-            ? "bg-green-500 text-white shadow-sm hover:bg-green-500"
-            : "text-gray-600 hover:text-green-500 hover:bg-white/80"
+            ? "bg-[#FF3B30] text-white shadow-sm hover:bg-[#FF3B30]"
+            : "text-gray-600 hover:text-[#FF3B30] hover:bg-white/80"
         }`}
         onClick={() => onTypeChange("income")}
       >
@@ -35,8 +35,8 @@ export const TransactionTypeSelector = ({ type, onTypeChange }: TransactionTypeS
         variant="ghost"
         className={`flex-1 h-10 text-sm font-medium transition-all duration-200 rounded-full ${
           type === "transfer"
-            ? "bg-[#7F3DFF] text-white shadow-sm hover:bg-[#7F3DFF]"
-            : "text-gray-600 hover:text-[#7F3DFF] hover:bg-white/80"
+            ? "bg-[#FF3B30] text-white shadow-sm hover:bg-[#FF3B30]"
+            : "text-gray-600 hover:text-[#FF3B30] hover:bg-white/80"
         }`}
         onClick={() => onTypeChange("transfer")}
       >

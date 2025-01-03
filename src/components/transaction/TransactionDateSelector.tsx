@@ -25,7 +25,7 @@ export const TransactionDateSelector = ({
   };
 
   return (
-    <div className="flex items-center justify-between border-b-2 border-gray-200 focus-within:border-primary py-2 transition-colors">
+    <div className="flex items-center justify-between border-b border-gray-200 focus-within:border-[#FF3B30] py-2 transition-colors">
       <span className="text-sm font-medium text-gray-900">
         {format(selectedDate, "MMMM d, yyyy")}
       </span>
