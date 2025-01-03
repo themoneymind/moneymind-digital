@@ -25,26 +25,28 @@ export const TransactionDateSelector = ({
   };
 
   return (
-    <div className="flex items-center justify-between bg-white border border-gray-200 rounded-[12px] h-12">
-      <button 
-        type="button"
-        className="p-2 hover:bg-gray-50 rounded-l-[12px] h-full flex items-center justify-center px-4" 
-        onClick={handlePrevDay}
-        aria-label="Previous day"
-      >
-        <ChevronLeft className="w-5 h-5 text-gray-600" />
-      </button>
+    <div className="flex items-center justify-between border-b-2 border-gray-200 focus-within:border-primary py-2 transition-colors">
       <span className="text-sm font-medium text-gray-900">
         {format(selectedDate, "MMMM d, yyyy")}
       </span>
-      <button 
-        type="button"
-        className="p-2 hover:bg-gray-50 rounded-r-[12px] h-full flex items-center justify-center px-4" 
-        onClick={handleNextDay}
-        aria-label="Next day"
-      >
-        <ChevronRight className="w-5 h-5 text-gray-600" />
-      </button>
+      <div className="flex items-center gap-2">
+        <button 
+          type="button"
+          className="p-2 hover:bg-gray-50 rounded-lg h-full flex items-center justify-center" 
+          onClick={handlePrevDay}
+          aria-label="Previous day"
+        >
+          <ChevronLeft className="w-4 h-4 text-gray-600" />
+        </button>
+        <button 
+          type="button"
+          className="p-2 hover:bg-gray-50 rounded-lg h-full flex items-center justify-center" 
+          onClick={handleNextDay}
+          aria-label="Next day"
+        >
+          <ChevronRight className="w-4 h-4 text-gray-600" />
+        </button>
+      </div>
     </div>
   );
 };
