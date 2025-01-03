@@ -75,7 +75,6 @@ export const TransactionForm = ({
               onSourceChange={onSourceChange}
               formattedSources={formattedSources}
               placeholder="Transfer from"
-              showAddButton={false}
             />
             <PaymentSourceSelector
               source={source}
@@ -84,7 +83,6 @@ export const TransactionForm = ({
               placeholder="Transfer to"
               isTransferTo={true}
               fromSource={source}
-              showAddButton={false}
             />
           </div>
         ) : (
