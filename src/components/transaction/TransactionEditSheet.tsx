@@ -15,8 +15,9 @@ export const TransactionEditSheet = ({
 }: TransactionEditSheetProps) => {
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent side="bottom" className="p-0 bg-transparent" closeButton={false}>
-        <div className="bg-white pb-8 overflow-y-auto h-full">
+      <SheetContent side="bottom" className="h-[95vh] p-0 rounded-t-[28px] overflow-hidden" closeButton={false}>
+        <div className="bg-white rounded-t-[28px] pb-8 overflow-y-auto h-full">
+          <div className="mx-auto h-2 w-[100px] rounded-full bg-gray-200 my-3" />
           <div className="px-6">
             <TransactionEditDialogContent
               transaction={transaction}

@@ -5,7 +5,6 @@ import { TransactionForm } from "./transaction/TransactionForm";
 import { useTransactionValidation } from "@/hooks/useTransactionValidation";
 import { X } from "lucide-react";
 import { toast } from "sonner";
-import { Sheet, SheetContent } from "@/components/ui/sheet";
 
 type NewTransactionProps = {
   onClose: () => void;
@@ -104,40 +103,37 @@ export const NewTransaction = ({ onClose }: NewTransactionProps) => {
   };
 
   return (
-    <Sheet>
-      <SheetContent side="bottom" className="p-0 bg-transparent" closeButton={false}>
-        <div className="bg-white pb-8 overflow-y-auto h-full">
-          <div className="px-6">
-            <div className="flex items-center justify-between mb-8 sticky top-0 bg-white pt-2">
-              <h2 className="text-xl font-semibold">New Transaction</h2>
-              <button 
-                onClick={onClose}
-                className="p-2 rounded-full text-gray-500 hover:bg-gray-100 transition-colors"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-            <TransactionForm
-              type={type}
-              amount={amount}
-              category={category}
-              source={source}
-              description={description}
-              selectedDate={selectedDate}
-              onTypeChange={setType}
-              onAmountChange={setAmount}
-              onCategoryChange={setCategory}
-              onSourceChange={setSource}
-              onDescriptionChange={setDescription}
-              onDateChange={setSelectedDate}
-              onSubmit={handleSubmit}
-              customCategories={customCategories}
-              onAddCustomCategory={handleAddCustomCategory}
-              formattedSources={formattedSources}
-            />
-          </div>
+    <div className="bg-white rounded-t-[28px] pb-8 overflow-y-auto h-full">
+      <div className="mx-auto h-2 w-[100px] rounded-full bg-gray-200 my-3" />
+      <div className="px-6">
+        <div className="flex items-center justify-between mb-8 sticky top-0 bg-white pt-2">
+          <h2 className="text-xl font-semibold">New Transaction</h2>
+          <button 
+            onClick={onClose}
+            className="p-2 rounded-full text-gray-500 hover:bg-gray-100 transition-colors"
+          >
+            <X className="w-5 h-5" />
+          </button>
         </div>
-      </SheetContent>
-    </Sheet>
+        <TransactionForm
+          type={type}
+          amount={amount}
+          category={category}
+          source={source}
+          description={description}
+          selectedDate={selectedDate}
+          onTypeChange={setType}
+          onAmountChange={setAmount}
+          onCategoryChange={setCategory}
+          onSourceChange={setSource}
+          onDescriptionChange={setDescription}
+          onDateChange={setSelectedDate}
+          onSubmit={handleSubmit}
+          customCategories={customCategories}
+          onAddCustomCategory={handleAddCustomCategory}
+          formattedSources={formattedSources}
+        />
+      </div>
+    </div>
   );
 };
