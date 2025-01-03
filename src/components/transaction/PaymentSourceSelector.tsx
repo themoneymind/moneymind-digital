@@ -1,4 +1,3 @@
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -31,36 +30,22 @@ export const PaymentSourceSelector = ({
 
   const filteredSources = filterSourcesForTransfer(formattedSources, fromSource);
 
-  const findDisplayName = () => {
-    if (initialDisplaySource) return initialDisplaySource;
-    const sourceItem = filteredSources.find(s => s.id === source);
-    return sourceItem?.name || placeholder;
-  };
-
   return (
     <div className="flex gap-2 items-center">
-      <Select 
-        value={source || ""} 
-        onValueChange={onSourceChange}
-        defaultValue={source || ""}
+      <select
+        value={source || ""}
+        onChange={(e) => onSourceChange(e.target.value)}
+        className="flex h-12 w-full rounded-[12px] border border-gray-200 bg-white px-3 py-2 text-sm ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-400 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
       >
-        <SelectTrigger className="h-12 border-gray-200 rounded-[12px] text-sm bg-white">
-          <SelectValue placeholder={placeholder}>
-            {findDisplayName()}
-          </SelectValue>
-        </SelectTrigger>
-        <SelectContent className="bg-white border border-gray-200 shadow-lg">
-          {filteredSources.map((source) => (
-            <SelectItem 
-              key={source.id} 
-              value={source.id}
-              className="hover:bg-gray-50 text-sm"
-            >
-              {source.name}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
+        <option value="" disabled>
+          {placeholder}
+        </option>
+        {filteredSources.map((source) => (
+          <option key={source.id} value={source.id}>
+            {source.name}
+          </option>
+        ))}
+      </select>
       <Button
         type="button"
         variant="outline"
