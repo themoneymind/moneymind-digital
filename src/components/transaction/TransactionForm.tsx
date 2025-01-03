@@ -46,49 +46,20 @@ export const TransactionForm = ({
   customCategories,
   formattedSources,
 }: TransactionFormProps) => {
-  const formatCurrency = (amount: string) => {
-    const num = Number(amount);
-    if (isNaN(num)) return "₹0";
-    return new Intl.NumberFormat("en-IN", {
-      style: "currency",
-      currency: "INR",
-      maximumFractionDigits: 0,
-    }).format(num);
-  };
-
   return (
     <div className="space-y-4">
       <TransactionTypeSelector type={type} onTypeChange={onTypeChange} />
       
-      {type === "transfer" ? (
-        <div className="space-y-4">
-          <div className="flex items-center justify-between p-3 bg-gray-50 rounded-[12px] border border-gray-100">
-            <p className="text-sm text-gray-500">Transfer Amount</p>
-            <p className="text-lg font-semibold">{formatCurrency(amount)}</p>
-          </div>
-          <div className="relative">
-            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-sm">₹</span>
-            <Input
-              type="number"
-              placeholder="0"
-              className="text-sm pl-7 h-12 border-gray-200 rounded-[12px] bg-white"
-              value={amount}
-              onChange={(e) => onAmountChange(e.target.value)}
-            />
-          </div>
-        </div>
-      ) : (
-        <div className="relative">
-          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-sm">₹</span>
-          <Input
-            type="number"
-            placeholder="0"
-            className="text-sm pl-7 h-12 border-gray-200 rounded-[12px] bg-white"
-            value={amount}
-            onChange={(e) => onAmountChange(e.target.value)}
-          />
-        </div>
-      )}
+      <div className="relative">
+        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-sm">₹</span>
+        <Input
+          type="number"
+          placeholder="0"
+          className="text-sm pl-7 h-12 border-gray-200 rounded-[12px] bg-white"
+          value={amount}
+          onChange={(e) => onAmountChange(e.target.value)}
+        />
+      </div>
 
       <CategorySelector
         type={type}
