@@ -3,7 +3,7 @@ import { useFinance } from "@/contexts/FinanceContext";
 import { TransactionType } from "@/types/finance";
 import { TransactionForm } from "./transaction/TransactionForm";
 import { useTransactionValidation } from "@/hooks/useTransactionValidation";
-import { X } from "lucide-react";
+import { TransactionHeader } from "./transaction/TransactionHeader";
 import { toast } from "sonner";
 
 type NewTransactionProps = {
@@ -31,13 +31,6 @@ export const NewTransaction = ({ onClose }: NewTransactionProps) => {
   });
 
   const formattedSources = getFormattedPaymentSources();
-
-  const handleAddCustomCategory = (newCategory: string) => {
-    setCustomCategories((prev) => ({
-      ...prev,
-      [type]: [...prev[type], newCategory],
-    }));
-  };
 
   const validateTransactionType = (type: TransactionType): boolean => {
     const validTypes: TransactionType[] = ["expense", "income", "transfer"];
@@ -106,15 +99,7 @@ export const NewTransaction = ({ onClose }: NewTransactionProps) => {
     <div className="bg-white rounded-t-[28px] pb-8 overflow-y-auto h-[95vh] min-h-[95vh]">
       <div className="mx-auto h-2 w-[100px] rounded-full bg-gray-200 my-3" />
       <div className="px-6">
-        <div className="flex items-center justify-between mb-8 sticky top-0 bg-white pt-2">
-          <h2 className="text-xl font-semibold">New Transaction</h2>
-          <button 
-            onClick={onClose}
-            className="p-2 rounded-full text-gray-500 hover:bg-gray-100 transition-colors"
-          >
-            <X className="w-5 h-5" />
-          </button>
-        </div>
+        <TransactionHeader onClose={onClose} />
         <TransactionForm
           type={type}
           amount={amount}
@@ -130,7 +115,6 @@ export const NewTransaction = ({ onClose }: NewTransactionProps) => {
           onDateChange={setSelectedDate}
           onSubmit={handleSubmit}
           customCategories={customCategories}
-          onAddCustomCategory={handleAddCustomCategory}
           formattedSources={formattedSources}
         />
       </div>

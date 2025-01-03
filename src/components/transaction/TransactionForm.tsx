@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { TransactionType } from "@/types/finance";
@@ -7,35 +6,6 @@ import { CategorySelector } from "./CategorySelector";
 import { PaymentSourceSelector } from "./PaymentSourceSelector";
 import { TransactionDateSelector } from "./TransactionDateSelector";
 import { RepeatSelector } from "./RepeatSelector";
-import { useNavigate } from "react-router-dom";
-
-const DEFAULT_CATEGORIES = {
-  expense: [
-    "Food",
-    "Transportation",
-    "Shopping",
-    "Entertainment",
-    "Bills",
-    "Health",
-    "Education",
-    "Others"
-  ],
-  income: [
-    "Salary",
-    "Business",
-    "Investment",
-    "Gift",
-    "Others"
-  ],
-  transfer: [
-    "Fund Transfer",
-    "Credit Card Payment",
-    "Transfer to Wallet",
-    "Investment Transfer",
-    "Loan Payment",
-    "Others"
-  ]
-};
 
 type TransactionFormProps = {
   type: TransactionType;
@@ -56,7 +26,6 @@ type TransactionFormProps = {
     income: string[];
     transfer: string[];
   };
-  onAddCustomCategory: (category: string) => void;
   formattedSources: { id: string; name: string }[];
 };
 
@@ -75,102 +44,101 @@ export const TransactionForm = ({
   onDescriptionChange,
   onSubmit,
   customCategories,
-  onAddCustomCategory,
   formattedSources,
 }: TransactionFormProps) => {
-  const navigate = useNavigate();
-  const [toSource, setToSource] = useState("");
-  
-  const allCategories = {
-    expense: [...DEFAULT_CATEGORIES.expense, ...customCategories.expense],
-    income: [...DEFAULT_CATEGORIES.income, ...customCategories.income],
-    transfer: [...DEFAULT_CATEGORIES.transfer, ...customCategories.transfer],
-  };
-
-  const handleTypeChange = (newType: TransactionType) => {
-    if (["expense", "income", "transfer"].includes(newType)) {
-      onTypeChange(newType);
-    }
-  };
-
-  const handleFromSourceChange = (newSource: string) => {
-    onSourceChange(newSource);
-  };
-
-  const handleToSourceChange = (newSource: string) => {
-    setToSource(newSource);
+  const formatCurrency = (amount: string) => {
+    const num = Number(amount);
+    if (isNaN(num)) return "₹0";
+    return new Intl.NumberFormat("en-IN", {
+      style: "currency",
+      currency: "INR",
+      maximumFractionDigits: 0,
+    }).format(num);
   };
 
   return (
     <div className="space-y-4">
-      <TransactionTypeSelector type={type} onTypeChange={handleTypeChange} />
-      <div className="relative">
-        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-sm">₹</span>
-        <Input
-          type="number"
-          placeholder="0"
-          className="text-sm pl-7 h-12 border-gray-200 rounded-[12px] bg-white"
-          value={amount}
-          onChange={(e) => onAmountChange(e.target.value)}
-        />
-      </div>
+      <TransactionTypeSelector type={type} onTypeChange={onTypeChange} />
+      
+      {type === "transfer" ? (
+        <div className="relative">
+          <div className="flex items-center justify-between p-3 bg-gray-50 rounded-[12px] border border-gray-100 mb-4">
+            <p className="text-sm text-gray-500">Transfer Amount</p>
+            <div className="relative">
+              <span className="text-lg font-semibold">{formatCurrency(amount)}</span>
+              <Input
+                type="number"
+                placeholder="0"
+                className="absolute inset-0 opacity-0"
+                value={amount}
+                onChange={(e) => onAmountChange(e.target.value)}
+              />
+            </div>
+          </div>
+        </div>
+      ) : (
+        <div className="relative">
+          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-sm">₹</span>
+          <Input
+            type="number"
+            placeholder="0"
+            className="text-sm pl-7 h-12 border-gray-200 rounded-[12px] bg-white"
+            value={amount}
+            onChange={(e) => onAmountChange(e.target.value)}
+          />
+        </div>
+      )}
+
+      <CategorySelector
+        type={type}
+        category={category}
+        onCategoryChange={onCategoryChange}
+        customCategories={customCategories}
+      />
+
       {type === "transfer" ? (
         <>
-          <CategorySelector
-            type={type}
-            category={category}
-            onCategoryChange={onCategoryChange}
-            customCategories={allCategories}
-            onAddCustomCategory={onAddCustomCategory}
-          />
-          <div className="space-y-4">
-            <PaymentSourceSelector
-              source={source}
-              onSourceChange={handleFromSourceChange}
-              formattedSources={formattedSources}
-              placeholder="From payment source"
-            />
-            <PaymentSourceSelector
-              source={toSource}
-              onSourceChange={handleToSourceChange}
-              formattedSources={formattedSources}
-              placeholder="To payment source"
-              isTransferTo={true}
-              fromSource={source}
-            />
-          </div>
-        </>
-      ) : (
-        <>
-          <CategorySelector
-            type={type}
-            category={category}
-            onCategoryChange={onCategoryChange}
-            customCategories={allCategories}
-            onAddCustomCategory={onAddCustomCategory}
-          />
           <PaymentSourceSelector
             source={source}
             onSourceChange={onSourceChange}
             formattedSources={formattedSources}
-            placeholder="Select payment source"
+            placeholder="From payment source"
+          />
+          <PaymentSourceSelector
+            source={source}
+            onSourceChange={onSourceChange}
+            formattedSources={formattedSources.filter(s => s.id !== source)}
+            placeholder="To payment source"
+            isTransferTo={true}
+            fromSource={source}
           />
         </>
+      ) : (
+        <PaymentSourceSelector
+          source={source}
+          onSourceChange={onSourceChange}
+          formattedSources={formattedSources}
+          placeholder="Select payment source"
+        />
       )}
+
       <TransactionDateSelector
         selectedDate={selectedDate}
         onDateChange={onDateChange}
       />
+
       <Input
         placeholder="Add a description"
         className="h-12 border-gray-200 rounded-[12px] text-sm bg-white"
         value={description}
         onChange={(e) => onDescriptionChange(e.target.value)}
       />
+
       <RepeatSelector
         value="never"
         onValueChange={() => {}}
       />
+
       <Button
         className="w-full h-12 bg-[#7F3DFF] hover:bg-[#7F3DFF]/90 rounded-[12px] text-sm"
         onClick={onSubmit}

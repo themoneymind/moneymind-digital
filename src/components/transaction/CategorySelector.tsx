@@ -1,16 +1,4 @@
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
 import { TransactionType } from "@/types/finance";
-import { useState } from "react";
-import { Input } from "@/components/ui/input";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 interface CategorySelectorProps {
   type: TransactionType;
@@ -21,7 +9,6 @@ interface CategorySelectorProps {
     income: string[];
     transfer: string[];
   };
-  onAddCustomCategory: (category: string) => void;
 }
 
 const DEFAULT_CATEGORIES = {
@@ -57,72 +44,26 @@ export const CategorySelector = ({
   category,
   onCategoryChange,
   customCategories,
-  onAddCustomCategory,
 }: CategorySelectorProps) => {
-  const [showAddCategory, setShowAddCategory] = useState(false);
-  const [newCategory, setNewCategory] = useState("");
-  
   const uniqueCategories = Array.from(new Set([
     ...DEFAULT_CATEGORIES[type],
     ...customCategories[type]
   ]));
 
-  const handleAddCategory = () => {
-    if (newCategory.trim()) {
-      onAddCustomCategory(newCategory.trim());
-      setNewCategory("");
-      setShowAddCategory(false);
-    }
-  };
-
   return (
     <div className="space-y-2">
-      <div className="flex gap-2">
-        <Select value={category} onValueChange={onCategoryChange}>
-          <SelectTrigger className="h-10 rounded-xl border-gray-200 bg-white">
-            <SelectValue placeholder="Select category" />
-          </SelectTrigger>
-          <SelectContent className="bg-white border border-gray-200 shadow-lg rounded-xl max-h-[300px] overflow-y-auto">
-            {uniqueCategories.map((cat) => (
-              <SelectItem key={cat} value={cat} className="cursor-pointer">
-                {cat}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-        <Button
-          type="button"
-          variant="outline"
-          size="icon"
-          className="h-10 w-10 border-gray-200 rounded-xl flex-shrink-0"
-          onClick={() => setShowAddCategory(true)}
-        >
-          <Plus className="h-4 w-4" />
-        </Button>
-      </div>
-
-      <Dialog open={showAddCategory} onOpenChange={setShowAddCategory}>
-        <DialogContent className="sm:max-w-[425px]">
-          <DialogHeader>
-            <DialogTitle>Add New Category</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4 py-4">
-            <Input
-              value={newCategory}
-              onChange={(e) => setNewCategory(e.target.value)}
-              placeholder="Enter category name"
-              className="h-10 rounded-xl bg-white"
-            />
-            <Button 
-              onClick={handleAddCategory}
-              className="w-full h-10 rounded-xl"
-              disabled={!newCategory.trim()}
-            >
-              Add Category
-            </Button>
-          </div>
-        </DialogContent>
-      </Dialog>
+      <select
+        value={category}
+        onChange={(e) => onCategoryChange(e.target.value)}
+        className="flex h-12 w-full rounded-[12px] border border-gray-200 bg-white px-3 py-2 text-sm ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-400 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+      >
+        <option value="" disabled>Select category</option>
+        {uniqueCategories.map((cat) => (
+          <option key={cat} value={cat}>
+            {cat}
+          </option>
+        ))}
+      </select>
     </div>
   );
 };
