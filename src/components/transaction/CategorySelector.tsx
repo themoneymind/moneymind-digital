@@ -1,6 +1,9 @@
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { useState } from "react";
+import { toast } from "sonner";
 
 type CategorySelectorProps = {
   type: "expense" | "income" | "transfer";
@@ -19,7 +22,8 @@ export const CategorySelector = ({
   onCategoryChange,
   customCategories,
 }: CategorySelectorProps) => {
-  const navigate = useNavigate();
+  const [newCategory, setNewCategory] = useState("");
+  const [isOpen, setIsOpen] = useState(false);
   
   const defaultCategories = {
     expense: ["Food", "Transport", "Shopping", "Entertainment", "Bills", "Others"],
@@ -30,6 +34,26 @@ export const CategorySelector = ({
   const categories = customCategories[type]?.length
     ? customCategories[type]
     : defaultCategories[type];
+
+  const handleAddCategory = () => {
+    if (!newCategory.trim()) {
+      toast.error("Please enter a category name");
+      return;
+    }
+
+    if (categories.includes(newCategory.trim())) {
+      toast.error("Category already exists");
+      return;
+    }
+
+    // Add the new category to the list
+    const updatedCategories = [...categories, newCategory.trim()];
+    customCategories[type] = updatedCategories;
+    
+    setNewCategory("");
+    setIsOpen(false);
+    toast.success("Category added successfully");
+  };
 
   return (
     <div className="flex gap-2 items-center">
@@ -47,15 +71,35 @@ export const CategorySelector = ({
           </option>
         ))}
       </select>
-      <Button
-        type="button"
-        variant="outline"
-        size="icon"
-        className="h-12 w-12 border-gray-200 rounded-[12px] flex-shrink-0"
-        onClick={() => navigate("/app/categories")}
-      >
-        <Plus className="h-4 w-4" />
-      </Button>
+      
+      <Dialog open={isOpen} onOpenChange={setIsOpen}>
+        <DialogTrigger asChild>
+          <Button
+            type="button"
+            variant="outline"
+            size="icon"
+            className="h-12 w-12 border-gray-200 rounded-[12px] flex-shrink-0"
+          >
+            <Plus className="h-4 w-4" />
+          </Button>
+        </DialogTrigger>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Add New Category</DialogTitle>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <Input
+              placeholder="Enter category name"
+              value={newCategory}
+              onChange={(e) => setNewCategory(e.target.value)}
+              className="h-12 border-gray-200 rounded-[12px]"
+            />
+            <Button onClick={handleAddCategory} className="w-full">
+              Add Category
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

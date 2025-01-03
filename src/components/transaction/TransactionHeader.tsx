@@ -1,4 +1,5 @@
 import { X } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 type TransactionHeaderProps = {
   onClose: () => void;
@@ -6,14 +7,16 @@ type TransactionHeaderProps = {
 
 export const TransactionHeader = ({ onClose }: TransactionHeaderProps) => {
   return (
-    <div className="flex items-center justify-between mb-4 sticky top-0 bg-white pt-2">
+    <div className="flex items-center justify-between mb-4">
       <h2 className="text-xl font-semibold">New Transaction</h2>
-      <button 
+      <Button
+        variant="ghost"
+        size="icon"
         onClick={onClose}
-        className="p-2 rounded-full text-gray-500 hover:bg-gray-100 transition-colors"
+        className="hover:bg-gray-100 rounded-full"
       >
-        <X className="w-5 h-5" />
-      </button>
+        <X className="h-6 w-6" />
+      </Button>
     </div>
   );
 };
