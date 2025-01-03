@@ -78,7 +78,7 @@ export const CategorySelector = ({
             type="button"
             variant="outline"
             size="icon"
-            className="h-12 w-12 border-gray-200 rounded-[12px] flex-shrink-0"
+            className="h-10 w-10 border-gray-200 rounded-[12px] flex-shrink-0"
           >
             <Plus className="h-4 w-4" />
           </Button>
