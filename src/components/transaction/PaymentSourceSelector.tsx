@@ -10,6 +10,7 @@ type PaymentSourceSelectorProps = {
   isTransferTo?: boolean;
   fromSource?: string;
   initialDisplaySource?: string;
+  showAddButton?: boolean;
 };
 
 export const PaymentSourceSelector = ({
@@ -20,6 +21,7 @@ export const PaymentSourceSelector = ({
   isTransferTo = false,
   fromSource = "",
   initialDisplaySource,
+  showAddButton = true,
 }: PaymentSourceSelectorProps) => {
   const navigate = useNavigate();
   
@@ -46,15 +48,17 @@ export const PaymentSourceSelector = ({
           </option>
         ))}
       </select>
-      <Button
-        type="button"
-        variant="outline"
-        size="icon"
-        className="h-12 w-12 border-gray-200 rounded-[12px] flex-shrink-0"
-        onClick={() => navigate("/app/payment-source")}
-      >
-        <Plus className="h-4 w-4" />
-      </Button>
+      {showAddButton && (
+        <Button
+          type="button"
+          variant="outline"
+          size="icon"
+          className="h-12 w-12 border-gray-200 rounded-[12px] flex-shrink-0"
+          onClick={() => navigate("/app/payment-source")}
+        >
+          <Plus className="h-4 w-4" />
+        </Button>
+      )}
     </div>
   );
 };

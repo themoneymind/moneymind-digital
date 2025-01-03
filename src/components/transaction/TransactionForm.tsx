@@ -77,6 +77,7 @@ export const TransactionForm = ({
               onSourceChange={onSourceChange}
               formattedSources={formattedSources}
               placeholder="From"
+              showAddButton={false}
             />
           </div>
           <div className="flex-shrink-0">
@@ -90,6 +91,7 @@ export const TransactionForm = ({
               placeholder="To"
               isTransferTo={true}
               fromSource={source}
+              showAddButton={true}
             />
           </div>
         </div>
