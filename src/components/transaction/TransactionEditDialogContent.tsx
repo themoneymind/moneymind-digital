@@ -4,6 +4,7 @@ import { Transaction } from "@/types/transactions";
 import { useFinance } from "@/contexts/FinanceContext";
 import { useTransactionEditForm } from "@/hooks/useTransactionEditForm";
 import { ArrowLeftRight, ArrowDown, ArrowUp, X } from "lucide-react";
+import { PaymentSourceSelector } from "./PaymentSourceSelector";
 
 export interface TransactionEditDialogContentProps {
   transaction: Transaction;
@@ -76,6 +77,11 @@ export const TransactionEditDialogContent = ({
         </Button>
       </div>
       <form onSubmit={handleSubmit} className="space-y-4">
+        <div className="p-4 bg-gray-50 rounded-[12px] border border-gray-100">
+          <p className="text-sm text-gray-500 mb-1">Current Amount</p>
+          <p className="text-lg font-semibold">₹{transaction.amount}</p>
+        </div>
+
         <TransactionEditDialogForm
           currentAmount={Number(transaction.amount)}
           operation={operation}
@@ -96,6 +102,7 @@ export const TransactionEditDialogContent = ({
           initialSource={transaction.source}
           initialDisplaySource={transaction.display_source}
         />
+
         <div className="flex gap-2">
           <Button 
             type="submit" 

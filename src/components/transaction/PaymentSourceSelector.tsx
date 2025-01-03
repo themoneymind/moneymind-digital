@@ -1,6 +1,6 @@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
+import { Plus, ChevronDown } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 type PaymentSourceSelectorProps = {
@@ -44,12 +44,15 @@ export const PaymentSourceSelector = ({
         onValueChange={onSourceChange}
         defaultValue={source || ""}
       >
-        <SelectTrigger className="h-12 border-gray-200 rounded-[12px] text-sm bg-white">
+        <SelectTrigger 
+          className="h-12 border-gray-200 rounded-[12px] text-sm bg-white flex-1"
+        >
           <SelectValue placeholder={placeholder}>
             {findDisplayName()}
           </SelectValue>
+          <ChevronDown className="h-4 w-4 opacity-50 ml-2" />
         </SelectTrigger>
-        <SelectContent className="bg-white border border-gray-200 shadow-lg">
+        <SelectContent className="bg-white border border-gray-200 shadow-lg z-50">
           {filteredSources.map((source) => (
             <SelectItem 
               key={source.id} 

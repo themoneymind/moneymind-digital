@@ -105,8 +105,12 @@ export const NewTransaction = ({ onClose }: NewTransactionProps) => {
 
   return (
     <Sheet>
-      <SheetContent side="bottom" className="p-0 bg-transparent" closeButton={false}>
-        <div className="bg-white pb-8 overflow-y-auto h-full">
+      <SheetContent 
+        side="bottom" 
+        className="p-0 bg-white border-t border-gray-200" 
+        closeButton={false}
+      >
+        <div className="pb-8 overflow-y-auto h-full">
           <div className="px-6">
             <div className="flex items-center justify-between mb-8 sticky top-0 bg-white pt-2">
               <h2 className="text-xl font-semibold">New Transaction</h2>
