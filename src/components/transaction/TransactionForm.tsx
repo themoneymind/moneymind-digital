@@ -65,11 +65,11 @@ export const TransactionForm = ({
   const getBgColor = () => {
     switch (type) {
       case "expense":
-        return "bg-red-50";
+        return "bg-red-50/50";
       case "income":
-        return "bg-green-50";
+        return "bg-green-50/50";
       case "transfer":
-        return "bg-purple-50";
+        return "bg-purple-50/50";
       default:
         return "bg-white";
     }
@@ -78,12 +78,12 @@ export const TransactionForm = ({
   return (
     <div className="space-y-6">
       <div className="relative mt-2 mb-8">
-        <div className="flex items-center border-b-2 border-gray-200 focus-within:border-primary py-2">
-          <span className="text-3xl font-semibold text-gray-500 mr-2">₹</span>
+        <div className="flex items-center border-b-2 border-gray-200 focus-within:border-primary pb-4">
+          <span className="text-4xl font-medium text-gray-400 mr-2">₹</span>
           <input
             type="number"
             placeholder="0"
-            className="text-4xl font-semibold w-full focus:outline-none bg-transparent"
+            className="text-5xl font-medium w-full focus:outline-none bg-transparent placeholder:text-gray-300"
             value={amount}
             onChange={(e) => onAmountChange(e.target.value)}
           />
@@ -92,7 +92,7 @@ export const TransactionForm = ({
 
       <TransactionTypeSelector type={type} onTypeChange={onTypeChange} />
 
-      <div className={`space-y-6 mt-6 p-4 rounded-2xl ${getBgColor()}`}>
+      <div className={`space-y-6 mt-6 p-5 rounded-2xl ${getBgColor()}`}>
         <CategorySelector
           type={type}
           category={category}
@@ -143,7 +143,7 @@ export const TransactionForm = ({
         <div className="relative">
           <input
             placeholder="Add a description"
-            className="w-full py-2 px-0 text-sm bg-transparent border-b-2 border-gray-200 focus:border-primary focus:outline-none transition-colors"
+            className="w-full py-3 px-0 text-sm bg-transparent border-b border-gray-200 focus:border-primary focus:outline-none transition-colors placeholder:text-gray-400"
             value={description}
             onChange={(e) => onDescriptionChange(e.target.value)}
           />
@@ -155,7 +155,7 @@ export const TransactionForm = ({
         />
 
         <Button
-          className={`w-full h-12 rounded-[12px] text-sm ${
+          className={`w-full h-12 rounded-[12px] text-sm font-medium ${
             type === "expense"
               ? "bg-red-500 hover:bg-red-600"
               : type === "income"
