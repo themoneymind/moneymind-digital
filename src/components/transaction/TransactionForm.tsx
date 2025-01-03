@@ -1,5 +1,4 @@
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { TransactionType } from "@/types/finance";
 import { TransactionTypeSelector } from "./TransactionTypeSelector";
 import { CategorySelector } from "./CategorySelector";
@@ -63,29 +62,37 @@ export const TransactionForm = ({
     }
   };
 
-  const filterSourcesForTransfer = (sources: { id: string; name: string }[], excludeSourceId: string) => {
-    if (!excludeSourceId) return sources;
-    return sources.filter(s => !s.id.startsWith(excludeSourceId.split('-')[0]));
+  const getBgColor = () => {
+    switch (type) {
+      case "expense":
+        return "bg-red-50";
+      case "income":
+        return "bg-green-50";
+      case "transfer":
+        return "bg-purple-50";
+      default:
+        return "bg-white";
+    }
   };
 
   return (
-    <div className="space-y-4">
-      <TransactionTypeSelector type={type} onTypeChange={onTypeChange} />
-      
-      <div className="relative mt-6 mb-8">
+    <div className="space-y-6">
+      <div className="relative mt-2 mb-8">
         <div className="flex items-center border-b-2 border-gray-200 focus-within:border-primary py-2">
-          <span className="text-2xl font-semibold text-gray-500 mr-2">₹</span>
+          <span className="text-3xl font-semibold text-gray-500 mr-2">₹</span>
           <input
             type="number"
             placeholder="0"
-            className="text-3xl font-semibold w-full focus:outline-none bg-transparent"
+            className="text-4xl font-semibold w-full focus:outline-none bg-transparent"
             value={amount}
             onChange={(e) => onAmountChange(e.target.value)}
           />
         </div>
       </div>
 
-      <div className="space-y-4">
+      <TransactionTypeSelector type={type} onTypeChange={onTypeChange} />
+
+      <div className={`space-y-6 mt-6 p-4 rounded-2xl ${getBgColor()}`}>
         <CategorySelector
           type={type}
           category={category}
@@ -111,7 +118,7 @@ export const TransactionForm = ({
               <PaymentSourceSelector
                 source={toSource}
                 onSourceChange={handleToSourceChange}
-                formattedSources={filterSourcesForTransfer(formattedSources, fromSource)}
+                formattedSources={formattedSources}
                 placeholder="To"
                 isTransferTo={true}
                 fromSource={fromSource}
@@ -148,7 +155,13 @@ export const TransactionForm = ({
         />
 
         <Button
-          className="w-full h-12 bg-[#7F3DFF] hover:bg-[#7F3DFF]/90 rounded-[12px] text-sm"
+          className={`w-full h-12 rounded-[12px] text-sm ${
+            type === "expense"
+              ? "bg-red-500 hover:bg-red-600"
+              : type === "income"
+              ? "bg-green-500 hover:bg-green-600"
+              : "bg-[#7F3DFF] hover:bg-[#7F3DFF]/90"
+          }`}
           onClick={onSubmit}
         >
           Add Transaction
