@@ -6,6 +6,7 @@ import { CategorySelector } from "./CategorySelector";
 import { PaymentSourceSelector } from "./PaymentSourceSelector";
 import { TransactionDateSelector } from "./TransactionDateSelector";
 import { RepeatSelector } from "./RepeatSelector";
+import { ArrowRight } from "lucide-react";
 
 type TransactionFormProps = {
   type: TransactionType;
@@ -69,22 +70,29 @@ export const TransactionForm = ({
       />
 
       {type === "transfer" ? (
-        <>
-          <PaymentSourceSelector
-            source={source}
-            onSourceChange={onSourceChange}
-            formattedSources={formattedSources}
-            placeholder="From payment source"
-          />
-          <PaymentSourceSelector
-            source={source}
-            onSourceChange={onSourceChange}
-            formattedSources={formattedSources.filter(s => s.id !== source)}
-            placeholder="To payment source"
-            isTransferTo={true}
-            fromSource={source}
-          />
-        </>
+        <div className="flex items-center gap-2">
+          <div className="flex-1">
+            <PaymentSourceSelector
+              source={source}
+              onSourceChange={onSourceChange}
+              formattedSources={formattedSources}
+              placeholder="From"
+            />
+          </div>
+          <div className="flex-shrink-0">
+            <ArrowRight className="h-5 w-5 text-gray-400" />
+          </div>
+          <div className="flex-1">
+            <PaymentSourceSelector
+              source={source}
+              onSourceChange={onSourceChange}
+              formattedSources={formattedSources.filter(s => s.id !== source)}
+              placeholder="To"
+              isTransferTo={true}
+              fromSource={source}
+            />
+          </div>
+        </div>
       ) : (
         <PaymentSourceSelector
           source={source}
