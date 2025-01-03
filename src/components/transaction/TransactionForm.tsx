@@ -7,6 +7,7 @@ import { PaymentSourceSelector } from "./PaymentSourceSelector";
 import { TransactionDateSelector } from "./TransactionDateSelector";
 import { RepeatSelector } from "./RepeatSelector";
 import { ArrowLeftRight } from "lucide-react";
+import { useState } from "react";
 
 type TransactionFormProps = {
   type: TransactionType;
@@ -47,6 +48,22 @@ export const TransactionForm = ({
   customCategories,
   formattedSources,
 }: TransactionFormProps) => {
+  const [toSource, setToSource] = useState("");
+
+  const handleFromSourceChange = (newSource: string) => {
+    onSourceChange(newSource);
+    // Reset toSource if it's the same as the new fromSource
+    if (toSource === newSource) {
+      setToSource("");
+    }
+  };
+
+  const handleToSourceChange = (newSource: string) => {
+    setToSource(newSource);
+    // This ensures the final source value includes both from and to
+    onSourceChange(newSource);
+  };
+
   return (
     <div className="space-y-4">
       <TransactionTypeSelector type={type} onTypeChange={onTypeChange} />
@@ -70,11 +87,11 @@ export const TransactionForm = ({
       />
 
       {type === "transfer" ? (
-        <div className="flex items-center gap-4">
-          <div className="w-[42%]">
+        <div className="flex items-center">
+          <div className="w-[46%]">
             <PaymentSourceSelector
               source={source}
-              onSourceChange={onSourceChange}
+              onSourceChange={handleFromSourceChange}
               formattedSources={formattedSources}
               placeholder="From"
               showAddButton={false}
@@ -83,10 +100,10 @@ export const TransactionForm = ({
           <div className="flex-shrink-0 flex items-center justify-center w-[8%]">
             <ArrowLeftRight className="h-5 w-5 text-gray-400" />
           </div>
-          <div className="w-[42%]">
+          <div className="w-[46%]">
             <PaymentSourceSelector
-              source={source}
-              onSourceChange={onSourceChange}
+              source={toSource}
+              onSourceChange={handleToSourceChange}
               formattedSources={formattedSources.filter(s => s.id !== source)}
               placeholder="To"
               isTransferTo={true}
