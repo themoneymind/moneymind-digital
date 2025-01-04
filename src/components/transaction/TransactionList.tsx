@@ -47,9 +47,20 @@ export const TransactionList = ({
   filteredTransactions.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
   if (filteredTransactions.length === 0) {
+    let message = "No transactions found";
+    
+    if (filter === "date") {
+      const formattedDate = format(selectedDate, "MMMM d, yyyy");
+      message = `No transactions found for ${formattedDate}. Try another date or view all transactions`;
+    } else if (filter === "income") {
+      message = "No income transactions found";
+    } else if (filter === "expense") {
+      message = "No expense transactions found";
+    }
+
     return (
       <div className="text-center py-8 text-gray-500">
-        No transactions found
+        {message}
       </div>
     );
   }
