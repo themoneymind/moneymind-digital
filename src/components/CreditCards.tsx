@@ -86,6 +86,11 @@ export const CreditCards = () => {
           </>
         )}
       </div>
+      {creditCards.length > 0 && (
+        <div className="mt-6">
+          <RecentTransactions filterByType="Credit Card" selectedCardId={creditCards[activeIndex]?.id} />
+        </div>
+      )}
     </div>
   );
 };

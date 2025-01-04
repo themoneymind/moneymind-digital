@@ -10,11 +10,13 @@ import { getBaseSourceId } from "@/utils/paymentSourceUtils";
 interface RecentTransactionsProps {
   filterByType?: string;
   showViewAll?: boolean;
+  selectedCardId?: string;
 }
 
 export const RecentTransactions = ({ 
   filterByType,
-  showViewAll = true
+  showViewAll = true,
+  selectedCardId
 }: RecentTransactionsProps) => {
   const { transactions, paymentSources, currentMonth } = useFinance();
   const [selectedTransaction, setSelectedTransaction] = useState<Transaction | null>(null);
@@ -29,13 +31,19 @@ export const RecentTransactions = ({
     if (!isSameMonth(transactionDate, currentMonth)) return false;
     
     if (filterByType === "Credit Card") {
+      // If a specific card is selected, only show transactions for that card
+      if (selectedCardId) {
+        return transaction.base_source_id === selectedCardId || 
+          (transaction.type === "transfer" && 
+           transaction.reference_type === "credit_card_payment" && 
+           getBaseSourceId(transaction.display_source) === selectedCardId);
+      }
+      
+      // Otherwise, show all credit card transactions
       const creditCardIds = paymentSources
         .filter(source => source.type === "Credit Card")
         .map(source => source.id);
       
-      // For credit card view, include:
-      // 1. Transactions where the source is a credit card
-      // 2. Credit card payment transfers to this card
       return creditCardIds.includes(transaction.base_source_id) || 
         (transaction.type === "transfer" && 
          transaction.reference_type === "credit_card_payment" && 
