@@ -5,6 +5,7 @@ import { TransactionForm } from "./transaction/TransactionForm";
 import { useTransactionValidation } from "@/hooks/useTransactionValidation";
 import { TransactionHeader } from "./transaction/TransactionHeader";
 import { toast } from "sonner";
+import { cn } from "@/lib/utils";
 
 type NewTransactionProps = {
   onClose: () => void;
@@ -95,9 +96,25 @@ export const NewTransaction = ({ onClose }: NewTransactionProps) => {
     }
   };
 
+  const getTypeStyles = () => {
+    switch (type) {
+      case "expense":
+        return "bg-gradient-to-b from-red-500/30 to-red-600/10 backdrop-blur-xl border-red-200/20";
+      case "income":
+        return "bg-gradient-to-b from-green-500/30 to-green-600/10 backdrop-blur-xl border-green-200/20";
+      case "transfer":
+        return "bg-gradient-to-b from-purple-500/30 to-purple-600/10 backdrop-blur-xl border-purple-200/20";
+      default:
+        return "bg-white";
+    }
+  };
+
   return (
-    <div className="bg-white rounded-t-[30px] overflow-y-auto h-[95vh] min-h-[95vh]">
-      <div className="mx-auto h-1 w-[36px] rounded-full bg-gray-200 my-3" />
+    <div className={cn(
+      "rounded-t-[30px] overflow-y-auto h-[95vh] min-h-[95vh] transition-colors duration-300",
+      getTypeStyles()
+    )}>
+      <div className="mx-auto h-1 w-[36px] rounded-full bg-gray-200/50 my-3" />
       <div className="px-4">
         <TransactionHeader onClose={onClose} />
         <TransactionForm
