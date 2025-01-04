@@ -24,23 +24,31 @@ export const RecentTransactions = ({
   
   let availableTransactions = transactions.filter(transaction => {
     const transactionDate = new Date(transaction.date);
-    return isSameMonth(transactionDate, currentMonth);
-  });
-
-  if (filterByType === "Credit Card") {
-    const creditCardIds = paymentSources
-      .filter(source => source.type === "Credit Card")
-      .map(source => source.id);
     
-    availableTransactions = availableTransactions.filter(t => {
-      // Include transactions where:
-      // 1. The source is a credit card
-      // 2. OR it's a credit card payment (transfer) to this card
+    // First, filter by current month
+    if (!isSameMonth(transactionDate, currentMonth)) return false;
+    
+    if (filterByType === "Credit Card") {
+      const creditCardIds = paymentSources
+        .filter(source => source.type === "Credit Card")
+        .map(source => source.id);
+      
+      // For credit card view, include:
+      // 1. Transactions where the source is a credit card
+      // 2. Credit card payment transfers to this card
       return creditCardIds.includes(t.base_source_id) || 
         (t.type === "transfer" && t.reference_type === "credit_card_payment" && creditCardIds.includes(getBaseSourceId(t.display_source)));
-    });
+    } else {
+      // For main view, exclude credit card transactions except payments
+      const source = paymentSources.find(s => s.id === transaction.base_source_id);
+      const isSourceCreditCard = source?.type === "Credit Card";
+      
+      return !isSourceCreditCard || (transaction.type === "transfer" && transaction.reference_type === "credit_card_payment");
+    }
+  });
 
-    // For credit card view, show payments as "Payment Received"
+  // For credit card view, show payments as "Payment Received"
+  if (filterByType === "Credit Card") {
     availableTransactions = availableTransactions.map(t => {
       if (t.type === "transfer" && t.reference_type === "credit_card_payment") {
         return {

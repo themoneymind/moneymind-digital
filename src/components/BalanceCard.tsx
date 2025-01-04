@@ -13,10 +13,22 @@ import {
 export const BalanceCard = () => {
   const { transactions, currentMonth, paymentSources } = useFinance();
 
-  // Filter out rejected transactions
-  const activeTransactions = transactions.filter(t => t.status !== 'rejected');
+  // Filter out rejected transactions and credit card transactions
+  const activeTransactions = transactions.filter(t => {
+    // Exclude rejected transactions
+    if (t.status === 'rejected') return false;
+    
+    // Find the source to check if it's a credit card
+    const source = paymentSources.find(s => s.id === t.base_source_id);
+    const isSourceCreditCard = source?.type === "Credit Card";
+    
+    // Include transaction if:
+    // 1. It's not from a credit card source (regular bank transaction)
+    // 2. OR it's a credit card payment transfer (we want to count these as expenses)
+    return !isSourceCreditCard || (t.type === "transfer" && t.reference_type === "credit_card_payment");
+  });
 
-  // Get the earliest transaction date to determine when the user started using the app
+  // Get the earliest transaction date
   const earliestTransaction = activeTransactions.length > 0 
     ? new Date(Math.min(...activeTransactions.map(t => new Date(t.date).getTime())))
     : new Date();
@@ -54,7 +66,7 @@ export const BalanceCard = () => {
     });
   });
 
-  // Calculate monthly income and expense
+  // Calculate monthly income and expense (excluding credit card transactions)
   const monthlyIncome = monthlyTransactions.reduce((acc, curr) => {
     if (curr.type === "transfer") {
       return acc; // Skip all transfers from income calculation
