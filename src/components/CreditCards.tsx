@@ -1,6 +1,5 @@
 import { useFinance } from "@/contexts/FinanceContext";
 import { CreditCardItem } from "./credit-card/CreditCardItem";
-import { Button } from "./ui/button";
 import { Plus } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
@@ -20,13 +19,13 @@ export const CreditCards = () => {
     <div className="space-y-6 overflow-x-hidden">
       <div className="flex items-center justify-between px-6">
         <h2 className="text-lg font-semibold">Credit Cards</h2>
-        <Button
+        <button
           onClick={handleAddCard}
-          className="bg-primary hover:bg-primary/90 transition-colors rounded-xl"
+          className="flex items-center text-primary hover:text-primary/80 transition-colors"
         >
-          <Plus className="h-5 w-5 mr-2" />
-          Add Card
-        </Button>
+          <Plus className="h-5 w-5 mr-2" strokeWidth={1.5} />
+          <span>Add Card</span>
+        </button>
       </div>
       
       <div className="relative w-full">
