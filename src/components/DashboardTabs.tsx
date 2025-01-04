@@ -43,7 +43,6 @@ export const DashboardTabs = () => {
         </div>
         <CreditCards />
         <div className="px-6">
-          <h3 className="text-lg font-semibold mb-4">Card Transactions</h3>
           <RecentTransactions showViewAll={false} filterByType="Credit Card" />
         </div>
       </TabsContent>
