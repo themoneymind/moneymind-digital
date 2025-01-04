@@ -1,27 +1,31 @@
-import { ArrowLeft } from "lucide-react";
+import { ChevronLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
-type TopBarProps = {
+interface TopBarProps {
   title: string;
-};
+  showBackButton?: boolean;
+}
 
-export const TopBar = ({ title }: TopBarProps) => {
+export const TopBar = ({ title, showBackButton = true }: TopBarProps) => {
   const navigate = useNavigate();
-  
+
   return (
-    <header className="sticky top-0 z-10">
-      <div className="bg-[#7F3DFF] pb-8">
-        <div className="max-w-2xl mx-auto flex items-center gap-4 px-4 py-8">
-          <button 
-            onClick={() => navigate(-1)}
-            className="p-2 hover:bg-white/10 rounded-full transition-colors"
-          >
-            <ArrowLeft className="w-5 h-5 text-white" />
-          </button>
-          <h1 className="text-2xl font-semibold text-white">{title}</h1>
+    <header className="fixed top-0 left-0 right-0 bg-white z-50 border-b border-gray-100">
+      <div className="max-w-md mx-auto md:max-w-5xl">
+        <div className="h-[56px] flex items-center justify-between px-4 md:px-6 lg:px-8">
+          <div className="flex items-center gap-3">
+            {showBackButton && (
+              <button
+                onClick={() => navigate(-1)}
+                className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+              >
+                <ChevronLeft className="w-5 h-5" />
+              </button>
+            )}
+            <h1 className="text-lg font-semibold">{title}</h1>
+          </div>
         </div>
       </div>
-      <div className="h-6 bg-[#F5F5F7] dark:bg-gray-900 relative -mt-6 rounded-t-[28px]" />
     </header>
   );
 };
