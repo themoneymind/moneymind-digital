@@ -31,17 +31,6 @@ export const TransactionTypeSelector = ({ type, onTypeChange }: TransactionTypeS
       >
         Income
       </Button>
-      <Button
-        variant="ghost"
-        className={`flex-1 h-10 text-sm font-medium transition-all duration-200 rounded-full ${
-          type === "transfer"
-            ? "bg-[#7F3DFF] text-white shadow-sm hover:bg-[#7F3DFF]/90"
-            : "text-gray-600 hover:text-[#7F3DFF] hover:bg-white/80"
-        }`}
-        onClick={() => onTypeChange("transfer")}
-      >
-        Transfer
-      </Button>
     </div>
   );
 };

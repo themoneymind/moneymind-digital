@@ -3,7 +3,6 @@ import { CategorySelector } from "./CategorySelector";
 import { PaymentSourceSelector } from "./PaymentSourceSelector";
 import { TransactionDateSelector } from "./TransactionDateSelector";
 import { RepeatSelector } from "./RepeatSelector";
-import { TransferSourceSelectors } from "./TransferSourceSelectors";
 import { TransactionFormActions } from "./TransactionFormActions";
 
 type TransactionFormFieldsProps = {
@@ -20,7 +19,6 @@ type TransactionFormFieldsProps = {
   customCategories: {
     expense: string[];
     income: string[];
-    transfer: string[];
   };
   formattedSources: { id: string; name: string }[];
 };
@@ -52,20 +50,12 @@ export const TransactionFormFields = ({
         customCategories={customCategories}
       />
 
-      {type === "transfer" ? (
-        <TransferSourceSelectors
-          source={source}
-          onSourceChange={onSourceChange}
-          formattedSources={formattedSources}
-        />
-      ) : (
-        <PaymentSourceSelector
-          source={source}
-          onSourceChange={onSourceChange}
-          formattedSources={formattedSources}
-          type={type}
-        />
-      )}
+      <PaymentSourceSelector
+        source={source}
+        onSourceChange={onSourceChange}
+        formattedSources={formattedSources}
+        type={type}
+      />
 
       <TransactionDateSelector
         selectedDate={selectedDate}
@@ -78,11 +68,7 @@ export const TransactionFormFields = ({
         className={`w-full py-3 px-0 text-sm bg-transparent border-b-2 border-gray-200 focus:outline-none transition-colors placeholder:text-gray-400 text-gray-600 ${
           type === 'expense' 
             ? 'focus:border-transaction-expense' 
-            : type === 'income'
-            ? 'focus:border-transaction-income'
-            : type === 'transfer'
-            ? 'focus:border-transaction-transfer'
-            : 'focus:border-primary'
+            : 'focus:border-transaction-income'
         }`}
         value={description}
         onChange={(e) => onDescriptionChange(e.target.value)}
