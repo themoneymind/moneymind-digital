@@ -10,7 +10,7 @@ export const TopBar = ({ title, showBackButton = true }: TopBarProps) => {
   const navigate = useNavigate();
 
   return (
-    <header className="sticky top-0 left-0 right-0 bg-white z-50 border-b border-gray-100">
+    <header className="sticky top-0 left-0 right-0 bg-white z-50 border-b border-gray-100 shadow-sm">
       <div className="max-w-md mx-auto md:max-w-5xl">
         <div className="h-[56px] flex items-center justify-between px-4 md:px-6 lg:px-8">
           <div className="flex items-center gap-3">
