@@ -13,9 +13,9 @@ export const TransactionHeader = ({ onClose }: TransactionHeaderProps) => {
         variant="ghost"
         size="icon"
         onClick={onClose}
-        className="hover:bg-gray-100 rounded-full"
+        className="hover:bg-red-50 rounded-full text-red-500 hover:text-red-600"
       >
-        <X className="h-6 w-6" />
+        <X className="h-7 w-7" />
       </Button>
     </div>
   );
