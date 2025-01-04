@@ -28,7 +28,7 @@ export const RepeatSelector = ({ value, onValueChange, type }: RepeatSelectorPro
         onChange={(e) => onValueChange(e.target.value as RepeatOption)}
         className={`w-full h-12 border-0 border-b-2 border-gray-200 rounded-none text-sm text-gray-600 bg-transparent transition-colors hover:bg-transparent placeholder-gray-400 focus:outline-none appearance-none pr-8 ${getFocusColor()}`}
       >
-        <option value="never">Never Repeat</option>
+        <option value="never" className="text-gray-400">Never Repeat</option>
         <option value="daily">Every Day</option>
         <option value="workdays">Every Work Day</option>
         <option value="weekly">Every Week</option>
