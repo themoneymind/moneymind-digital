@@ -96,7 +96,7 @@ export const NewTransaction = ({ onClose }: NewTransactionProps) => {
   };
 
   return (
-    <div className="bg-white rounded-t-[20px] overflow-y-auto h-[95vh] min-h-[95vh]">
+    <div className="bg-white rounded-t-[28px] overflow-y-auto h-[95vh] min-h-[95vh]">
       <div className="mx-auto h-1 w-[36px] rounded-full bg-gray-200 my-3" />
       <div className="px-4">
         <TransactionHeader onClose={onClose} />
