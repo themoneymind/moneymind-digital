@@ -49,8 +49,15 @@ export const TransactionFormFields = ({
 
   const handleTransferToChange = (newSource: string) => {
     setTransferToSource(newSource);
-    // Update the main source state with the "to" source
+    // Update the main source state with the "to" source for the transaction
     onSourceChange(newSource);
+  };
+
+  const getFilteredSources = () => {
+    if (!source) return formattedSources;
+    // Filter out sources that start with the same base ID as the "from" source
+    const baseSourceId = source.split('-')[0];
+    return formattedSources.filter(s => !s.id.startsWith(baseSourceId));
   };
 
   return (
@@ -70,11 +77,12 @@ export const TransactionFormFields = ({
             formattedSources={formattedSources}
             placeholder="Transfer from"
             type={type}
+            showAddButton={false}
           />
           <PaymentSourceSelector
             source={transferToSource}
             onSourceChange={handleTransferToChange}
-            formattedSources={formattedSources.filter(s => s.id !== source)}
+            formattedSources={getFilteredSources()}
             placeholder="Transfer to"
             isTransferTo={true}
             fromSource={source}
