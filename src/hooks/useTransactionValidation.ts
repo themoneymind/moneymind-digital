@@ -31,9 +31,21 @@ export const useTransactionValidation = () => {
     amount: number,
     type: TransactionType
   ): boolean => {
-    if (type === "expense" && source.amount < amount) {
-      toast.error("Insufficient balance in selected payment source");
-      return false;
+    if (type === "expense") {
+      const availableBalance = source.type === "Credit Card"
+        ? (source.credit_limit || 0) - (source.amount || 0)
+        : source.amount || 0;
+
+      if (availableBalance < amount) {
+        toast.error("Insufficient balance in selected payment source");
+        return false;
+      }
+    } else if (type === "transfer") {
+      // For transfers, check if source account has sufficient balance
+      if (source.amount < amount) {
+        toast.error("Insufficient balance for transfer in source account");
+        return false;
+      }
     }
     return true;
   };
