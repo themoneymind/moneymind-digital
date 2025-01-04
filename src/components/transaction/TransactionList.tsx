@@ -59,7 +59,7 @@ export const TransactionList = ({
     }
 
     return (
-      <div className="text-center py-8 text-gray-500">
+      <div className="text-center py-8 text-gray-500 text-sm font-light">
         {message}
       </div>
     );
