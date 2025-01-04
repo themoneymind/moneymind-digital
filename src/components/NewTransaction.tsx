@@ -70,10 +70,21 @@ export const NewTransaction = ({ onClose }: NewTransactionProps) => {
 
     if (!validateExpenseBalance(baseSource, validAmount, type)) return;
 
-    const selectedSource = formattedSources.find(s => s.id === source);
-    if (!selectedSource) {
-      toast.error("Invalid payment source");
-      return;
+    let displaySourceName = "";
+    if (type === "transfer") {
+      const destinationSourceObj = formattedSources.find(s => s.id === destinationSource);
+      if (!destinationSourceObj) {
+        toast.error("Invalid destination source");
+        return;
+      }
+      displaySourceName = destinationSourceObj.name;
+    } else {
+      const selectedSource = formattedSources.find(s => s.id === source);
+      if (!selectedSource) {
+        toast.error("Invalid payment source");
+        return;
+      }
+      displaySourceName = selectedSource.name;
     }
 
     try {
@@ -84,7 +95,7 @@ export const NewTransaction = ({ onClose }: NewTransactionProps) => {
         source: source,
         description,
         base_source_id: baseSourceId,
-        display_source: type === "transfer" ? destinationSource : selectedSource.name,
+        display_source: displaySourceName,
         date: selectedDate,
       });
 
