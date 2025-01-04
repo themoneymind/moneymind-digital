@@ -80,34 +80,71 @@ export const useTransactionSubmit = (onSuccess?: () => void) => {
         return false;
       }
       displaySourceName = destinationSourceObj.name;
+
+      // First, create the debit transaction from source
+      try {
+        await addTransaction({
+          type: "expense",
+          amount: validAmount,
+          category,
+          source: source,
+          description: `Transfer to ${displaySourceName}: ${description}`,
+          base_source_id: getBaseSourceId(source),
+          display_source: displaySourceName,
+          date: selectedDate,
+          reference_type: "transfer_debit",
+        });
+
+        // Then, create the credit transaction to destination
+        await addTransaction({
+          type: "income",
+          amount: validAmount,
+          category,
+          source: destinationSource,
+          description: `Transfer from ${formattedSources.find(s => s.id === source)?.name}: ${description}`,
+          base_source_id: getBaseSourceId(destinationSource),
+          display_source: formattedSources.find(s => s.id === source)?.name || "",
+          date: selectedDate,
+          reference_type: "transfer_credit",
+        });
+
+        onSuccess?.();
+        toast.success("Transfer completed successfully");
+        return true;
+      } catch (error) {
+        console.error("Error processing transfer:", error);
+        toast.error("Failed to complete transfer");
+        return false;
+      }
     } else {
+      // Handle regular income/expense transactions
       const selectedSource = formattedSources.find(s => s.id === source);
       if (!selectedSource) {
         toast.error("Invalid payment source");
         return false;
       }
       displaySourceName = selectedSource.name;
-    }
 
-    try {
-      await addTransaction({
-        type,
-        amount: validAmount,
-        category,
-        source: source,
-        description,
-        base_source_id: getBaseSourceId(source),
-        display_source: displaySourceName,
-        date: selectedDate,
-      });
+      try {
+        await addTransaction({
+          type,
+          amount: validAmount,
+          category,
+          source: source,
+          description,
+          base_source_id: getBaseSourceId(source),
+          display_source: displaySourceName,
+          date: selectedDate,
+        });
 
-      onSuccess?.();
-      toast.success("Transaction added successfully");
-      return true;
-    } catch (error) {
-      console.error("Error adding transaction:", error);
-      toast.error("Failed to add transaction");
-      return false;
+        onSuccess?.();
+        toast.success("Transaction added successfully");
+        return true;
+      } catch (error) {
+        console.error("Error adding transaction:", error);
+        toast.error("Failed to add transaction");
+        return false;
+      }
     }
   };
 
