@@ -22,11 +22,12 @@ export const CreditCardItem = ({ card }: CreditCardItemProps) => {
   return (
     <div className="space-y-4">
       <div className="relative h-auto p-6 rounded-apple overflow-hidden bg-gradient-to-br from-primary-gradient-from to-primary-gradient-to text-white shadow-lg transform transition-transform hover:scale-[1.02]">
-        {/* Decorative Circles */}
+        {/* Decorative Elements */}
         <div className="absolute right-0 top-0 w-48 h-48 bg-white/5 rounded-full transform translate-x-24 -translate-y-24" />
         <div className="absolute left-0 bottom-0 w-32 h-32 bg-white/5 rounded-full transform -translate-x-16 translate-y-16" />
         
-        <div className="relative space-y-6">
+        <div className="relative space-y-8">
+          {/* Card Header */}
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="w-12 h-12 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center">
@@ -42,48 +43,54 @@ export const CreditCardItem = ({ card }: CreditCardItemProps) => {
               </div>
             </div>
             {card.interest_rate && (
-              <span className="text-sm text-white/80">
-                {card.interest_rate}% APR
-              </span>
+              <div className="px-3 py-1 bg-white/10 rounded-full">
+                <span className="text-sm font-medium text-white">
+                  {card.interest_rate}% APR
+                </span>
+              </div>
             )}
           </div>
 
-          <div className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <p className="text-sm text-white/80">Outstanding</p>
-                <p className="font-medium text-white">{formatCurrency(usedCredit)}</p>
+          {/* Card Details */}
+          <div className="space-y-6">
+            <div className="grid grid-cols-3 gap-6">
+              <div className="space-y-1">
+                <p className="text-sm text-white/80">Current Outstanding</p>
+                <p className="text-lg font-semibold text-white">{formatCurrency(usedCredit)}</p>
               </div>
-              <div>
-                <p className="text-sm text-white/80">Credit Limit</p>
-                <p className="font-medium text-white">{formatCurrency(Number(card.credit_limit))}</p>
+              <div className="space-y-1">
+                <p className="text-sm text-white/80">Total Credit Limit</p>
+                <p className="text-lg font-semibold text-white">{formatCurrency(Number(card.credit_limit))}</p>
+              </div>
+              <div className="space-y-1">
+                <p className="text-sm text-white/80">Available Credit</p>
+                <p className="text-lg font-semibold text-white">{formatCurrency(availableCredit)}</p>
               </div>
             </div>
             
-            <div>
-              <div className="flex items-center justify-between mb-1">
-                <p className="text-sm text-white/80">Available Credit</p>
-                <p className="text-sm text-white">{formatCurrency(availableCredit)}</p>
+            {/* Credit Utilization */}
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <p className="text-sm text-white/80">Credit Utilization</p>
+                <p className="text-sm font-medium text-white">{utilization.toFixed(0)}%</p>
               </div>
               <Progress 
                 value={utilization} 
                 className="h-2 bg-white/20"
               >
                 <div 
-                  className={`h-full ${getUtilizationColor()}`} 
+                  className={`h-full ${getUtilizationColor()} transition-all duration-300`} 
                   style={{ width: `${utilization}%` }}
                 />
               </Progress>
-              <p className="text-xs text-white/80 mt-1">
-                {utilization.toFixed(0)}% utilized
-              </p>
             </div>
           </div>
         </div>
       </div>
 
+      {/* Due Dates Section */}
       {(card.statement_date || card.due_date) && (
-        <div className="grid grid-cols-2 gap-4 p-4 bg-white rounded-xl border border-gray-100">
+        <div className="grid grid-cols-2 gap-4 p-4 bg-white rounded-xl border border-gray-100 shadow-sm">
           {card.statement_date && (
             <div>
               <p className="text-sm text-muted-foreground">Statement Date</p>
