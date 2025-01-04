@@ -31,9 +31,10 @@ export const useTransferHandler = () => {
 
     try {
       // 1. Deduct from source account
-      const { data: debitData, error: debitError } = await supabase
-        .from('payment_sources')
-        .update({ amount: `amount - ${amount}` })
+      const { data: debitData, error: debitError } = await supabase.rpc(
+        'decrement_amount',
+        { decrement_by: amount }
+      ).from('payment_sources')
         .eq('id', baseFromSourceId)
         .gt('amount', amount - 0.01)
         .select('amount')
@@ -44,9 +45,10 @@ export const useTransferHandler = () => {
       }
 
       // 2. Add to destination account
-      const { data: creditData, error: creditError } = await supabase
-        .from('payment_sources')
-        .update({ amount: `amount + ${amount}` })
+      const { data: creditData, error: creditError } = await supabase.rpc(
+        'increment_amount',
+        { increment_by: amount }
+      ).from('payment_sources')
         .eq('id', baseToSourceId)
         .select('amount')
         .single();
@@ -81,15 +83,17 @@ export const useTransferHandler = () => {
       // Rollback on any error
       try {
         // Rollback debit operation
-        await supabase
-          .from('payment_sources')
-          .update({ amount: `amount + ${amount}` })
+        await supabase.rpc(
+          'increment_amount',
+          { increment_by: amount }
+        ).from('payment_sources')
           .eq('id', baseFromSourceId);
 
         // Rollback credit operation
-        await supabase
-          .from('payment_sources')
-          .update({ amount: `amount - ${amount}` })
+        await supabase.rpc(
+          'decrement_amount',
+          { decrement_by: amount }
+        ).from('payment_sources')
           .eq('id', baseToSourceId);
       } catch (rollbackError) {
         console.error("Rollback failed:", rollbackError);
