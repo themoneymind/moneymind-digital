@@ -41,7 +41,7 @@ export const CreditCards = () => {
   };
 
   return (
-    <div className="space-y-6 overflow-x-hidden">
+    <div className="space-y-6 overflow-x-hidden mb-8">
       <div className="flex items-center justify-between px-6">
         <h2 className="text-base font-semibold">Credit Cards</h2>
         <button
