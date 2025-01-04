@@ -53,7 +53,7 @@ export const TransactionForm = ({
           type="number"
           value={amount}
           onChange={(e) => onAmountChange(e.target.value)}
-          className="w-full text-4xl font-bold text-center bg-transparent focus:outline-none placeholder-gray-400"
+          className="w-full text-4xl font-bold text-center bg-transparent focus:outline-none placeholder-gray-400 text-gray-600"
           placeholder="0"
         />
       </div>
@@ -100,7 +100,7 @@ export const TransactionForm = ({
 
         <input
           placeholder="Add a description"
-          className="w-full py-3 px-0 text-sm bg-transparent border-b-2 border-gray-200 focus:border-primary focus:outline-none transition-colors placeholder-gray-400"
+          className="w-full py-3 px-0 text-sm bg-transparent border-b-2 border-gray-200 focus:border-primary focus:outline-none transition-colors placeholder-gray-400 text-gray-600"
           value={description}
           onChange={(e) => onDescriptionChange(e.target.value)}
         />
