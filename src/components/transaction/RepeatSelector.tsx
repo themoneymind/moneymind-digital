@@ -8,14 +8,25 @@ interface RepeatSelectorProps {
 }
 
 export const RepeatSelector = ({ value, onValueChange, type }: RepeatSelectorProps) => {
+  const getFocusColor = () => {
+    switch (type) {
+      case 'expense':
+        return 'focus:border-transaction-expense';
+      case 'income':
+        return 'focus:border-transaction-income';
+      case 'transfer':
+        return 'focus:border-transaction-transfer';
+      default:
+        return 'focus:border-primary';
+    }
+  };
+
   return (
     <div className="relative">
       <select
         value={value}
         onChange={(e) => onValueChange(e.target.value as RepeatOption)}
-        className={`w-full h-12 border-0 border-b-2 border-gray-200 rounded-none text-sm text-gray-600 bg-transparent transition-colors hover:bg-transparent placeholder-gray-400 focus:outline-none appearance-none pr-8 ${
-          type === 'expense' ? 'focus:border-transaction-expense' : 'focus:border-primary'
-        }`}
+        className={`w-full h-12 border-0 border-b-2 border-gray-200 rounded-none text-sm text-gray-600 bg-transparent transition-colors hover:bg-transparent placeholder-gray-400 focus:outline-none appearance-none pr-8 ${getFocusColor()}`}
       >
         <option value="never">Never Repeat</option>
         <option value="daily">Every Day</option>

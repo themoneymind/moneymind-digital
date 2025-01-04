@@ -55,14 +55,38 @@ export const CategorySelector = ({
     toast.success("Category added successfully");
   };
 
+  const getFocusColor = () => {
+    switch (type) {
+      case 'expense':
+        return 'focus:border-transaction-expense';
+      case 'income':
+        return 'focus:border-transaction-income';
+      case 'transfer':
+        return 'focus:border-transaction-transfer';
+      default:
+        return 'focus:border-primary';
+    }
+  };
+
+  const getButtonHoverColor = () => {
+    switch (type) {
+      case 'expense':
+        return 'hover:bg-transaction-expense hover:text-white';
+      case 'income':
+        return 'hover:bg-transaction-income hover:text-white';
+      case 'transfer':
+        return 'hover:bg-transaction-transfer hover:text-white';
+      default:
+        return 'hover:bg-primary hover:text-white';
+    }
+  };
+
   return (
     <div className="flex gap-2 items-center">
       <select
         value={category}
         onChange={(e) => onCategoryChange(e.target.value)}
-        className={`flex h-12 w-full py-2 px-0 text-sm text-gray-600 placeholder-gray-400 bg-transparent border-b-2 border-gray-200 focus:outline-none transition-colors ${
-          type === 'expense' ? 'focus:border-transaction-expense' : 'focus:border-primary'
-        }`}
+        className={`flex h-12 w-full py-2 px-0 text-sm text-gray-600 placeholder-gray-400 bg-transparent border-b-2 border-gray-200 focus:outline-none transition-colors ${getFocusColor()}`}
       >
         <option value="" disabled className="text-gray-400">
           Select category
@@ -80,11 +104,7 @@ export const CategorySelector = ({
             type="button"
             variant="outline"
             size="icon"
-            className={`h-10 w-10 border-gray-200 rounded-[12px] flex-shrink-0 ${
-              type === 'expense' 
-                ? 'hover:bg-transaction-expense hover:text-white' 
-                : 'hover:bg-primary hover:text-white'
-            }`}
+            className={`h-10 w-10 border-gray-200 rounded-[12px] flex-shrink-0 ${getButtonHoverColor()}`}
           >
             <Plus className="h-4 w-4" />
           </Button>
@@ -98,15 +118,17 @@ export const CategorySelector = ({
               placeholder="Enter category name"
               value={newCategory}
               onChange={(e) => setNewCategory(e.target.value)}
-              className={`h-12 py-2 px-0 text-sm bg-transparent border-b-2 border-gray-200 focus:outline-none transition-colors ${
-                type === 'expense' ? 'focus:border-transaction-expense' : 'focus:border-primary'
-              }`}
+              className={`h-12 py-2 px-0 text-sm bg-transparent border-b-2 border-gray-200 focus:outline-none transition-colors ${getFocusColor()}`}
             />
             <Button 
               onClick={handleAddCategory} 
               className={`w-full rounded-[12px] ${
                 type === 'expense' 
                   ? 'bg-transaction-expense hover:bg-transaction-expense/90' 
+                  : type === 'income'
+                  ? 'bg-transaction-income hover:bg-transaction-income/90'
+                  : type === 'transfer'
+                  ? 'bg-transaction-transfer hover:bg-transaction-transfer/90'
                   : 'bg-primary hover:bg-primary/90'
               }`}
             >

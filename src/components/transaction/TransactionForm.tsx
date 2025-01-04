@@ -105,7 +105,13 @@ export const TransactionForm = ({
         <input
           placeholder="Add a description"
           className={`w-full py-3 px-0 text-sm bg-transparent border-b-2 border-gray-200 focus:outline-none transition-colors placeholder-gray-400 text-gray-600 ${
-            type === 'expense' ? 'focus:border-transaction-expense' : 'focus:border-primary'
+            type === 'expense' 
+              ? 'focus:border-transaction-expense' 
+              : type === 'income'
+              ? 'focus:border-transaction-income'
+              : type === 'transfer'
+              ? 'focus:border-transaction-transfer'
+              : 'focus:border-primary'
           }`}
           value={description}
           onChange={(e) => onDescriptionChange(e.target.value)}
@@ -121,6 +127,10 @@ export const TransactionForm = ({
           className={`w-full h-12 rounded-[12px] text-sm font-medium text-white ${
             type === 'expense' 
               ? 'bg-transaction-expense hover:bg-transaction-expense/90' 
+              : type === 'income'
+              ? 'bg-transaction-income hover:bg-transaction-income/90'
+              : type === 'transfer'
+              ? 'bg-transaction-transfer hover:bg-transaction-transfer/90'
               : 'bg-primary hover:bg-primary/90'
           }`}
           onClick={onSubmit}

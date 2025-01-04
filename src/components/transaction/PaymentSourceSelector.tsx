@@ -34,14 +34,25 @@ export const PaymentSourceSelector = ({
 
   const filteredSources = filterSourcesForTransfer(formattedSources, fromSource);
 
+  const getFocusColor = () => {
+    switch (type) {
+      case 'expense':
+        return 'focus:border-transaction-expense';
+      case 'income':
+        return 'focus:border-transaction-income';
+      case 'transfer':
+        return 'focus:border-transaction-transfer';
+      default:
+        return 'focus:border-primary';
+    }
+  };
+
   return (
     <div className="flex gap-2 items-center">
       <select
         value={source || ""}
         onChange={(e) => onSourceChange(e.target.value)}
-        className={`flex h-12 w-full py-2 px-0 text-sm text-gray-600 placeholder-gray-400 bg-transparent border-b-2 border-gray-200 focus:outline-none transition-colors ${
-          type === 'expense' ? 'focus:border-transaction-expense' : 'focus:border-primary'
-        }`}
+        className={`flex h-12 w-full py-2 px-0 text-sm text-gray-600 placeholder-gray-400 bg-transparent border-b-2 border-gray-200 focus:outline-none transition-colors ${getFocusColor()}`}
       >
         <option value="" disabled className="text-gray-400">
           {placeholder}
@@ -57,7 +68,15 @@ export const PaymentSourceSelector = ({
           type="button"
           variant="outline"
           size="icon"
-          className="h-10 w-10 border border-primary text-primary hover:bg-primary hover:text-primary-foreground rounded-[12px] flex-shrink-0"
+          className={`h-10 w-10 border-gray-200 rounded-[12px] flex-shrink-0 ${
+            type === 'expense' 
+              ? 'hover:bg-transaction-expense hover:text-white' 
+              : type === 'income'
+              ? 'hover:bg-transaction-income hover:text-white'
+              : type === 'transfer'
+              ? 'hover:bg-transaction-transfer hover:text-white'
+              : 'hover:bg-primary hover:text-white'
+          }`}
           onClick={() => navigate("/app/payment-source")}
         >
           <Plus className="h-4 w-4" />

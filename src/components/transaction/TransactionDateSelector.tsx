@@ -26,10 +26,21 @@ export const TransactionDateSelector = ({
     onDateChange(newDate);
   };
 
+  const getFocusColor = () => {
+    switch (type) {
+      case 'expense':
+        return 'focus-within:border-transaction-expense';
+      case 'income':
+        return 'focus-within:border-transaction-income';
+      case 'transfer':
+        return 'focus-within:border-transaction-transfer';
+      default:
+        return 'focus-within:border-primary';
+    }
+  };
+
   return (
-    <div className={`flex items-center justify-between border-b-2 border-gray-200 py-2 transition-colors ${
-      type === 'expense' ? 'focus-within:border-transaction-expense' : 'focus-within:border-primary'
-    }`}>
+    <div className={`flex items-center justify-between border-b-2 border-gray-200 py-2 transition-colors ${getFocusColor()}`}>
       <span className="text-sm text-gray-600">
         {format(selectedDate, "MMMM d, yyyy")}
       </span>
