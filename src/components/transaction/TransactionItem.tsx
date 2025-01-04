@@ -19,15 +19,15 @@ export const TransactionItem = ({
     switch (transaction.type) {
       case "expense":
         return {
-          icon: <ArrowUpRight className="w-4 h-4 text-red-500" />,
-          bgColor: "bg-red-50",
-          textColor: "text-red-600"
+          icon: <ArrowUpRight className="w-4 h-4 text-[#FF1122]" />,
+          bgColor: "bg-[#FF1122]/10",
+          textColor: "text-[#FF1122]"
         };
       case "income":
         return {
-          icon: <ArrowDownLeft className="w-4 h-4 text-green-500" />,
-          bgColor: "bg-green-50",
-          textColor: "text-green-600"
+          icon: <ArrowDownLeft className="w-4 h-4 text-[#00AF1E]" />,
+          bgColor: "bg-[#00AF1E]/10",
+          textColor: "text-[#00AF1E]"
         };
       case "transfer":
         return {

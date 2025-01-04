@@ -51,6 +51,12 @@ export default {
           DEFAULT: "#F3F4F6",
           foreground: "#1F2937",
         },
+        // Adding new transaction type colors
+        transaction: {
+          income: "#00AF1E",
+          expense: "#FF1122",
+          transfer: "#7F3DFF",
+        },
       },
       borderRadius: {
         'apple': '1.25rem',
