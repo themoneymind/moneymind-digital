@@ -37,28 +37,16 @@ export const RecentTransactions = ({
       // 1. The source is a credit card
       // 2. OR it's a credit card payment (transfer) to this card
       return creditCardIds.includes(t.base_source_id) || 
-        (t.reference_type === "credit_card_payment" && creditCardIds.includes(getBaseSourceId(t.display_source)));
+        (t.type === "transfer" && t.reference_type === "credit_card_payment" && creditCardIds.includes(getBaseSourceId(t.display_source)));
     });
 
     // For credit card view, show payments as "Payment Received"
     availableTransactions = availableTransactions.map(t => {
-      if (t.reference_type === "credit_card_payment") {
+      if (t.type === "transfer" && t.reference_type === "credit_card_payment") {
         return {
           ...t,
           type: "income", // Show credit card payments as received in card view
           description: `Payment Received: ${t.description}`
-        };
-      }
-      return t;
-    });
-  } else {
-    // In main view, show credit card payments as expenses
-    availableTransactions = availableTransactions.map(t => {
-      if (t.reference_type === "credit_card_payment") {
-        return {
-          ...t,
-          type: "expense", // Show as expense in main view
-          description: `Credit Card Payment: ${t.description}`
         };
       }
       return t;

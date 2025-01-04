@@ -33,13 +33,11 @@ export const BalanceCard = () => {
 
   // Calculate total balance from all previous months (carryforward)
   const carryForwardBalance = allPreviousTransactions.reduce((acc, curr) => {
-    // For credit card payments, treat them as expenses in main balance
-    if (curr.reference_type === "credit_card_payment") {
-      return acc - Number(curr.amount); // Subtract payment amount as it's an expense
+    if (curr.type === "transfer" && curr.reference_type === "credit_card_payment") {
+      return acc - Number(curr.amount); // Count credit card payments as expenses
     }
-    // Skip other transfer transactions for balance calculation
     if (curr.type === "transfer") {
-      return acc;
+      return acc; // Skip other transfers
     }
     return curr.type === "income" ? acc + Number(curr.amount) : acc - Number(curr.amount);
   }, 0);
@@ -58,32 +56,29 @@ export const BalanceCard = () => {
 
   // Calculate monthly income and expense
   const monthlyIncome = monthlyTransactions.reduce((acc, curr) => {
-    // Skip credit card payments and transfers from income calculation
-    if (curr.type === "transfer" || curr.reference_type === "credit_card_payment") {
-      return acc;
+    if (curr.type === "transfer") {
+      return acc; // Skip all transfers from income calculation
     }
     return curr.type === "income" ? acc + Number(curr.amount) : acc;
   }, 0);
 
   const monthlyExpense = monthlyTransactions.reduce((acc, curr) => {
-    // Include credit card payments in expense calculation
-    if (curr.reference_type === "credit_card_payment") {
-      return acc + Number(curr.amount);
+    if (curr.type === "transfer" && curr.reference_type === "credit_card_payment") {
+      return acc + Number(curr.amount); // Include credit card payments in expenses
     }
-    // Skip other transfers from expense calculation
     if (curr.type === "transfer") {
-      return acc;
+      return acc; // Skip other transfers
     }
     return curr.type === "expense" ? acc + Number(curr.amount) : acc;
   }, 0);
 
   // Calculate last month's closing balance
   const lastMonthClosingBalance = allPreviousTransactions.reduce((acc, curr) => {
-    if (curr.reference_type === "credit_card_payment") {
-      return acc - Number(curr.amount); // Subtract payment amount as it's an expense
+    if (curr.type === "transfer" && curr.reference_type === "credit_card_payment") {
+      return acc - Number(curr.amount); // Count credit card payments as expenses
     }
-    if (curr.type === "transfer" && curr.reference_type !== "credit_card_payment") {
-      return acc;
+    if (curr.type === "transfer") {
+      return acc; // Skip other transfers
     }
     return curr.type === "income" ? acc + Number(curr.amount) : acc - Number(curr.amount);
   }, 0);
