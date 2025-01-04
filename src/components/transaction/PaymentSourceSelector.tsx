@@ -1,7 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { useFinance } from "@/contexts/FinanceContext";
 
 type PaymentSourceSelectorProps = {
   source: string;
@@ -27,29 +26,13 @@ export const PaymentSourceSelector = ({
   type,
 }: PaymentSourceSelectorProps) => {
   const navigate = useNavigate();
-  const { paymentSources } = useFinance();
   
   const filterSourcesForTransfer = (sources: { id: string; name: string }[], fromSourceId: string) => {
     if (!isTransferTo || !fromSourceId) return sources;
     return sources.filter(s => !s.id.startsWith(fromSourceId.split('-')[0]));
   };
 
-  const filterSourcesByType = (sources: { id: string; name: string }[]) => {
-    if (type === 'income') {
-      // For income transactions, filter out credit card sources
-      return sources.filter(source => {
-        const baseSourceId = source.id.split('-')[0]; // Get the base source ID without UPI suffix
-        const paymentSource = paymentSources.find(ps => ps.id === baseSourceId);
-        // Include the source if it's either a Bank account or a UPI option of a Bank account
-        return paymentSource && paymentSource.type === 'Bank';
-      });
-    }
-    return sources;
-  };
-
-  const filteredSources = filterSourcesByType(
-    filterSourcesForTransfer(formattedSources, fromSource)
-  );
+  const filteredSources = filterSourcesForTransfer(formattedSources, fromSource);
 
   const getFocusColor = () => {
     switch (type) {
