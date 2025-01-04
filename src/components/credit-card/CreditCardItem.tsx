@@ -1,6 +1,6 @@
 import { PaymentSource } from "@/types/finance";
 import { formatCurrency } from "@/utils/formatters";
-import { CreditCard } from "lucide-react";
+import { CreditCard, Clock, CreditCard as CreditCardIcon } from "lucide-react";
 import { format } from "date-fns";
 import { Progress } from "@/components/ui/progress";
 
@@ -22,58 +22,52 @@ export const CreditCardItem = ({ card }: CreditCardItemProps) => {
   return (
     <div className="space-y-4">
       <div className="relative h-auto p-6 rounded-apple overflow-hidden bg-gradient-to-br from-primary-gradient-from to-primary-gradient-to text-white shadow-lg transform transition-transform hover:scale-[1.02]">
-        {/* Decorative Elements */}
+        {/* Decorative Elements - keeping the current ones */}
         <div className="absolute right-0 top-0 w-48 h-48 bg-white/5 rounded-full transform translate-x-24 -translate-y-24" />
         <div className="absolute left-0 bottom-0 w-32 h-32 bg-white/5 rounded-full transform -translate-x-16 translate-y-16" />
         
-        <div className="relative space-y-8">
+        <div className="relative space-y-6">
           {/* Card Header */}
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-12 h-12 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center">
-                <CreditCard className="w-6 h-6 text-white" />
-              </div>
-              <div>
-                <h3 className="font-medium text-white">{card.name}</h3>
-                {card.last_four_digits && (
-                  <p className="text-sm text-white/80">
-                    •••• {card.last_four_digits}
-                  </p>
-                )}
-              </div>
+            <div className="flex items-center gap-2">
+              <CreditCardIcon className="w-6 h-6" />
+              <h3 className="font-medium">{card.name}</h3>
             </div>
-            {card.interest_rate && (
-              <div className="px-3 py-1 bg-white/10 rounded-full">
-                <span className="text-sm font-medium text-white">
-                  {card.interest_rate}% APR
-                </span>
-              </div>
+            {card.last_four_digits && (
+              <p className="text-sm">
+                •••• {card.last_four_digits}
+              </p>
             )}
           </div>
 
-          {/* Card Details */}
-          <div className="space-y-6">
-            <div className="grid grid-cols-3 gap-6">
-              <div className="space-y-1">
-                <p className="text-sm text-white/80">Current Outstanding</p>
-                <p className="text-lg font-semibold text-white">{formatCurrency(usedCredit)}</p>
+          {/* Main Content */}
+          <div className="grid grid-cols-2 gap-4">
+            {/* Current Outstanding */}
+            <div className="p-4 bg-white/10 rounded-xl">
+              <div className="flex items-center gap-2 mb-2">
+                <Clock className="w-4 h-4 opacity-70" />
+                <span className="text-sm opacity-70">Current Outstanding</span>
               </div>
-              <div className="space-y-1">
-                <p className="text-sm text-white/80">Total Credit Limit</p>
-                <p className="text-lg font-semibold text-white">{formatCurrency(Number(card.credit_limit))}</p>
-              </div>
-              <div className="space-y-1">
-                <p className="text-sm text-white/80">Available Credit</p>
-                <p className="text-lg font-semibold text-white">{formatCurrency(availableCredit)}</p>
-              </div>
+              <p className="text-2xl font-semibold">{formatCurrency(usedCredit)}</p>
             </div>
-            
-            {/* Credit Utilization */}
-            <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <p className="text-sm text-white/80">Credit Utilization</p>
-                <p className="text-sm font-medium text-white">{utilization.toFixed(0)}%</p>
+
+            {/* Available Credit */}
+            <div className="p-4 bg-white/10 rounded-xl">
+              <div className="flex items-center gap-2 mb-2">
+                <CreditCard className="w-4 h-4 opacity-70" />
+                <span className="text-sm opacity-70">Available Credit</span>
               </div>
+              <p className="text-2xl font-semibold">{formatCurrency(availableCredit)}</p>
+            </div>
+          </div>
+          
+          {/* Credit Utilization */}
+          <div className="space-y-2">
+            <div className="flex items-center justify-between">
+              <p className="text-sm opacity-70">Credit Utilization</p>
+              <p className="text-sm font-medium">{utilization.toFixed(0)}%</p>
+            </div>
+            <div className="space-y-1">
               <Progress 
                 value={utilization} 
                 className="h-2 bg-white/20"
@@ -83,6 +77,10 @@ export const CreditCardItem = ({ card }: CreditCardItemProps) => {
                   style={{ width: `${utilization}%` }}
                 />
               </Progress>
+              <div className="flex justify-between text-xs opacity-70">
+                <span>{formatCurrency(usedCredit)} used</span>
+                <span>{formatCurrency(Number(card.credit_limit))} limit</span>
+              </div>
             </div>
           </div>
         </div>
