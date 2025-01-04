@@ -20,12 +20,10 @@ export const useTransactionSourceUpdate = (paymentSources: PaymentSource[]) => {
 
     let newAmount;
     if (type === "transfer") {
-      // For transfers, we need to handle both source and destination
-      if (isReversal) {
-        newAmount = Number(source.amount) + Number(amount);
-      } else {
-        newAmount = Number(source.amount) - Number(amount);
-      }
+      // For transfers, handle debit from source and credit to destination
+      newAmount = isReversal
+        ? Number(source.amount) + Number(amount)  // Reverse: Add back to source
+        : Number(source.amount) - Number(amount); // Normal: Subtract from source
     } else {
       // For income and expense
       if (isReversal) {
@@ -57,5 +55,42 @@ export const useTransactionSourceUpdate = (paymentSources: PaymentSource[]) => {
     }
   };
 
-  return { updatePaymentSourceAmount };
+  const updateTransferDestination = async (
+    destinationId: string,
+    amount: number,
+    isReversal: boolean = false
+  ) => {
+    const baseDestinationId = getBaseSourceId(destinationId);
+    console.log("Updating transfer destination:", { destinationId, baseDestinationId, amount, isReversal });
+    
+    const destination = paymentSources.find(s => s.id === baseDestinationId);
+    if (!destination) {
+      console.error("Destination not found:", baseDestinationId);
+      return;
+    }
+
+    // For transfer destination, add the amount (or subtract if reversing)
+    const newAmount = isReversal
+      ? Number(destination.amount) - Number(amount)  // Reverse: Remove from destination
+      : Number(destination.amount) + Number(amount); // Normal: Add to destination
+
+    console.log("New destination amount calculation:", {
+      currentAmount: destination.amount,
+      operation: isReversal ? "reverse" : "apply",
+      change: amount,
+      result: newAmount
+    });
+
+    const { error } = await supabase
+      .from("payment_sources")
+      .update({ amount: newAmount })
+      .eq("id", baseDestinationId);
+
+    if (error) {
+      console.error("Error updating destination amount:", error);
+      throw error;
+    }
+  };
+
+  return { updatePaymentSourceAmount, updateTransferDestination };
 };

@@ -11,7 +11,7 @@ export const useTransactionEdit = (
   refreshData: () => Promise<void>
 ) => {
   const { user } = useAuth();
-  const { updatePaymentSourceAmount } = useTransactionSourceUpdate(paymentSources);
+  const { updatePaymentSourceAmount, updateTransferDestination } = useTransactionSourceUpdate(paymentSources);
 
   const editTransaction = async (
     id: string,
@@ -37,10 +37,9 @@ export const useTransactionEdit = (
             'expense',
             true
           );
-          await updatePaymentSourceAmount(
+          await updateTransferDestination(
             originalTransaction.display_source,
             Number(originalTransaction.amount),
-            'income',
             true
           );
         } else {
@@ -61,10 +60,9 @@ export const useTransactionEdit = (
             'expense',
             false
           );
-          await updatePaymentSourceAmount(
+          await updateTransferDestination(
             originalTransaction.display_source,
             Number(originalTransaction.amount),
-            'income',
             false
           );
         } else {
@@ -86,10 +84,9 @@ export const useTransactionEdit = (
             'expense',
             true
           );
-          await updatePaymentSourceAmount(
+          await updateTransferDestination(
             originalTransaction.display_source,
             Number(originalTransaction.amount),
-            'income',
             true
           );
 
@@ -103,10 +100,9 @@ export const useTransactionEdit = (
             'expense',
             false
           );
-          await updatePaymentSourceAmount(
+          await updateTransferDestination(
             destinationSource,
             Number(updates.amount),
-            'income',
             false
           );
         } else {
