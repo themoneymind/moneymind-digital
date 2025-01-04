@@ -44,8 +44,10 @@ export const useTransferHandler = () => {
 
       // 2. Deduct from source account using RPC
       const { error: debitError } = await supabase
-        .rpc('decrement_amount', { decrement_by: amount })
-        .eq('id', baseFromSourceId);
+        .rpc('decrement_amount', { 
+          source_id: baseFromSourceId,
+          decrement_by: amount 
+        });
 
       if (debitError) {
         throw new Error("Failed to deduct amount from source account");
@@ -53,8 +55,10 @@ export const useTransferHandler = () => {
 
       // 3. Add to destination account using RPC
       const { error: creditError } = await supabase
-        .rpc('increment_amount', { increment_by: amount })
-        .eq('id', baseToSourceId);
+        .rpc('increment_amount', { 
+          source_id: baseToSourceId,
+          increment_by: amount 
+        });
 
       if (creditError) {
         throw new Error("Failed to add amount to destination account");
@@ -87,13 +91,17 @@ export const useTransferHandler = () => {
       try {
         // Rollback debit operation
         await supabase
-          .rpc('increment_amount', { increment_by: amount })
-          .eq('id', baseFromSourceId);
+          .rpc('increment_amount', { 
+            source_id: baseFromSourceId,
+            increment_by: amount 
+          });
 
         // Rollback credit operation
         await supabase
-          .rpc('decrement_amount', { decrement_by: amount })
-          .eq('id', baseToSourceId);
+          .rpc('decrement_amount', { 
+            source_id: baseToSourceId,
+            decrement_by: amount 
+          });
       } catch (rollbackError) {
         console.error("Rollback failed:", rollbackError);
         toast.error("Critical error during rollback. Please contact support.");
