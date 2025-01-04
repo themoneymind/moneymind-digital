@@ -12,14 +12,16 @@ const Index = () => {
   }
 
   return (
-    <div className="relative flex flex-col min-h-screen max-w-md mx-auto font-sans overflow-hidden">
+    <div className="relative flex flex-col min-h-screen mx-auto font-sans overflow-hidden md:max-w-none">
       <Header />
-      <main className="flex-1 bg-[#F5F5F7] dark:bg-gray-900 rounded-t-[28px] -mt-6 relative pb-20">
-        <div className="mt-6">
+      <main className="flex-1 bg-[#F5F5F7] dark:bg-gray-900 rounded-t-[28px] -mt-6 relative pb-20 md:pb-0 md:px-6 lg:px-8">
+        <div className="mt-6 max-w-[1400px] mx-auto">
           <DashboardTabs />
         </div>
       </main>
-      <BottomNav />
+      <div className="md:hidden">
+        <BottomNav />
+      </div>
     </div>
   );
 };
