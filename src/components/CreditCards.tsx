@@ -86,7 +86,7 @@ export const CreditCards = () => {
             )}
 
             {creditCards[activeIndex] && (
-              <div className="mt-6">
+              <div className="px-6">
                 <RecentTransactions 
                   filterByType="Credit Card"
                   showViewAll={false}
