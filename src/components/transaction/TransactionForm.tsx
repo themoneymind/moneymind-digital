@@ -48,7 +48,7 @@ export const TransactionForm = ({
   return (
     <div className="space-y-3">
       <div className="relative px-4 py-2">
-        <span className="absolute left-4 top-1/2 -translate-y-1/2 text-2xl text-gray-400">₹</span>
+        <span className="absolute left-10 top-1/2 -translate-y-1/2 text-2xl text-gray-400">₹</span>
         <input
           type="number"
           value={amount}
