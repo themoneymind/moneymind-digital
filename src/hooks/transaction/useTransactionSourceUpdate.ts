@@ -9,7 +9,6 @@ export const useTransactionSourceUpdate = (paymentSources: PaymentSource[]) => {
     type: TransactionType,
     isReversal: boolean = false
   ) => {
-    // Always get the base source ID for database operations
     const baseSourceId = getBaseSourceId(sourceId);
     console.log("Updating payment source:", { 
       sourceId, 
@@ -39,12 +38,6 @@ export const useTransactionSourceUpdate = (paymentSources: PaymentSource[]) => {
         ? Number(source.amount) - Number(amount)
         : Number(source.amount) + Number(amount);
     } else {
-      // For transfers:
-      // - When type is "expense", deduct from source
-      // - When type is "income", add to destination
-      // For regular transactions:
-      // - When type is "income", add to account
-      // - When type is "expense", deduct from account
       newAmount = type === "income" 
         ? Number(source.amount) + Number(amount)
         : Number(source.amount) - Number(amount);
