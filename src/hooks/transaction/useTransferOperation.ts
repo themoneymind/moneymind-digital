@@ -12,11 +12,13 @@ export const useTransferOperation = (
     userId: string,
     transactionData: Omit<Transaction, "id" | "user_id" | "created_at" | "updated_at">
   ) => {
-    console.log("Starting transfer operation:", {
+    console.log("Transfer Details:", {
       sourceBaseId,
       destinationBaseId,
       amount,
-      transactionData
+      transactionData,
+      displaySource: transactionData.display_source,
+      source: transactionData.source
     });
 
     try {
@@ -27,17 +29,30 @@ export const useTransferOperation = (
         'expense',
         false
       );
-      console.log("Source account debited successfully");
+      console.log("Source account debited successfully:", {
+        sourceId: sourceBaseId,
+        amount: amount,
+        remainingBalance: await getAccountBalance(sourceBaseId)
+      });
 
       // Step 2: Credit destination account if exists
       if (destinationBaseId) {
+        console.log("Attempting to credit destination:", {
+          destinationId: destinationBaseId,
+          originalBalance: await getAccountBalance(destinationBaseId)
+        });
+
         await updatePaymentSourceAmount(
           destinationBaseId,
           amount,
           'income',
           false
         );
-        console.log("Destination account credited successfully");
+
+        console.log("Destination account credited:", {
+          destinationId: destinationBaseId,
+          newBalance: await getAccountBalance(destinationBaseId)
+        });
       }
 
       // Step 3: Create transfer record
@@ -84,6 +99,16 @@ export const useTransferOperation = (
       toast.error("Failed to process transfer");
       return false;
     }
+  };
+
+  const getAccountBalance = async (accountId: string) => {
+    const { data } = await supabase
+      .from('payment_sources')
+      .select('amount')
+      .eq('id', accountId)
+      .single();
+    
+    return data?.amount || 0;
   };
 
   return { handleTransfer };
