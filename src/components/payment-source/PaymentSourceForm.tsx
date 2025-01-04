@@ -29,6 +29,10 @@ interface PaymentSourceFormProps {
   onUpiToggle: (upiApp: string) => void;
   showBankSearch: boolean;
   setShowBankSearch: (show: boolean) => void;
+  lastFourDigits: string;
+  setLastFourDigits: (digits: string) => void;
+  creditLimit: string;
+  setCreditLimit: (limit: string) => void;
 }
 
 export const PaymentSourceForm = ({
@@ -44,6 +48,10 @@ export const PaymentSourceForm = ({
   onUpiToggle,
   showBankSearch,
   setShowBankSearch,
+  lastFourDigits,
+  setLastFourDigits,
+  creditLimit,
+  setCreditLimit,
 }: PaymentSourceFormProps) => {
   return (
     <div className="space-y-4">
@@ -83,6 +91,10 @@ export const PaymentSourceForm = ({
           banks={INDIAN_BANKS}
           customBankName={customBankName}
           setCustomBankName={setCustomBankName}
+          lastFourDigits={lastFourDigits}
+          setLastFourDigits={setLastFourDigits}
+          creditLimit={creditLimit}
+          setCreditLimit={setCreditLimit}
         />
       )}
     </div>

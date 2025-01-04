@@ -12,6 +12,12 @@ export const CreditCardItem = ({ card }: CreditCardItemProps) => {
   const availableCredit = Number(card.credit_limit) - Math.abs(Number(card.amount));
   const utilization = card.credit_limit ? (Math.abs(Number(card.amount)) / Number(card.credit_limit)) * 100 : 0;
 
+  const getUtilizationColor = () => {
+    if (utilization > 80) return "bg-red-500";
+    if (utilization > 50) return "bg-yellow-500";
+    return "bg-green-500";
+  };
+
   return (
     <div className="space-y-4">
       <div className="relative h-48 p-6 rounded-[20px] overflow-hidden bg-gradient-to-r from-primary-gradient-from to-primary-gradient-to shadow-lg transform transition-transform hover:scale-[1.02]">
@@ -58,9 +64,13 @@ export const CreditCardItem = ({ card }: CreditCardItemProps) => {
               </div>
               <Progress 
                 value={utilization} 
-                className="h-2 bg-white/20" 
-                indicatorClassName={utilization > 80 ? "bg-red-500" : utilization > 50 ? "bg-yellow-500" : "bg-green-500"}
-              />
+                className="h-2 bg-white/20"
+              >
+                <div 
+                  className={`h-full ${getUtilizationColor()}`} 
+                  style={{ width: `${utilization}%` }}
+                />
+              </Progress>
               <p className="text-xs text-white/80 mt-1">
                 {utilization.toFixed(0)}% utilized
               </p>
