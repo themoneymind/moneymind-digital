@@ -1,6 +1,6 @@
 import { Transaction } from "@/types/transactions";
 import { TransactionItem } from "./TransactionItem";
-import { format, isSameDay } from "date-fns";
+import { format, isSameDay, isSameMonth } from "date-fns";
 
 type TransactionListProps = {
   transactions: Transaction[];
@@ -25,9 +25,16 @@ export const TransactionList = ({
 
   // Apply date filter
   if (filter === "date") {
+    // Filter by specific date when date filter is active
     filteredTransactions = transactions.filter((t) => {
       const transactionDate = new Date(t.date);
       return isSameDay(transactionDate, selectedDate);
+    });
+  } else {
+    // Show current month transactions by default
+    filteredTransactions = transactions.filter((t) => {
+      const transactionDate = new Date(t.date);
+      return isSameMonth(transactionDate, selectedDate);
     });
   }
 
@@ -49,7 +56,9 @@ export const TransactionList = ({
   if (filteredTransactions.length === 0) {
     return (
       <div className="text-center py-8 text-gray-500">
-        No transactions found
+        {filter === "date" 
+          ? `No transactions found for ${format(selectedDate, "MMMM d, yyyy")}`
+          : "No transactions found"}
       </div>
     );
   }
