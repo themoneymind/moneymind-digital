@@ -42,11 +42,11 @@ export const CreditCardItem = ({ card }: CreditCardItemProps) => {
 
           {/* Main Content */}
           <div className="grid grid-cols-2 gap-3">
-            {/* Current Outstanding */}
+            {/* Outstanding */}
             <div className="p-2.5 bg-white/10 rounded-xl">
               <div className="flex items-center gap-1.5 mb-1">
                 <Clock className="w-3.5 h-3.5 opacity-70" />
-                <span className="text-xs opacity-70">Current Outstanding</span>
+                <span className="text-xs opacity-70">Outstanding</span>
               </div>
               <p className="text-lg font-semibold">{formatCurrency(usedCredit)}</p>
             </div>
