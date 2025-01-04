@@ -4,6 +4,7 @@ import { PaymentSourceSelector } from "./PaymentSourceSelector";
 import { TransactionDateSelector } from "./TransactionDateSelector";
 import { RepeatSelector } from "./RepeatSelector";
 import { Button } from "@/components/ui/button";
+import { useState } from "react";
 
 type TransactionFormFieldsProps = {
   type: TransactionType;
@@ -38,6 +39,20 @@ export const TransactionFormFields = ({
   customCategories,
   formattedSources,
 }: TransactionFormFieldsProps) => {
+  const [transferToSource, setTransferToSource] = useState("");
+
+  const handleTransferFromChange = (newSource: string) => {
+    onSourceChange(newSource);
+    // Reset transfer to source when transfer from changes
+    setTransferToSource("");
+  };
+
+  const handleTransferToChange = (newSource: string) => {
+    setTransferToSource(newSource);
+    // Update the main source state with the "to" source
+    onSourceChange(newSource);
+  };
+
   return (
     <div className="space-y-4 mt-2 px-4">
       <CategorySelector
@@ -51,14 +66,14 @@ export const TransactionFormFields = ({
         <div className="grid grid-cols-2 gap-4">
           <PaymentSourceSelector
             source={source}
-            onSourceChange={onSourceChange}
+            onSourceChange={handleTransferFromChange}
             formattedSources={formattedSources}
             placeholder="Transfer from"
             type={type}
           />
           <PaymentSourceSelector
-            source={source}
-            onSourceChange={onSourceChange}
+            source={transferToSource}
+            onSourceChange={handleTransferToChange}
             formattedSources={formattedSources.filter(s => s.id !== source)}
             placeholder="Transfer to"
             isTransferTo={true}
