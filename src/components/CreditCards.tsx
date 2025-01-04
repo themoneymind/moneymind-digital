@@ -3,7 +3,6 @@ import { CreditCardItem } from "./credit-card/CreditCardItem";
 import { Plus } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useState, useRef, TouchEvent } from "react";
-import { RecentTransactions } from "./RecentTransactions";
 
 export const CreditCards = () => {
   const { paymentSources } = useFinance();
@@ -87,11 +86,6 @@ export const CreditCards = () => {
           </>
         )}
       </div>
-      {creditCards.length > 0 && (
-        <div className="mt-6">
-          <RecentTransactions filterByType="Credit Card" selectedCardId={creditCards[activeIndex]?.id} />
-        </div>
-      )}
     </div>
   );
 };
