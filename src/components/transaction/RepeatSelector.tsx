@@ -19,19 +19,19 @@ export const RepeatSelector = ({ value, onValueChange }: RepeatSelectorProps) =>
         <SelectValue placeholder="Select repeat frequency" />
       </SelectTrigger>
       <SelectContent className="bg-white border border-gray-200 shadow-lg rounded-[12px] max-h-[300px] overflow-y-auto">
-        <SelectItem value="never">Never Repeat</SelectItem>
-        <SelectItem value="daily">Every Day</SelectItem>
-        <SelectItem value="workdays">Every Work Day</SelectItem>
-        <SelectItem value="weekly">Every Week</SelectItem>
-        <SelectItem value="biweekly">Every Second Week</SelectItem>
-        <SelectItem value="triweekly">Every Third Week</SelectItem>
-        <SelectItem value="monthly">Every Month</SelectItem>
-        <SelectItem value="bimonthly">Every Second Month</SelectItem>
-        <SelectItem value="quarterly">Every Fourth Month</SelectItem>
-        <SelectItem value="firstofmonth">First Day of the Month</SelectItem>
-        <SelectItem value="lastofmonth">Last Day of the Month</SelectItem>
-        <SelectItem value="semiannually">Every Half Year</SelectItem>
-        <SelectItem value="annually">Every Year</SelectItem>
+        <SelectItem value="never" className="text-gray-600">Never Repeat</SelectItem>
+        <SelectItem value="daily" className="text-gray-600">Every Day</SelectItem>
+        <SelectItem value="workdays" className="text-gray-600">Every Work Day</SelectItem>
+        <SelectItem value="weekly" className="text-gray-600">Every Week</SelectItem>
+        <SelectItem value="biweekly" className="text-gray-600">Every Second Week</SelectItem>
+        <SelectItem value="triweekly" className="text-gray-600">Every Third Week</SelectItem>
+        <SelectItem value="monthly" className="text-gray-600">Every Month</SelectItem>
+        <SelectItem value="bimonthly" className="text-gray-600">Every Second Month</SelectItem>
+        <SelectItem value="quarterly" className="text-gray-600">Every Fourth Month</SelectItem>
+        <SelectItem value="firstofmonth" className="text-gray-600">First Day of the Month</SelectItem>
+        <SelectItem value="lastofmonth" className="text-gray-600">Last Day of the Month</SelectItem>
+        <SelectItem value="semiannually" className="text-gray-600">Every Half Year</SelectItem>
+        <SelectItem value="annually" className="text-gray-600">Every Year</SelectItem>
       </SelectContent>
     </Select>
   );

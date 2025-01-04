@@ -60,13 +60,13 @@ export const CategorySelector = ({
       <select
         value={category}
         onChange={(e) => onCategoryChange(e.target.value)}
-        className="flex h-12 w-full py-2 px-0 text-sm text-gray-600 bg-transparent border-b-2 border-gray-200 focus:border-primary focus:outline-none transition-colors"
+        className="flex h-12 w-full py-2 px-0 text-sm text-gray-600 placeholder-gray-400 bg-transparent border-b-2 border-gray-200 focus:border-primary focus:outline-none transition-colors"
       >
-        <option value="" disabled>
+        <option value="" disabled className="text-gray-400">
           Select category
         </option>
         {categories.map((cat) => (
-          <option key={cat} value={cat}>
+          <option key={cat} value={cat} className="text-gray-600">
             {cat}
           </option>
         ))}
@@ -94,7 +94,7 @@ export const CategorySelector = ({
               onChange={(e) => setNewCategory(e.target.value)}
               className="h-12 py-2 px-0 text-sm bg-transparent border-b-2 border-gray-200 focus:border-primary focus:outline-none transition-colors"
             />
-            <Button onClick={handleAddCategory} className="w-full">
+            <Button onClick={handleAddCategory} className="w-full rounded-[12px]">
               Add Category
             </Button>
           </div>

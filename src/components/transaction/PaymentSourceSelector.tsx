@@ -37,13 +37,13 @@ export const PaymentSourceSelector = ({
       <select
         value={source || ""}
         onChange={(e) => onSourceChange(e.target.value)}
-        className="flex h-12 w-full py-2 px-0 text-sm text-gray-600 bg-transparent border-b-2 border-gray-200 focus:border-primary focus:outline-none transition-colors placeholder-gray-400"
+        className="flex h-12 w-full py-2 px-0 text-sm text-gray-600 placeholder-gray-400 bg-transparent border-b-2 border-gray-200 focus:border-primary focus:outline-none transition-colors"
       >
-        <option value="" disabled>
+        <option value="" disabled className="text-gray-400">
           {placeholder}
         </option>
         {filteredSources.map((source) => (
-          <option key={source.id} value={source.id}>
+          <option key={source.id} value={source.id} className="text-gray-600">
             {source.name}
           </option>
         ))}

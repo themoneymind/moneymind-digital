@@ -25,14 +25,14 @@ export const TransactionDateSelector = ({
   };
 
   return (
-    <div className="flex items-center justify-between border-b border-gray-200 focus-within:border-[#FF3B30] py-2 transition-colors">
-      <span className="text-sm font-medium text-gray-600">
+    <div className="flex items-center justify-between border-b-2 border-gray-200 focus-within:border-primary py-2 transition-colors">
+      <span className="text-sm text-gray-600">
         {format(selectedDate, "MMMM d, yyyy")}
       </span>
       <div className="flex items-center gap-2">
         <button 
           type="button"
-          className="p-2 hover:bg-gray-50 rounded-lg h-full flex items-center justify-center" 
+          className="p-2 hover:bg-gray-50 rounded-[12px] h-full flex items-center justify-center" 
           onClick={handlePrevDay}
           aria-label="Previous day"
         >
@@ -40,7 +40,7 @@ export const TransactionDateSelector = ({
         </button>
         <button 
           type="button"
-          className="p-2 hover:bg-gray-50 rounded-lg h-full flex items-center justify-center" 
+          className="p-2 hover:bg-gray-50 rounded-[12px] h-full flex items-center justify-center" 
           onClick={handleNextDay}
           aria-label="Next day"
         >
