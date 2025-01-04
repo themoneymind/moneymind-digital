@@ -99,11 +99,11 @@ export const NewTransaction = ({ onClose }: NewTransactionProps) => {
   const getTypeStyles = () => {
     switch (type) {
       case "expense":
-        return "bg-white/90 bg-gradient-to-b from-transaction-expense/5 to-white";
+        return "bg-white bg-gradient-to-t from-white via-white to-transaction-expense/10";
       case "income":
-        return "bg-white/90 bg-gradient-to-b from-transaction-income/5 to-white";
+        return "bg-white bg-gradient-to-t from-white via-white to-transaction-income/10";
       case "transfer":
-        return "bg-white/90 bg-gradient-to-b from-transaction-transfer/5 to-white";
+        return "bg-white bg-gradient-to-t from-white via-white to-transaction-transfer/10";
       default:
         return "bg-white";
     }
