@@ -21,7 +21,7 @@ export const CreditCards = () => {
         <h2 className="text-lg font-semibold">Credit Cards</h2>
         <button
           onClick={handleAddCard}
-          className="flex items-center text-primary hover:text-primary/80 transition-colors"
+          className="flex items-center text-black hover:text-black/80 transition-colors"
         >
           <Plus className="h-5 w-5 mr-2" strokeWidth={1.5} />
           <span>Add Card</span>
