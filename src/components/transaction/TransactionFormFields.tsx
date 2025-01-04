@@ -3,8 +3,8 @@ import { CategorySelector } from "./CategorySelector";
 import { PaymentSourceSelector } from "./PaymentSourceSelector";
 import { TransactionDateSelector } from "./TransactionDateSelector";
 import { RepeatSelector } from "./RepeatSelector";
-import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import { TransferSourceSelectors } from "./TransferSourceSelectors";
+import { TransactionFormActions } from "./TransactionFormActions";
 
 type TransactionFormFieldsProps = {
   type: TransactionType;
@@ -39,34 +39,7 @@ export const TransactionFormFields = ({
   customCategories,
   formattedSources,
 }: TransactionFormFieldsProps) => {
-  const [transferToSource, setTransferToSource] = useState("");
-
-  const handleTransferFromChange = (newSource: string) => {
-    onSourceChange(newSource);
-    // Reset transfer to source when transfer from changes
-    setTransferToSource("");
-  };
-
-  const handleTransferToChange = (newSource: string) => {
-    // Only update the transferToSource state, not the main source
-    setTransferToSource(newSource);
-  };
-
-  const getFilteredSources = () => {
-    if (!source) return formattedSources;
-    // Filter out sources that start with the same base ID as the "from" source
-    const baseSourceId = source.split('-')[0];
-    return formattedSources.filter(s => !s.id.startsWith(baseSourceId));
-  };
-
   const handleSubmit = () => {
-    if (type === 'transfer' && !transferToSource) {
-      return; // Don't submit if transfer to source is not selected
-    }
-    // For transfers, use transferToSource as the final source
-    if (type === 'transfer') {
-      onSourceChange(transferToSource);
-    }
     onSubmit();
   };
 
@@ -80,25 +53,11 @@ export const TransactionFormFields = ({
       />
 
       {type === "transfer" ? (
-        <div className="grid grid-cols-2 gap-4">
-          <PaymentSourceSelector
-            source={source}
-            onSourceChange={handleTransferFromChange}
-            formattedSources={formattedSources}
-            placeholder="Transfer from"
-            type={type}
-            showAddButton={false}
-          />
-          <PaymentSourceSelector
-            source={transferToSource}
-            onSourceChange={handleTransferToChange}
-            formattedSources={getFilteredSources()}
-            placeholder="Transfer to"
-            isTransferTo={true}
-            fromSource={source}
-            type={type}
-          />
-        </div>
+        <TransferSourceSelectors
+          source={source}
+          onSourceChange={onSourceChange}
+          formattedSources={formattedSources}
+        />
       ) : (
         <PaymentSourceSelector
           source={source}
@@ -135,20 +94,7 @@ export const TransactionFormFields = ({
         type={type}
       />
 
-      <Button
-        className={`w-full h-12 rounded-[12px] text-sm font-medium text-white ${
-          type === 'expense' 
-            ? 'bg-transaction-expense hover:bg-transaction-expense/90' 
-            : type === 'income'
-            ? 'bg-transaction-income hover:bg-transaction-income/90'
-            : type === 'transfer'
-            ? 'bg-transaction-transfer hover:bg-transaction-transfer/90'
-            : 'bg-primary hover:bg-primary/90'
-        }`}
-        onClick={handleSubmit}
-      >
-        Add Transaction
-      </Button>
+      <TransactionFormActions type={type} onSubmit={handleSubmit} />
     </div>
   );
 };
