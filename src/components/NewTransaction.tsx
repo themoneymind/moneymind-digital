@@ -5,6 +5,7 @@ import { TransactionForm } from "./transaction/TransactionForm";
 import { useTransactionValidation } from "@/hooks/useTransactionValidation";
 import { TransactionHeader } from "./transaction/TransactionHeader";
 import { toast } from "sonner";
+import { useTransferHandler } from "@/hooks/useTransferHandler";
 
 type NewTransactionProps = {
   onClose: () => void;
@@ -12,7 +13,8 @@ type NewTransactionProps = {
 
 export const NewTransaction = ({ onClose }: NewTransactionProps) => {
   const { addTransaction, getFormattedPaymentSources, paymentSources } = useFinance();
-  const { validateAmount, validatePaymentSource, validateExpenseBalance } = useTransactionValidation();
+  const { validateAmount, validatePaymentSource } = useTransactionValidation();
+  const { handleTransfer } = useTransferHandler();
   
   const [type, setType] = useState<TransactionType>("expense");
   const [amount, setAmount] = useState("");
@@ -32,18 +34,7 @@ export const NewTransaction = ({ onClose }: NewTransactionProps) => {
 
   const formattedSources = getFormattedPaymentSources();
 
-  const validateTransactionType = (type: TransactionType): boolean => {
-    const validTypes: TransactionType[] = ["expense", "income", "transfer"];
-    if (!validTypes.includes(type)) {
-      toast.error("Invalid transaction type");
-      return false;
-    }
-    return true;
-  };
-
   const handleSubmit = async () => {
-    if (!validateTransactionType(type)) return;
-
     if (!category) {
       toast.error("Please select a category");
       return;
@@ -60,35 +51,43 @@ export const NewTransaction = ({ onClose }: NewTransactionProps) => {
     const sourceValidation = validatePaymentSource(source, paymentSources);
     if (!sourceValidation) return;
 
-    const { baseSourceId, baseSource } = sourceValidation;
-
-    if (!validateExpenseBalance(baseSource, validAmount, type)) return;
-
-    const selectedSource = formattedSources.find(s => s.id === source);
-    if (!selectedSource) {
-      toast.error("Invalid payment source");
-      return;
-    }
-
     try {
-      await addTransaction({
-        type,
-        amount: validAmount,
-        category,
-        source: source,
-        description,
-        base_source_id: baseSourceId,
-        display_source: selectedSource.name,
-        date: selectedDate,
-      });
+      if (type === 'transfer') {
+        const success = await handleTransfer(
+          sourceValidation.baseSource.id,
+          source, // This is actually the destination account ID
+          validAmount,
+          description
+        );
 
-      setAmount("");
-      setCategory("");
-      setSource("");
-      setDescription("");
-      setSelectedDate(new Date());
-      onClose();
-      toast.success("Transaction added successfully");
+        if (success) {
+          setAmount("");
+          setCategory("");
+          setSource("");
+          setDescription("");
+          setSelectedDate(new Date());
+          onClose();
+        }
+      } else {
+        await addTransaction({
+          type,
+          amount: validAmount,
+          category,
+          source: source,
+          description,
+          base_source_id: sourceValidation.baseSourceId,
+          display_source: formattedSources.find(s => s.id === source)?.name || '',
+          date: selectedDate,
+        });
+
+        setAmount("");
+        setCategory("");
+        setSource("");
+        setDescription("");
+        setSelectedDate(new Date());
+        onClose();
+        toast.success("Transaction added successfully");
+      }
     } catch (error) {
       console.error("Error adding transaction:", error);
       toast.error("Failed to add transaction");

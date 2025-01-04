@@ -1,5 +1,6 @@
 import { PaymentSourceSelector } from "./PaymentSourceSelector";
 import { useState } from "react";
+import { useTransferHandler } from "@/hooks/useTransferHandler";
 
 type TransferSourceSelectorsProps = {
   source: string;
@@ -13,6 +14,7 @@ export const TransferSourceSelectors = ({
   formattedSources,
 }: TransferSourceSelectorsProps) => {
   const [transferToSource, setTransferToSource] = useState("");
+  const { handleTransfer } = useTransferHandler();
 
   const handleTransferFromChange = (newSource: string) => {
     onSourceChange(newSource);
@@ -26,8 +28,7 @@ export const TransferSourceSelectors = ({
 
   const getFilteredSources = () => {
     if (!source) return formattedSources;
-    const baseSourceId = source.split('-')[0];
-    return formattedSources.filter(s => !s.id.startsWith(baseSourceId));
+    return formattedSources.filter(s => s.id !== source);
   };
 
   return (
