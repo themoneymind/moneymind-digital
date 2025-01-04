@@ -16,15 +16,12 @@ export const useTransferHandler = () => {
       return false;
     }
 
-    // Start a Supabase transaction
-    const { data: client } = await supabase.rpc('begin');
-
     try {
       // 1. Deduct from source account
       const { error: debitError } = await supabase
         .from('payment_sources')
         .update({ 
-          amount: supabase.raw('amount - ?', [amount])
+          amount: supabase.rpc('decrement_amount', { decrement_by: amount })
         })
         .eq('id', fromSourceId)
         .gt('amount', amount - 0.01); // Ensure sufficient balance
@@ -37,7 +34,7 @@ export const useTransferHandler = () => {
       const { error: creditError } = await supabase
         .from('payment_sources')
         .update({ 
-          amount: supabase.raw('amount + ?', [amount])
+          amount: supabase.rpc('increment_amount', { increment_by: amount })
         })
         .eq('id', toSourceId);
 
@@ -83,13 +80,31 @@ export const useTransferHandler = () => {
         throw new Error("Failed to record incoming transfer");
       }
 
-      await supabase.rpc('commit');
       toast.success("Transfer completed successfully");
       return true;
 
     } catch (error) {
       // Rollback on any error
-      await supabase.rpc('rollback');
+      try {
+        // Rollback debit operation
+        await supabase
+          .from('payment_sources')
+          .update({ 
+            amount: supabase.rpc('increment_amount', { increment_by: amount })
+          })
+          .eq('id', fromSourceId);
+
+        // Rollback credit operation
+        await supabase
+          .from('payment_sources')
+          .update({ 
+            amount: supabase.rpc('decrement_amount', { decrement_by: amount })
+          })
+          .eq('id', toSourceId);
+      } catch (rollbackError) {
+        console.error("Rollback failed:", rollbackError);
+        toast.error("Critical error during rollback. Please contact support.");
+      }
       
       if (error instanceof Error) {
         toast.error(error.message);
