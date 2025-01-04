@@ -26,7 +26,7 @@ export const CreditCardBalance = ({ usedCredit, availableCredit }: CreditCardBal
         <p className={`${getTextSize(usedCredit)} font-bold`}>{formatCurrency(usedCredit)}</p>
       </div>
 
-      <Separator orientation="vertical" className="absolute left-1/2 h-full -translate-x-1/2 bg-white/20" />
+      <Separator orientation="vertical" className="absolute left-[48%] h-full -translate-x-1/2 bg-white/20" />
 
       <div className="flex flex-col items-start">
         <span className="text-xs opacity-70 mb-1">Available Credit</span>
