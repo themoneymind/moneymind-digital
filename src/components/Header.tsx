@@ -73,7 +73,7 @@ export const Header = () => {
       <div className="absolute right-0 top-0 w-32 h-32 bg-white/10 rounded-full transform translate-x-16 -translate-y-8" />
       
       {/* First Row - Navigation and Actions */}
-      <div className="max-w-2xl mx-auto flex items-center justify-between px-4 py-4 relative">
+      <div className="max-w-md mx-auto md:max-w-5xl flex items-center justify-between px-4 md:px-6 lg:px-8 py-4 relative">
         <div className="flex items-center gap-3 pl-2">
           <div 
             className="w-6 h-6 ring-2 ring-white/20 rounded-full cursor-pointer"
@@ -97,7 +97,7 @@ export const Header = () => {
       </div>
       
       {/* Profile Info */}
-      <div className="max-w-2xl mx-auto px-4 mb-2">
+      <div className="max-w-md mx-auto md:max-w-5xl px-4 md:px-6 lg:px-8 mb-2">
         <div className="flex items-center gap-4 pl-2">
           <div>
             <h2 className="text-lg font-medium text-white">
