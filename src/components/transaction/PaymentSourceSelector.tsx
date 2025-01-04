@@ -32,17 +32,7 @@ export const PaymentSourceSelector = ({
     return sources.filter(s => !s.id.startsWith(fromSourceId.split('-')[0]));
   };
 
-  const filterSourcesByType = (sources: { id: string; name: string }[]) => {
-    if (type === 'income') {
-      // Filter out credit card sources for income transactions
-      return sources.filter(s => !s.id.includes('credit'));
-    }
-    return sources;
-  };
-
-  const filteredSources = filterSourcesByType(
-    filterSourcesForTransfer(formattedSources, fromSource)
-  );
+  const filteredSources = filterSourcesForTransfer(formattedSources, fromSource);
 
   const getFocusColor = () => {
     switch (type) {
