@@ -18,11 +18,15 @@ export const PaymentSource = () => {
   const [customUpi, setCustomUpi] = useState("");
   const [selectedUpiApps, setSelectedUpiApps] = useState<string[]>([]);
   const [showBankSearch, setShowBankSearch] = useState(false);
+  const [lastFourDigits, setLastFourDigits] = useState("");
+  const [creditLimit, setCreditLimit] = useState("");
 
   const handleTypeChange = (type: "bank" | "credit") => {
     setSelectedType(type);
     setSelectedBank("");
     setCustomBankName("");
+    setLastFourDigits("");
+    setCreditLimit("");
   };
 
   const handleBankSelect = (bank: string) => {
@@ -31,9 +35,7 @@ export const PaymentSource = () => {
   };
 
   const formatSourceName = (bankName: string) => {
-    // Clean the bank name by removing any numbers and extra spaces
     const cleanName = bankName.replace(/\d+/g, '').trim();
-    // Ensure bank name has "Bank" suffix if not present
     return cleanName.toLowerCase().includes('bank') ? cleanName : `${cleanName} Bank`;
   };
 
@@ -49,7 +51,15 @@ export const PaymentSource = () => {
       return;
     }
 
-    // Format source name based on type and clean the bank name
+    if (selectedType === "credit" && !creditLimit) {
+      toast({
+        title: "Error",
+        description: "Please enter the credit limit",
+        variant: "destructive",
+      });
+      return;
+    }
+
     const sourceName = selectedType === "credit" 
       ? `${formatSourceName(bankName)} Credit Card`
       : formatSourceName(bankName);
@@ -74,6 +84,8 @@ export const PaymentSource = () => {
         amount: 0,
         linked: selectedUpiApps.length > 0,
         upi_apps: selectedUpiApps.length > 0 ? selectedUpiApps : undefined,
+        last_four_digits: lastFourDigits || undefined,
+        credit_limit: selectedType === "credit" ? Number(creditLimit) : undefined,
       };
 
       await addPaymentSource(newSource);
@@ -87,6 +99,8 @@ export const PaymentSource = () => {
       setCustomBankName("");
       setCustomUpi("");
       setSelectedUpiApps([]);
+      setLastFourDigits("");
+      setCreditLimit("");
     } catch (error) {
       console.error("Error adding payment source:", error);
       toast({
@@ -140,6 +154,10 @@ export const PaymentSource = () => {
             }}
             showBankSearch={showBankSearch}
             setShowBankSearch={setShowBankSearch}
+            lastFourDigits={lastFourDigits}
+            setLastFourDigits={setLastFourDigits}
+            creditLimit={creditLimit}
+            setCreditLimit={setCreditLimit}
           />
 
           <PaymentSourceButtons

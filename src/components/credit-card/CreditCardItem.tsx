@@ -2,6 +2,7 @@ import { PaymentSource } from "@/types/finance";
 import { formatCurrency } from "@/utils/formatters";
 import { CreditCard } from "lucide-react";
 import { format } from "date-fns";
+import { Progress } from "@/components/ui/progress";
 
 interface CreditCardItemProps {
   card: PaymentSource;
@@ -9,6 +10,7 @@ interface CreditCardItemProps {
 
 export const CreditCardItem = ({ card }: CreditCardItemProps) => {
   const availableCredit = Number(card.credit_limit) - Math.abs(Number(card.amount));
+  const utilization = card.credit_limit ? (Math.abs(Number(card.amount)) / Number(card.credit_limit)) * 100 : 0;
 
   return (
     <div className="space-y-4">
@@ -37,14 +39,31 @@ export const CreditCardItem = ({ card }: CreditCardItemProps) => {
             )}
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <p className="text-sm text-white/80">Current Balance</p>
-              <p className="font-medium text-white">{formatCurrency(Math.abs(Number(card.amount)))}</p>
+          <div className="space-y-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <p className="text-sm text-white/80">Current Balance</p>
+                <p className="font-medium text-white">{formatCurrency(Math.abs(Number(card.amount)))}</p>
+              </div>
+              <div>
+                <p className="text-sm text-white/80">Credit Limit</p>
+                <p className="font-medium text-white">{formatCurrency(Number(card.credit_limit))}</p>
+              </div>
             </div>
+            
             <div>
-              <p className="text-sm text-white/80">Available Credit</p>
-              <p className="font-medium text-white">{formatCurrency(availableCredit)}</p>
+              <div className="flex items-center justify-between mb-1">
+                <p className="text-sm text-white/80">Available Credit</p>
+                <p className="text-sm text-white">{formatCurrency(availableCredit)}</p>
+              </div>
+              <Progress 
+                value={utilization} 
+                className="h-2 bg-white/20" 
+                indicatorClassName={utilization > 80 ? "bg-red-500" : utilization > 50 ? "bg-yellow-500" : "bg-green-500"}
+              />
+              <p className="text-xs text-white/80 mt-1">
+                {utilization.toFixed(0)}% utilized
+              </p>
             </div>
           </div>
         </div>
