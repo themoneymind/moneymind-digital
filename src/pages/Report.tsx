@@ -19,10 +19,10 @@ const Report = () => {
   const { timeframe, setTimeframe, prepareChartData, downloadReport, transactions, isLoading } = useReport();
 
   return (
-    <div className="min-h-screen bg-[#F5F5F7] relative">
+    <div className="min-h-screen bg-[#F5F5F7]">
       <TopBar title="Financial Report" />
       
-      <main className="pb-20 pt-[56px]">
+      <main className="pb-20">
         <div className="max-w-md mx-auto md:max-w-5xl px-4 md:px-6 lg:px-8">
           <div className="space-y-6">
             <div className="bg-white rounded-lg p-4 mb-6 shadow-sm">
