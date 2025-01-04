@@ -60,6 +60,29 @@ export const CreditCardItem = ({ card }: CreditCardItemProps) => {
               <p className="text-lg font-semibold">{formatCurrency(availableCredit)}</p>
             </div>
           </div>
+
+          {/* Credit Utilization */}
+          <div className="space-y-1.5">
+            <div className="flex items-center justify-between">
+              <p className="text-xs opacity-70">Credit Utilization</p>
+              <p className="text-xs font-medium">{utilization.toFixed(0)}%</p>
+            </div>
+            <div className="space-y-1">
+              <Progress 
+                value={utilization} 
+                className="h-1.5 bg-white/20"
+              >
+                <div 
+                  className={`h-full ${getUtilizationColor()} transition-all duration-300`} 
+                  style={{ width: `${utilization}%` }}
+                />
+              </Progress>
+              <div className="flex justify-between text-[10px] opacity-70">
+                <span>{formatCurrency(usedCredit)} used</span>
+                <span>{formatCurrency(Number(card.credit_limit))} limit</span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
