@@ -1,5 +1,4 @@
 import { formatCurrency } from "@/utils/formatters";
-import { Separator } from "@/components/ui/separator";
 
 interface CreditCardBalanceProps {
   usedCredit: number;
@@ -20,13 +19,11 @@ export const CreditCardBalance = ({ usedCredit, availableCredit }: CreditCardBal
   };
 
   return (
-    <div className="grid grid-cols-2 gap-3 relative">
+    <div className="grid grid-cols-2 gap-3">
       <div className="flex flex-col items-start">
         <span className="text-xs opacity-70 mb-1">Outstanding</span>
         <p className={`${getTextSize(usedCredit)} font-bold`}>{formatCurrency(usedCredit)}</p>
       </div>
-
-      <Separator orientation="vertical" className="absolute left-1/2 h-full -translate-x-1/2 bg-white/20" />
 
       <div className="flex flex-col items-start">
         <span className="text-xs opacity-70 mb-1">Available Credit</span>
