@@ -1,6 +1,7 @@
 import { PaymentSourceSelector } from "./PaymentSourceSelector";
 import { useState } from "react";
 import { getBaseSourceId } from "@/utils/paymentSourceUtils";
+import { useFinance } from "@/contexts/FinanceContext";
 
 type TransferSourceSelectorsProps = {
   source: string;
@@ -15,28 +16,20 @@ export const TransferSourceSelectors = ({
 }: TransferSourceSelectorsProps) => {
   const [fromSource, setFromSource] = useState("");
   const [toSource, setToSource] = useState("");
+  const { paymentSources } = useFinance();
 
   const handleFromSourceChange = (newSource: string) => {
-    const baseSourceId = getBaseSourceId(newSource);
-    console.log("From source changed:", { newSource, baseSourceId });
+    console.log("From source changed:", { newSource });
     setFromSource(newSource);
-    // Only update parent state when "from" source changes with the base ID
-    onSourceChange(baseSourceId);
+    // Only update parent state when "from" source changes
+    onSourceChange(newSource);
   };
 
   const handleToSourceChange = (newSource: string) => {
-    const baseSourceId = getBaseSourceId(newSource);
-    console.log("To source changed:", { newSource, baseSourceId });
+    console.log("To source changed:", { newSource });
     setToSource(newSource);
-    // Update parent state with destination account base ID
-    onSourceChange(baseSourceId);
-  };
-
-  const getFilteredDestinationSources = () => {
-    if (!fromSource) return formattedSources;
-    // Filter out the source account and its related UPI sources
-    const baseSourceId = getBaseSourceId(fromSource);
-    return formattedSources.filter(s => !s.id.startsWith(baseSourceId));
+    // Update parent state with destination account
+    onSourceChange(newSource);
   };
 
   return (
@@ -48,15 +41,17 @@ export const TransferSourceSelectors = ({
         placeholder="Transfer from"
         type="transfer"
         showAddButton={false}
+        allSources={paymentSources}
       />
       <PaymentSourceSelector
         source={toSource}
         onSourceChange={handleToSourceChange}
-        formattedSources={getFilteredDestinationSources()}
+        formattedSources={formattedSources}
         placeholder="Transfer to"
         isTransferTo={true}
         fromSource={fromSource}
         type="transfer"
+        allSources={paymentSources}
       />
     </div>
   );

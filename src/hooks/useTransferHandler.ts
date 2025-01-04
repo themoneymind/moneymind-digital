@@ -1,6 +1,7 @@
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
+import { getBaseSourceId } from "@/utils/paymentSourceUtils";
 
 export const useTransferHandler = () => {
   const { user } = useAuth();
@@ -16,12 +17,24 @@ export const useTransferHandler = () => {
       return false;
     }
 
+    // Get base source IDs for both accounts
+    const baseFromSourceId = getBaseSourceId(fromSourceId);
+    const baseToSourceId = getBaseSourceId(toSourceId);
+
+    console.log("Transfer details:", {
+      fromSourceId,
+      toSourceId,
+      baseFromSourceId,
+      baseToSourceId,
+      amount
+    });
+
     try {
       // 1. Deduct from source account
       const { data: debitData, error: debitError } = await supabase
         .from('payment_sources')
-        .update({ amount: amount * -1 })
-        .eq('id', fromSourceId)
+        .update({ amount: supabase.sql`amount - ${amount}` })
+        .eq('id', baseFromSourceId)
         .gt('amount', amount - 0.01)
         .select('amount')
         .single();
@@ -33,8 +46,8 @@ export const useTransferHandler = () => {
       // 2. Add to destination account
       const { data: creditData, error: creditError } = await supabase
         .from('payment_sources')
-        .update({ amount: amount })
-        .eq('id', toSourceId)
+        .update({ amount: supabase.sql`amount + ${amount}` })
+        .eq('id', baseToSourceId)
         .select('amount')
         .single();
 
@@ -42,8 +55,8 @@ export const useTransferHandler = () => {
         throw new Error("Destination account not found");
       }
 
-      // 3. Create outgoing transaction record
-      const { error: outgoingError } = await supabase
+      // 3. Create transfer transaction record
+      const { error: transferError } = await supabase
         .from('transactions')
         .insert([{
           user_id: user.id,
@@ -51,33 +64,14 @@ export const useTransferHandler = () => {
           amount: amount,
           category: 'Transfer',
           source: fromSourceId,
-          base_source_id: fromSourceId,
+          base_source_id: baseFromSourceId,
           display_source: toSourceId,
           description: description || 'Transfer',
           date: new Date().toISOString(),
         }]);
 
-      if (outgoingError) {
-        throw new Error("Failed to record outgoing transfer");
-      }
-
-      // 4. Create incoming transaction record
-      const { error: incomingError } = await supabase
-        .from('transactions')
-        .insert([{
-          user_id: user.id,
-          type: 'income',
-          amount: amount,
-          category: 'Transfer',
-          source: toSourceId,
-          base_source_id: toSourceId,
-          display_source: fromSourceId,
-          description: `Transfer from ${description || 'account'}`,
-          date: new Date().toISOString(),
-        }]);
-
-      if (incomingError) {
-        throw new Error("Failed to record incoming transfer");
+      if (transferError) {
+        throw new Error("Failed to record transfer");
       }
 
       toast.success("Transfer completed successfully");
@@ -89,14 +83,14 @@ export const useTransferHandler = () => {
         // Rollback debit operation
         await supabase
           .from('payment_sources')
-          .update({ amount: amount })
-          .eq('id', fromSourceId);
+          .update({ amount: supabase.sql`amount + ${amount}` })
+          .eq('id', baseFromSourceId);
 
         // Rollback credit operation
         await supabase
           .from('payment_sources')
-          .update({ amount: amount * -1 })
-          .eq('id', toSourceId);
+          .update({ amount: supabase.sql`amount - ${amount}` })
+          .eq('id', baseToSourceId);
       } catch (rollbackError) {
         console.error("Rollback failed:", rollbackError);
         toast.error("Critical error during rollback. Please contact support.");

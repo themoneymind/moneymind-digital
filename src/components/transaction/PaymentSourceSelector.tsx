@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { getBaseSourceId } from "@/utils/paymentSourceUtils";
+import { PaymentSource } from "@/types/finance";
 
 type PaymentSourceSelectorProps = {
   source: string;
@@ -13,6 +14,7 @@ type PaymentSourceSelectorProps = {
   initialDisplaySource?: string;
   showAddButton?: boolean;
   type?: "expense" | "income" | "transfer";
+  allSources?: PaymentSource[];
 };
 
 export const PaymentSourceSelector = ({
@@ -25,14 +27,27 @@ export const PaymentSourceSelector = ({
   initialDisplaySource,
   showAddButton = true,
   type,
+  allSources = [],
 }: PaymentSourceSelectorProps) => {
   const navigate = useNavigate();
   
   const filterSourcesForTransfer = (sources: { id: string; name: string }[], fromSourceId: string) => {
     if (!isTransferTo || !fromSourceId) return sources;
-    // Filter out the source account and its UPI variants using the base source ID
-    const baseSourceId = getBaseSourceId(fromSourceId);
-    return sources.filter(s => !s.id.startsWith(baseSourceId));
+    
+    const baseFromSourceId = getBaseSourceId(fromSourceId);
+    const fromSourceDetails = allSources.find(s => s.id === baseFromSourceId);
+    
+    return sources.filter(s => {
+      const baseCurrentId = getBaseSourceId(s.id);
+      const currentSourceDetails = allSources.find(src => src.id === baseCurrentId);
+      
+      // If it's the same base source, only allow if the destination is a credit card
+      if (baseCurrentId === baseFromSourceId) {
+        return currentSourceDetails?.type === 'credit';
+      }
+      
+      return true;
+    });
   };
 
   const filteredSources = filterSourcesForTransfer(formattedSources, fromSource);
@@ -50,11 +65,11 @@ export const PaymentSourceSelector = ({
     }
   };
 
-  // Only show the add button if it's not a transfer "from" selector
   const shouldShowAddButton = showAddButton && !(type === 'transfer' && !isTransferTo);
 
   console.log("PaymentSourceSelector - Current source:", source);
   console.log("PaymentSourceSelector - Available sources:", filteredSources);
+  console.log("PaymentSourceSelector - From source:", fromSource);
 
   return (
     <div className="flex gap-2 items-center">
