@@ -36,11 +36,12 @@ export const PaymentSourceSelector = ({
 
   const filterSourcesByType = (sources: { id: string; name: string }[]) => {
     if (type === 'income') {
-      // For income transactions, filter out credit card sources by checking the payment source type
+      // For income transactions, filter out credit card sources
       return sources.filter(source => {
         const baseSourceId = source.id.split('-')[0]; // Get the base source ID without UPI suffix
         const paymentSource = paymentSources.find(ps => ps.id === baseSourceId);
-        return paymentSource && paymentSource.type !== 'Credit Card';
+        // Include the source if it's either a Bank account or a UPI option of a Bank account
+        return paymentSource && paymentSource.type === 'Bank';
       });
     }
     return sources;
