@@ -3,6 +3,7 @@ import { CreditCardItem } from "./credit-card/CreditCardItem";
 import { Plus } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useState, useRef, TouchEvent } from "react";
+import { RecentTransactions } from "./RecentTransactions";
 
 export const CreditCards = () => {
   const { paymentSources } = useFinance();
