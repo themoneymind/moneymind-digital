@@ -23,7 +23,7 @@ export const TransactionList = ({
 }: TransactionListProps) => {
   let filteredTransactions = transactions;
 
-  // Apply date filter only when explicitly selected
+  // Apply date filter
   if (filter === "date") {
     filteredTransactions = transactions.filter((t) => {
       const transactionDate = new Date(t.date);
@@ -49,9 +49,7 @@ export const TransactionList = ({
   if (filteredTransactions.length === 0) {
     return (
       <div className="text-center py-8 text-gray-500">
-        {filter === "date" 
-          ? "No transactions found for this date"
-          : "No transactions found"}
+        No transactions found
       </div>
     );
   }

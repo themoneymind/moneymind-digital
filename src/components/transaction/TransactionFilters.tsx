@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Filter } from "lucide-react";
+import { Calendar, Filter } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -28,6 +28,7 @@ export const TransactionFilters = ({
   
   const handleDateSelect = (date: Date | undefined) => {
     if (date) {
+      // Always update to the selected date when manually picking from calendar
       setCurrentMonth(date);
       setFilter("date");
     }
@@ -35,6 +36,33 @@ export const TransactionFilters = ({
 
   return (
     <div className="flex items-center gap-2">
+      <Popover>
+        <PopoverTrigger asChild>
+          <Button
+            variant="outline"
+            size="icon"
+            className="rounded-full w-8 h-8 bg-gray-100 border-0 hover:bg-gray-200"
+          >
+            <Calendar className="h-3.5 w-3.5" />
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent 
+          className="w-auto p-0 bg-white border border-gray-200 shadow-lg rounded-[12px] z-50" 
+          align="end"
+          side="bottom"
+          sideOffset={5}
+        >
+          <CalendarPicker
+            mode="single"
+            selected={currentMonth}
+            onSelect={handleDateSelect}
+            defaultMonth={currentMonth}
+            initialFocus
+            className="bg-white rounded-[12px]"
+          />
+        </PopoverContent>
+      </Popover>
+
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button
@@ -69,28 +97,6 @@ export const TransactionFilters = ({
           >
             Expense Only
           </DropdownMenuItem>
-          <DropdownMenuSeparator />
-          <Popover>
-            <PopoverTrigger asChild>
-              <DropdownMenuItem 
-                className="px-3 py-2 text-sm cursor-pointer hover:bg-gray-50 rounded-[8px]"
-                onSelect={(e) => e.preventDefault()}
-              >
-                Select Date
-              </DropdownMenuItem>
-            </PopoverTrigger>
-            <PopoverContent 
-              className="w-auto p-0 bg-white border border-gray-200 shadow-lg rounded-[12px]" 
-              align="start"
-            >
-              <CalendarPicker
-                mode="single"
-                selected={currentMonth}
-                onSelect={handleDateSelect}
-                initialFocus
-              />
-            </PopoverContent>
-          </Popover>
           <DropdownMenuSeparator />
           <DropdownMenuItem 
             className="px-3 py-2 text-sm cursor-pointer hover:bg-gray-50 rounded-[8px]"
