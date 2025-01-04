@@ -2,6 +2,7 @@ import { toast } from "sonner";
 import { useFinance } from "@/contexts/FinanceContext";
 import { TransactionType } from "@/types/finance";
 import { useTransactionValidation } from "./useTransactionValidation";
+import { getBaseSourceId } from "@/utils/paymentSourceUtils";
 
 export const useTransactionSubmit = (onSuccess?: () => void) => {
   const { addTransaction, getFormattedPaymentSources, paymentSources } = useFinance();
@@ -33,6 +34,8 @@ export const useTransactionSubmit = (onSuccess?: () => void) => {
     description: string;
     selectedDate: Date;
   }) => {
+    console.log("Transaction submission - Input:", { type, amount, category, source, destinationSource });
+
     if (!validateTransactionType(type)) return false;
 
     if (!category) {
@@ -53,10 +56,14 @@ export const useTransactionSubmit = (onSuccess?: () => void) => {
     const validAmount = validateAmount(amount);
     if (!validAmount) return false;
 
-    const sourceValidation = validatePaymentSource(source, paymentSources);
+    // Extract base source ID for validation
+    const baseSourceId = getBaseSourceId(source);
+    console.log("Base source ID:", baseSourceId);
+
+    const sourceValidation = validatePaymentSource(baseSourceId, paymentSources);
     if (!sourceValidation) return false;
 
-    const { baseSourceId, baseSource } = sourceValidation;
+    const { baseSource } = sourceValidation;
 
     if (!validateExpenseBalance(baseSource, validAmount, type)) return false;
 
