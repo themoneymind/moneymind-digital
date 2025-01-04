@@ -33,29 +33,7 @@ export const useTransactionAdd = (
       if (newTransaction.type === "transfer") {
         console.log("Processing transfer transaction");
         
-        // For transfers, create a single transfer record
-        const { error: transferError } = await supabase
-          .from("transactions")
-          .insert([{
-            type: newTransaction.type,
-            amount: newTransaction.amount,
-            category: newTransaction.category,
-            source: sourceBaseId,
-            description: newTransaction.description,
-            base_source_id: sourceBaseId, // Set the base_source_id to source
-            display_source: destinationBaseId, // Store destination base ID
-            date: new Date().toISOString(),
-            user_id: user.id
-          }]);
-
-        if (transferError) {
-          console.error("Transfer insert error:", transferError);
-          throw transferError;
-        }
-
-        console.log("Transfer record created, updating source amount");
-
-        // Update source (debit)
+        // First update source amount (debit)
         await updatePaymentSourceAmount(
           sourceBaseId,
           Number(newTransaction.amount),
@@ -65,7 +43,7 @@ export const useTransactionAdd = (
 
         console.log("Source amount updated, updating destination amount");
 
-        // Update destination (credit)
+        // Then update destination amount (credit)
         if (destinationBaseId) {
           await updatePaymentSourceAmount(
             destinationBaseId,
@@ -75,11 +53,58 @@ export const useTransactionAdd = (
           );
         }
 
+        console.log("Destination amount updated, creating transfer record");
+
+        // Finally create the transfer record
+        const { error: transferError } = await supabase
+          .from("transactions")
+          .insert([{
+            type: newTransaction.type,
+            amount: newTransaction.amount,
+            category: newTransaction.category,
+            source: sourceBaseId,
+            description: newTransaction.description,
+            base_source_id: sourceBaseId,
+            display_source: destinationBaseId,
+            date: new Date().toISOString(),
+            user_id: user.id
+          }]);
+
+        if (transferError) {
+          console.error("Transfer insert error:", transferError);
+          // If transfer record fails, we need to reverse the amount updates
+          await updatePaymentSourceAmount(
+            sourceBaseId,
+            Number(newTransaction.amount),
+            'income',
+            true
+          );
+          if (destinationBaseId) {
+            await updatePaymentSourceAmount(
+              destinationBaseId,
+              Number(newTransaction.amount),
+              'expense',
+              true
+            );
+          }
+          throw transferError;
+        }
+
         console.log("Transfer completed successfully");
       } else {
         console.log("Processing regular transaction");
         
-        // For regular income/expense transactions
+        // For regular transactions, first update the amount
+        await updatePaymentSourceAmount(
+          sourceBaseId,
+          Number(newTransaction.amount),
+          newTransaction.type,
+          false
+        );
+
+        console.log("Source amount updated, creating transaction record");
+
+        // Then create the transaction record
         const { error: transactionError } = await supabase
           .from("transactions")
           .insert([{
@@ -88,7 +113,7 @@ export const useTransactionAdd = (
             category: newTransaction.category,
             source: sourceBaseId,
             description: newTransaction.description,
-            base_source_id: sourceBaseId, // Set the base_source_id
+            base_source_id: sourceBaseId,
             display_source: newTransaction.display_source,
             date: new Date().toISOString(),
             user_id: user.id
@@ -96,18 +121,15 @@ export const useTransactionAdd = (
 
         if (transactionError) {
           console.error("Transaction insert error:", transactionError);
+          // If transaction record fails, reverse the amount update
+          await updatePaymentSourceAmount(
+            sourceBaseId,
+            Number(newTransaction.amount),
+            newTransaction.type === 'income' ? 'expense' : 'income',
+            true
+          );
           throw transactionError;
         }
-
-        console.log("Regular transaction record created, updating source amount");
-
-        // Update source amount for income/expense
-        await updatePaymentSourceAmount(
-          sourceBaseId,
-          Number(newTransaction.amount),
-          newTransaction.type,
-          false
-        );
 
         console.log("Regular transaction completed successfully");
       }
