@@ -10,6 +10,9 @@ export const CreditCardBalance = ({ usedCredit, availableCredit }: CreditCardBal
   // Helper function to determine text size based on number length
   const getTextSize = (amount: number) => {
     const amountStr = Math.floor(amount).toString();
+    if (amountStr.length >= 8) {
+      return "text-xl";
+    }
     if (amountStr.length >= 7) {
       return "text-2xl";
     }
