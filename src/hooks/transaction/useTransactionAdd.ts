@@ -42,8 +42,8 @@ export const useTransactionAdd = (
             category: newTransaction.category,
             source: sourceBaseId,
             description: newTransaction.description,
-            base_source_id: sourceBaseId,
-            display_source: destinationBaseId,
+            base_source_id: sourceBaseId, // Set the base_source_id to source
+            display_source: destinationBaseId, // Store destination base ID
             date: new Date().toISOString(),
             user_id: user.id
           }]);
@@ -88,7 +88,7 @@ export const useTransactionAdd = (
             category: newTransaction.category,
             source: sourceBaseId,
             description: newTransaction.description,
-            base_source_id: sourceBaseId,
+            base_source_id: sourceBaseId, // Set the base_source_id
             display_source: newTransaction.display_source,
             date: new Date().toISOString(),
             user_id: user.id
