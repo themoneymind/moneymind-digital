@@ -90,6 +90,7 @@ export const CreditCards = () => {
                 <RecentTransactions 
                   filterByType="Credit Card"
                   showViewAll={false}
+                  sourceId={creditCards[activeIndex].id}
                 />
               </div>
             )}
