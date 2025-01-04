@@ -99,11 +99,11 @@ export const NewTransaction = ({ onClose }: NewTransactionProps) => {
   const getTypeStyles = () => {
     switch (type) {
       case "expense":
-        return "bg-gradient-to-b from-red-500/30 to-red-600/10 backdrop-blur-xl border-red-200/20";
+        return "bg-white/90 bg-gradient-to-b from-transaction-expense/5 to-white";
       case "income":
-        return "bg-gradient-to-b from-green-500/30 to-green-600/10 backdrop-blur-xl border-green-200/20";
+        return "bg-white/90 bg-gradient-to-b from-transaction-income/5 to-white";
       case "transfer":
-        return "bg-gradient-to-b from-purple-500/30 to-purple-600/10 backdrop-blur-xl border-purple-200/20";
+        return "bg-white/90 bg-gradient-to-b from-transaction-transfer/5 to-white";
       default:
         return "bg-white";
     }
@@ -111,7 +111,7 @@ export const NewTransaction = ({ onClose }: NewTransactionProps) => {
 
   return (
     <div className={cn(
-      "rounded-t-[30px] overflow-y-auto h-[95vh] min-h-[95vh] transition-colors duration-300",
+      "rounded-t-[30px] overflow-y-auto h-[95vh] min-h-[95vh] transition-colors duration-300 shadow-lg",
       getTypeStyles()
     )}>
       <div className="mx-auto h-1 w-[36px] rounded-full bg-gray-200/50 my-3" />
