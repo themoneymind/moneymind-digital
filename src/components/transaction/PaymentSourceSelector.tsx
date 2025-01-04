@@ -47,6 +47,9 @@ export const PaymentSourceSelector = ({
     }
   };
 
+  // Only show the add button if it's not a transfer "from" selector
+  const shouldShowAddButton = showAddButton && !(type === 'transfer' && !isTransferTo);
+
   return (
     <div className="flex gap-2 items-center">
       <select
@@ -63,7 +66,7 @@ export const PaymentSourceSelector = ({
           </option>
         ))}
       </select>
-      {showAddButton && (
+      {shouldShowAddButton && (
         <Button
           type="button"
           variant="outline"
