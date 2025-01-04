@@ -4,15 +4,18 @@ import { ChevronDown } from "lucide-react";
 interface RepeatSelectorProps {
   value: RepeatOption;
   onValueChange: (value: RepeatOption) => void;
+  type?: "expense" | "income" | "transfer";
 }
 
-export const RepeatSelector = ({ value, onValueChange }: RepeatSelectorProps) => {
+export const RepeatSelector = ({ value, onValueChange, type }: RepeatSelectorProps) => {
   return (
     <div className="relative">
       <select
         value={value}
         onChange={(e) => onValueChange(e.target.value as RepeatOption)}
-        className="w-full h-12 border-0 border-b-2 border-gray-200 focus:border-primary rounded-none text-sm text-gray-600 bg-transparent transition-colors hover:bg-transparent placeholder-gray-400 focus:outline-none appearance-none pr-8"
+        className={`w-full h-12 border-0 border-b-2 border-gray-200 rounded-none text-sm text-gray-600 bg-transparent transition-colors hover:bg-transparent placeholder-gray-400 focus:outline-none appearance-none pr-8 ${
+          type === 'expense' ? 'focus:border-transaction-expense' : 'focus:border-primary'
+        }`}
       >
         <option value="never">Never Repeat</option>
         <option value="daily">Every Day</option>

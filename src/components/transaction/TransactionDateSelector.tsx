@@ -4,11 +4,13 @@ import { format, addDays, subDays } from "date-fns";
 interface TransactionDateSelectorProps {
   selectedDate: Date;
   onDateChange: (date: Date) => void;
+  type?: "expense" | "income" | "transfer";
 }
 
 export const TransactionDateSelector = ({
   selectedDate,
   onDateChange,
+  type,
 }: TransactionDateSelectorProps) => {
   const handlePrevDay = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -25,7 +27,9 @@ export const TransactionDateSelector = ({
   };
 
   return (
-    <div className="flex items-center justify-between border-b-2 border-gray-200 focus-within:border-primary py-2 transition-colors">
+    <div className={`flex items-center justify-between border-b-2 border-gray-200 py-2 transition-colors ${
+      type === 'expense' ? 'focus-within:border-transaction-expense' : 'focus-within:border-primary'
+    }`}>
       <span className="text-sm text-gray-600">
         {format(selectedDate, "MMMM d, yyyy")}
       </span>

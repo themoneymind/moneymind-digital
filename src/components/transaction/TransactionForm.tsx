@@ -75,6 +75,7 @@ export const TransactionForm = ({
               onSourceChange={onSourceChange}
               formattedSources={formattedSources}
               placeholder="Transfer from"
+              type={type}
             />
             <PaymentSourceSelector
               source={source}
@@ -83,6 +84,7 @@ export const TransactionForm = ({
               placeholder="Transfer to"
               isTransferTo={true}
               fromSource={source}
+              type={type}
             />
           </div>
         ) : (
@@ -90,12 +92,14 @@ export const TransactionForm = ({
             source={source}
             onSourceChange={onSourceChange}
             formattedSources={formattedSources}
+            type={type}
           />
         )}
 
         <TransactionDateSelector
           selectedDate={selectedDate}
           onDateChange={onDateChange}
+          type={type}
         />
 
         <input
@@ -107,7 +111,11 @@ export const TransactionForm = ({
           onChange={(e) => onDescriptionChange(e.target.value)}
         />
 
-        <RepeatSelector value="never" onValueChange={() => {}} />
+        <RepeatSelector 
+          value="never" 
+          onValueChange={() => {}}
+          type={type}
+        />
 
         <Button
           className={`w-full h-12 rounded-[12px] text-sm font-medium text-white ${

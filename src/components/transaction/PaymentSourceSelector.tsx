@@ -11,6 +11,7 @@ type PaymentSourceSelectorProps = {
   fromSource?: string;
   initialDisplaySource?: string;
   showAddButton?: boolean;
+  type?: "expense" | "income" | "transfer";
 };
 
 export const PaymentSourceSelector = ({
@@ -22,6 +23,7 @@ export const PaymentSourceSelector = ({
   fromSource = "",
   initialDisplaySource,
   showAddButton = true,
+  type,
 }: PaymentSourceSelectorProps) => {
   const navigate = useNavigate();
   
@@ -37,7 +39,9 @@ export const PaymentSourceSelector = ({
       <select
         value={source || ""}
         onChange={(e) => onSourceChange(e.target.value)}
-        className="flex h-12 w-full py-2 px-0 text-sm text-gray-600 placeholder-gray-400 bg-transparent border-b-2 border-gray-200 focus:border-primary focus:outline-none transition-colors"
+        className={`flex h-12 w-full py-2 px-0 text-sm text-gray-600 placeholder-gray-400 bg-transparent border-b-2 border-gray-200 focus:outline-none transition-colors ${
+          type === 'expense' ? 'focus:border-transaction-expense' : 'focus:border-primary'
+        }`}
       >
         <option value="" disabled className="text-gray-400">
           {placeholder}
