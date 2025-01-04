@@ -1,5 +1,6 @@
 import { PaymentSource, TransactionType } from "@/types/finance";
 import { toast } from "sonner";
+import { getBaseSourceId } from "@/utils/paymentSourceUtils";
 
 export const useTransactionValidation = () => {
   const validateAmount = (amount: string): number | false => {
@@ -14,8 +15,11 @@ export const useTransactionValidation = () => {
   const validatePaymentSource = (
     sourceId: string,
     paymentSources: PaymentSource[]
-  ): { baseSourceId: string; baseSource: PaymentSource } | false => {
-    const baseSourceId = sourceId.split('-')[0];
+  ): { baseSource: PaymentSource } | false => {
+    // Extract base ID (removes UPI app suffix if present)
+    const baseSourceId = getBaseSourceId(sourceId);
+    console.log("Validating source:", { sourceId, baseSourceId });
+    
     const baseSource = paymentSources.find(s => s.id === baseSourceId);
     
     if (!baseSource) {
@@ -23,7 +27,7 @@ export const useTransactionValidation = () => {
       return false;
     }
 
-    return { baseSourceId, baseSource };
+    return { baseSource };
   };
 
   const validateExpenseBalance = (

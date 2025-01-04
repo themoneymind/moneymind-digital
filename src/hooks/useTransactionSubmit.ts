@@ -56,16 +56,19 @@ export const useTransactionSubmit = (onSuccess?: () => void) => {
     const validAmount = validateAmount(amount);
     if (!validAmount) return false;
 
-    // Extract base source ID for validation
-    const baseSourceId = getBaseSourceId(source);
-    console.log("Base source ID:", baseSourceId);
-
-    const sourceValidation = validatePaymentSource(baseSourceId, paymentSources);
+    // Validate source
+    const sourceValidation = validatePaymentSource(source, paymentSources);
     if (!sourceValidation) return false;
 
     const { baseSource } = sourceValidation;
 
     if (!validateExpenseBalance(baseSource, validAmount, type)) return false;
+
+    // For transfers, validate destination source
+    if (type === "transfer") {
+      const destinationValidation = validatePaymentSource(destinationSource, paymentSources);
+      if (!destinationValidation) return false;
+    }
 
     const formattedSources = getFormattedPaymentSources();
     let displaySourceName = "";
@@ -93,7 +96,7 @@ export const useTransactionSubmit = (onSuccess?: () => void) => {
         category,
         source: source,
         description,
-        base_source_id: baseSourceId,
+        base_source_id: getBaseSourceId(source),
         display_source: displaySourceName,
         date: selectedDate,
       });
