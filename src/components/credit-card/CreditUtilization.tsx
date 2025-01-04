@@ -17,7 +17,6 @@ export const CreditUtilization = ({ utilization, usedCredit, creditLimit }: Cred
   return (
     <div className="space-y-1.5">
       <div className="flex items-center justify-between">
-        <p className="text-xs opacity-70">Credit Utilization</p>
         <p className="text-xs font-medium">{utilization.toFixed(0)}%</p>
       </div>
       <div className="space-y-1">
@@ -28,7 +27,7 @@ export const CreditUtilization = ({ utilization, usedCredit, creditLimit }: Cred
           />
         </Progress>
         <div className="flex justify-between text-[10px] opacity-70">
-          <span>{formatCurrency(usedCredit)} used</span>
+          <span>Credit Utilization {formatCurrency(usedCredit)}</span>
           <span>{formatCurrency(creditLimit)} limit</span>
         </div>
       </div>
