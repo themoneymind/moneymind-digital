@@ -21,8 +21,8 @@ export const CreditCardItem = ({ card }: CreditCardItemProps) => {
 
   return (
     <div className="space-y-3">
-      <div className="relative h-auto p-4 rounded-apple overflow-hidden bg-gradient-to-br from-primary-gradient-from to-primary-gradient-to text-white shadow-lg transform transition-transform hover:scale-[1.02]">
-        {/* Decorative Elements - keeping the current ones */}
+      <div className="relative p-6 rounded-apple overflow-hidden bg-gradient-to-br from-primary-gradient-from to-primary-gradient-to text-white shadow-lg transform transition-transform hover:scale-[1.02]">
+        {/* Decorative Elements */}
         <div className="absolute right-0 top-0 w-48 h-48 bg-white/5 rounded-full transform translate-x-24 -translate-y-24" />
         <div className="absolute left-0 bottom-0 w-32 h-32 bg-white/5 rounded-full transform -translate-x-16 translate-y-16" />
         
@@ -58,29 +58,6 @@ export const CreditCardItem = ({ card }: CreditCardItemProps) => {
                 <span className="text-xs opacity-70">Available Credit</span>
               </div>
               <p className="text-lg font-semibold">{formatCurrency(availableCredit)}</p>
-            </div>
-          </div>
-          
-          {/* Credit Utilization */}
-          <div className="space-y-1.5">
-            <div className="flex items-center justify-between">
-              <p className="text-xs opacity-70">Credit Utilization</p>
-              <p className="text-xs font-medium">{utilization.toFixed(0)}%</p>
-            </div>
-            <div className="space-y-1">
-              <Progress 
-                value={utilization} 
-                className="h-1.5 bg-white/20"
-              >
-                <div 
-                  className={`h-full ${getUtilizationColor()} transition-all duration-300`} 
-                  style={{ width: `${utilization}%` }}
-                />
-              </Progress>
-              <div className="flex justify-between text-[10px] opacity-70">
-                <span>{formatCurrency(usedCredit)} used</span>
-                <span>{formatCurrency(Number(card.credit_limit))} limit</span>
-              </div>
             </div>
           </div>
         </div>
