@@ -8,12 +8,14 @@ type TransactionFormProps = {
   amount: string;
   category: string;
   source: string;
+  destinationSource: string;
   description: string;
   selectedDate: Date;
   onTypeChange: (type: TransactionType) => void;
   onAmountChange: (amount: string) => void;
   onCategoryChange: (category: string) => void;
   onSourceChange: (source: string) => void;
+  onDestinationSourceChange: (source: string) => void;
   onDescriptionChange: (description: string) => void;
   onDateChange: (date: Date) => void;
   onSubmit: () => void;
@@ -30,12 +32,14 @@ export const TransactionForm = ({
   amount,
   category,
   source,
+  destinationSource,
   description,
   selectedDate,
   onTypeChange,
   onAmountChange,
   onCategoryChange,
   onSourceChange,
+  onDestinationSourceChange,
   onDescriptionChange,
   onDateChange,
   onSubmit,
@@ -55,10 +59,12 @@ export const TransactionForm = ({
         type={type}
         category={category}
         source={source}
+        destinationSource={destinationSource}
         description={description}
         selectedDate={selectedDate}
         onCategoryChange={onCategoryChange}
         onSourceChange={onSourceChange}
+        onDestinationSourceChange={onDestinationSourceChange}
         onDescriptionChange={onDescriptionChange}
         onDateChange={onDateChange}
         onSubmit={onSubmit}

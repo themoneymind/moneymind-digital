@@ -18,6 +18,7 @@ export const NewTransaction = ({ onClose }: NewTransactionProps) => {
   const [amount, setAmount] = useState("");
   const [category, setCategory] = useState("");
   const [source, setSource] = useState("");
+  const [destinationSource, setDestinationSource] = useState("");
   const [description, setDescription] = useState("");
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [customCategories, setCustomCategories] = useState<{
@@ -54,6 +55,11 @@ export const NewTransaction = ({ onClose }: NewTransactionProps) => {
       return;
     }
 
+    if (type === "transfer" && !destinationSource) {
+      toast.error("Please select a destination source");
+      return;
+    }
+
     const validAmount = validateAmount(amount);
     if (!validAmount) return;
 
@@ -78,13 +84,14 @@ export const NewTransaction = ({ onClose }: NewTransactionProps) => {
         source: source,
         description,
         base_source_id: baseSourceId,
-        display_source: selectedSource.name,
+        display_source: type === "transfer" ? destinationSource : selectedSource.name,
         date: selectedDate,
       });
 
       setAmount("");
       setCategory("");
       setSource("");
+      setDestinationSource("");
       setDescription("");
       setSelectedDate(new Date());
       onClose();
@@ -105,12 +112,14 @@ export const NewTransaction = ({ onClose }: NewTransactionProps) => {
           amount={amount}
           category={category}
           source={source}
+          destinationSource={destinationSource}
           description={description}
           selectedDate={selectedDate}
           onTypeChange={setType}
           onAmountChange={setAmount}
           onCategoryChange={setCategory}
           onSourceChange={setSource}
+          onDestinationSourceChange={setDestinationSource}
           onDescriptionChange={setDescription}
           onDateChange={setSelectedDate}
           onSubmit={handleSubmit}

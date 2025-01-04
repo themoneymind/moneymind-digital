@@ -9,10 +9,12 @@ type TransactionFormFieldsProps = {
   type: TransactionType;
   category: string;
   source: string;
+  destinationSource: string;
   description: string;
   selectedDate: Date;
   onCategoryChange: (category: string) => void;
   onSourceChange: (source: string) => void;
+  onDestinationSourceChange: (source: string) => void;
   onDescriptionChange: (description: string) => void;
   onDateChange: (date: Date) => void;
   onSubmit: () => void;
@@ -28,10 +30,12 @@ export const TransactionFormFields = ({
   type,
   category,
   source,
+  destinationSource,
   description,
   selectedDate,
   onCategoryChange,
   onSourceChange,
+  onDestinationSourceChange,
   onDescriptionChange,
   onDateChange,
   onSubmit,
@@ -57,8 +61,8 @@ export const TransactionFormFields = ({
             type={type}
           />
           <PaymentSourceSelector
-            source={source}
-            onSourceChange={onSourceChange}
+            source={destinationSource}
+            onSourceChange={onDestinationSourceChange}
             formattedSources={formattedSources.filter(s => s.id !== source)}
             placeholder="Transfer to"
             isTransferTo={true}
