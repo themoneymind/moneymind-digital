@@ -9,8 +9,10 @@ interface CreditCardItemProps {
 }
 
 export const CreditCardItem = ({ card }: CreditCardItemProps) => {
-  const availableCredit = Number(card.credit_limit) - Math.abs(Number(card.amount));
-  const utilization = card.credit_limit ? (Math.abs(Number(card.amount)) / Number(card.credit_limit)) * 100 : 0;
+  // For credit cards, negative amount means used credit
+  const usedCredit = Number(card.amount) < 0 ? Math.abs(Number(card.amount)) : Number(card.amount);
+  const availableCredit = Number(card.credit_limit) - usedCredit;
+  const utilization = card.credit_limit ? (usedCredit / Number(card.credit_limit)) * 100 : 0;
 
   const getUtilizationColor = () => {
     if (utilization > 80) return "bg-red-500";
@@ -49,7 +51,7 @@ export const CreditCardItem = ({ card }: CreditCardItemProps) => {
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <p className="text-sm text-white/80">Current Balance</p>
-                <p className="font-medium text-white">{formatCurrency(Math.abs(Number(card.amount)))}</p>
+                <p className="font-medium text-white">{formatCurrency(usedCredit)}</p>
               </div>
               <div>
                 <p className="text-sm text-white/80">Credit Limit</p>
