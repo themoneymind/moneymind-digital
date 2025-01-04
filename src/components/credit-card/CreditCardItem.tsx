@@ -43,7 +43,7 @@ export const CreditCardItem = ({ card }: CreditCardItemProps) => {
           {/* Main Content */}
           <div className="grid grid-cols-2 gap-3">
             {/* Outstanding */}
-            <div className="p-2.5 bg-white/10 rounded-xl">
+            <div>
               <div className="flex items-center gap-1.5 mb-1">
                 <Clock className="w-3.5 h-3.5 opacity-70" />
                 <span className="text-xs opacity-70">Outstanding</span>
@@ -52,7 +52,7 @@ export const CreditCardItem = ({ card }: CreditCardItemProps) => {
             </div>
 
             {/* Available Credit */}
-            <div className="p-2.5 bg-white/10 rounded-xl">
+            <div>
               <div className="flex items-center gap-1.5 mb-1">
                 <CreditCard className="w-3.5 h-3.5 opacity-70" />
                 <span className="text-xs opacity-70">Available Credit</span>
