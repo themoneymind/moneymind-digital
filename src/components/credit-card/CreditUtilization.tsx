@@ -17,7 +17,7 @@ export const CreditUtilization = ({ utilization, usedCredit, creditLimit }: Cred
   return (
     <div className="space-y-1.5">
       <div className="flex items-center justify-between">
-        <p className="text-xs font-medium">{utilization.toFixed(0)}%</p>
+        <p className="text-xs font-medium opacity-40">{utilization.toFixed(0)}%</p>
       </div>
       <div className="space-y-1">
         <Progress value={utilization} className="h-1.5 bg-white/20">
