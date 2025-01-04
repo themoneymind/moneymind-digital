@@ -3,11 +3,12 @@ import { CreditCardItem } from "./credit-card/CreditCardItem";
 import { Button } from "./ui/button";
 import { Plus } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { ScrollArea, ScrollBar } from "./ui/scroll-area";
+import { useState } from "react";
 
 export const CreditCards = () => {
   const { paymentSources } = useFinance();
   const navigate = useNavigate();
+  const [activeIndex, setActiveIndex] = useState(0);
   
   const creditCards = paymentSources.filter(source => source.type === "Credit Card");
 
@@ -30,22 +31,33 @@ export const CreditCards = () => {
       </div>
       
       <div className="relative w-full">
-        <ScrollArea className="w-full overflow-x-hidden">
-          <div className="flex space-x-4 px-6 pb-4">
-            {creditCards.length === 0 ? (
-              <div className="text-center py-8 text-muted-foreground w-full">
-                No credit cards added yet
-              </div>
-            ) : (
-              creditCards.map((card) => (
-                <div key={card.id} className="min-w-[320px] max-w-[320px] flex-shrink-0">
-                  <CreditCardItem card={card} />
-                </div>
-              ))
-            )}
+        {creditCards.length === 0 ? (
+          <div className="text-center py-8 text-muted-foreground w-full">
+            No credit cards added yet
           </div>
-          <ScrollBar orientation="horizontal" />
-        </ScrollArea>
+        ) : (
+          <>
+            <div className="px-6">
+              <CreditCardItem card={creditCards[activeIndex]} />
+            </div>
+            
+            {creditCards.length > 1 && (
+              <div className="flex justify-center gap-2 mt-4">
+                {creditCards.map((_, index) => (
+                  <button
+                    key={index}
+                    onClick={() => setActiveIndex(index)}
+                    className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                      index === activeIndex 
+                        ? "bg-primary w-4" 
+                        : "bg-gray-300 hover:bg-gray-400"
+                    }`}
+                  />
+                ))}
+              </div>
+            )}
+          </>
+        )}
       </div>
     </div>
   );
