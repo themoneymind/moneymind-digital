@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useFinance } from "@/contexts/FinanceContext";
 
 type PaymentSourceSelectorProps = {
   source: string;
@@ -26,6 +27,7 @@ export const PaymentSourceSelector = ({
   type,
 }: PaymentSourceSelectorProps) => {
   const navigate = useNavigate();
+  const { paymentSources } = useFinance();
   
   const filterSourcesForTransfer = (sources: { id: string; name: string }[], fromSourceId: string) => {
     if (!isTransferTo || !fromSourceId) return sources;
@@ -34,8 +36,12 @@ export const PaymentSourceSelector = ({
 
   const filterSourcesByType = (sources: { id: string; name: string }[]) => {
     if (type === 'income') {
-      // For income, filter out credit card sources (they should contain "Credit Card" in their ID)
-      return sources.filter(s => !s.id.toLowerCase().includes('credit'));
+      // For income transactions, filter out credit card sources by checking the payment source type
+      return sources.filter(source => {
+        const baseSourceId = source.id.split('-')[0]; // Get the base source ID without UPI suffix
+        const paymentSource = paymentSources.find(ps => ps.id === baseSourceId);
+        return paymentSource && paymentSource.type !== 'Credit Card';
+      });
     }
     return sources;
   };
