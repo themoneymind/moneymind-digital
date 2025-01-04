@@ -5,6 +5,7 @@ import { TransactionEditDialog } from "./transaction/TransactionEditDialog";
 import { TransactionFilters } from "./transaction/TransactionFilters";
 import { TransactionList } from "./transaction/TransactionList";
 import { startOfDay, startOfMonth, endOfMonth, isSameMonth } from "date-fns";
+import { getBaseSourceId } from "@/utils/paymentSourceUtils";
 
 interface RecentTransactionsProps {
   filterByType?: string;
@@ -31,8 +32,28 @@ export const RecentTransactions = ({
       .filter(source => source.type === "Credit Card")
       .map(source => source.id);
     
+    availableTransactions = availableTransactions.filter(t => {
+      // Include transactions where:
+      // 1. The source is a credit card
+      // 2. OR it's a credit card payment (transfer) to this card
+      return creditCardIds.includes(t.base_source_id) || 
+        (t.reference_type === "credit_card_payment" && creditCardIds.includes(getBaseSourceId(t.display_source)));
+    });
+
+    // For credit card view, show transfers as income
+    availableTransactions = availableTransactions.map(t => {
+      if (t.reference_type === "credit_card_payment") {
+        return {
+          ...t,
+          type: "income" // Show credit card payments as income in card view
+        };
+      }
+      return t;
+    });
+  } else {
+    // In main view, filter out credit card payment "income" entries
     availableTransactions = availableTransactions.filter(t => 
-      creditCardIds.includes(t.source)
+      t.reference_type !== "credit_card_payment_received"
     );
   }
 

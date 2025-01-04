@@ -62,50 +62,66 @@ export const useTransactionSubmit = (onSuccess?: () => void) => {
 
     const { baseSource } = sourceValidation;
 
-    if (!validateExpenseBalance(baseSource, validAmount, type)) return false;
-
     // For transfers, validate destination source
     if (type === "transfer") {
       const destinationValidation = validatePaymentSource(destinationSource, paymentSources);
       if (!destinationValidation) return false;
-    }
 
-    const formattedSources = getFormattedPaymentSources();
-    let displaySourceName = "";
+      const sourceType = baseSource.type;
+      const destinationSourceObj = paymentSources.find(s => s.id === getBaseSourceId(destinationSource));
+      const destinationType = destinationSourceObj?.type;
 
-    if (type === "transfer") {
-      const destinationSourceObj = formattedSources.find(s => s.id === destinationSource);
-      if (!destinationSourceObj) {
-        toast.error("Invalid destination source");
-        return false;
+      // Handle bank to credit card transfer (bill payment)
+      if (sourceType !== "Credit Card" && destinationType === "Credit Card") {
+        try {
+          // Create transfer entry in main transactions
+          await addTransaction({
+            type: "transfer",
+            amount: validAmount,
+            category,
+            source: source,
+            description: `Credit card payment to ${destinationSourceObj.name}: ${description}`,
+            base_source_id: getBaseSourceId(source),
+            display_source: destinationSourceObj.name,
+            date: selectedDate,
+            reference_type: "credit_card_payment",
+          });
+
+          // Create income entry for credit card
+          await addTransaction({
+            type: "income",
+            amount: validAmount,
+            category,
+            source: destinationSource,
+            description: `Payment received from ${baseSource.name}: ${description}`,
+            base_source_id: getBaseSourceId(destinationSource),
+            display_source: baseSource.name,
+            date: selectedDate,
+            reference_type: "credit_card_payment_received",
+          });
+
+          onSuccess?.();
+          toast.success("Credit card payment completed successfully");
+          return true;
+        } catch (error) {
+          console.error("Error processing credit card payment:", error);
+          toast.error("Failed to complete credit card payment");
+          return false;
+        }
       }
-      displaySourceName = destinationSourceObj.name;
 
-      // First, create the debit transaction from source
+      // Regular bank-to-bank transfer
       try {
         await addTransaction({
-          type: "expense",
+          type: "transfer",
           amount: validAmount,
           category,
           source: source,
-          description: `Transfer to ${displaySourceName}: ${description}`,
+          description,
           base_source_id: getBaseSourceId(source),
-          display_source: displaySourceName,
+          display_source: destinationSourceObj?.name || "",
           date: selectedDate,
-          reference_type: "transfer_debit",
-        });
-
-        // Then, create the credit transaction to destination
-        await addTransaction({
-          type: "income",
-          amount: validAmount,
-          category,
-          source: destinationSource,
-          description: `Transfer from ${formattedSources.find(s => s.id === source)?.name}: ${description}`,
-          base_source_id: getBaseSourceId(destinationSource),
-          display_source: formattedSources.find(s => s.id === source)?.name || "",
-          date: selectedDate,
-          reference_type: "transfer_credit",
+          reference_type: "bank_transfer",
         });
 
         onSuccess?.();
@@ -118,12 +134,12 @@ export const useTransactionSubmit = (onSuccess?: () => void) => {
       }
     } else {
       // Handle regular income/expense transactions
-      const selectedSource = formattedSources.find(s => s.id === source);
-      if (!selectedSource) {
-        toast.error("Invalid payment source");
+      if (type === "income" && baseSource.type === "Credit Card") {
+        toast.error("Cannot add direct income to credit cards");
         return false;
       }
-      displaySourceName = selectedSource.name;
+
+      if (!validateExpenseBalance(baseSource, validAmount, type)) return false;
 
       try {
         await addTransaction({
@@ -133,7 +149,7 @@ export const useTransactionSubmit = (onSuccess?: () => void) => {
           source: source,
           description,
           base_source_id: getBaseSourceId(source),
-          display_source: displaySourceName,
+          display_source: baseSource.name,
           date: selectedDate,
         });
 

@@ -34,6 +34,10 @@ export const BalanceCard = () => {
 
   // Calculate total balance from all previous months (carryforward)
   const carryForwardBalance = allPreviousTransactions.reduce((acc, curr) => {
+    // Skip transfer transactions for balance calculation
+    if (curr.type === "transfer" && curr.reference_type !== "credit_card_payment") {
+      return acc;
+    }
     return curr.type === "income" ? acc + Number(curr.amount) : acc - Number(curr.amount);
   }, 0);
 
@@ -49,30 +53,26 @@ export const BalanceCard = () => {
     });
   });
 
-  // Get last month's transactions
-  const lastMonthStart = startOfMonth(subMonths(currentMonth, 1));
-  const lastMonthEnd = endOfMonth(subMonths(currentMonth, 1));
-  
-  const lastMonthTransactions = activeTransactions.filter(transaction => {
-    const transactionDate = new Date(transaction.date);
-    return isWithinInterval(transactionDate, {
-      start: lastMonthStart,
-      end: lastMonthEnd
-    });
-  });
-
-  // Calculate monthly income from income transactions
+  // Calculate monthly income and expense
   const monthlyIncome = monthlyTransactions.reduce((acc, curr) => {
+    if (curr.type === "transfer" && curr.reference_type !== "credit_card_payment") {
+      return acc;
+    }
     return curr.type === "income" ? acc + Number(curr.amount) : acc;
   }, 0);
 
-  // Calculate monthly expense
   const monthlyExpense = monthlyTransactions.reduce((acc, curr) => {
+    if (curr.type === "transfer" && curr.reference_type !== "credit_card_payment") {
+      return acc;
+    }
     return curr.type === "expense" ? acc + Number(curr.amount) : acc;
   }, 0);
 
   // Calculate last month's closing balance
   const lastMonthClosingBalance = allPreviousTransactions.reduce((acc, curr) => {
+    if (curr.type === "transfer" && curr.reference_type !== "credit_card_payment") {
+      return acc;
+    }
     return curr.type === "income" ? acc + Number(curr.amount) : acc - Number(curr.amount);
   }, 0);
 
