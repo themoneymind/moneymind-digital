@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { getBaseSourceId } from "@/utils/paymentSourceUtils";
 
 type PaymentSourceSelectorProps = {
   source: string;
@@ -29,8 +30,8 @@ export const PaymentSourceSelector = ({
   
   const filterSourcesForTransfer = (sources: { id: string; name: string }[], fromSourceId: string) => {
     if (!isTransferTo || !fromSourceId) return sources;
-    // Filter out the source account and its UPI variants
-    const baseSourceId = fromSourceId.split('-')[0];
+    // Filter out the source account and its UPI variants using the base source ID
+    const baseSourceId = getBaseSourceId(fromSourceId);
     return sources.filter(s => !s.id.startsWith(baseSourceId));
   };
 
