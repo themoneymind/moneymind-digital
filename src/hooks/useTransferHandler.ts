@@ -18,25 +18,25 @@ export const useTransferHandler = () => {
 
     try {
       // 1. Deduct from source account
-      const { error: debitError } = await supabase
+      const { data: debitData, error: debitError } = await supabase
         .from('payment_sources')
-        .update({ 
-          amount: supabase.rpc('decrement_amount', { decrement_by: amount })
-        })
+        .update({ amount: amount * -1 })
         .eq('id', fromSourceId)
-        .gt('amount', amount - 0.01); // Ensure sufficient balance
+        .gt('amount', amount - 0.01)
+        .select('amount')
+        .single();
 
       if (debitError) {
         throw new Error("Insufficient balance or source account not found");
       }
 
       // 2. Add to destination account
-      const { error: creditError } = await supabase
+      const { data: creditData, error: creditError } = await supabase
         .from('payment_sources')
-        .update({ 
-          amount: supabase.rpc('increment_amount', { increment_by: amount })
-        })
-        .eq('id', toSourceId);
+        .update({ amount: amount })
+        .eq('id', toSourceId)
+        .select('amount')
+        .single();
 
       if (creditError) {
         throw new Error("Destination account not found");
@@ -89,17 +89,13 @@ export const useTransferHandler = () => {
         // Rollback debit operation
         await supabase
           .from('payment_sources')
-          .update({ 
-            amount: supabase.rpc('increment_amount', { increment_by: amount })
-          })
+          .update({ amount: amount })
           .eq('id', fromSourceId);
 
         // Rollback credit operation
         await supabase
           .from('payment_sources')
-          .update({ 
-            amount: supabase.rpc('decrement_amount', { decrement_by: amount })
-          })
+          .update({ amount: amount * -1 })
           .eq('id', toSourceId);
       } catch (rollbackError) {
         console.error("Rollback failed:", rollbackError);
