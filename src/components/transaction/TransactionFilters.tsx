@@ -1,7 +1,7 @@
 import { DateFilterButton } from "./DateFilterButton";
 import { PaymentSourceFilterDropdown } from "./PaymentSourceFilterDropdown";
 import { Button } from "@/components/ui/button";
-import { ArrowDownIcon, ArrowUpIcon } from "lucide-react";
+import { Calendar, Filter } from "lucide-react";
 
 type TransactionFiltersProps = {
   filter: "all" | "income" | "expense" | "date";
@@ -33,27 +33,14 @@ export const TransactionFilters = ({
       />
       <Button
         variant="outline"
-        className={`${
-          filter === "income"
-            ? "bg-blue-50 text-blue-600 border-blue-200"
-            : "bg-white border-gray-200"
-        }`}
-        onClick={() => setFilter(filter === "income" ? "all" : "income")}
-      >
-        <ArrowUpIcon className="h-4 w-4 mr-2" />
-        Income
-      </Button>
-      <Button
-        variant="outline"
-        className={`${
-          filter === "expense"
+        className={`w-9 h-9 p-0 ${
+          filter === "income" || filter === "expense"
             ? "bg-blue-50 text-blue-600 border-blue-200"
             : "bg-white border-gray-200"
         }`}
         onClick={() => setFilter(filter === "expense" ? "all" : "expense")}
       >
-        <ArrowDownIcon className="h-4 w-4 mr-2" />
-        Expense
+        <Filter className="h-4 w-4" />
       </Button>
       <PaymentSourceFilterDropdown onSourceSelect={onSourceSelect} />
     </div>
