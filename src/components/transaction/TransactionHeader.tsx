@@ -7,7 +7,7 @@ type TransactionHeaderProps = {
 
 export const TransactionHeader = ({ onClose }: TransactionHeaderProps) => {
   return (
-    <div className="flex items-center justify-between mb-4 px-4 pt-2">
+    <div className="flex items-center justify-between mb-4 px-4">
       <h2 className="text-xl font-semibold">New Transaction</h2>
       <Button
         variant="ghost"
