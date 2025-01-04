@@ -60,7 +60,9 @@ export const CategorySelector = ({
       <select
         value={category}
         onChange={(e) => onCategoryChange(e.target.value)}
-        className="flex h-12 w-full py-2 px-0 text-sm text-gray-600 placeholder-gray-400 bg-transparent border-b-2 border-gray-200 focus:border-primary focus:outline-none transition-colors"
+        className={`flex h-12 w-full py-2 px-0 text-sm text-gray-600 placeholder-gray-400 bg-transparent border-b-2 ${
+          type === 'expense' ? 'border-transaction-expense focus:border-transaction-expense' : 'border-gray-200 focus:border-primary'
+        } focus:outline-none transition-colors`}
       >
         <option value="" disabled className="text-gray-400">
           Select category
@@ -78,7 +80,11 @@ export const CategorySelector = ({
             type="button"
             variant="outline"
             size="icon"
-            className="h-10 w-10 border-gray-200 rounded-[12px] flex-shrink-0"
+            className={`h-10 w-10 border-gray-200 rounded-[12px] flex-shrink-0 ${
+              type === 'expense' 
+                ? 'hover:bg-transaction-expense hover:text-white' 
+                : 'hover:bg-primary hover:text-white'
+            }`}
           >
             <Plus className="h-4 w-4" />
           </Button>
@@ -92,9 +98,18 @@ export const CategorySelector = ({
               placeholder="Enter category name"
               value={newCategory}
               onChange={(e) => setNewCategory(e.target.value)}
-              className="h-12 py-2 px-0 text-sm bg-transparent border-b-2 border-gray-200 focus:border-primary focus:outline-none transition-colors"
+              className={`h-12 py-2 px-0 text-sm bg-transparent border-b-2 ${
+                type === 'expense' ? 'border-transaction-expense focus:border-transaction-expense' : 'border-gray-200 focus:border-primary'
+              } focus:outline-none transition-colors`}
             />
-            <Button onClick={handleAddCategory} className="w-full rounded-[12px]">
+            <Button 
+              onClick={handleAddCategory} 
+              className={`w-full rounded-[12px] ${
+                type === 'expense' 
+                  ? 'bg-transaction-expense hover:bg-transaction-expense/90' 
+                  : 'bg-primary hover:bg-primary/90'
+              }`}
+            >
               Add Category
             </Button>
           </div>

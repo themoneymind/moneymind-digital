@@ -100,7 +100,9 @@ export const TransactionForm = ({
 
         <input
           placeholder="Add a description"
-          className="w-full py-3 px-0 text-sm bg-transparent border-b-2 border-gray-200 focus:border-primary focus:outline-none transition-colors placeholder-gray-400 text-gray-600"
+          className={`w-full py-3 px-0 text-sm bg-transparent border-b-2 focus:outline-none transition-colors placeholder-gray-400 text-gray-600 ${
+            type === 'expense' ? 'border-transaction-expense focus:border-transaction-expense' : 'border-gray-200 focus:border-primary'
+          }`}
           value={description}
           onChange={(e) => onDescriptionChange(e.target.value)}
         />
@@ -108,7 +110,11 @@ export const TransactionForm = ({
         <RepeatSelector value="never" onValueChange={() => {}} />
 
         <Button
-          className="w-full h-12 rounded-[12px] text-sm font-medium bg-primary hover:bg-primary/90 text-white"
+          className={`w-full h-12 rounded-[12px] text-sm font-medium text-white ${
+            type === 'expense' 
+              ? 'bg-transaction-expense hover:bg-transaction-expense/90' 
+              : 'bg-primary hover:bg-primary/90'
+          }`}
           onClick={onSubmit}
         >
           Add Transaction
