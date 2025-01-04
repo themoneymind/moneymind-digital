@@ -40,7 +40,7 @@ export const CreditCards = () => {
               <div className="px-6 mt-8">
                 <RecentTransactions 
                   filterByType="Credit Card"
-                  showViewAll={false}
+                  showViewAll={true}
                   sourceId={creditCards[activeIndex].id}
                 />
               </div>
