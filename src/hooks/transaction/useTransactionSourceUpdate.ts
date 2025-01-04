@@ -19,14 +19,24 @@ export const useTransactionSourceUpdate = (paymentSources: PaymentSource[]) => {
     }
 
     let newAmount;
-    if (isReversal) {
-      newAmount = type === "income" 
-        ? Number(source.amount) - Number(amount)
-        : Number(source.amount) + Number(amount);
+    if (type === "transfer") {
+      // For transfers, we need to handle both source and destination
+      if (isReversal) {
+        newAmount = Number(source.amount) + Number(amount);
+      } else {
+        newAmount = Number(source.amount) - Number(amount);
+      }
     } else {
-      newAmount = type === "income" 
-        ? Number(source.amount) + Number(amount)
-        : Number(source.amount) - Number(amount);
+      // For income and expense
+      if (isReversal) {
+        newAmount = type === "income" 
+          ? Number(source.amount) - Number(amount)
+          : Number(source.amount) + Number(amount);
+      } else {
+        newAmount = type === "income" 
+          ? Number(source.amount) + Number(amount)
+          : Number(source.amount) - Number(amount);
+      }
     }
 
     console.log("New amount calculation:", {
