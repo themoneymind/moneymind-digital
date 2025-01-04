@@ -68,25 +68,19 @@ export const CategorySelector = ({
     }
   };
 
-  const getButtonHoverColor = () => {
-    switch (type) {
-      case 'expense':
-        return 'hover:bg-transaction-expense hover:text-white';
-      case 'income':
-        return 'hover:bg-transaction-income hover:text-white';
-      case 'transfer':
-        return 'hover:bg-transaction-transfer hover:text-white';
-      default:
-        return 'hover:bg-primary hover:text-white';
-    }
-  };
-
   return (
     <div className="flex gap-2 items-center">
       <select
         value={category}
         onChange={(e) => onCategoryChange(e.target.value)}
-        className={`flex h-12 w-full py-2 px-0 text-sm ${category ? 'text-gray-600' : 'text-gray-400'} bg-transparent border-b-2 border-gray-200 focus:outline-none transition-colors ${getFocusColor()}`}
+        className={`flex h-12 w-full py-2 px-0 text-sm ${category ? 'text-gray-600' : 'text-gray-400'} bg-transparent border-b-2 border-gray-200 focus:outline-none transition-colors ${getFocusColor()} appearance-none`}
+        style={{
+          backgroundImage: `url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%236B7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3E%3C/svg%3E")`,
+          backgroundPosition: "right 0 center",
+          backgroundRepeat: "no-repeat",
+          backgroundSize: "1.5em 1.5em",
+          paddingRight: "2rem"
+        }}
       >
         <option value="" disabled className="text-gray-400">
           Select category
@@ -104,7 +98,15 @@ export const CategorySelector = ({
             type="button"
             variant="outline"
             size="icon"
-            className={`h-10 w-10 border-gray-200 rounded-[12px] flex-shrink-0 ${getButtonHoverColor()}`}
+            className={`h-10 w-10 border-gray-200 rounded-[12px] flex-shrink-0 ${
+              type === 'expense' 
+                ? 'hover:bg-transaction-expense hover:text-white' 
+                : type === 'income'
+                ? 'hover:bg-transaction-income hover:text-white'
+                : type === 'transfer'
+                ? 'hover:bg-transaction-transfer hover:text-white'
+                : 'hover:bg-primary hover:text-white'
+            }`}
           >
             <Plus className="h-4 w-4" />
           </Button>
