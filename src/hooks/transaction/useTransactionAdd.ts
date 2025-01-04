@@ -17,11 +17,22 @@ export const useTransactionAdd = (
     if (!user) return;
 
     try {
+      console.log("Starting transaction add:", { 
+        type: newTransaction.type,
+        source: newTransaction.source,
+        displaySource: newTransaction.display_source,
+        amount: newTransaction.amount 
+      });
+
       // Get base source IDs for both source and destination
       const sourceBaseId = getBaseSourceId(newTransaction.source);
       const destinationBaseId = newTransaction.display_source ? getBaseSourceId(newTransaction.display_source) : null;
 
+      console.log("Base source IDs:", { sourceBaseId, destinationBaseId });
+
       if (newTransaction.type === "transfer") {
+        console.log("Processing transfer transaction");
+        
         // For transfers, create a single transfer record
         const { error: transferError } = await supabase
           .from("transactions")
@@ -37,7 +48,12 @@ export const useTransactionAdd = (
             user_id: user.id
           }]);
 
-        if (transferError) throw transferError;
+        if (transferError) {
+          console.error("Transfer insert error:", transferError);
+          throw transferError;
+        }
+
+        console.log("Transfer record created, updating source amount");
 
         // Update source (debit)
         await updatePaymentSourceAmount(
@@ -46,6 +62,8 @@ export const useTransactionAdd = (
           'expense',
           false
         );
+
+        console.log("Source amount updated, updating destination amount");
 
         // Update destination (credit)
         if (destinationBaseId) {
@@ -56,7 +74,11 @@ export const useTransactionAdd = (
             false
           );
         }
+
+        console.log("Transfer completed successfully");
       } else {
+        console.log("Processing regular transaction");
+        
         // For regular income/expense transactions
         const { error: transactionError } = await supabase
           .from("transactions")
@@ -72,7 +94,12 @@ export const useTransactionAdd = (
             user_id: user.id
           }]);
 
-        if (transactionError) throw transactionError;
+        if (transactionError) {
+          console.error("Transaction insert error:", transactionError);
+          throw transactionError;
+        }
+
+        console.log("Regular transaction record created, updating source amount");
 
         // Update source amount for income/expense
         await updatePaymentSourceAmount(
@@ -81,12 +108,14 @@ export const useTransactionAdd = (
           newTransaction.type,
           false
         );
+
+        console.log("Regular transaction completed successfully");
       }
 
       await refreshData();
       toast.success("Transaction added successfully");
     } catch (error) {
-      console.error("Error adding transaction:", error);
+      console.error("Error in addTransaction:", error);
       toast.error("Failed to add transaction");
       throw error;
     }

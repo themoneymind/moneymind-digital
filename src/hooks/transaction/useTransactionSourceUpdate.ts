@@ -11,13 +11,27 @@ export const useTransactionSourceUpdate = (paymentSources: PaymentSource[]) => {
   ) => {
     // Always get the base source ID for database operations
     const baseSourceId = getBaseSourceId(sourceId);
-    console.log("Updating payment source:", { sourceId, baseSourceId, amount, type, isReversal });
+    console.log("Updating payment source:", { 
+      sourceId, 
+      baseSourceId, 
+      amount, 
+      type, 
+      isReversal,
+      paymentSourcesCount: paymentSources.length 
+    });
     
     const source = paymentSources.find(s => s.id === baseSourceId);
     if (!source) {
       console.error("Source not found:", baseSourceId);
+      console.log("Available sources:", paymentSources.map(s => ({ id: s.id, name: s.name })));
       throw new Error(`Payment source not found: ${baseSourceId}`);
     }
+
+    console.log("Found source:", { 
+      sourceName: source.name, 
+      currentAmount: source.amount,
+      sourceType: source.type 
+    });
 
     let newAmount;
     if (isReversal) {
@@ -36,7 +50,7 @@ export const useTransactionSourceUpdate = (paymentSources: PaymentSource[]) => {
         : Number(source.amount) - Number(amount);
     }
 
-    console.log("New amount calculation:", {
+    console.log("Amount calculation:", {
       currentAmount: source.amount,
       operation: isReversal ? "reverse" : "apply",
       change: amount,
@@ -53,6 +67,8 @@ export const useTransactionSourceUpdate = (paymentSources: PaymentSource[]) => {
       console.error("Error updating payment source amount:", error);
       throw error;
     }
+
+    console.log("Successfully updated payment source amount");
   };
 
   return { updatePaymentSourceAmount };
