@@ -46,8 +46,8 @@ export const TransactionForm = ({
   formattedSources,
 }: TransactionFormProps) => {
   return (
-    <div className="space-y-3">
-      <div className="relative px-4 py-2">
+    <div className="space-y-2">
+      <div className="relative px-4 py-1">
         <span className="absolute left-4 top-1/2 -translate-y-1/2 text-2xl text-gray-400">₹</span>
         <input
           type="number"
@@ -60,7 +60,7 @@ export const TransactionForm = ({
 
       <TransactionTypeSelector type={type} onTypeChange={onTypeChange} />
 
-      <div className="space-y-4 mt-4 px-4">
+      <div className="space-y-4 mt-2 px-4">
         <CategorySelector
           type={type}
           category={category}
