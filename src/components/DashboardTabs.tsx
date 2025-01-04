@@ -42,7 +42,6 @@ export const DashboardTabs = () => {
           <MonthSelector />
         </div>
         <CreditCards />
-        <RecentTransactions showViewAll={false} filterByType="Credit Card" />
       </TabsContent>
 
       <TabsContent value="transactions" className="mt-6">
