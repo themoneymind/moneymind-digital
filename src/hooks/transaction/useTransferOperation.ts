@@ -19,44 +19,50 @@ export const useTransferOperation = (
     transaction: Omit<Transaction, "id" | "user_id" | "created_at" | "updated_at">
   ) => {
     try {
-      console.log("Starting transfer operation:", {
-        sourceBaseId,
-        destinationBaseId,
+      // Clean the source and destination IDs
+      const cleanSourceId = getBaseSourceId(sourceBaseId);
+      const cleanDestinationId = destinationBaseId ? getBaseSourceId(destinationBaseId) : null;
+
+      console.log("Starting transfer operation with clean IDs:", {
+        sourceId: cleanSourceId,
+        destinationId: cleanDestinationId,
+        originalSourceId: sourceBaseId,
+        originalDestinationId: destinationBaseId,
         amount
       });
 
       // Step 1: Debit source account
       await updatePaymentSourceAmount(
-        sourceBaseId,
+        cleanSourceId,
         amount,
         'expense',
         false
       );
-      const sourceBalance = await getAccountBalance(sourceBaseId);
+      const sourceBalance = await getAccountBalance(cleanSourceId);
       console.log("Source account debited successfully:", {
-        sourceId: sourceBaseId,
+        sourceId: cleanSourceId,
         amount: amount,
         remainingBalance: sourceBalance
       });
 
       // Step 2: Credit destination account if exists
-      if (destinationBaseId) {
-        const originalBalance = await getAccountBalance(destinationBaseId);
+      if (cleanDestinationId) {
+        const originalBalance = await getAccountBalance(cleanDestinationId);
         console.log("Attempting to credit destination:", {
-          destinationId: destinationBaseId,
+          destinationId: cleanDestinationId,
           originalBalance: originalBalance
         });
 
         await updatePaymentSourceAmount(
-          destinationBaseId,
+          cleanDestinationId,
           amount,
           'income',
           false
         );
 
-        const newBalance = await getAccountBalance(destinationBaseId);
+        const newBalance = await getAccountBalance(cleanDestinationId);
         console.log("Destination account credited:", {
-          destinationId: destinationBaseId,
+          destinationId: cleanDestinationId,
           newBalance: newBalance
         });
       }
@@ -67,9 +73,9 @@ export const useTransferOperation = (
         .insert([{
           ...transaction,
           user_id: userId,
-          source: sourceBaseId,
-          base_source_id: sourceBaseId,
-          display_source: transaction.display_source || sourceBaseId,
+          source: cleanSourceId,
+          base_source_id: cleanSourceId,
+          display_source: transaction.display_source || cleanSourceId,
           date: new Date().toISOString()
         }]);
 
@@ -79,14 +85,14 @@ export const useTransferOperation = (
       }
 
       // If this is a transfer, create the corresponding incoming transaction
-      if (transaction.type === 'transfer' && destinationBaseId) {
+      if (transaction.type === 'transfer' && cleanDestinationId) {
         const incomingTransaction = {
           ...transaction,
           user_id: userId,
           type: 'income',
-          source: destinationBaseId,
-          base_source_id: destinationBaseId,
-          display_source: destinationBaseId,
+          source: cleanDestinationId,
+          base_source_id: cleanDestinationId,
+          display_source: cleanDestinationId,
           description: `Transfer from ${transaction.source}`,
           reference_type: 'transfer',
           reference_id: transaction.reference_id,
@@ -106,6 +112,34 @@ export const useTransferOperation = (
       return true;
     } catch (error) {
       console.error("Transfer operation failed:", error);
+      
+      // Attempt to rollback the transfer
+      try {
+        // Rollback source debit
+        const cleanSourceId = getBaseSourceId(sourceBaseId);
+        await updatePaymentSourceAmount(
+          cleanSourceId,
+          amount,
+          'income',
+          true
+        );
+        console.log("Source debit rolled back");
+
+        // Rollback destination credit if applicable
+        if (destinationBaseId) {
+          const cleanDestinationId = getBaseSourceId(destinationBaseId);
+          await updatePaymentSourceAmount(
+            cleanDestinationId,
+            amount,
+            'expense',
+            true
+          );
+          console.log("Destination credit rolled back");
+        }
+      } catch (rollbackError) {
+        console.error("Rollback failed:", rollbackError);
+      }
+
       toast.error("Failed to complete transfer");
       throw error;
     }
