@@ -100,8 +100,8 @@ export const TransactionForm = ({
 
         <input
           placeholder="Add a description"
-          className={`w-full py-3 px-0 text-sm bg-transparent border-b-2 focus:outline-none transition-colors placeholder-gray-400 text-gray-600 ${
-            type === 'expense' ? 'border-transaction-expense focus:border-transaction-expense' : 'border-gray-200 focus:border-primary'
+          className={`w-full py-3 px-0 text-sm bg-transparent border-b-2 border-gray-200 focus:outline-none transition-colors placeholder-gray-400 text-gray-600 ${
+            type === 'expense' ? 'focus:border-transaction-expense' : 'focus:border-primary'
           }`}
           value={description}
           onChange={(e) => onDescriptionChange(e.target.value)}

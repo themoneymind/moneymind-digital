@@ -60,9 +60,9 @@ export const CategorySelector = ({
       <select
         value={category}
         onChange={(e) => onCategoryChange(e.target.value)}
-        className={`flex h-12 w-full py-2 px-0 text-sm text-gray-600 placeholder-gray-400 bg-transparent border-b-2 ${
-          type === 'expense' ? 'border-transaction-expense focus:border-transaction-expense' : 'border-gray-200 focus:border-primary'
-        } focus:outline-none transition-colors`}
+        className={`flex h-12 w-full py-2 px-0 text-sm text-gray-600 placeholder-gray-400 bg-transparent border-b-2 border-gray-200 focus:outline-none transition-colors ${
+          type === 'expense' ? 'focus:border-transaction-expense' : 'focus:border-primary'
+        }`}
       >
         <option value="" disabled className="text-gray-400">
           Select category
@@ -98,9 +98,9 @@ export const CategorySelector = ({
               placeholder="Enter category name"
               value={newCategory}
               onChange={(e) => setNewCategory(e.target.value)}
-              className={`h-12 py-2 px-0 text-sm bg-transparent border-b-2 ${
-                type === 'expense' ? 'border-transaction-expense focus:border-transaction-expense' : 'border-gray-200 focus:border-primary'
-              } focus:outline-none transition-colors`}
+              className={`h-12 py-2 px-0 text-sm bg-transparent border-b-2 border-gray-200 focus:outline-none transition-colors ${
+                type === 'expense' ? 'focus:border-transaction-expense' : 'focus:border-primary'
+              }`}
             />
             <Button 
               onClick={handleAddCategory} 
