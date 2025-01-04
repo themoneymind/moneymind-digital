@@ -52,7 +52,7 @@ export const PaymentSourceSelector = ({
           </option>
         ))}
       </select>
-      {showAddButton && isTransferTo && (
+      {showAddButton && (
         <Button
           type="button"
           variant="outline"
