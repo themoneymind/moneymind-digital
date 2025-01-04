@@ -86,9 +86,9 @@ export const CategorySelector = ({
       <select
         value={category}
         onChange={(e) => onCategoryChange(e.target.value)}
-        className={`flex h-12 w-full py-2 px-0 text-sm text-gray-600 bg-transparent border-b-2 border-gray-200 focus:outline-none transition-colors ${getFocusColor()}`}
+        className={`flex h-12 w-full py-2 px-0 text-sm text-gray-600 placeholder-gray-400 bg-transparent border-b-2 border-gray-200 focus:outline-none transition-colors ${getFocusColor()}`}
       >
-        <option value="" disabled className="text-gray-200">
+        <option value="" disabled className="text-gray-400">
           Select category
         </option>
         {categories.map((cat) => (
