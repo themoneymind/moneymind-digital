@@ -37,7 +37,7 @@ export const PaymentSourceSelector = ({
       <select
         value={source || ""}
         onChange={(e) => onSourceChange(e.target.value)}
-        className="flex h-12 w-full py-2 px-0 text-sm bg-transparent border-b-2 border-gray-200 focus:border-primary focus:outline-none transition-colors placeholder-gray-400"
+        className="flex h-12 w-full py-2 px-0 text-sm text-gray-600 bg-transparent border-b-2 border-gray-200 focus:border-primary focus:outline-none transition-colors placeholder-gray-400"
       >
         <option value="" disabled>
           {placeholder}

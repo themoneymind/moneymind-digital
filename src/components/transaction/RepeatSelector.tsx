@@ -15,7 +15,7 @@ interface RepeatSelectorProps {
 export const RepeatSelector = ({ value, onValueChange }: RepeatSelectorProps) => {
   return (
     <Select value={value} onValueChange={onValueChange}>
-      <SelectTrigger className="h-12 border-0 border-b-2 border-gray-200 focus:border-primary rounded-none text-sm bg-transparent transition-colors hover:bg-transparent placeholder-gray-400">
+      <SelectTrigger className="h-12 border-0 border-b-2 border-gray-200 focus:border-primary rounded-none text-sm text-gray-600 bg-transparent transition-colors hover:bg-transparent placeholder-gray-400">
         <SelectValue placeholder="Select repeat frequency" />
       </SelectTrigger>
       <SelectContent className="bg-white border border-gray-200 shadow-lg rounded-[12px] max-h-[300px] overflow-y-auto">
