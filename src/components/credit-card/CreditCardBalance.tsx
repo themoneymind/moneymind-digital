@@ -11,12 +11,12 @@ export const CreditCardBalance = ({ usedCredit, availableCredit }: CreditCardBal
   const getTextSize = (amount: number) => {
     const amountStr = Math.floor(amount).toString();
     if (amountStr.length >= 8) {
-      return "text-xl";
+      return "text-lg";
     }
     if (amountStr.length >= 7) {
-      return "text-2xl";
+      return "text-xl";
     }
-    return "text-3xl";
+    return "text-2xl";
   };
 
   return (
