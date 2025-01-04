@@ -372,7 +372,20 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      decrement_amount: {
+        Args: {
+          source_id: string
+          decrement_by: number
+        }
+        Returns: number
+      }
+      increment_amount: {
+        Args: {
+          source_id: string
+          increment_by: number
+        }
+        Returns: number
+      }
     }
     Enums: {
       [_ in never]: never
