@@ -18,13 +18,13 @@ export const CreditCards = () => {
   return (
     <div className="space-y-6 overflow-x-hidden">
       <div className="flex items-center justify-between px-6">
-        <h2 className="text-lg font-semibold">Credit Cards</h2>
+        <h2 className="text-base font-semibold">Credit Cards</h2>
         <button
           onClick={handleAddCard}
           className="flex items-center text-black hover:text-black/80 transition-colors"
         >
-          <Plus className="h-5 w-5 mr-2" strokeWidth={1.5} />
-          <span>Add Card</span>
+          <Plus className="h-4 w-4 mr-1.5" strokeWidth={1.5} />
+          <span className="text-xs">Add Card</span>
         </button>
       </div>
       
