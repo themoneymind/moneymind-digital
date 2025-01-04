@@ -4,6 +4,7 @@ import { Button } from "./ui/button";
 import { Plus } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { ScrollArea, ScrollBar } from "./ui/scroll-area";
+import { Card } from "./ui/card";
 
 export const CreditCards = () => {
   const { paymentSources } = useFinance();
@@ -15,8 +16,32 @@ export const CreditCards = () => {
     navigate("/app/payment-source?type=credit");
   };
 
+  const getTotalCreditLimit = () => {
+    return creditCards.reduce((total, card) => total + (Number(card.credit_limit) || 0), 0);
+  };
+
+  const getTotalBalance = () => {
+    return creditCards.reduce((total, card) => total + Math.abs(Number(card.amount) || 0), 0);
+  };
+
+  const getTotalAvailableCredit = () => {
+    return creditCards.reduce((total, card) => {
+      const limit = Number(card.credit_limit) || 0;
+      const used = Math.abs(Number(card.amount) || 0);
+      return total + (limit - used);
+    }, 0);
+  };
+
+  const formatCurrency = (amount: number) => {
+    return new Intl.NumberFormat("en-IN", {
+      style: "currency",
+      currency: "INR",
+      maximumFractionDigits: 0,
+    }).format(amount);
+  };
+
   return (
-    <div className="space-y-4 overflow-x-hidden">
+    <div className="space-y-6 overflow-x-hidden">
       <div className="flex items-center justify-between px-6">
         <h2 className="text-lg font-semibold">Credit Cards</h2>
         <Button
@@ -27,6 +52,25 @@ export const CreditCards = () => {
           <Plus className="w-4 h-4 mr-2" />
           Add Card
         </Button>
+      </div>
+
+      <div className="px-6">
+        <Card className="p-6 bg-white shadow-sm">
+          <div className="grid grid-cols-3 gap-4">
+            <div>
+              <p className="text-sm text-muted-foreground mb-1">Total Credit Limit</p>
+              <p className="text-lg font-semibold">{formatCurrency(getTotalCreditLimit())}</p>
+            </div>
+            <div>
+              <p className="text-sm text-muted-foreground mb-1">Total Balance</p>
+              <p className="text-lg font-semibold text-destructive">{formatCurrency(getTotalBalance())}</p>
+            </div>
+            <div>
+              <p className="text-sm text-muted-foreground mb-1">Available Credit</p>
+              <p className="text-lg font-semibold text-green-600">{formatCurrency(getTotalAvailableCredit())}</p>
+            </div>
+          </div>
+        </Card>
       </div>
       
       <div className="relative w-full">
