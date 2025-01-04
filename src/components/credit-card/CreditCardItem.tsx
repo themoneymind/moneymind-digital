@@ -48,7 +48,7 @@ export const CreditCardItem = ({ card }: CreditCardItemProps) => {
                 <Clock className="w-3.5 h-3.5 opacity-70" />
                 <span className="text-xs opacity-70">Outstanding</span>
               </div>
-              <p className="text-4xl font-bold">{formatCurrency(usedCredit)}</p>
+              <p className="text-3xl font-bold">{formatCurrency(usedCredit)}</p>
             </div>
 
             {/* Available Credit */}
@@ -57,7 +57,7 @@ export const CreditCardItem = ({ card }: CreditCardItemProps) => {
                 <CreditCard className="w-3.5 h-3.5 opacity-70" />
                 <span className="text-xs opacity-70">Available Credit</span>
               </div>
-              <p className="text-4xl font-bold">{formatCurrency(availableCredit)}</p>
+              <p className="text-3xl font-bold">{formatCurrency(availableCredit)}</p>
             </div>
           </div>
 
