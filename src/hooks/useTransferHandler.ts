@@ -31,13 +31,12 @@ export const useTransferHandler = () => {
 
     try {
       // 1. Deduct from source account
-      const { data: debitData, error: debitError } = await supabase.rpc(
-        'decrement_amount',
-        { decrement_by: amount }
-      ).from('payment_sources')
+      const { data: debitData, error: debitError } = await supabase
+        .from('payment_sources')
+        .select('amount')
         .eq('id', baseFromSourceId)
         .gt('amount', amount - 0.01)
-        .select('amount')
+        .rpc('decrement_amount', { decrement_by: amount })
         .single();
 
       if (debitError) {
@@ -45,12 +44,11 @@ export const useTransferHandler = () => {
       }
 
       // 2. Add to destination account
-      const { data: creditData, error: creditError } = await supabase.rpc(
-        'increment_amount',
-        { increment_by: amount }
-      ).from('payment_sources')
-        .eq('id', baseToSourceId)
+      const { data: creditData, error: creditError } = await supabase
+        .from('payment_sources')
         .select('amount')
+        .eq('id', baseToSourceId)
+        .rpc('increment_amount', { increment_by: amount })
         .single();
 
       if (creditError) {
@@ -83,18 +81,18 @@ export const useTransferHandler = () => {
       // Rollback on any error
       try {
         // Rollback debit operation
-        await supabase.rpc(
-          'increment_amount',
-          { increment_by: amount }
-        ).from('payment_sources')
-          .eq('id', baseFromSourceId);
+        await supabase
+          .from('payment_sources')
+          .select('*')
+          .eq('id', baseFromSourceId)
+          .rpc('increment_amount', { increment_by: amount });
 
         // Rollback credit operation
-        await supabase.rpc(
-          'decrement_amount',
-          { decrement_by: amount }
-        ).from('payment_sources')
-          .eq('id', baseToSourceId);
+        await supabase
+          .from('payment_sources')
+          .select('*')
+          .eq('id', baseToSourceId)
+          .rpc('decrement_amount', { decrement_by: amount });
       } catch (rollbackError) {
         console.error("Rollback failed:", rollbackError);
         toast.error("Critical error during rollback. Please contact support.");
