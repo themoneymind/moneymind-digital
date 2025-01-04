@@ -21,11 +21,11 @@ export const CreditCards = () => {
       <div className="flex items-center justify-between px-6">
         <h2 className="text-lg font-semibold">Credit Cards</h2>
         <Button
-          size="icon"
           onClick={handleAddCard}
-          className="h-10 w-10 rounded-xl bg-primary hover:bg-primary/90 transition-colors"
+          className="bg-primary hover:bg-primary/90 transition-colors rounded-xl"
         >
-          <Plus className="h-5 w-5" />
+          <Plus className="h-5 w-5 mr-2" />
+          Add Card
         </Button>
       </div>
       
