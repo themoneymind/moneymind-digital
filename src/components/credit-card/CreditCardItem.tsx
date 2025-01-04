@@ -3,6 +3,7 @@ import { formatCurrency } from "@/utils/formatters";
 import { CreditCard, Clock, CreditCard as CreditCardIcon } from "lucide-react";
 import { format } from "date-fns";
 import { Progress } from "@/components/ui/progress";
+import { Separator } from "@/components/ui/separator";
 
 interface CreditCardItemProps {
   card: PaymentSource;
@@ -41,7 +42,7 @@ export const CreditCardItem = ({ card }: CreditCardItemProps) => {
           </div>
 
           {/* Main Content */}
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 gap-3 relative">
             {/* Outstanding */}
             <div>
               <div className="flex items-center gap-1.5 mb-1">
@@ -50,6 +51,9 @@ export const CreditCardItem = ({ card }: CreditCardItemProps) => {
               </div>
               <p className="text-3xl font-bold">{formatCurrency(usedCredit)}</p>
             </div>
+
+            {/* Vertical Divider */}
+            <Separator orientation="vertical" className="absolute left-1/2 h-full -translate-x-1/2 bg-white/20" />
 
             {/* Available Credit */}
             <div>
