@@ -16,18 +16,16 @@ export const TransferSourceSelectors = ({
 
   const handleTransferFromChange = (newSource: string) => {
     onSourceChange(newSource);
-    // Reset transfer to source when transfer from changes
     setTransferToSource("");
   };
 
   const handleTransferToChange = (newSource: string) => {
-    // Only update the transferToSource state, not the main source
     setTransferToSource(newSource);
+    onSourceChange(newSource);
   };
 
   const getFilteredSources = () => {
     if (!source) return formattedSources;
-    // Filter out sources that start with the same base ID as the "from" source
     const baseSourceId = source.split('-')[0];
     return formattedSources.filter(s => !s.id.startsWith(baseSourceId));
   };
