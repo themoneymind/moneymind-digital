@@ -87,7 +87,7 @@ export const useTransactionSubmit = (onSuccess?: () => void) => {
             reference_type: "credit_card_payment",
           });
 
-          // Create payment received entry for credit card
+          // Create income entry for credit card
           await addTransaction({
             type: "income",
             amount: validAmount,
