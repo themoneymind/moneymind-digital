@@ -85,6 +85,18 @@ export const usePaymentSources = () => {
   const deletePaymentSource = useCallback(async (id: string) => {
     if (!user) return;
 
+    // First, delete all related transactions
+    const { error: transactionsError } = await supabase
+      .from("transactions")
+      .delete()
+      .eq("base_source_id", id);
+
+    if (transactionsError) {
+      console.error("Error deleting related transactions:", transactionsError);
+      throw transactionsError;
+    }
+
+    // Then delete the payment source
     const { error } = await supabase
       .from("payment_sources")
       .delete()
