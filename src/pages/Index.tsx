@@ -15,15 +15,13 @@ const Index = () => {
     <div className="relative flex flex-col min-h-screen mx-auto font-sans overflow-hidden">
       <Header />
       <main className="flex-1 bg-[#F5F5F7] dark:bg-gray-900 rounded-t-[28px] -mt-6 relative pb-20 md:pb-0">
-        <div className="container max-w-5xl mx-auto px-4 md:px-6 lg:px-8">
+        <div className="px-4 md:px-6 lg:px-8 max-w-md mx-auto md:max-w-5xl">
           <div className="mt-6">
             <DashboardTabs />
           </div>
         </div>
       </main>
-      <div className="md:hidden">
-        <BottomNav />
-      </div>
+      <BottomNav />
     </div>
   );
 };
