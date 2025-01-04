@@ -42,22 +42,31 @@ export const useTransferHandler = () => {
         throw new Error("Insufficient balance or source account not found");
       }
 
-      // 2. Add to destination account first - using array for parameters to maintain order
+      // 2. Add to destination account first
       const { error: creditError } = await supabase
-        .rpc('increment_amount', [baseToSourceId, amount]);
+        .rpc('increment_amount', {
+          source_id: baseToSourceId,
+          increment_by: amount
+        });
 
       if (creditError) {
         throw new Error("Failed to add amount to destination account");
       }
 
-      // 3. Deduct from source account - using array for parameters to maintain order
+      // 3. Deduct from source account
       const { error: debitError } = await supabase
-        .rpc('decrement_amount', [baseFromSourceId, amount]);
+        .rpc('decrement_amount', {
+          source_id: baseFromSourceId,
+          decrement_by: amount
+        });
 
       if (debitError) {
         // If debit fails, rollback the credit operation
         await supabase
-          .rpc('decrement_amount', [baseToSourceId, amount]);
+          .rpc('decrement_amount', {
+            source_id: baseToSourceId,
+            decrement_by: amount
+          });
         throw new Error("Failed to deduct amount from source account");
       }
 
@@ -88,11 +97,17 @@ export const useTransferHandler = () => {
       try {
         // Rollback credit operation
         await supabase
-          .rpc('decrement_amount', [baseToSourceId, amount]);
+          .rpc('decrement_amount', {
+            source_id: baseToSourceId,
+            decrement_by: amount
+          });
 
         // Rollback debit operation
         await supabase
-          .rpc('increment_amount', [baseFromSourceId, amount]);
+          .rpc('increment_amount', {
+            source_id: baseFromSourceId,
+            increment_by: amount
+          });
       } catch (rollbackError) {
         console.error("Rollback failed:", rollbackError);
         toast.error("Critical error during rollback. Please contact support.");
