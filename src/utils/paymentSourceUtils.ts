@@ -4,25 +4,9 @@
  * @returns Clean UUID without any suffix
  */
 export const getBaseSourceId = (sourceId: string): string => {
-  // First check if it's a valid UUID
-  const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-  if (uuidRegex.test(sourceId)) {
-    return sourceId;
-  }
-
-  // Extract the UUID part before any suffix (like -gpay, -phonepe, etc.)
+  // Extract the UUID part before any suffix
   const match = sourceId.match(/^([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/i);
-  if (!match) {
-    console.error("Invalid source ID format:", sourceId);
-    throw new Error("Invalid source ID format");
-  }
-  
-  console.log("Extracted base source ID:", {
-    original: sourceId,
-    extracted: match[1]
-  });
-  
-  return match[1];
+  return match ? match[1] : sourceId;
 };
 
 /**

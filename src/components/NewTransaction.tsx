@@ -12,7 +12,7 @@ type NewTransactionProps = {
 
 export const NewTransaction = ({ onClose }: NewTransactionProps) => {
   const { addTransaction, getFormattedPaymentSources, paymentSources } = useFinance();
-  const { validateAmount, validatePaymentSource } = useTransactionValidation();
+  const { validateAmount, validatePaymentSource, validateExpenseBalance } = useTransactionValidation();
   
   const [type, setType] = useState<TransactionType>("expense");
   const [amount, setAmount] = useState("");
@@ -23,14 +23,27 @@ export const NewTransaction = ({ onClose }: NewTransactionProps) => {
   const [customCategories, setCustomCategories] = useState<{
     expense: string[];
     income: string[];
+    transfer: string[];
   }>({
     expense: [],
     income: [],
+    transfer: [],
   });
 
   const formattedSources = getFormattedPaymentSources();
 
+  const validateTransactionType = (type: TransactionType): boolean => {
+    const validTypes: TransactionType[] = ["expense", "income", "transfer"];
+    if (!validTypes.includes(type)) {
+      toast.error("Invalid transaction type");
+      return false;
+    }
+    return true;
+  };
+
   const handleSubmit = async () => {
+    if (!validateTransactionType(type)) return;
+
     if (!category) {
       toast.error("Please select a category");
       return;
@@ -47,6 +60,16 @@ export const NewTransaction = ({ onClose }: NewTransactionProps) => {
     const sourceValidation = validatePaymentSource(source, paymentSources);
     if (!sourceValidation) return;
 
+    const { baseSourceId, baseSource } = sourceValidation;
+
+    if (!validateExpenseBalance(baseSource, validAmount, type)) return;
+
+    const selectedSource = formattedSources.find(s => s.id === source);
+    if (!selectedSource) {
+      toast.error("Invalid payment source");
+      return;
+    }
+
     try {
       await addTransaction({
         type,
@@ -54,8 +77,8 @@ export const NewTransaction = ({ onClose }: NewTransactionProps) => {
         category,
         source: source,
         description,
-        base_source_id: sourceValidation.baseSourceId,
-        display_source: formattedSources.find(s => s.id === source)?.name || '',
+        base_source_id: baseSourceId,
+        display_source: selectedSource.name,
         date: selectedDate,
       });
 

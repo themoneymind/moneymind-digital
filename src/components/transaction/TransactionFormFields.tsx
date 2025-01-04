@@ -3,7 +3,7 @@ import { CategorySelector } from "./CategorySelector";
 import { PaymentSourceSelector } from "./PaymentSourceSelector";
 import { TransactionDateSelector } from "./TransactionDateSelector";
 import { RepeatSelector } from "./RepeatSelector";
-import { TransactionFormActions } from "./TransactionFormActions";
+import { Button } from "@/components/ui/button";
 
 type TransactionFormFieldsProps = {
   type: TransactionType;
@@ -19,6 +19,7 @@ type TransactionFormFieldsProps = {
   customCategories: {
     expense: string[];
     income: string[];
+    transfer: string[];
   };
   formattedSources: { id: string; name: string }[];
 };
@@ -37,10 +38,6 @@ export const TransactionFormFields = ({
   customCategories,
   formattedSources,
 }: TransactionFormFieldsProps) => {
-  const handleSubmit = () => {
-    onSubmit();
-  };
-
   return (
     <div className="space-y-4 mt-2 px-4">
       <CategorySelector
@@ -50,12 +47,33 @@ export const TransactionFormFields = ({
         customCategories={customCategories}
       />
 
-      <PaymentSourceSelector
-        source={source}
-        onSourceChange={onSourceChange}
-        formattedSources={formattedSources}
-        type={type}
-      />
+      {type === "transfer" ? (
+        <div className="grid grid-cols-2 gap-4">
+          <PaymentSourceSelector
+            source={source}
+            onSourceChange={onSourceChange}
+            formattedSources={formattedSources}
+            placeholder="Transfer from"
+            type={type}
+          />
+          <PaymentSourceSelector
+            source={source}
+            onSourceChange={onSourceChange}
+            formattedSources={formattedSources.filter(s => s.id !== source)}
+            placeholder="Transfer to"
+            isTransferTo={true}
+            fromSource={source}
+            type={type}
+          />
+        </div>
+      ) : (
+        <PaymentSourceSelector
+          source={source}
+          onSourceChange={onSourceChange}
+          formattedSources={formattedSources}
+          type={type}
+        />
+      )}
 
       <TransactionDateSelector
         selectedDate={selectedDate}
@@ -68,7 +86,11 @@ export const TransactionFormFields = ({
         className={`w-full py-3 px-0 text-sm bg-transparent border-b-2 border-gray-200 focus:outline-none transition-colors placeholder:text-gray-400 text-gray-600 ${
           type === 'expense' 
             ? 'focus:border-transaction-expense' 
-            : 'focus:border-transaction-income'
+            : type === 'income'
+            ? 'focus:border-transaction-income'
+            : type === 'transfer'
+            ? 'focus:border-transaction-transfer'
+            : 'focus:border-primary'
         }`}
         value={description}
         onChange={(e) => onDescriptionChange(e.target.value)}
@@ -80,7 +102,20 @@ export const TransactionFormFields = ({
         type={type}
       />
 
-      <TransactionFormActions type={type} onSubmit={handleSubmit} />
+      <Button
+        className={`w-full h-12 rounded-[12px] text-sm font-medium text-white ${
+          type === 'expense' 
+            ? 'bg-transaction-expense hover:bg-transaction-expense/90' 
+            : type === 'income'
+            ? 'bg-transaction-income hover:bg-transaction-income/90'
+            : type === 'transfer'
+            ? 'bg-transaction-transfer hover:bg-transaction-transfer/90'
+            : 'bg-primary hover:bg-primary/90'
+        }`}
+        onClick={onSubmit}
+      >
+        Add Transaction
+      </Button>
     </div>
   );
 };

@@ -1,11 +1,10 @@
-import { Transaction } from "@/types/transactions";
-import { PaymentSource } from "@/types/finance";
-import { useTransactionSourceUpdate } from "./useTransactionSourceUpdate";
 import { useAuth } from "@/contexts/AuthContext";
-import { getBaseSourceId } from "@/utils/paymentSourceUtils";
-import { useTransferOperation } from "./useTransferOperation";
-import { useRegularTransaction } from "./useRegularTransaction";
+import { supabase } from "@/integrations/supabase/client";
+import { Transaction } from "@/types/transactions";
 import { toast } from "sonner";
+import { getBaseSourceId } from "@/utils/paymentSourceUtils";
+import { useTransactionSourceUpdate } from "./useTransactionSourceUpdate";
+import { PaymentSource } from "@/types/finance";
 
 export const useTransactionAdd = (
   paymentSources: PaymentSource[],
@@ -13,51 +12,45 @@ export const useTransactionAdd = (
 ) => {
   const { user } = useAuth();
   const { updatePaymentSourceAmount } = useTransactionSourceUpdate(paymentSources);
-  const { handleTransfer } = useTransferOperation(updatePaymentSourceAmount);
-  const { handleRegularTransaction } = useRegularTransaction(updatePaymentSourceAmount);
 
-  const addTransaction = async (newTransaction: Omit<Transaction, "id" | "user_id" | "created_at" | "updated_at">) => {
+  const addTransaction = async (
+    transaction: Omit<Transaction, "id" | "user_id" | "created_at" | "updated_at">
+  ) => {
     if (!user) return;
 
     try {
-      console.log("Starting transaction add:", { 
-        type: newTransaction.type,
-        source: newTransaction.source,
-        displaySource: newTransaction.display_source,
-        amount: newTransaction.amount 
-      });
-
-      // Get base source IDs for both source and destination
-      const sourceBaseId = getBaseSourceId(newTransaction.source);
-      const destinationBaseId = newTransaction.display_source ? getBaseSourceId(newTransaction.display_source) : null;
-
-      console.log("Base source IDs:", { sourceBaseId, destinationBaseId });
-
-      let success;
-      if (newTransaction.type === "transfer") {
-        success = await handleTransfer(
-          sourceBaseId,
-          destinationBaseId,
-          Number(newTransaction.amount),
-          user.id,
-          newTransaction
-        );
-      } else {
-        success = await handleRegularTransaction(
-          sourceBaseId,
-          Number(newTransaction.amount),
-          newTransaction.type,
-          user.id,
-          newTransaction
+      const baseSourceId = getBaseSourceId(transaction.source);
+      
+      // Only update payment source if it's not a rejected transaction
+      if (transaction.status !== 'rejected') {
+        await updatePaymentSourceAmount(
+          baseSourceId,
+          Number(transaction.amount),
+          transaction.type
         );
       }
 
-      if (success) {
-        await refreshData();
-        toast.success("Transaction added successfully");
-      }
+      // Prepare the data for Supabase by converting Date to ISO string
+      const { source: displaySource, ...transactionData } = transaction;
+      const supabaseData = {
+        ...transactionData,
+        date: transaction.date.toISOString(),
+        base_source_id: baseSourceId,
+        source: baseSourceId, // Set source equal to base_source_id for database consistency
+        user_id: user.id,
+      };
+
+      const { error: transactionError } = await supabase
+        .from("transactions")
+        .insert(supabaseData);
+
+      if (transactionError) throw transactionError;
+
+      await refreshData();
+      toast.success("Transaction added successfully");
     } catch (error) {
-      console.error("Error in addTransaction:", error);
+      console.error("Error adding transaction:", error);
+      toast.error("Failed to add transaction");
       throw error;
     }
   };

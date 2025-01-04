@@ -6,12 +6,13 @@ import { useState } from "react";
 import { toast } from "sonner";
 
 type CategorySelectorProps = {
-  type: "expense" | "income";
+  type: "expense" | "income" | "transfer";
   category: string;
   onCategoryChange: (category: string) => void;
   customCategories: {
     expense: string[];
     income: string[];
+    transfer: string[];
   };
 };
 
@@ -27,6 +28,7 @@ export const CategorySelector = ({
   const defaultCategories = {
     expense: ["Food", "Transport", "Shopping", "Entertainment", "Bills", "Others"],
     income: ["Salary", "Investment", "Gift", "Others"],
+    transfer: ["Account Transfer", "Card Payment", "Investment Transfer", "Others"],
   };
 
   const categories = customCategories[type]?.length
@@ -59,6 +61,8 @@ export const CategorySelector = ({
         return 'focus:border-transaction-expense';
       case 'income':
         return 'focus:border-transaction-income';
+      case 'transfer':
+        return 'focus:border-transaction-transfer';
       default:
         return 'focus:border-primary';
     }
@@ -99,6 +103,8 @@ export const CategorySelector = ({
                 ? 'hover:bg-transaction-expense hover:text-white' 
                 : type === 'income'
                 ? 'hover:bg-transaction-income hover:text-white'
+                : type === 'transfer'
+                ? 'hover:bg-transaction-transfer hover:text-white'
                 : 'hover:bg-primary hover:text-white'
             }`}
           >
@@ -123,6 +129,8 @@ export const CategorySelector = ({
                   ? 'bg-transaction-expense hover:bg-transaction-expense/90' 
                   : type === 'income'
                   ? 'bg-transaction-income hover:bg-transaction-income/90'
+                  : type === 'transfer'
+                  ? 'bg-transaction-transfer hover:bg-transaction-transfer/90'
                   : 'bg-primary hover:bg-primary/90'
               }`}
             >

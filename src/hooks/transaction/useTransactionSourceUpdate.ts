@@ -10,27 +10,13 @@ export const useTransactionSourceUpdate = (paymentSources: PaymentSource[]) => {
     isReversal: boolean = false
   ) => {
     const baseSourceId = getBaseSourceId(sourceId);
-    console.log("Updating payment source:", { 
-      sourceId, 
-      baseSourceId, 
-      amount, 
-      type, 
-      isReversal,
-      paymentSourcesCount: paymentSources.length 
-    });
+    console.log("Updating payment source:", { sourceId, baseSourceId, amount, type, isReversal });
     
     const source = paymentSources.find(s => s.id === baseSourceId);
     if (!source) {
       console.error("Source not found:", baseSourceId);
-      console.log("Available sources:", paymentSources.map(s => ({ id: s.id, name: s.name })));
-      throw new Error(`Payment source not found: ${baseSourceId}`);
+      return;
     }
-
-    console.log("Found source:", { 
-      sourceName: source.name, 
-      currentAmount: source.amount,
-      sourceType: source.type 
-    });
 
     let newAmount;
     if (isReversal) {
@@ -43,12 +29,11 @@ export const useTransactionSourceUpdate = (paymentSources: PaymentSource[]) => {
         : Number(source.amount) - Number(amount);
     }
 
-    console.log("Amount calculation:", {
+    console.log("New amount calculation:", {
       currentAmount: source.amount,
       operation: isReversal ? "reverse" : "apply",
       change: amount,
-      result: newAmount,
-      sourceType: source.type
+      result: newAmount
     });
 
     const { error } = await supabase
@@ -60,8 +45,6 @@ export const useTransactionSourceUpdate = (paymentSources: PaymentSource[]) => {
       console.error("Error updating payment source amount:", error);
       throw error;
     }
-
-    console.log("Successfully updated payment source amount");
   };
 
   return { updatePaymentSourceAmount };
