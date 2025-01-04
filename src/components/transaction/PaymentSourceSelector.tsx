@@ -29,7 +29,9 @@ export const PaymentSourceSelector = ({
   
   const filterSourcesForTransfer = (sources: { id: string; name: string }[], fromSourceId: string) => {
     if (!isTransferTo || !fromSourceId) return sources;
-    return sources.filter(s => !s.id.startsWith(fromSourceId.split('-')[0]));
+    // Filter out the source account and its UPI variants
+    const baseSourceId = fromSourceId.split('-')[0];
+    return sources.filter(s => !s.id.startsWith(baseSourceId));
   };
 
   const filteredSources = filterSourcesForTransfer(formattedSources, fromSource);
