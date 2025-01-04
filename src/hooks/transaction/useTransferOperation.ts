@@ -29,17 +29,19 @@ export const useTransferOperation = (
         'expense',
         false
       );
+      const sourceBalance = await getAccountBalance(sourceBaseId);
       console.log("Source account debited successfully:", {
         sourceId: sourceBaseId,
         amount: amount,
-        remainingBalance: await getAccountBalance(sourceBaseId)
+        remainingBalance: sourceBalance
       });
 
       // Step 2: Credit destination account if exists
       if (destinationBaseId) {
+        const originalBalance = await getAccountBalance(destinationBaseId);
         console.log("Attempting to credit destination:", {
           destinationId: destinationBaseId,
-          originalBalance: await getAccountBalance(destinationBaseId)
+          originalBalance: originalBalance
         });
 
         await updatePaymentSourceAmount(
@@ -49,9 +51,10 @@ export const useTransferOperation = (
           false
         );
 
+        const newBalance = await getAccountBalance(destinationBaseId);
         console.log("Destination account credited:", {
           destinationId: destinationBaseId,
-          newBalance: await getAccountBalance(destinationBaseId)
+          newBalance: newBalance
         });
       }
 
@@ -102,6 +105,11 @@ export const useTransferOperation = (
   };
 
   const getAccountBalance = async (accountId: string) => {
+    if (!accountId || typeof accountId !== 'string' || !accountId.match(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i)) {
+      console.error("Invalid account ID format:", accountId);
+      return 0;
+    }
+
     const { data } = await supabase
       .from('payment_sources')
       .select('amount')
