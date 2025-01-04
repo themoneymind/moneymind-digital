@@ -2,17 +2,42 @@ import { useFinance } from "@/contexts/FinanceContext";
 import { CreditCardItem } from "./credit-card/CreditCardItem";
 import { Plus } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useRef, TouchEvent } from "react";
 
 export const CreditCards = () => {
   const { paymentSources } = useFinance();
   const navigate = useNavigate();
   const [activeIndex, setActiveIndex] = useState(0);
+  const touchStartX = useRef<number | null>(null);
   
   const creditCards = paymentSources.filter(source => source.type === "Credit Card");
 
   const handleAddCard = () => {
     navigate("/app/payment-source?type=credit");
+  };
+
+  const handleTouchStart = (e: TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+  };
+
+  const handleTouchEnd = (e: TouchEvent) => {
+    if (touchStartX.current === null) return;
+
+    const touchEndX = e.changedTouches[0].clientX;
+    const diff = touchStartX.current - touchEndX;
+    const threshold = 50; // minimum distance for swipe
+
+    if (Math.abs(diff) > threshold) {
+      if (diff > 0 && activeIndex < creditCards.length - 1) {
+        // Swipe left
+        setActiveIndex(prev => prev + 1);
+      } else if (diff < 0 && activeIndex > 0) {
+        // Swipe right
+        setActiveIndex(prev => prev - 1);
+      }
+    }
+
+    touchStartX.current = null;
   };
 
   return (
@@ -35,7 +60,11 @@ export const CreditCards = () => {
           </div>
         ) : (
           <>
-            <div className="px-6">
+            <div 
+              className="px-6 touch-pan-x"
+              onTouchStart={handleTouchStart}
+              onTouchEnd={handleTouchEnd}
+            >
               <CreditCardItem card={creditCards[activeIndex]} />
             </div>
             
