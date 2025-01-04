@@ -55,7 +55,7 @@ export const PaymentSourceSelector = ({
       <select
         value={source || ""}
         onChange={(e) => onSourceChange(e.target.value)}
-        className={`flex h-12 w-full py-2 px-0 text-sm text-gray-600 placeholder-gray-400 bg-transparent border-b-2 border-gray-200 focus:outline-none transition-colors ${getFocusColor()}`}
+        className={`flex h-12 w-full py-2 px-0 text-sm ${source ? 'text-gray-600' : 'text-gray-400'} placeholder-gray-400 bg-transparent border-b-2 border-gray-200 focus:outline-none transition-colors ${getFocusColor()}`}
       >
         <option value="" disabled className="text-gray-400">
           {placeholder}
