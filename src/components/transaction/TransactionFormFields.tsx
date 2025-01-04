@@ -48,9 +48,8 @@ export const TransactionFormFields = ({
   };
 
   const handleTransferToChange = (newSource: string) => {
+    // Only update the transferToSource state, not the main source
     setTransferToSource(newSource);
-    // Update the main source state with the "to" source for the transaction
-    onSourceChange(newSource);
   };
 
   const getFilteredSources = () => {
@@ -58,6 +57,17 @@ export const TransactionFormFields = ({
     // Filter out sources that start with the same base ID as the "from" source
     const baseSourceId = source.split('-')[0];
     return formattedSources.filter(s => !s.id.startsWith(baseSourceId));
+  };
+
+  const handleSubmit = () => {
+    if (type === 'transfer' && !transferToSource) {
+      return; // Don't submit if transfer to source is not selected
+    }
+    // For transfers, use transferToSource as the final source
+    if (type === 'transfer') {
+      onSourceChange(transferToSource);
+    }
+    onSubmit();
   };
 
   return (
@@ -135,7 +145,7 @@ export const TransactionFormFields = ({
             ? 'bg-transaction-transfer hover:bg-transaction-transfer/90'
             : 'bg-primary hover:bg-primary/90'
         }`}
-        onClick={onSubmit}
+        onClick={handleSubmit}
       >
         Add Transaction
       </Button>
