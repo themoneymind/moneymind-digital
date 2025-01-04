@@ -30,32 +30,37 @@ export const useTransferHandler = () => {
     });
 
     try {
-      // 1. Deduct from source account
-      const { data: debitData, error: debitError } = await supabase
+      // 1. Check if source account has sufficient balance
+      const { data: sourceAccount, error: sourceError } = await supabase
         .from('payment_sources')
         .select('amount')
         .eq('id', baseFromSourceId)
         .gt('amount', amount - 0.01)
-        .rpc('decrement_amount', { decrement_by: amount })
         .single();
 
-      if (debitError) {
+      if (sourceError || !sourceAccount) {
         throw new Error("Insufficient balance or source account not found");
       }
 
-      // 2. Add to destination account
-      const { data: creditData, error: creditError } = await supabase
-        .from('payment_sources')
-        .select('amount')
-        .eq('id', baseToSourceId)
-        .rpc('increment_amount', { increment_by: amount })
-        .single();
+      // 2. Deduct from source account using RPC
+      const { error: debitError } = await supabase
+        .rpc('decrement_amount', { decrement_by: amount })
+        .eq('id', baseFromSourceId);
 
-      if (creditError) {
-        throw new Error("Destination account not found");
+      if (debitError) {
+        throw new Error("Failed to deduct amount from source account");
       }
 
-      // 3. Create transfer transaction record
+      // 3. Add to destination account using RPC
+      const { error: creditError } = await supabase
+        .rpc('increment_amount', { increment_by: amount })
+        .eq('id', baseToSourceId);
+
+      if (creditError) {
+        throw new Error("Failed to add amount to destination account");
+      }
+
+      // 4. Create transfer transaction record
       const { error: transferError } = await supabase
         .from('transactions')
         .insert([{
@@ -82,17 +87,13 @@ export const useTransferHandler = () => {
       try {
         // Rollback debit operation
         await supabase
-          .from('payment_sources')
-          .select('*')
-          .eq('id', baseFromSourceId)
-          .rpc('increment_amount', { increment_by: amount });
+          .rpc('increment_amount', { increment_by: amount })
+          .eq('id', baseFromSourceId);
 
         // Rollback credit operation
         await supabase
-          .from('payment_sources')
-          .select('*')
-          .eq('id', baseToSourceId)
-          .rpc('decrement_amount', { decrement_by: amount });
+          .rpc('decrement_amount', { decrement_by: amount })
+          .eq('id', baseToSourceId);
       } catch (rollbackError) {
         console.error("Rollback failed:", rollbackError);
         toast.error("Critical error during rollback. Please contact support.");
