@@ -44,9 +44,9 @@ export const useTransferHandler = () => {
 
       // 2. Deduct from source account using RPC
       const { error: debitError } = await supabase
-        .rpc('decrement_amount', { 
+        .rpc('decrement_amount', {
           source_id: baseFromSourceId,
-          decrement_by: amount 
+          decrement_by: amount
         });
 
       if (debitError) {
@@ -55,9 +55,9 @@ export const useTransferHandler = () => {
 
       // 3. Add to destination account using RPC
       const { error: creditError } = await supabase
-        .rpc('increment_amount', { 
+        .rpc('increment_amount', {
           source_id: baseToSourceId,
-          increment_by: amount 
+          increment_by: amount
         });
 
       if (creditError) {
@@ -91,16 +91,16 @@ export const useTransferHandler = () => {
       try {
         // Rollback debit operation
         await supabase
-          .rpc('increment_amount', { 
+          .rpc('increment_amount', {
             source_id: baseFromSourceId,
-            increment_by: amount 
+            increment_by: amount
           });
 
         // Rollback credit operation
         await supabase
-          .rpc('decrement_amount', { 
+          .rpc('decrement_amount', {
             source_id: baseToSourceId,
-            decrement_by: amount 
+            decrement_by: amount
           });
       } catch (rollbackError) {
         console.error("Rollback failed:", rollbackError);
