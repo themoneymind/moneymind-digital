@@ -20,15 +20,11 @@ export const CreditCardBalance = ({ usedCredit, availableCredit }: CreditCardBal
 
   return (
     <div className="grid grid-cols-2 gap-3">
-      <div className="flex flex-col items-start">
-        <span className="text-xs opacity-70 mb-1">Outstanding</span>
-        <p className={`${getTextSize(usedCredit)} font-bold`}>{formatCurrency(usedCredit)}</p>
-      </div>
+      <span className="text-xs opacity-70 mb-1">Outstanding</span>
+      <p className={`${getTextSize(usedCredit)} font-bold`}>{formatCurrency(usedCredit)}</p>
 
-      <div className="flex flex-col items-start">
-        <span className="text-xs opacity-70 mb-1">Available Credit</span>
-        <p className={`${getTextSize(availableCredit)} font-bold`}>{formatCurrency(availableCredit)}</p>
-      </div>
+      <span className="text-xs opacity-70 mb-1">Available Credit</span>
+      <p className={`${getTextSize(availableCredit)} font-bold`}>{formatCurrency(availableCredit)}</p>
     </div>
   );
 };
