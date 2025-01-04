@@ -42,26 +42,32 @@ export const useTransferHandler = () => {
         throw new Error("Insufficient balance or source account not found");
       }
 
-      // 2. Deduct from source account using RPC
-      const { error: debitError } = await supabase
-        .rpc('decrement_amount', {
-          source_id: baseFromSourceId,
-          decrement_by: amount
-        });
-
-      if (debitError) {
-        throw new Error("Failed to deduct amount from source account");
-      }
-
-      // 3. Add to destination account using RPC
+      // 2. Add to destination account first
       const { error: creditError } = await supabase
         .rpc('increment_amount', {
-          source_id: baseToSourceId,
-          increment_by: amount
+          increment_by: amount,
+          source_id: baseToSourceId
         });
 
       if (creditError) {
         throw new Error("Failed to add amount to destination account");
+      }
+
+      // 3. Deduct from source account
+      const { error: debitError } = await supabase
+        .rpc('decrement_amount', {
+          decrement_by: amount,
+          source_id: baseFromSourceId
+        });
+
+      if (debitError) {
+        // If debit fails, rollback the credit operation
+        await supabase
+          .rpc('decrement_amount', {
+            decrement_by: amount,
+            source_id: baseToSourceId
+          });
+        throw new Error("Failed to deduct amount from source account");
       }
 
       // 4. Create transfer transaction record
@@ -89,18 +95,18 @@ export const useTransferHandler = () => {
     } catch (error) {
       // Rollback on any error
       try {
-        // Rollback debit operation
-        await supabase
-          .rpc('increment_amount', {
-            source_id: baseFromSourceId,
-            increment_by: amount
-          });
-
         // Rollback credit operation
         await supabase
           .rpc('decrement_amount', {
-            source_id: baseToSourceId,
-            decrement_by: amount
+            decrement_by: amount,
+            source_id: baseToSourceId
+          });
+
+        // Rollback debit operation
+        await supabase
+          .rpc('increment_amount', {
+            increment_by: amount,
+            source_id: baseFromSourceId
           });
       } catch (rollbackError) {
         console.error("Rollback failed:", rollbackError);
