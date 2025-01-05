@@ -1,12 +1,12 @@
-import { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { useEffect } from "react";
+import { Link } from "react-router-dom";
+import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { PiggyBank } from "lucide-react";
 import { PasswordSignIn } from "./signin/PasswordSignIn";
 import { PinSignIn } from "./signin/PinSignIn";
 import { BiometricSignIn } from "./signin/BiometricSignIn";
-import { supabase } from "@/integrations/supabase/client";
-import { useToast } from "@/hooks/use-toast";
+import { SignInTabs } from "./signin/SignInTabs";
+import { useSignInForm } from "@/hooks/useSignInForm";
 
 interface SignInFormProps {
   email: string;
@@ -25,13 +25,13 @@ export const SignInForm = ({
   handleSubmit,
   isLoading,
 }: SignInFormProps) => {
-  const [rememberMe, setRememberMe] = useState(() => {
-    return localStorage.getItem("rememberMe") === "true";
-  });
-  const [biometricAvailable, setBiometricAvailable] = useState(false);
-  const [activeTab, setActiveTab] = useState("password");
-  const { toast } = useToast();
-  const navigate = useNavigate();
+  const {
+    activeTab,
+    setActiveTab,
+    biometricAvailable,
+    setBiometricAvailable,
+    handleBiometricLogin,
+  } = useSignInForm();
 
   useEffect(() => {
     const checkBiometricAvailability = async () => {
@@ -47,7 +47,7 @@ export const SignInForm = ({
     };
 
     checkBiometricAvailability();
-  }, []);
+  }, [setBiometricAvailable]);
 
   const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -59,48 +59,6 @@ export const SignInForm = ({
       localStorage.removeItem("rememberedEmail");
     }
     handleSubmit(e);
-  };
-
-  const handleBiometricLogin = async () => {
-    try {
-      // Get the user's email from localStorage if available
-      const rememberedEmail = localStorage.getItem("rememberedEmail");
-      
-      if (!rememberedEmail) {
-        toast({
-          title: "Error",
-          description: "Please sign in with password first and enable 'Remember me' to use biometric login",
-          variant: "destructive",
-        });
-        return;
-      }
-
-      // Attempt to sign in with biometric verification
-      const { data: { user }, error } = await supabase.auth.signInWithPassword({
-        email: rememberedEmail,
-        password: "", // The actual authentication was done via biometrics
-      });
-
-      if (error) throw error;
-
-      if (!user) {
-        throw new Error("No user data received");
-      }
-
-      toast({
-        title: "Success",
-        description: "Successfully signed in with biometrics",
-      });
-
-      navigate("/app");
-    } catch (error: any) {
-      console.error("Biometric login error:", error);
-      toast({
-        title: "Error",
-        description: error.message || "Failed to sign in with biometrics",
-        variant: "destructive",
-      });
-    }
   };
 
   return (
@@ -120,28 +78,7 @@ export const SignInForm = ({
         onValueChange={setActiveTab} 
         className="w-full"
       >
-        <TabsList className="flex p-1 bg-gray-100 rounded-full gap-2">
-          <TabsTrigger
-            value="password"
-            className="flex-1 px-6 py-2 rounded-full text-sm transition-all data-[state=active]:bg-[#7F3DFF] data-[state=active]:text-white data-[state=inactive]:bg-transparent data-[state=inactive]:text-gray-500"
-          >
-            Password
-          </TabsTrigger>
-          <TabsTrigger
-            value="otp"
-            className="flex-1 px-6 py-2 rounded-full text-sm transition-all data-[state=active]:bg-[#7F3DFF] data-[state=active]:text-white data-[state=inactive]:bg-transparent data-[state=inactive]:text-gray-500"
-          >
-            Login with OTP
-          </TabsTrigger>
-          {biometricAvailable && (
-            <TabsTrigger
-              value="biometric"
-              className="flex-1 px-6 py-2 rounded-full text-sm transition-all data-[state=active]:bg-[#7F3DFF] data-[state=active]:text-white data-[state=inactive]:bg-transparent data-[state=inactive]:text-gray-500"
-            >
-              Biometric
-            </TabsTrigger>
-          )}
-        </TabsList>
+        <SignInTabs biometricAvailable={biometricAvailable} />
 
         <TabsContent value="password" className="mt-6">
           <PasswordSignIn
