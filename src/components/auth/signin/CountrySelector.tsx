@@ -12,7 +12,7 @@ export const CountrySelector = ({
 }: CountrySelectorProps) => {
   return (
     <div className="flex items-center gap-2">
-      <span className="text-sm">{selectedCountry.flag}</span>
+      <span>{selectedCountry.flag}</span>
       <span className="font-bold font-sans text-[#7F3DFF]">IN</span>
       <Separator orientation="vertical" className="h-4" />
       <select
