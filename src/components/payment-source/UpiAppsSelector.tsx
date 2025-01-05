@@ -2,7 +2,7 @@ import { useState } from "react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Input } from "@/components/ui/input";
 
-const UPI_APPS = ["GPay", "PhonePe", "Cred", "IppoPay", "Custom UPI"];
+const DEFAULT_UPI_APPS = ["GPay", "PhonePe", "Cred", "IppoPay"];
 
 type UpiAppsSelectorProps = {
   selectedUpiApps: string[];
@@ -17,32 +17,29 @@ export const UpiAppsSelector = ({
   customUpi,
   onCustomUpiChange,
 }: UpiAppsSelectorProps) => {
-  const [showCustomInput, setShowCustomInput] = useState(false);
+  const [isCustomMode, setIsCustomMode] = useState(false);
 
   const handleUpiSelection = (app: string) => {
-    if (app === "Custom UPI") {
-      setShowCustomInput(true);
+    if (app === "custom") {
+      setIsCustomMode(true);
+      // Clear any previous custom UPI when entering custom mode
+      if (customUpi) {
+        onUpiToggle(customUpi);
+      }
     } else {
-      setShowCustomInput(false);
+      setIsCustomMode(false);
+      onUpiToggle(app);
     }
-    onUpiToggle(app);
   };
 
   const handleCustomUpiChange = (value: string) => {
+    // Remove any previous custom UPI value
+    if (customUpi) {
+      onUpiToggle(customUpi);
+    }
     onCustomUpiChange(value);
-  };
-
-  const handleCustomUpiBlur = () => {
-    if (customUpi.trim()) {
-      // Remove any partial entries first
-      const cleanedApps = selectedUpiApps.filter(app => 
-        UPI_APPS.includes(app) || app === customUpi.trim()
-      );
-      
-      // Add the complete custom UPI value
-      if (!cleanedApps.includes(customUpi.trim())) {
-        onUpiToggle(customUpi.trim());
-      }
+    if (value.trim()) {
+      onUpiToggle(value.trim());
     }
   };
 
@@ -51,7 +48,7 @@ export const UpiAppsSelector = ({
       <div className="space-y-2">
         <h3 className="font-medium text-sm text-gray-400 mb-4">Selected bank linked UPI</h3>
         <RadioGroup className="grid grid-cols-2 gap-4">
-          {UPI_APPS.map((app) => (
+          {DEFAULT_UPI_APPS.map((app) => (
             <label
               key={app}
               className="flex items-center space-x-3 cursor-pointer"
@@ -67,20 +64,31 @@ export const UpiAppsSelector = ({
               </span>
             </label>
           ))}
+          <label className="flex items-center space-x-3 cursor-pointer">
+            {isCustomMode ? (
+              <Input
+                value={customUpi}
+                onChange={(e) => handleCustomUpiChange(e.target.value)}
+                placeholder="Enter custom UPI"
+                className="h-8 text-sm"
+                autoFocus
+              />
+            ) : (
+              <>
+                <RadioGroupItem
+                  id="custom"
+                  value="custom"
+                  checked={isCustomMode}
+                  onClick={() => handleUpiSelection("custom")}
+                />
+                <span className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                  Custom UPI
+                </span>
+              </>
+            )}
+          </label>
         </RadioGroup>
       </div>
-
-      {showCustomInput && (
-        <div className="space-y-2">
-          <Input
-            value={customUpi}
-            onChange={(e) => handleCustomUpiChange(e.target.value)}
-            onBlur={handleCustomUpiBlur}
-            placeholder="Enter your custom UPI name"
-            className="h-12 rounded-[12px] text-base"
-          />
-        </div>
-      )}
     </div>
   );
 };
