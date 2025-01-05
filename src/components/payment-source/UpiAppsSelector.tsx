@@ -64,17 +64,17 @@ export const UpiAppsSelector = ({
               </span>
             </label>
           ))}
-          <label className="flex items-center space-x-3 cursor-pointer">
+          <div className="col-span-2">
             {isCustomMode ? (
               <Input
                 value={customUpi}
                 onChange={(e) => handleCustomUpiChange(e.target.value)}
                 placeholder="Enter custom UPI"
-                className="h-8 text-sm"
+                className="h-12 rounded-[12px] text-base w-full"
                 autoFocus
               />
             ) : (
-              <>
+              <label className="flex items-center space-x-3 cursor-pointer">
                 <RadioGroupItem
                   id="custom"
                   value="custom"
@@ -84,9 +84,9 @@ export const UpiAppsSelector = ({
                 <span className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
                   Custom UPI
                 </span>
-              </>
+              </label>
             )}
-          </label>
+          </div>
         </RadioGroup>
       </div>
     </div>
