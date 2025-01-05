@@ -1,8 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Link } from "react-router-dom";
-import { useState } from "react";
-import { PiggyBank } from "lucide-react";
+import { Mail, Lock, PiggyBank } from "lucide-react";
 
 interface SignInFormProps {
   email: string;
@@ -34,22 +33,27 @@ export const SignInForm = ({
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
-        <Input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          className="h-12 rounded-xl border-gray-200 bg-gray-50/50 px-4 text-gray-900/70 placeholder:text-gray-500/60 focus:border-[#7F3DFF] focus:ring-[#7F3DFF]"
-          disabled={isLoading}
-          required
-        />
-        <div className="space-y-1">
-          <Input
+        <div className="relative">
+          <Mail className="absolute left-0 top-3 h-5 w-5 text-gray-400" />
+          <input
+            type="email"
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className="w-full py-3 pl-8 text-sm bg-transparent border-b-2 border-gray-200 focus:outline-none transition-colors placeholder:text-gray-400 text-gray-600 focus:border-[#7F3DFF]"
+            disabled={isLoading}
+            required
+          />
+        </div>
+
+        <div className="relative">
+          <Lock className="absolute left-0 top-3 h-5 w-5 text-gray-400" />
+          <input
             type="password"
             placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="h-12 rounded-xl border-gray-200 bg-gray-50/50 px-4 text-gray-900/70 placeholder:text-gray-500/60 focus:border-[#7F3DFF] focus:ring-[#7F3DFF]"
+            className="w-full py-3 pl-8 text-sm bg-transparent border-b-2 border-gray-200 focus:outline-none transition-colors placeholder:text-gray-400 text-gray-600 focus:border-[#7F3DFF]"
             disabled={isLoading}
             required
           />
