@@ -29,12 +29,14 @@ export const PaymentSourceDialog = ({
 }: PaymentSourceDialogProps) => {
   const [name, setName] = useState("");
   const [selectedUpiApps, setSelectedUpiApps] = useState<string[]>([]);
+  const [customUpi, setCustomUpi] = useState("");
   const { toast } = useToast();
   const dialogState = useDialogState(onOpenChange);
 
   const resetState = useCallback(() => {
     setName(source?.name || "");
     setSelectedUpiApps(source?.upi_apps || []);
+    setCustomUpi("");
     dialogState.reset();
   }, [source]);
 
@@ -62,7 +64,12 @@ export const PaymentSourceDialog = ({
       return;
     }
 
-    await handleNameAndUpiChange(name, selectedUpiApps);
+    const allUpiApps = [...selectedUpiApps];
+    if (customUpi.trim()) {
+      allUpiApps.push(customUpi.trim());
+    }
+
+    await handleNameAndUpiChange(name, allUpiApps);
   };
 
   const handleDelete = async () => {
@@ -124,6 +131,8 @@ export const PaymentSourceDialog = ({
           onSave={handleSave}
           onDelete={handleDelete}
           isSubmitting={dialogState.isSubmitting}
+          customUpi={customUpi}
+          onCustomUpiChange={setCustomUpi}
         />
       </DialogContent>
     </Dialog>
