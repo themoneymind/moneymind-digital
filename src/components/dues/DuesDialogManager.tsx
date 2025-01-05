@@ -2,6 +2,7 @@ import { DueTransaction } from "@/types/dues";
 import { DuesDialogs } from "./DuesDialogs";
 import { DuesEditDialog } from "./DuesEditDialog";
 import { DeleteConfirmationDialog } from "./DeleteConfirmationDialog";
+import { useDuesDialogState } from "@/hooks/useDuesDialogState";
 
 interface DuesDialogManagerProps {
   dialogState: ReturnType<typeof useDuesDialogState>;
@@ -12,8 +13,8 @@ interface DuesDialogManagerProps {
   newRepaymentDate: Date | undefined;
   setNewRepaymentDate: (date: Date | undefined) => void;
   handleExcuseSubmit: () => Promise<void>;
-  handlePaymentSourceSelect: (sourceId: string) => void;
-  handlePartialPaymentSourceSelect: (sourceId: string) => void;
+  handlePaymentSourceSelect: (sourceId: string) => Promise<void>;
+  handlePartialPaymentSourceSelect: (sourceId: string) => Promise<void>;
   handleEditSave: (updates: Partial<DueTransaction>) => Promise<void>;
 }
 
