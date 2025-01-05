@@ -60,7 +60,7 @@ export const SignInForm = ({
             placeholder="Email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="w-full py-3 pl-10 text-sm bg-transparent border-b-2 border-gray-200 focus:outline-none transition-colors placeholder:text-gray-400 text-gray-600 focus:border-[#7F3DFF]"
+            className="w-full py-3 pl-10 md:text-sm text-base bg-transparent border-b-2 border-gray-200 focus:outline-none transition-colors placeholder:text-gray-400 text-gray-600 focus:border-[#7F3DFF]"
             disabled={isLoading}
             required
           />
@@ -76,7 +76,7 @@ export const SignInForm = ({
               placeholder="Password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full py-3 pl-10 text-sm bg-transparent border-b-2 border-gray-200 focus:outline-none transition-colors placeholder:text-gray-400 text-gray-600 focus:border-[#7F3DFF]"
+              className="w-full py-3 pl-10 md:text-sm text-base bg-transparent border-b-2 border-gray-200 focus:outline-none transition-colors placeholder:text-gray-400 text-gray-600 focus:border-[#7F3DFF]"
               disabled={isLoading}
               required
             />
@@ -108,7 +108,7 @@ export const SignInForm = ({
         
         <Button 
           type="submit" 
-          className="w-full h-12 rounded-xl text-base bg-[#7F3DFF] hover:bg-[#7F3DFF]/90"
+          className="w-full h-12 rounded-xl md:text-sm text-base bg-[#7F3DFF] hover:bg-[#7F3DFF]/90"
           disabled={isLoading}
         >
           {isLoading ? "Signing in..." : "Sign In"}
