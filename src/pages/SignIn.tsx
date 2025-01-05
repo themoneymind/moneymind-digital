@@ -1,11 +1,10 @@
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { PiggyBank } from "lucide-react";
 import { TopBar } from "@/components/TopBar";
+import { SignInForm } from "@/components/auth/SignInForm";
+import { SignInDecoration } from "@/components/auth/SignInDecoration";
 
 export const SignIn = () => {
   const [email, setEmail] = useState("");
@@ -126,83 +125,23 @@ export const SignIn = () => {
       <div className="absolute top-0 right-0 w-32 h-32 rounded-full bg-[#7F3DFF]/10 -mr-16 -mt-16" />
       
       <div className="p-6 pt-8 md:flex md:items-center md:justify-center md:min-h-[calc(100vh-64px)]">
-        <div className="md:flex md:w-full md:max-w-6xl md:gap-8">
-          {/* Left Column - Sign In Form */}
-          <div className="md:flex-1 md:max-w-md">
-            <div className="space-y-6 md:bg-white/50 md:backdrop-blur-sm md:p-8 md:rounded-2xl md:shadow-lg">
-              <div className="text-left space-y-2">
-                <div className="flex items-center mb-2">
-                  <PiggyBank className="h-10 w-10 text-[#7F3DFF]" />
-                </div>
-                <h1 className="text-2xl font-bold text-[#7F3DFF]">MoneyMind</h1>
-                <p className="text-gray-600 text-base">
-                  Sign in to your account
-                </p>
-              </div>
-
-              <form onSubmit={handleSubmit} className="space-y-6">
-                <Input
-                  type="email"
-                  placeholder="Email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="h-12 rounded-xl border-gray-200 bg-gray-50/50 px-4 text-gray-900/70 placeholder:text-gray-500/60 focus:border-[#7F3DFF] focus:ring-[#7F3DFF]"
-                  disabled={isLoading}
-                  required
-                />
-                <div className="space-y-1">
-                  <Input
-                    type="password"
-                    placeholder="Password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    className="h-12 rounded-xl border-gray-200 bg-gray-50/50 px-4 text-gray-900/70 placeholder:text-gray-500/60 focus:border-[#7F3DFF] focus:ring-[#7F3DFF]"
-                    disabled={isLoading}
-                    required
-                  />
-                </div>
-                
-                <Button 
-                  type="submit" 
-                  className="w-full h-12 rounded-xl text-base bg-[#7F3DFF] hover:bg-[#7F3DFF]/90"
-                  disabled={isLoading}
-                >
-                  {isLoading ? "Signing in..." : "Sign In"}
-                </Button>
-
-                <div>
-                  <Link 
-                    to="/forgot-password" 
-                    className="text-sm text-[#7F3DFF] hover:text-[#7F3DFF]/90"
-                  >
-                    Forgot Password?
-                  </Link>
-                </div>
-              </form>
-
-              <p className="text-gray-600 text-sm">
-                Don't have an account?{" "}
-                <Link to="/signup" className="text-[#7F3DFF] hover:text-[#7F3DFF]/90">
-                  Sign up
-                </Link>
-              </p>
+        <div className="w-full max-w-6xl mx-auto">
+          <div className="md:grid md:grid-cols-2 md:gap-8">
+            {/* Left Column - Sign In Form */}
+            <div className="md:bg-white/50 md:backdrop-blur-sm md:p-8 md:rounded-2xl md:shadow-lg">
+              <SignInForm
+                email={email}
+                setEmail={setEmail}
+                password={password}
+                setPassword={setPassword}
+                handleSubmit={handleSubmit}
+                isLoading={isLoading}
+              />
             </div>
-          </div>
 
-          {/* Right Column - Decorative Area */}
-          <div className="hidden md:flex md:flex-1 md:items-center md:justify-center">
-            <div className="relative w-full h-full min-h-[400px] rounded-2xl bg-gradient-to-br from-[#7F3DFF]/10 to-[#7F3DFF]/5 backdrop-blur-sm">
-              <div className="absolute inset-0 flex items-center justify-center">
-                <PiggyBank className="w-32 h-32 text-[#7F3DFF]/20" />
-              </div>
-              <div className="absolute bottom-8 left-8 right-8 text-center">
-                <h2 className="text-2xl font-bold text-[#7F3DFF]/70 mb-2">
-                  Welcome to MoneyMind
-                </h2>
-                <p className="text-gray-600">
-                  Track your expenses and manage your finances with ease
-                </p>
-              </div>
+            {/* Right Column - Decorative Area */}
+            <div className="hidden md:block">
+              <SignInDecoration />
             </div>
           </div>
         </div>
