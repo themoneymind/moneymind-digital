@@ -12,14 +12,14 @@ export const PaymentSourceButtons = ({ onAddSource, onComplete }: PaymentSourceB
   return (
     <div className="space-y-4">
       <Button
-        className="w-full h-14 rounded-[12px]"
+        className="w-full h-[52px] rounded-[16px] bg-[#7C3AED] hover:bg-[#7C3AED]/90 text-white font-medium"
         onClick={onAddSource}
       >
         Add Payment Source
       </Button>
 
       <Button
-        className="w-full h-14 rounded-[12px]"
+        className="w-full h-[52px] rounded-[16px]"
         onClick={onComplete}
         disabled={paymentSources.length === 0}
         variant={paymentSources.length === 0 ? "outline" : "default"}
