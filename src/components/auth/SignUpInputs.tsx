@@ -27,8 +27,8 @@ export const SignUpInputs = ({
   return (
     <div className="space-y-6">
       <div className="relative">
-        <div className="absolute left-0 top-2 flex h-7 w-7 items-center justify-center rounded-full bg-gray-100">
-          <User className="h-4 w-4 text-gray-500" />
+        <div className="absolute left-0 top-2 flex h-7 w-7 items-center justify-center rounded-full bg-[#F5F3FF]">
+          <User className="h-4 w-4 text-[#7F3DFF]" />
         </div>
         <input
           type="text"
@@ -42,8 +42,8 @@ export const SignUpInputs = ({
       </div>
 
       <div className="relative">
-        <div className="absolute left-0 top-2 flex h-7 w-7 items-center justify-center rounded-full bg-gray-100">
-          <Mail className="h-4 w-4 text-gray-500" />
+        <div className="absolute left-0 top-2 flex h-7 w-7 items-center justify-center rounded-full bg-[#F5F3FF]">
+          <Mail className="h-4 w-4 text-[#7F3DFF]" />
         </div>
         <input
           type="email"
@@ -57,8 +57,8 @@ export const SignUpInputs = ({
       </div>
 
       <div className="relative">
-        <div className="absolute left-0 top-2 flex h-7 w-7 items-center justify-center rounded-full bg-gray-100">
-          <Phone className="h-4 w-4 text-gray-500" />
+        <div className="absolute left-0 top-2 flex h-7 w-7 items-center justify-center rounded-full bg-[#F5F3FF]">
+          <Phone className="h-4 w-4 text-[#7F3DFF]" />
         </div>
         <input
           type="tel"
@@ -72,8 +72,8 @@ export const SignUpInputs = ({
       </div>
 
       <div className="relative">
-        <div className="absolute left-0 top-2 flex h-7 w-7 items-center justify-center rounded-full bg-gray-100">
-          <Lock className="h-4 w-4 text-gray-500" />
+        <div className="absolute left-0 top-2 flex h-7 w-7 items-center justify-center rounded-full bg-[#F5F3FF]">
+          <Lock className="h-4 w-4 text-[#7F3DFF]" />
         </div>
         <input
           type="password"

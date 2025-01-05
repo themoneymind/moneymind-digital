@@ -1,5 +1,5 @@
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Link } from "react-router-dom";
 import { Mail, Lock, PiggyBank } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -52,8 +52,8 @@ export const SignInForm = ({
 
       <form onSubmit={handleFormSubmit} className="space-y-6">
         <div className="relative">
-          <div className="absolute left-0 top-2 flex h-7 w-7 items-center justify-center rounded-full bg-gray-100">
-            <Mail className="h-4 w-4 text-gray-500" />
+          <div className="absolute left-0 top-2 flex h-7 w-7 items-center justify-center rounded-full bg-[#F5F3FF]">
+            <Mail className="h-4 w-4 text-[#7F3DFF]" />
           </div>
           <input
             type="email"
@@ -68,8 +68,8 @@ export const SignInForm = ({
 
         <div className="space-y-4">
           <div className="relative">
-            <div className="absolute left-0 top-2 flex h-7 w-7 items-center justify-center rounded-full bg-gray-100">
-              <Lock className="h-4 w-4 text-gray-500" />
+            <div className="absolute left-0 top-2 flex h-7 w-7 items-center justify-center rounded-full bg-[#F5F3FF]">
+              <Lock className="h-4 w-4 text-[#7F3DFF]" />
             </div>
             <input
               type="password"
