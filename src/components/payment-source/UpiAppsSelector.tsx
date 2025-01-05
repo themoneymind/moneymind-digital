@@ -14,7 +14,7 @@ export const UpiAppsSelector = ({
   return (
     <div className="space-y-2">
       <h3 className="font-medium text-base">UPI Apps</h3>
-      <div className="grid grid-cols-2 gap-4">
+      <RadioGroup className="grid grid-cols-2 gap-4">
         {UPI_APPS.map((app) => (
           <div
             key={app}
@@ -34,7 +34,7 @@ export const UpiAppsSelector = ({
             </label>
           </div>
         ))}
-      </div>
+      </RadioGroup>
     </div>
   );
 };
