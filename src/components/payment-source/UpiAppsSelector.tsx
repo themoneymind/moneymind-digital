@@ -77,8 +77,8 @@ export const UpiAppsSelector = ({
                   <Input
                     value={customUpi}
                     onChange={(e) => handleCustomUpiChange(e.target.value)}
-                    placeholder="Enter custom UPI"
-                    className="border-0 border-b border-gray-300 rounded-none focus:ring-0 px-0 h-10 text-base w-full bg-transparent"
+                    placeholder="Enter custom UPI name"
+                    className="border-0 border-b border-gray-300 rounded-none focus:ring-0 focus:outline-none px-0 h-10 text-sm w-full bg-transparent placeholder:text-gray-400"
                     autoFocus
                   />
                 ) : (
