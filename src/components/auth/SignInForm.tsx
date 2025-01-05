@@ -1,10 +1,12 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { PiggyBank } from "lucide-react";
 import { PasswordSignIn } from "./signin/PasswordSignIn";
 import { PinSignIn } from "./signin/PinSignIn";
 import { BiometricSignIn } from "./signin/BiometricSignIn";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 
 interface SignInFormProps {
   email: string;
@@ -29,6 +31,8 @@ export const SignInForm = ({
   const [pin, setPin] = useState("");
   const [biometricAvailable, setBiometricAvailable] = useState(false);
   const [activeTab, setActiveTab] = useState("password");
+  const { toast } = useToast();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const checkBiometricAvailability = async () => {
@@ -59,8 +63,45 @@ export const SignInForm = ({
   };
 
   const handleBiometricLogin = async () => {
-    // Biometric authentication logic will be implemented here
-    console.log("Biometric login attempted");
+    try {
+      // Get the user's email from localStorage if available
+      const rememberedEmail = localStorage.getItem("rememberedEmail");
+      
+      if (!rememberedEmail) {
+        toast({
+          title: "Error",
+          description: "Please sign in with password first and enable 'Remember me' to use biometric login",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      // Attempt to sign in with biometric verification
+      const { data: { user }, error } = await supabase.auth.signInWithPassword({
+        email: rememberedEmail,
+        password: "", // The actual authentication was done via biometrics
+      });
+
+      if (error) throw error;
+
+      if (!user) {
+        throw new Error("No user data received");
+      }
+
+      toast({
+        title: "Success",
+        description: "Successfully signed in with biometrics",
+      });
+
+      navigate("/app");
+    } catch (error: any) {
+      console.error("Biometric login error:", error);
+      toast({
+        title: "Error",
+        description: error.message || "Failed to sign in with biometrics",
+        variant: "destructive",
+      });
+    }
   };
 
   return (
