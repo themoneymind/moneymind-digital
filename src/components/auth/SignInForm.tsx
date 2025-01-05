@@ -97,9 +97,6 @@ export const SignInForm = ({
 
         <TabsContent value="otp" className="mt-6">
           <PinSignIn
-            email={email}
-            setEmail={setEmail}
-            handleSubmit={handleFormSubmit}
             isLoading={isLoading}
           />
         </TabsContent>

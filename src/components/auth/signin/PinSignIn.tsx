@@ -6,30 +6,26 @@ import { ContactInputStep } from "./ContactInputStep";
 import { OtpVerificationStep } from "./OtpVerificationStep";
 
 interface OtpSignInProps {
-  email: string;
-  setEmail: (email: string) => void;
-  handleSubmit: (e: React.FormEvent) => void;
   isLoading: boolean;
 }
 
 export const PinSignIn = ({
-  email,
-  setEmail,
   isLoading,
 }: OtpSignInProps) => {
   const [otpSent, setOtpSent] = useState(false);
   const [otp, setOtp] = useState("");
+  const [contact, setContact] = useState("");
   const { toast } = useToast();
 
   const handleSendOtp = async () => {
     try {
-      const contact = email.trim();
-      const contactType = getContactType(contact);
+      const contactValue = contact.trim();
+      const contactType = getContactType(contactValue);
       
       switch (contactType) {
         case 'email':
           const { error } = await supabase.auth.signInWithOtp({
-            email: contact,
+            email: contactValue,
             options: {
               emailRedirectTo: `${window.location.origin}/signin`
             }
@@ -76,7 +72,7 @@ export const PinSignIn = ({
   const handleVerifyOtp = async () => {
     try {
       const { error } = await supabase.auth.verifyOtp({
-        email: email.trim(),
+        email: contact.trim(),
         token: otp,
         type: 'email'
       });
@@ -108,8 +104,8 @@ export const PinSignIn = ({
         />
       ) : (
         <ContactInputStep
-          contact={email}
-          setContact={setEmail}
+          contact={contact}
+          setContact={setContact}
           handleSendOtp={handleSendOtp}
           isLoading={isLoading}
         />

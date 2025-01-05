@@ -38,12 +38,19 @@ export const ContactInput = ({
     );
   };
 
+  const getPlaceholder = () => {
+    if (contact.length === 0) {
+      return "Email or Phone number";
+    }
+    return inputType === 'phone' ? 'Phone number' : 'Email';
+  };
+
   return (
     <div className="relative">
       {renderInputIcon()}
       <Input
         type={inputType === 'phone' ? 'tel' : 'email'}
-        placeholder={inputType === 'phone' ? 'Phone number' : 'Email'}
+        placeholder={getPlaceholder()}
         value={contact}
         onChange={(e) => onContactChange(e.target.value)}
         className={`w-full py-3 ${
