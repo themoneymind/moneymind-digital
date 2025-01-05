@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 
 const DEFAULT_UPI_APPS = ["GPay", "PhonePe", "Cred", "IppoPay"];
@@ -21,13 +21,13 @@ export const UpiAppsSelector = ({
 
   const handleUpiSelection = (app: string) => {
     if (app === "custom") {
-      setIsCustomMode(true);
-      // Clear any previous custom UPI when entering custom mode
-      if (customUpi) {
+      setIsCustomMode(!isCustomMode);
+      // Clear any previous custom UPI when toggling custom mode off
+      if (isCustomMode && customUpi) {
         onUpiToggle(customUpi);
+        onCustomUpiChange("");
       }
     } else {
-      setIsCustomMode(false);
       onUpiToggle(app);
     }
   };
@@ -47,17 +47,16 @@ export const UpiAppsSelector = ({
     <div className="space-y-4">
       <div className="space-y-2">
         <h3 className="font-medium text-sm text-gray-400 mb-4">Selected bank linked UPI</h3>
-        <RadioGroup className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-2 gap-4">
           {DEFAULT_UPI_APPS.map((app) => (
             <label
               key={app}
               className="flex items-center space-x-3 cursor-pointer"
             >
-              <RadioGroupItem
+              <Checkbox
                 id={app}
-                value={app}
                 checked={selectedUpiApps.includes(app)}
-                onClick={() => handleUpiSelection(app)}
+                onCheckedChange={() => handleUpiSelection(app)}
               />
               <span className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
                 {app}
@@ -66,11 +65,10 @@ export const UpiAppsSelector = ({
           ))}
           <div className="col-span-2">
             <label className="flex items-center space-x-3 cursor-pointer">
-              <RadioGroupItem
+              <Checkbox
                 id="custom"
-                value="custom"
                 checked={isCustomMode}
-                onClick={() => handleUpiSelection("custom")}
+                onCheckedChange={() => handleUpiSelection("custom")}
               />
               <div className="flex-1">
                 {isCustomMode ? (
@@ -89,7 +87,7 @@ export const UpiAppsSelector = ({
               </div>
             </label>
           </div>
-        </RadioGroup>
+        </div>
       </div>
     </div>
   );
