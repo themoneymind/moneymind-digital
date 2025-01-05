@@ -4,6 +4,7 @@ import { BankSection } from "./BankSection";
 import { UpiSection } from "./UpiSection";
 
 const INDIAN_BANKS = [
+  // Major Banks
   "HDFC Bank",
   "ICICI Bank",
   "State Bank of India",
@@ -14,6 +15,17 @@ const INDIAN_BANKS = [
   "Bank of Baroda",
   "Canara Bank",
   "IndusInd Bank",
+  // Small Finance Banks
+  "Equitas Small Finance Bank",
+  "Ujjivan Small Finance Bank",
+  "Suryoday Small Finance Bank",
+  "ESAF Small Finance Bank",
+  // Payments Banks
+  "Airtel Payments Bank",
+  "India Post Payments Bank",
+  "Fino Payments Bank",
+  "Jio Payments Bank",
+  "NSDL Payments Bank",
 ];
 
 interface PaymentSourceFormProps {
