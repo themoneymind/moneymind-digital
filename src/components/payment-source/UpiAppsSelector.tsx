@@ -17,9 +17,9 @@ export const UpiAppsSelector = ({
         <h3 className="font-medium text-base">UPI Apps</h3>
         <RadioGroup className="grid grid-cols-2 gap-4">
           {UPI_APPS.map((app) => (
-            <div
+            <label
               key={app}
-              className="flex items-center space-x-3 bg-white p-4 rounded-[12px] border"
+              className="flex items-center space-x-3 cursor-pointer"
             >
               <RadioGroupItem
                 id={app}
@@ -27,13 +27,10 @@ export const UpiAppsSelector = ({
                 checked={selectedUpiApps.includes(app)}
                 onClick={() => onUpiToggle(app)}
               />
-              <label
-                htmlFor={app}
-                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-              >
+              <span className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
                 {app}
-              </label>
-            </div>
+              </span>
+            </label>
           ))}
         </RadioGroup>
       </div>
