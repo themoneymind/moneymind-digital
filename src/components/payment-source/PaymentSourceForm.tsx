@@ -4,32 +4,55 @@ import { BankSection } from "./BankSection";
 import { UpiSection } from "./UpiSection";
 
 const INDIAN_BANKS = [
-  // Major Banks
-  "State Bank of India",
-  "HDFC Bank",
-  "ICICI Bank",
-  "Punjab National Bank",
+  // Public Sector Banks (PSBs)
+  "State Bank of India (SBI)",
+  "Punjab National Bank (PNB)",
   "Bank of Baroda",
   "Canara Bank",
   "Union Bank of India",
-  "Bank of India",
   "Indian Bank",
   "Central Bank of India",
-  "Indian Overseas Bank",
   "UCO Bank",
   "Bank of Maharashtra",
   "Punjab & Sind Bank",
+  // Private Sector Banks
+  "HDFC Bank",
+  "ICICI Bank",
   "Axis Bank",
   "Kotak Mahindra Bank",
   "IndusInd Bank",
   "Yes Bank",
-  "IDBI Bank",
+  "IDFC FIRST Bank",
   "Federal Bank",
+  "South Indian Bank",
+  "RBL Bank (Ratnakar Bank Limited)",
+  // Foreign Banks Operating in India
+  "Citibank",
+  "Standard Chartered Bank",
+  "HSBC",
+  "Deutsche Bank",
+  "Barclays Bank",
+  "JPMorgan Chase Bank",
+  "Bank of America",
+  "DBS Bank",
+  "Abu Dhabi Commercial Bank",
+  "Qatar National Bank",
+  // Regional Rural Banks (RRBs)
+  "Prathama Bank",
+  "Baroda UP Bank",
+  "Andhra Pradesh Grameena Vikas Bank",
+  "Bihar Gramin Bank",
+  "Kerala Gramin Bank",
+  // Cooperative Banks
+  "Saraswat Cooperative Bank",
+  "Cosmos Cooperative Bank",
+  "Shamrao Vithal Cooperative Bank",
+  "Kalupur Commercial Cooperative Bank",
+  "Abhyudaya Cooperative Bank",
   // Small Finance Banks
   "AU Small Finance Bank",
   "Equitas Small Finance Bank",
   "Ujjivan Small Finance Bank",
-  "Jana Small Finance Bank",
   "Suryoday Small Finance Bank",
   "ESAF Small Finance Bank",
   // Payments Banks
@@ -37,7 +60,7 @@ const INDIAN_BANKS = [
   "India Post Payments Bank",
   "Fino Payments Bank",
   "Jio Payments Bank",
-  "NSDL Payments Bank",
+  "NSDL Payments Bank"
 ];
 
 interface PaymentSourceFormProps {
