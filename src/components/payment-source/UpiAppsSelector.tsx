@@ -35,13 +35,10 @@ export const UpiAppsSelector = ({
         </RadioGroup>
       </div>
 
-      <div className="space-y-2">
-        <h3 className="font-medium text-base">Add Custom UPI App</h3>
-        <input
-          placeholder="Enter UPI app name"
-          className="w-full py-3 px-0 text-sm bg-transparent border-b-2 border-gray-200 focus:outline-none transition-colors placeholder:text-gray-400 text-gray-600 focus:border-primary"
-        />
-      </div>
+      <input
+        placeholder="Enter UPI app name"
+        className="w-full py-3 px-0 text-sm bg-transparent border-b-2 border-gray-200 focus:outline-none transition-colors placeholder:text-gray-400 text-gray-600 focus:border-primary"
+      />
     </div>
   );
 };
