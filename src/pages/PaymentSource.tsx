@@ -90,19 +90,19 @@ export const PaymentSource = () => {
         credit_limit: selectedType === "credit" ? Number(creditLimit) : undefined,
       };
 
-      const { data: newSource, error } = await addPaymentSource(newSourceData);
+      const result = await addPaymentSource(newSourceData);
       
-      if (error) throw error;
+      if (result.error) throw result.error;
       
-      if (newSource && currentBalance && Number(currentBalance) > 0) {
+      if (result.data && currentBalance && Number(currentBalance) > 0) {
         await addTransaction({
           type: "income",
           amount: Number(currentBalance),
           category: "Initial Balance",
-          source: newSource.id,
+          source: result.data.id,
           description: `Initial balance for ${sourceName}`,
           date: new Date(),
-          base_source_id: newSource.id,
+          base_source_id: result.data.id,
           display_source: sourceName,
         });
       }
