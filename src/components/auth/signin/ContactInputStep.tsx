@@ -20,15 +20,6 @@ export const ContactInputStep = ({
   const [selectedCountry, setSelectedCountry] = useState<CountryCode>(countryCodes[0]);
   const [inputType, setInputType] = useState<'email' | 'phone'>('email');
 
-  useEffect(() => {
-    const type = getContactType(contact);
-    if (type === 'email') {
-      setInputType('email');
-    } else if (type === 'phone' || type === 'invalid') {
-      setInputType('phone');
-    }
-  }, [contact]);
-
   const handleContactChange = (value: string) => {
     if (value.includes('@')) {
       setInputType('email');
