@@ -24,7 +24,10 @@ export const usePaymentSources = () => {
     return data || [];
   }, [user]);
 
-  const addPaymentSource = useCallback(async (newSource: Omit<PaymentSource, "id">) => {
+  const addPaymentSource = useCallback(async (newSource: Omit<PaymentSource, "id">): Promise<{
+    data: PaymentSource | null;
+    error: Error | null;
+  }> => {
     if (!user) return { data: null, error: new Error("No user found") };
 
     const { data, error } = await supabase
