@@ -1,8 +1,15 @@
-import { Mail, Flag } from "lucide-react";
+import { Mail } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { getContactType } from "@/utils/otpValidation";
 import { useState, useEffect } from "react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface ContactInputStepProps {
   contact: string;
@@ -53,15 +60,45 @@ export const ContactInputStep = ({
     setContact(value);
   };
 
+  const handleCountryChange = (countryCode: string) => {
+    const country = countryCodes.find(c => c.code === countryCode);
+    if (country) {
+      setSelectedCountry(country);
+      if (contactType === 'phone') {
+        const phoneNumber = contact.replace(/^\+\d+\s?/, '');
+        setContact(country.dialCode + ' ' + phoneNumber);
+      }
+    }
+  };
+
   return (
     <div className="space-y-6">
       <div className="relative">
         <div className="absolute left-3 top-1/2 -translate-y-1/2 flex items-center gap-2">
           {contactType === 'phone' ? (
-            <div className="flex items-center gap-1">
-              <span className="text-base">{selectedCountry.flag}</span>
-              <span className="text-[#7F3DFF] text-sm font-medium">{selectedCountry.dialCode}</span>
-            </div>
+            <Select
+              value={selectedCountry.code}
+              onValueChange={handleCountryChange}
+            >
+              <SelectTrigger className="w-[100px] h-8 border-0 bg-transparent focus:ring-0">
+                <SelectValue>
+                  <div className="flex items-center gap-1">
+                    <span className="text-base">{selectedCountry.flag}</span>
+                    <span className="text-[#7F3DFF] text-sm font-medium">{selectedCountry.dialCode}</span>
+                  </div>
+                </SelectValue>
+              </SelectTrigger>
+              <SelectContent>
+                {countryCodes.map((country) => (
+                  <SelectItem key={country.code} value={country.code}>
+                    <div className="flex items-center gap-2">
+                      <span>{country.flag}</span>
+                      <span>{country.dialCode}</span>
+                    </div>
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           ) : (
             <Mail className="h-4 w-4 text-[#7F3DFF]" />
           )}
@@ -71,7 +108,7 @@ export const ContactInputStep = ({
           placeholder="Email or Phone Number"
           value={contact}
           onChange={(e) => handleContactChange(e.target.value)}
-          className={`w-full py-3 ${contactType === 'phone' ? 'pl-20' : 'pl-10'} md:text-sm text-base bg-transparent border-t-0 border-x-0 border-b-2 border-gray-200 rounded-none focus:outline-none transition-colors placeholder:text-gray-400 text-gray-600 focus:border-[#7F3DFF] focus:ring-0`}
+          className={`w-full py-3 ${contactType === 'phone' ? 'pl-32' : 'pl-10'} md:text-sm text-base bg-transparent border-t-0 border-x-0 border-b-2 border-gray-200 rounded-none focus:outline-none transition-colors placeholder:text-gray-400 text-gray-600 focus:border-[#7F3DFF] focus:ring-0`}
           disabled={isLoading}
           required
         />
