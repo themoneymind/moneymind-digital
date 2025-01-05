@@ -3,13 +3,6 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { getContactType } from "@/utils/otpValidation";
 import { useState, useEffect } from "react";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 
 interface ContactInputStepProps {
   contact: string;
@@ -32,7 +25,6 @@ const countryCodes: CountryCode[] = [
   { code: 'AU', flag: '🇦🇺', dialCode: '+61' },
   { code: 'SG', flag: '🇸🇬', dialCode: '+65' },
   { code: 'AE', flag: '🇦🇪', dialCode: '+971' },
-  // Add more country codes as needed
 ];
 
 export const ContactInputStep = ({
@@ -68,7 +60,8 @@ export const ContactInputStep = ({
     setContact(value);
   };
 
-  const handleCountryChange = (countryCode: string) => {
+  const handleCountryChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const countryCode = event.target.value;
     const country = countryCodes.find(c => c.code === countryCode);
     if (country) {
       setSelectedCountry(country);
@@ -82,29 +75,17 @@ export const ContactInputStep = ({
       <div className="relative">
         <div className="absolute left-3 top-1/2 -translate-y-1/2 flex items-center gap-2">
           {inputType === 'phone' ? (
-            <Select
+            <select
               value={selectedCountry.code}
-              onValueChange={handleCountryChange}
+              onChange={handleCountryChange}
+              className="w-[100px] h-8 border-0 bg-white focus:ring-0 text-sm appearance-none cursor-pointer"
             >
-              <SelectTrigger className="w-[100px] h-8 border-0 bg-white focus:ring-0">
-                <SelectValue>
-                  <div className="flex items-center gap-1">
-                    <span className="text-base">{selectedCountry.flag}</span>
-                    <span className="text-[#7F3DFF] text-sm font-medium">{selectedCountry.dialCode}</span>
-                  </div>
-                </SelectValue>
-              </SelectTrigger>
-              <SelectContent>
-                {countryCodes.map((country) => (
-                  <SelectItem key={country.code} value={country.code}>
-                    <div className="flex items-center gap-2">
-                      <span>{country.flag}</span>
-                      <span>{country.dialCode}</span>
-                    </div>
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+              {countryCodes.map((country) => (
+                <option key={country.code} value={country.code}>
+                  {country.flag} {country.dialCode}
+                </option>
+              ))}
+            </select>
           ) : (
             <Mail className="h-4 w-4 text-[#7F3DFF]" />
           )}
