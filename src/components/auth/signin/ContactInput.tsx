@@ -21,7 +21,7 @@ export const ContactInput = ({
   onCountryChange,
 }: ContactInputProps) => {
   const renderInputIcon = () => {
-    if (inputType === 'phone' && contact.length > 0) {
+    if (inputType === 'phone' && contact.length > 0 && /^\d*$/.test(contact)) {
       return (
         <div className="absolute left-3 top-1/2 -translate-y-1/2">
           <CountrySelector
@@ -42,19 +42,19 @@ export const ContactInput = ({
     if (contact.length === 0) {
       return "Email or Phone number";
     }
-    return inputType === 'phone' ? 'Phone number' : 'Email';
+    return inputType === 'phone' && /^\d*$/.test(contact) ? 'Phone number' : 'Email';
   };
 
   return (
     <div className="relative">
       {renderInputIcon()}
       <Input
-        type={inputType === 'phone' ? 'tel' : 'email'}
+        type={inputType === 'phone' && /^\d*$/.test(contact) ? 'tel' : 'email'}
         placeholder={getPlaceholder()}
         value={contact}
         onChange={(e) => onContactChange(e.target.value)}
         className={`w-full py-3 ${
-          inputType === 'phone' && contact.length > 0 ? 'pl-[100px]' : 'pl-10'
+          inputType === 'phone' && contact.length > 0 && /^\d*$/.test(contact) ? 'pl-[100px]' : 'pl-10'
         } md:text-sm text-base bg-transparent border-t-0 border-x-0 border-b-2 border-gray-200 rounded-none focus:outline-none transition-colors placeholder:text-gray-400 text-gray-600 focus:border-[#7F3DFF] focus:ring-0`}
         disabled={isLoading}
         required

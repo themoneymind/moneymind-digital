@@ -23,9 +23,9 @@ export const ContactInputStep = ({
     setContact(value);
     
     // Detect input type based on content
-    if (value.includes('@')) {
+    if (/[a-zA-Z]/.test(value) || value.includes('@')) {
       setInputType('email');
-    } else if (value === '' || /^\d+$/.test(value)) {
+    } else if (value === '' || /^\d*$/.test(value)) {
       setInputType('phone');
     }
   };
