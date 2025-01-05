@@ -5,11 +5,15 @@ const UPI_APPS = ["GPay", "PhonePe", "Cred", "IppoPay"];
 type UpiAppsSelectorProps = {
   selectedUpiApps: string[];
   onUpiToggle: (upiApp: string) => void;
+  customUpi: string;
+  onCustomUpiChange: (value: string) => void;
 };
 
 export const UpiAppsSelector = ({
   selectedUpiApps,
   onUpiToggle,
+  customUpi,
+  onCustomUpiChange,
 }: UpiAppsSelectorProps) => {
   return (
     <div className="space-y-4">
@@ -37,6 +41,8 @@ export const UpiAppsSelector = ({
 
       <div className="space-y-2">
         <input
+          value={customUpi}
+          onChange={(e) => onCustomUpiChange(e.target.value)}
           placeholder="Enter UPI name is not listed"
           className="w-full py-3 px-0 text-sm bg-transparent border-b-2 border-gray-200 focus:outline-none transition-colors placeholder:text-gray-400 text-gray-600 focus:border-primary"
         />

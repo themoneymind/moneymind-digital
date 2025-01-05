@@ -20,6 +20,8 @@ export const UpiSection = ({
       <UpiAppsSelector
         selectedUpiApps={selectedUpiApps}
         onUpiToggle={onUpiToggle}
+        customUpi={customUpi}
+        onCustomUpiChange={onCustomUpiChange}
       />
     </div>
   );
