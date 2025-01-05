@@ -34,26 +34,30 @@ export const SignInForm = ({
 
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="relative">
-          <Mail className="absolute left-0 top-3 h-5 w-5 text-gray-400" />
+          <div className="absolute left-0 top-2 flex h-7 w-7 items-center justify-center rounded-full bg-gray-100">
+            <Mail className="h-4 w-4 text-gray-500" />
+          </div>
           <input
             type="email"
             placeholder="Email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="w-full py-3 pl-8 text-sm bg-transparent border-b-2 border-gray-200 focus:outline-none transition-colors placeholder:text-gray-400 text-gray-600 focus:border-[#7F3DFF]"
+            className="w-full py-3 pl-10 text-sm bg-transparent border-b-2 border-gray-200 focus:outline-none transition-colors placeholder:text-gray-400 text-gray-600 focus:border-[#7F3DFF]"
             disabled={isLoading}
             required
           />
         </div>
 
         <div className="relative">
-          <Lock className="absolute left-0 top-3 h-5 w-5 text-gray-400" />
+          <div className="absolute left-0 top-2 flex h-7 w-7 items-center justify-center rounded-full bg-gray-100">
+            <Lock className="h-4 w-4 text-gray-500" />
+          </div>
           <input
             type="password"
             placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full py-3 pl-8 text-sm bg-transparent border-b-2 border-gray-200 focus:outline-none transition-colors placeholder:text-gray-400 text-gray-600 focus:border-[#7F3DFF]"
+            className="w-full py-3 pl-10 text-sm bg-transparent border-b-2 border-gray-200 focus:outline-none transition-colors placeholder:text-gray-400 text-gray-600 focus:border-[#7F3DFF]"
             disabled={isLoading}
             required
           />
