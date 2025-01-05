@@ -87,7 +87,7 @@ export const TransactionFormFields = ({
 
       <input
         placeholder="Add a description"
-        className={`w-full py-3 px-0 text-sm bg-transparent border-b-2 border-gray-200 focus:outline-none transition-colors placeholder:text-gray-400 text-gray-600 ${
+        className={`w-full py-3 px-0 text-[15px] bg-transparent border-b-2 border-gray-200 focus:outline-none transition-colors placeholder:text-gray-400 text-gray-600 ${
           type === 'expense' 
             ? 'focus:border-transaction-expense' 
             : type === 'income'
@@ -107,7 +107,7 @@ export const TransactionFormFields = ({
       />
 
       <Button
-        className={`w-full h-12 rounded-[12px] text-sm font-medium text-white ${
+        className={`w-full h-12 rounded-[12px] text-[15px] font-medium text-white ${
           type === 'expense' 
             ? 'bg-transaction-expense hover:bg-transaction-expense/90' 
             : type === 'income'
