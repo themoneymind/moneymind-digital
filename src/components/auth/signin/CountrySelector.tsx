@@ -13,7 +13,7 @@ export const CountrySelector = ({
   return (
     <div className="flex items-center gap-2">
       <span>{selectedCountry.flag}</span>
-      <span className="font-bold font-sans text-[#7F3DFF]">IN</span>
+      <span className="font-sans text-[#7F3DFF]">{selectedCountry.dialCode}</span>
       <Separator orientation="vertical" className="h-4" />
       <select
         value={selectedCountry.code}
