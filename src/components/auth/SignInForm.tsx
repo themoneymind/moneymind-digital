@@ -131,7 +131,7 @@ export const SignInForm = ({
             value="otp"
             className="flex-1 px-6 py-2 rounded-full text-sm transition-all data-[state=active]:bg-[#7F3DFF] data-[state=active]:text-white data-[state=inactive]:bg-transparent data-[state=inactive]:text-gray-500"
           >
-            OTP
+            Login with OTP
           </TabsTrigger>
           {biometricAvailable && (
             <TabsTrigger
