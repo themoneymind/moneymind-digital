@@ -57,36 +57,36 @@ export const UpiAppsSelector = ({
                 id={app}
                 checked={selectedUpiApps.includes(app)}
                 onCheckedChange={() => handleUpiSelection(app)}
+                className="rounded-full"
               />
               <span className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
                 {app}
               </span>
             </label>
           ))}
-          <div className="col-span-2">
-            <label className="flex items-center space-x-3 cursor-pointer">
-              <Checkbox
-                id="custom"
-                checked={isCustomMode}
-                onCheckedChange={() => handleUpiSelection("custom")}
-              />
-              <div className="flex-1">
-                {isCustomMode ? (
-                  <Input
-                    value={customUpi}
-                    onChange={(e) => handleCustomUpiChange(e.target.value)}
-                    placeholder="Enter custom UPI name"
-                    className="border-0 border-b border-gray-300 rounded-none focus:ring-0 focus:outline-none px-0 h-10 text-sm w-full bg-transparent placeholder:text-gray-400"
-                    autoFocus
-                  />
-                ) : (
-                  <span className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-                    Custom UPI
-                  </span>
-                )}
-              </div>
-            </label>
-          </div>
+          <label className="flex items-center space-x-3 cursor-pointer">
+            <Checkbox
+              id="custom"
+              checked={isCustomMode}
+              onCheckedChange={() => handleUpiSelection("custom")}
+              className="rounded-full"
+            />
+            <div className="flex-1">
+              {isCustomMode ? (
+                <Input
+                  value={customUpi}
+                  onChange={(e) => handleCustomUpiChange(e.target.value)}
+                  placeholder="Enter custom UPI name"
+                  className="border-0 border-b border-gray-300 rounded-none focus:ring-0 focus:outline-none px-0 h-10 text-sm w-full bg-transparent placeholder:text-gray-400"
+                  autoFocus
+                />
+              ) : (
+                <span className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                  Custom UPI
+                </span>
+              )}
+            </div>
+          </label>
         </div>
       </div>
     </div>
