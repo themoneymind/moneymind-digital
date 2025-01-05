@@ -124,7 +124,7 @@ export const PaymentSource = () => {
   };
 
   return (
-    <div className="bg-white rounded-t-[30px] overflow-y-auto h-[95vh] min-h-[95vh]">
+    <div className="bg-white rounded-t-[30px] overflow-y-auto h-[85vh] min-h-[85vh]">
       <div className="mx-auto h-1 w-[36px] rounded-full bg-gray-200 my-3" />
       <div className="px-6">
         <div className="space-y-6">
