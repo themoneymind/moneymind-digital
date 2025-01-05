@@ -28,7 +28,6 @@ export const SignInForm = ({
   const [rememberMe, setRememberMe] = useState(() => {
     return localStorage.getItem("rememberMe") === "true";
   });
-  const [pin, setPin] = useState("");
   const [biometricAvailable, setBiometricAvailable] = useState(false);
   const [activeTab, setActiveTab] = useState("password");
   const { toast } = useToast();
@@ -129,10 +128,10 @@ export const SignInForm = ({
             Password
           </TabsTrigger>
           <TabsTrigger
-            value="pin"
+            value="otp"
             className="flex-1 px-6 py-2 rounded-full text-sm transition-all data-[state=active]:bg-[#7F3DFF] data-[state=active]:text-white data-[state=inactive]:bg-transparent data-[state=inactive]:text-gray-500"
           >
-            PIN
+            OTP
           </TabsTrigger>
           {biometricAvailable && (
             <TabsTrigger
@@ -157,12 +156,10 @@ export const SignInForm = ({
           />
         </TabsContent>
 
-        <TabsContent value="pin" className="mt-6">
+        <TabsContent value="otp" className="mt-6">
           <PinSignIn
             email={email}
             setEmail={setEmail}
-            pin={pin}
-            setPin={setPin}
             handleSubmit={handleFormSubmit}
             isLoading={isLoading}
           />
