@@ -6,6 +6,7 @@ import { PaymentSourceHeader } from "@/components/payment-source/PaymentSourceHe
 import { PaymentSourceForm } from "@/components/payment-source/PaymentSourceForm";
 import { PaymentSourceButtons } from "@/components/payment-source/PaymentSourceButtons";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
+import { PaymentSourceResult } from "@/hooks/usePaymentSources";
 
 export const PaymentSource = () => {
   const { addPaymentSource, addTransaction, paymentSources } = useFinance();
