@@ -5,6 +5,7 @@ import { useToast } from "@/hooks/use-toast";
 import { PaymentSourceHeader } from "@/components/payment-source/PaymentSourceHeader";
 import { PaymentSourceForm } from "@/components/payment-source/PaymentSourceForm";
 import { PaymentSourceButtons } from "@/components/payment-source/PaymentSourceButtons";
+import { Sheet, SheetContent } from "@/components/ui/sheet";
 
 export const PaymentSource = () => {
   const { addPaymentSource, paymentSources } = useFinance();
@@ -124,43 +125,51 @@ export const PaymentSource = () => {
   };
 
   return (
-    <div className="bg-white rounded-t-[30px] overflow-y-auto h-[85vh] min-h-[85vh]">
-      <div className="mx-auto h-1 w-[36px] rounded-full bg-gray-200 my-3" />
-      <div className="px-6">
-        <div className="space-y-6">
-          <PaymentSourceHeader />
-          
-          <PaymentSourceForm
-            selectedType={selectedType}
-            selectedBank={selectedBank}
-            customBankName={customBankName}
-            customUpi={customUpi}
-            selectedUpiApps={selectedUpiApps}
-            onTypeChange={handleTypeChange}
-            onBankSelect={handleBankSelect}
-            setCustomBankName={setCustomBankName}
-            setCustomUpi={setCustomUpi}
-            onUpiToggle={(upiApp: string) => {
-              setSelectedUpiApps((prev) =>
-                prev.includes(upiApp)
-                  ? prev.filter((app) => app !== upiApp)
-                  : [...prev, upiApp]
-              );
-            }}
-            showBankSearch={showBankSearch}
-            setShowBankSearch={setShowBankSearch}
-            lastFourDigits={lastFourDigits}
-            setLastFourDigits={setLastFourDigits}
-            creditLimit={creditLimit}
-            setCreditLimit={setCreditLimit}
-          />
+    <Sheet defaultOpen>
+      <SheetContent
+        side="bottom"
+        className="h-[95vh] p-0"
+        closeButton={false}
+      >
+        <div className="bg-white overflow-y-auto h-full">
+          <div className="mx-auto h-1 w-[36px] rounded-full bg-gray-200 my-3" />
+          <div className="px-6">
+            <div className="space-y-6">
+              <PaymentSourceHeader />
+              
+              <PaymentSourceForm
+                selectedType={selectedType}
+                selectedBank={selectedBank}
+                customBankName={customBankName}
+                customUpi={customUpi}
+                selectedUpiApps={selectedUpiApps}
+                onTypeChange={handleTypeChange}
+                onBankSelect={handleBankSelect}
+                setCustomBankName={setCustomBankName}
+                setCustomUpi={setCustomUpi}
+                onUpiToggle={(upiApp: string) => {
+                  setSelectedUpiApps((prev) =>
+                    prev.includes(upiApp)
+                      ? prev.filter((app) => app !== upiApp)
+                      : [...prev, upiApp]
+                  );
+                }}
+                showBankSearch={showBankSearch}
+                setShowBankSearch={setShowBankSearch}
+                lastFourDigits={lastFourDigits}
+                setLastFourDigits={setLastFourDigits}
+                creditLimit={creditLimit}
+                setCreditLimit={setCreditLimit}
+              />
 
-          <PaymentSourceButtons
-            onAddSource={handleAddSource}
-            onComplete={handleComplete}
-          />
+              <PaymentSourceButtons
+                onAddSource={handleAddSource}
+                onComplete={handleComplete}
+              />
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
+      </SheetContent>
+    </Sheet>
   );
 };
