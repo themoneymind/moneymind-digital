@@ -128,10 +128,10 @@ export const PaymentSource = () => {
     <Sheet defaultOpen>
       <SheetContent
         side="bottom"
-        className="h-[95vh] p-0"
+        className="h-[95vh] p-0 overflow-hidden"
         closeButton={false}
       >
-        <div className="bg-white overflow-y-auto h-full">
+        <div className="overflow-y-auto h-full">
           <div className="mx-auto h-1 w-[36px] rounded-full bg-gray-200 my-3" />
           <div className="px-6">
             <div className="space-y-6">
