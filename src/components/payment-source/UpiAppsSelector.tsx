@@ -14,7 +14,7 @@ export const UpiAppsSelector = ({
   return (
     <div className="space-y-4">
       <div className="space-y-2">
-        <h3 className="font-medium text-base">Selected bank linked UPI</h3>
+        <h3 className="font-medium text-base mb-4">Selected bank linked UPI</h3>
         <RadioGroup className="grid grid-cols-2 gap-4">
           {UPI_APPS.map((app) => (
             <label
