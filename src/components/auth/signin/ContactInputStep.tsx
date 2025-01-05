@@ -1,8 +1,8 @@
-import { Mail } from "lucide-react";
-import { Input } from "@/components/ui/input";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { getContactType } from "@/utils/otpValidation";
-import { useState, useEffect } from "react";
+import { ContactInput } from "./ContactInput";
+import { countryCodes, type CountryCode } from "./constants/countryCodes";
 
 interface ContactInputStepProps {
   contact: string;
@@ -11,22 +11,6 @@ interface ContactInputStepProps {
   isLoading: boolean;
 }
 
-interface CountryCode {
-  code: string;
-  flag: string;
-  dialCode: string;
-}
-
-const countryCodes: CountryCode[] = [
-  { code: 'IN', flag: '🇮🇳', dialCode: '+91' },
-  { code: 'US', flag: '🇺🇸', dialCode: '+1' },
-  { code: 'UK', flag: '🇬🇧', dialCode: '+44' },
-  { code: 'CA', flag: '🇨🇦', dialCode: '+1' },
-  { code: 'AU', flag: '🇦🇺', dialCode: '+61' },
-  { code: 'SG', flag: '🇸🇬', dialCode: '+65' },
-  { code: 'AE', flag: '🇦🇪', dialCode: '+971' },
-];
-
 export const ContactInputStep = ({
   contact,
   setContact,
@@ -34,7 +18,7 @@ export const ContactInputStep = ({
   isLoading,
 }: ContactInputStepProps) => {
   const [selectedCountry, setSelectedCountry] = useState<CountryCode>(countryCodes[0]);
-  const [inputType, setInputType] = useState<'email' | 'phone'>('email'); // Changed default to 'email'
+  const [inputType, setInputType] = useState<'email' | 'phone'>('email');
 
   useEffect(() => {
     const type = getContactType(contact);
@@ -50,7 +34,6 @@ export const ContactInputStep = ({
       setInputType('email');
       setContact(value);
     } else {
-      // If input contains only numbers, treat as phone
       const numericValue = value.replace(/\D/g, '');
       if (numericValue || value === '') {
         setInputType('phone');
@@ -69,34 +52,14 @@ export const ContactInputStep = ({
 
   return (
     <div className="space-y-6">
-      <div className="relative">
-        <div className="absolute left-3 top-1/2 -translate-y-1/2 flex items-center gap-2">
-          {inputType === 'email' ? (
-            <Mail className="h-4 w-4 text-[#7F3DFF]" />
-          ) : (
-            <select
-              value={selectedCountry.code}
-              onChange={handleCountryChange}
-              className="w-[100px] h-8 border-0 bg-white focus:ring-0 text-sm appearance-none cursor-pointer"
-            >
-              {countryCodes.map((country) => (
-                <option key={country.code} value={country.code}>
-                  {country.flag} {country.dialCode}
-                </option>
-              ))}
-            </select>
-          )}
-        </div>
-        <Input
-          type="text"
-          placeholder={inputType === 'email' ? "Email address" : "Phone number"}
-          value={contact}
-          onChange={(e) => handleContactChange(e.target.value)}
-          className={`w-full py-3 ${inputType === 'phone' ? 'pl-32' : 'pl-10'} md:text-sm text-base bg-transparent border-t-0 border-x-0 border-b-2 border-gray-200 rounded-none focus:outline-none transition-colors placeholder:text-gray-400 text-gray-600 focus:border-[#7F3DFF] focus:ring-0`}
-          disabled={isLoading}
-          required
-        />
-      </div>
+      <ContactInput
+        contact={contact}
+        inputType={inputType}
+        isLoading={isLoading}
+        selectedCountry={selectedCountry}
+        onContactChange={handleContactChange}
+        onCountryChange={handleCountryChange}
+      />
 
       <Button 
         onClick={handleSendOtp}
