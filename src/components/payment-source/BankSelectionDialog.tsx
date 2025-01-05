@@ -1,6 +1,3 @@
-import { useState } from "react";
-import { Input } from "@/components/ui/input";
-
 interface BankSelectionDialogProps {
   selectedBank: string;
   onBankSelect: (bank: string) => void;
@@ -14,43 +11,29 @@ export const BankSelectionDialog = ({
   onBankSelect,
   banks,
 }: BankSelectionDialogProps) => {
-  const [searchTerm, setSearchTerm] = useState("");
-  const filteredBanks = banks.filter(bank => 
-    bank.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
   return (
-    <div className="space-y-2">
-      <Input
-        type="text"
-        placeholder="Search banks..."
-        value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
-        className="w-full border-gray-200 focus:border-[#7F3DFF] mb-2"
-      />
-      <select
-        value={selectedBank || ""}
-        onChange={(e) => onBankSelect(e.target.value)}
-        className={`flex h-12 w-full py-2 px-0 text-sm ${
-          selectedBank ? "text-gray-600" : "text-[#8E9196]"
-        } bg-transparent border-b-2 border-gray-200 focus:outline-none focus:border-[#7F3DFF] transition-colors appearance-none`}
-        style={{
-          backgroundImage: `url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%236B7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3E%3C/svg%3E")`,
-          backgroundPosition: "right 0 center",
-          backgroundRepeat: "no-repeat",
-          backgroundSize: "1.5em 1.5em",
-          paddingRight: "2rem",
-        }}
-      >
-        <option value="" disabled className="text-[#8E9196]">
-          Select Bank
+    <select
+      value={selectedBank || ""}
+      onChange={(e) => onBankSelect(e.target.value)}
+      className={`flex h-12 w-full py-2 px-0 text-sm ${
+        selectedBank ? "text-gray-600" : "text-[#8E9196]"
+      } bg-transparent border-b-2 border-gray-200 focus:outline-none focus:border-[#7F3DFF] transition-colors appearance-none`}
+      style={{
+        backgroundImage: `url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%236B7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3E%3C/svg%3E")`,
+        backgroundPosition: "right 0 center",
+        backgroundRepeat: "no-repeat",
+        backgroundSize: "1.5em 1.5em",
+        paddingRight: "2rem",
+      }}
+    >
+      <option value="" disabled className="text-[#8E9196]">
+        Select Bank
+      </option>
+      {banks.map((bank) => (
+        <option key={bank} value={bank} className="text-gray-600">
+          {bank}
         </option>
-        {filteredBanks.map((bank) => (
-          <option key={bank} value={bank} className="text-gray-600">
-            {bank}
-          </option>
-        ))}
-      </select>
-    </div>
+      ))}
+    </select>
   );
 };
