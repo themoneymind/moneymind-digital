@@ -61,7 +61,7 @@ export const CreditCardForm = ({
         banks={banks}
       />
       
-      <div className="space-y-4">
+      <div className="flex flex-col gap-6">
         <Input
           placeholder="Enter your credit card name"
           value={customBankName}
