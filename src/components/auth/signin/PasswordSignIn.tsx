@@ -1,9 +1,8 @@
 import { Link } from "react-router-dom";
-import { Mail, Lock, Fingerprint, Scan } from "lucide-react";
+import { Mail, Lock } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { useState, useEffect } from "react";
 
 interface PasswordSignInProps {
   email: string;
@@ -26,28 +25,6 @@ export const PasswordSignIn = ({
   handleSubmit,
   isLoading,
 }: PasswordSignInProps) => {
-  const [isFaceIdAvailable, setIsFaceIdAvailable] = useState(false);
-  const [biometricAvailable, setBiometricAvailable] = useState(false);
-
-  useEffect(() => {
-    const checkBiometricAvailability = async () => {
-      if (window.PublicKeyCredential) {
-        try {
-          const available = await PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable();
-          setBiometricAvailable(available);
-          // On Apple devices, we assume FaceID is available if platform authenticator is available
-          setIsFaceIdAvailable(available && /iPhone|iPad|iPod|Mac/.test(navigator.userAgent));
-        } catch (error) {
-          console.error('Error checking biometric availability:', error);
-          setBiometricAvailable(false);
-          setIsFaceIdAvailable(false);
-        }
-      }
-    };
-
-    checkBiometricAvailability();
-  }, []);
-
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       <div className="space-y-4">
@@ -106,33 +83,13 @@ export const PasswordSignIn = ({
         </Link>
       </div>
 
-      <div className="flex gap-4">
-        <Button
-          type="submit"
-          className="w-[70%] h-12 rounded-xl md:text-sm text-base bg-[#7F3DFF] hover:bg-[#7F3DFF]/90"
-          disabled={isLoading}
-        >
-          {isLoading ? "Signing in..." : "Sign in"}
-        </Button>
-
-        {biometricAvailable && (
-          <Button
-            type="button"
-            onClick={() => {
-              const event = new CustomEvent('biometric-login');
-              window.dispatchEvent(event);
-            }}
-            className="w-[30%] h-12 rounded-xl md:text-sm text-base bg-[#7F3DFF] hover:bg-[#7F3DFF]/90 flex items-center justify-center"
-            disabled={isLoading}
-          >
-            {isFaceIdAvailable ? (
-              <Scan className="h-6 w-6 text-white" />
-            ) : (
-              <Fingerprint className="h-6 w-6 text-white" />
-            )}
-          </Button>
-        )}
-      </div>
+      <Button
+        type="submit"
+        className="w-full h-12 rounded-xl md:text-sm text-base bg-[#7F3DFF] hover:bg-[#7F3DFF]/90"
+        disabled={isLoading}
+      >
+        {isLoading ? "Signing in..." : "Sign in"}
+      </Button>
     </form>
   );
 };

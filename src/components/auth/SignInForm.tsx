@@ -51,18 +51,6 @@ export const SignInForm = ({
     checkBiometricAvailability();
   }, [setBiometricAvailable]);
 
-  useEffect(() => {
-    const handleBiometricLoginEvent = () => {
-      handleBiometricLogin();
-    };
-
-    window.addEventListener('biometric-login', handleBiometricLoginEvent);
-
-    return () => {
-      window.removeEventListener('biometric-login', handleBiometricLoginEvent);
-    };
-  }, [handleBiometricLogin]);
-
   const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (rememberMe) {
