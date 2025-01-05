@@ -64,12 +64,26 @@ export const PaymentSourceDialog = ({
       return;
     }
 
+    // Create a new array with selected UPI apps and custom UPI if provided
     const allUpiApps = [...selectedUpiApps];
     if (customUpi.trim()) {
       allUpiApps.push(customUpi.trim());
     }
 
-    await handleNameAndUpiChange(name, allUpiApps);
+    try {
+      await handleNameAndUpiChange(name, allUpiApps);
+      toast({
+        title: "Success",
+        description: "Payment source updated successfully",
+      });
+    } catch (error) {
+      console.error("Error updating payment source:", error);
+      toast({
+        title: "Error",
+        description: "Failed to update payment source",
+        variant: "destructive",
+      });
+    }
   };
 
   const handleDelete = async () => {
