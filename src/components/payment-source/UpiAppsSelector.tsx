@@ -65,27 +65,29 @@ export const UpiAppsSelector = ({
             </label>
           ))}
           <div className="col-span-2">
-            {isCustomMode ? (
-              <Input
-                value={customUpi}
-                onChange={(e) => handleCustomUpiChange(e.target.value)}
-                placeholder="Enter custom UPI"
-                className="border-0 border-b border-gray-300 rounded-none focus:ring-0 px-0 h-10 text-base w-full"
-                autoFocus
+            <label className="flex items-center space-x-3 cursor-pointer">
+              <RadioGroupItem
+                id="custom"
+                value="custom"
+                checked={isCustomMode}
+                onClick={() => handleUpiSelection("custom")}
               />
-            ) : (
-              <label className="flex items-center space-x-3 cursor-pointer">
-                <RadioGroupItem
-                  id="custom"
-                  value="custom"
-                  checked={isCustomMode}
-                  onClick={() => handleUpiSelection("custom")}
-                />
-                <span className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-                  Custom UPI
-                </span>
-              </label>
-            )}
+              <div className="flex-1">
+                {isCustomMode ? (
+                  <Input
+                    value={customUpi}
+                    onChange={(e) => handleCustomUpiChange(e.target.value)}
+                    placeholder="Enter custom UPI"
+                    className="border-0 border-b border-gray-300 rounded-none focus:ring-0 px-0 h-10 text-base w-full bg-transparent"
+                    autoFocus
+                  />
+                ) : (
+                  <span className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                    Custom UPI
+                  </span>
+                )}
+              </div>
+            </label>
           </div>
         </RadioGroup>
       </div>
