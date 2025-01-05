@@ -42,23 +42,27 @@ export const ContactInputStep = ({
   isLoading,
 }: ContactInputStepProps) => {
   const [selectedCountry, setSelectedCountry] = useState<CountryCode>(countryCodes[0]); // Default to India
-  const contactType = getContactType(contact);
+  const [inputType, setInputType] = useState<'email' | 'phone'>('phone'); // Default to phone
 
-  // Update contact when country code changes
   useEffect(() => {
-    if (contactType === 'phone' && !contact.startsWith(selectedCountry.dialCode)) {
+    // Detect if input is email or phone
+    const type = getContactType(contact);
+    setInputType(type === 'email' ? 'email' : 'phone');
+    
+    // If it's a phone number and doesn't start with the selected country code
+    if (type === 'phone' && !contact.startsWith(selectedCountry.dialCode)) {
       setContact(selectedCountry.dialCode + (contact.startsWith('+') ? contact.slice(contact.indexOf(' ') + 1) : contact));
     }
-  }, [selectedCountry, contactType]);
+  }, [selectedCountry, contact]);
 
   const handleContactChange = (value: string) => {
-    if (value.startsWith('+')) {
-      // Find matching country code
-      const matchingCountry = countryCodes.find(country => 
-        value.startsWith(country.dialCode)
-      );
-      if (matchingCountry) {
-        setSelectedCountry(matchingCountry);
+    if (value.includes('@')) {
+      setInputType('email');
+    } else {
+      setInputType('phone');
+      // If input doesn't start with +, assume it's a phone number
+      if (!value.startsWith('+')) {
+        value = selectedCountry.dialCode + ' ' + value.replace(/^\+\d+\s?/, '');
       }
     }
     setContact(value);
@@ -68,10 +72,8 @@ export const ContactInputStep = ({
     const country = countryCodes.find(c => c.code === countryCode);
     if (country) {
       setSelectedCountry(country);
-      if (contactType === 'phone') {
-        const phoneNumber = contact.replace(/^\+\d+\s?/, '');
-        setContact(country.dialCode + ' ' + phoneNumber);
-      }
+      const phoneNumber = contact.replace(/^\+\d+\s?/, '');
+      setContact(country.dialCode + ' ' + phoneNumber);
     }
   };
 
@@ -79,7 +81,7 @@ export const ContactInputStep = ({
     <div className="space-y-6">
       <div className="relative">
         <div className="absolute left-3 top-1/2 -translate-y-1/2 flex items-center gap-2">
-          {contactType === 'phone' ? (
+          {inputType === 'phone' ? (
             <Select
               value={selectedCountry.code}
               onValueChange={handleCountryChange}
@@ -112,7 +114,7 @@ export const ContactInputStep = ({
           placeholder="Email or Phone Number"
           value={contact}
           onChange={(e) => handleContactChange(e.target.value)}
-          className={`w-full py-3 ${contactType === 'phone' ? 'pl-32' : 'pl-10'} md:text-sm text-base bg-transparent border-t-0 border-x-0 border-b-2 border-gray-200 rounded-none focus:outline-none transition-colors placeholder:text-gray-400 text-gray-600 focus:border-[#7F3DFF] focus:ring-0`}
+          className={`w-full py-3 ${inputType === 'phone' ? 'pl-32' : 'pl-10'} md:text-sm text-base bg-transparent border-t-0 border-x-0 border-b-2 border-gray-200 rounded-none focus:outline-none transition-colors placeholder:text-gray-400 text-gray-600 focus:border-[#7F3DFF] focus:ring-0`}
           disabled={isLoading}
           required
         />
