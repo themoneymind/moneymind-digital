@@ -39,12 +39,12 @@ export const BiometricSignIn = ({
       // Convert base64 challenge to ArrayBuffer
       const challengeBuffer = Uint8Array.from(atob(challenge), c => c.charCodeAt(0));
 
-      // Create the credential options
-      const options = {
+      // Create the credential options with correct type for userVerification
+      const options: CredentialRequestOptions = {
         publicKey: {
           challenge: challengeBuffer,
           timeout: 60000,
-          userVerification: "required",
+          userVerification: "required" as UserVerificationRequirement,
           rpId: window.location.hostname,
         }
       };
