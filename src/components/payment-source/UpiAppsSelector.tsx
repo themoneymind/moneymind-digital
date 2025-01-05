@@ -1,4 +1,4 @@
-import { Checkbox } from "@/components/ui/checkbox";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 const UPI_APPS = ["GPay", "PhonePe", "Cred", "IppoPay"];
 
@@ -20,10 +20,11 @@ export const UpiAppsSelector = ({
             key={app}
             className="flex items-center space-x-3 bg-white p-4 rounded-[12px] border"
           >
-            <Checkbox
+            <RadioGroupItem
               id={app}
+              value={app}
               checked={selectedUpiApps.includes(app)}
-              onCheckedChange={() => onUpiToggle(app)}
+              onClick={() => onUpiToggle(app)}
             />
             <label
               htmlFor={app}
