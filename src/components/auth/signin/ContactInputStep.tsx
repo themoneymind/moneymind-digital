@@ -28,6 +28,10 @@ const countryCodes: CountryCode[] = [
   { code: 'IN', flag: '🇮🇳', dialCode: '+91' },
   { code: 'US', flag: '🇺🇸', dialCode: '+1' },
   { code: 'UK', flag: '🇬🇧', dialCode: '+44' },
+  { code: 'CA', flag: '🇨🇦', dialCode: '+1' },
+  { code: 'AU', flag: '🇦🇺', dialCode: '+61' },
+  { code: 'SG', flag: '🇸🇬', dialCode: '+65' },
+  { code: 'AE', flag: '🇦🇪', dialCode: '+971' },
   // Add more country codes as needed
 ];
 
@@ -37,7 +41,7 @@ export const ContactInputStep = ({
   handleSendOtp,
   isLoading,
 }: ContactInputStepProps) => {
-  const [selectedCountry, setSelectedCountry] = useState<CountryCode>(countryCodes[0]);
+  const [selectedCountry, setSelectedCountry] = useState<CountryCode>(countryCodes[0]); // Default to India
   const contactType = getContactType(contact);
 
   // Update contact when country code changes
@@ -80,7 +84,7 @@ export const ContactInputStep = ({
               value={selectedCountry.code}
               onValueChange={handleCountryChange}
             >
-              <SelectTrigger className="w-[100px] h-8 border-0 bg-transparent focus:ring-0">
+              <SelectTrigger className="w-[100px] h-8 border-0 bg-white focus:ring-0">
                 <SelectValue>
                   <div className="flex items-center gap-1">
                     <span className="text-base">{selectedCountry.flag}</span>
