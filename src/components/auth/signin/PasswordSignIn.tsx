@@ -126,9 +126,9 @@ export const PasswordSignIn = ({
             disabled={isLoading}
           >
             {isFaceIdAvailable ? (
-              <Scan className="h-6 w-6" />
+              <Scan className="h-6 w-6 text-white" />
             ) : (
-              <Fingerprint className="h-6 w-6" />
+              <Fingerprint className="h-6 w-6 text-white" />
             )}
           </Button>
         )}
