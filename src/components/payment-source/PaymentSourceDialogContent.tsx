@@ -11,6 +11,8 @@ interface PaymentSourceDialogContentProps {
   onSave: () => void;
   onDelete?: () => void;
   isSubmitting: boolean;
+  customUpi: string;
+  onCustomUpiChange: (value: string) => void;
 }
 
 export const PaymentSourceDialogContent = ({
@@ -22,6 +24,8 @@ export const PaymentSourceDialogContent = ({
   onSave,
   onDelete,
   isSubmitting,
+  customUpi,
+  onCustomUpiChange,
 }: PaymentSourceDialogContentProps) => {
   const handleUpiToggle = (app: string) => {
     const newApps = selectedUpiApps.includes(app)
@@ -45,6 +49,8 @@ export const PaymentSourceDialogContent = ({
           <UpiAppsSelector
             selectedUpiApps={selectedUpiApps}
             onUpiToggle={handleUpiToggle}
+            customUpi={customUpi}
+            onCustomUpiChange={onCustomUpiChange}
           />
         )}
       </div>
