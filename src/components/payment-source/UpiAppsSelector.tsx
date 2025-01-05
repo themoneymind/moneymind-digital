@@ -28,6 +28,24 @@ export const UpiAppsSelector = ({
     onUpiToggle(app);
   };
 
+  const handleCustomUpiChange = (value: string) => {
+    onCustomUpiChange(value);
+  };
+
+  const handleCustomUpiBlur = () => {
+    if (customUpi.trim()) {
+      // Remove any partial entries first
+      const cleanedApps = selectedUpiApps.filter(app => 
+        UPI_APPS.includes(app) || app === customUpi.trim()
+      );
+      
+      // Add the complete custom UPI value
+      if (!cleanedApps.includes(customUpi.trim())) {
+        onUpiToggle(customUpi.trim());
+      }
+    }
+  };
+
   return (
     <div className="space-y-4">
       <div className="space-y-2">
@@ -56,15 +74,8 @@ export const UpiAppsSelector = ({
         <div className="space-y-2">
           <Input
             value={customUpi}
-            onChange={(e) => {
-              onCustomUpiChange(e.target.value);
-              if (e.target.value) {
-                // Add the custom UPI to selectedUpiApps if it's not empty
-                if (!selectedUpiApps.includes(e.target.value)) {
-                  onUpiToggle(e.target.value);
-                }
-              }
-            }}
+            onChange={(e) => handleCustomUpiChange(e.target.value)}
+            onBlur={handleCustomUpiBlur}
             placeholder="Enter your custom UPI name"
             className="h-12 rounded-[12px] text-base"
           />
