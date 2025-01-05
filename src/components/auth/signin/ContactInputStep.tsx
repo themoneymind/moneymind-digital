@@ -33,31 +33,36 @@ export const ContactInputStep = ({
   handleSendOtp,
   isLoading,
 }: ContactInputStepProps) => {
-  const [selectedCountry, setSelectedCountry] = useState<CountryCode>(countryCodes[0]); // Default to India
-  const [inputType, setInputType] = useState<'email' | 'phone'>('phone'); // Default to phone
+  const [selectedCountry, setSelectedCountry] = useState<CountryCode>(countryCodes[0]);
+  const [inputType, setInputType] = useState<'email' | 'phone'>('phone');
 
+  // Detect input type whenever contact changes
   useEffect(() => {
-    // Detect if input is email or phone
     const type = getContactType(contact);
-    setInputType(type === 'email' ? 'email' : 'phone');
-    
-    // If it's a phone number and doesn't start with the selected country code
-    if (type === 'phone' && !contact.startsWith(selectedCountry.dialCode)) {
-      setContact(selectedCountry.dialCode + (contact.startsWith('+') ? contact.slice(contact.indexOf(' ') + 1) : contact));
+    if (type === 'email') {
+      setInputType('email');
+    } else if (type === 'phone' || type === 'invalid') {
+      setInputType('phone');
+      // Only add country code if it's not already present
+      if (!contact.startsWith('+')) {
+        const numericContact = contact.replace(/\D/g, '');
+        setContact(selectedCountry.dialCode + ' ' + numericContact);
+      }
     }
-  }, [selectedCountry, contact]);
+  }, [contact, selectedCountry.dialCode]);
 
   const handleContactChange = (value: string) => {
     if (value.includes('@')) {
       setInputType('email');
+      setContact(value);
     } else {
       setInputType('phone');
-      // If input doesn't start with +, assume it's a phone number
-      if (!value.startsWith('+')) {
-        value = selectedCountry.dialCode + ' ' + value.replace(/^\+\d+\s?/, '');
+      // Strip any existing country code and non-numeric characters
+      const numericValue = value.replace(/^\+\d+\s?/, '').replace(/\D/g, '');
+      if (numericValue || value === '') {
+        setContact(value === '' ? '' : selectedCountry.dialCode + ' ' + numericValue);
       }
     }
-    setContact(value);
   };
 
   const handleCountryChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -65,8 +70,11 @@ export const ContactInputStep = ({
     const country = countryCodes.find(c => c.code === countryCode);
     if (country) {
       setSelectedCountry(country);
-      const phoneNumber = contact.replace(/^\+\d+\s?/, '');
-      setContact(country.dialCode + ' ' + phoneNumber);
+      // Update the contact with new country code
+      const numericContact = contact.replace(/^\+\d+\s?/, '').replace(/\D/g, '');
+      if (numericContact) {
+        setContact(country.dialCode + ' ' + numericContact);
+      }
     }
   };
 
@@ -74,7 +82,9 @@ export const ContactInputStep = ({
     <div className="space-y-6">
       <div className="relative">
         <div className="absolute left-3 top-1/2 -translate-y-1/2 flex items-center gap-2">
-          {inputType === 'phone' ? (
+          {inputType === 'email' ? (
+            <Mail className="h-4 w-4 text-[#7F3DFF]" />
+          ) : (
             <select
               value={selectedCountry.code}
               onChange={handleCountryChange}
@@ -86,8 +96,6 @@ export const ContactInputStep = ({
                 </option>
               ))}
             </select>
-          ) : (
-            <Mail className="h-4 w-4 text-[#7F3DFF]" />
           )}
         </div>
         <Input
