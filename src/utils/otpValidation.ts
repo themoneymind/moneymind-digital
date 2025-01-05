@@ -3,11 +3,12 @@ export const isValidEmail = (value: string): boolean => {
 };
 
 export const isValidPhone = (value: string): boolean => {
-  return /^\+?[\d\s-]{10,}$/.test(value);
+  // Updated regex to handle international phone numbers with country codes
+  return /^\+\d{1,4}\s?\d{6,14}$/.test(value);
 };
 
 export const getContactType = (value: string): 'email' | 'phone' | 'invalid' => {
   if (isValidEmail(value)) return 'email';
-  if (isValidPhone(value)) return 'phone';
+  if (isValidPhone(value) || value.startsWith('+')) return 'phone';
   return 'invalid';
 };
