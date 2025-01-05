@@ -34,9 +34,8 @@ export const ContactInputStep = ({
   isLoading,
 }: ContactInputStepProps) => {
   const [selectedCountry, setSelectedCountry] = useState<CountryCode>(countryCodes[0]);
-  const [inputType, setInputType] = useState<'email' | 'phone'>('email');
+  const [inputType, setInputType] = useState<'email' | 'phone'>('email'); // Changed default to 'email'
 
-  // Detect input type whenever contact changes
   useEffect(() => {
     const type = getContactType(contact);
     if (type === 'email') {
@@ -68,14 +67,6 @@ export const ContactInputStep = ({
     }
   };
 
-  const getDisplayValue = () => {
-    if (inputType === 'email') {
-      return contact;
-    } else {
-      return contact;
-    }
-  };
-
   return (
     <div className="space-y-6">
       <div className="relative">
@@ -99,7 +90,7 @@ export const ContactInputStep = ({
         <Input
           type="text"
           placeholder={inputType === 'email' ? "Email address" : "Phone number"}
-          value={getDisplayValue()}
+          value={contact}
           onChange={(e) => handleContactChange(e.target.value)}
           className={`w-full py-3 ${inputType === 'phone' ? 'pl-32' : 'pl-10'} md:text-sm text-base bg-transparent border-t-0 border-x-0 border-b-2 border-gray-200 rounded-none focus:outline-none transition-colors placeholder:text-gray-400 text-gray-600 focus:border-[#7F3DFF] focus:ring-0`}
           disabled={isLoading}
