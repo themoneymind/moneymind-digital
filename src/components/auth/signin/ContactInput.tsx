@@ -20,17 +20,22 @@ export const ContactInput = ({
   onContactChange,
   onCountryChange,
 }: ContactInputProps) => {
+  const renderInputIcon = () => {
+    if (inputType === 'phone') {
+      return (
+        <CountrySelector
+          selectedCountry={selectedCountry}
+          onCountryChange={onCountryChange}
+        />
+      );
+    }
+    return <Mail className="h-4 w-4 text-[#7F3DFF]" />;
+  };
+
   return (
     <div className="relative">
       <div className="absolute left-3 top-1/2 -translate-y-1/2 flex items-center gap-2">
-        {inputType === 'phone' ? (
-          <CountrySelector
-            selectedCountry={selectedCountry}
-            onCountryChange={onCountryChange}
-          />
-        ) : (
-          <Mail className="h-4 w-4 text-[#7F3DFF]" />
-        )}
+        {renderInputIcon()}
       </div>
       <Input
         type="text"

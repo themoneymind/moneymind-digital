@@ -1,6 +1,5 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { getContactType } from "@/utils/otpValidation";
 import { ContactInput } from "./ContactInput";
 import { countryCodes, type CountryCode } from "./constants/countryCodes";
 
@@ -21,15 +20,15 @@ export const ContactInputStep = ({
   const [inputType, setInputType] = useState<'email' | 'phone'>('email');
 
   const handleContactChange = (value: string) => {
-    if (value.includes('@')) {
+    const isEmail = value.includes('@');
+    const isPhone = /^\d*$/.test(value);
+
+    if (isEmail) {
       setInputType('email');
       setContact(value);
-    } else {
-      const numericValue = value.replace(/\D/g, '');
-      if (numericValue || value === '') {
-        setInputType('phone');
-        setContact(numericValue);
-      }
+    } else if (isPhone || value === '') {
+      setInputType('phone');
+      setContact(value.replace(/\D/g, ''));
     }
   };
 
