@@ -1,4 +1,5 @@
 import { CountryCode, countryCodes } from "./constants/countryCodes";
+import { Separator } from "@/components/ui/separator";
 
 interface CountrySelectorProps {
   selectedCountry: CountryCode;
@@ -10,8 +11,10 @@ export const CountrySelector = ({
   onCountryChange,
 }: CountrySelectorProps) => {
   return (
-    <div className="flex items-center gap-1">
+    <div className="flex items-center gap-2">
       <span className="text-sm">{selectedCountry.flag}</span>
+      <span className="font-bold font-sans text-[#7F3DFF]">IN</span>
+      <Separator orientation="vertical" className="h-4" />
       <select
         value={selectedCountry.code}
         onChange={onCountryChange}
@@ -19,7 +22,7 @@ export const CountrySelector = ({
       >
         {countryCodes.map((country) => (
           <option key={country.code} value={country.code} className="flex items-center gap-2">
-            {country.flag} {country.dialCode}
+            {country.dialCode}
           </option>
         ))}
       </select>
