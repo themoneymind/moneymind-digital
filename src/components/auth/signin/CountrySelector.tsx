@@ -12,7 +12,6 @@ export const CountrySelector = ({
 }: CountrySelectorProps) => {
   return (
     <div className="flex items-center gap-2">
-      <span className="text-gray-600">{selectedCountry.code}</span>
       <span className="text-[#7F3DFF]">{selectedCountry.dialCode}</span>
       <Separator orientation="vertical" className="h-4" />
       <select
