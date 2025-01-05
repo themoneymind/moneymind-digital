@@ -80,23 +80,23 @@ export const SignInForm = ({
         onValueChange={setActiveTab} 
         className="w-full"
       >
-        <TabsList className="w-full bg-transparent border-b border-gray-200">
+        <TabsList className="flex p-1 bg-gray-100 rounded-full gap-2">
           <TabsTrigger
             value="password"
-            className="flex-1 text-gray-500 data-[state=active]:text-[#7F3DFF] data-[state=active]:border-b-2 data-[state=active]:border-[#7F3DFF] border-0 bg-transparent rounded-none transition-all duration-300 text-sm h-[40px] hover:text-[#7F3DFF]"
+            className="flex-1 px-6 py-2 rounded-full text-sm transition-all data-[state=active]:bg-[#7F3DFF] data-[state=active]:text-white data-[state=inactive]:bg-transparent data-[state=inactive]:text-gray-500"
           >
             Password
           </TabsTrigger>
           <TabsTrigger
             value="pin"
-            className="flex-1 text-gray-500 data-[state=active]:text-[#7F3DFF] data-[state=active]:border-b-2 data-[state=active]:border-[#7F3DFF] border-0 bg-transparent rounded-none transition-all duration-300 text-sm h-[40px] hover:text-[#7F3DFF]"
+            className="flex-1 px-6 py-2 rounded-full text-sm transition-all data-[state=active]:bg-[#7F3DFF] data-[state=active]:text-white data-[state=inactive]:bg-transparent data-[state=inactive]:text-gray-500"
           >
             PIN
           </TabsTrigger>
           {biometricAvailable && (
             <TabsTrigger
               value="biometric"
-              className="flex-1 text-gray-500 data-[state=active]:text-[#7F3DFF] data-[state=active]:border-b-2 data-[state=active]:border-[#7F3DFF] border-0 bg-transparent rounded-none transition-all duration-300 text-sm h-[40px] hover:text-[#7F3DFF]"
+              className="flex-1 px-6 py-2 rounded-full text-sm transition-all data-[state=active]:bg-[#7F3DFF] data-[state=active]:text-white data-[state=inactive]:bg-transparent data-[state=inactive]:text-gray-500"
             >
               Biometric
             </TabsTrigger>
