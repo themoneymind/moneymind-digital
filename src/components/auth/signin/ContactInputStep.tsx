@@ -34,7 +34,7 @@ export const ContactInputStep = ({
   isLoading,
 }: ContactInputStepProps) => {
   const [selectedCountry, setSelectedCountry] = useState<CountryCode>(countryCodes[0]);
-  const [inputType, setInputType] = useState<'email' | 'phone'>('phone');
+  const [inputType, setInputType] = useState<'email' | 'phone'>('email');
 
   // Detect input type whenever contact changes
   useEffect(() => {
@@ -43,24 +43,19 @@ export const ContactInputStep = ({
       setInputType('email');
     } else if (type === 'phone' || type === 'invalid') {
       setInputType('phone');
-      // Only add country code if it's not already present
-      if (!contact.startsWith('+')) {
-        const numericContact = contact.replace(/\D/g, '');
-        setContact(selectedCountry.dialCode + ' ' + numericContact);
-      }
     }
-  }, [contact, selectedCountry.dialCode]);
+  }, [contact]);
 
   const handleContactChange = (value: string) => {
     if (value.includes('@')) {
       setInputType('email');
       setContact(value);
     } else {
-      setInputType('phone');
-      // Strip any existing country code and non-numeric characters
-      const numericValue = value.replace(/^\+\d+\s?/, '').replace(/\D/g, '');
+      // If input contains only numbers, treat as phone
+      const numericValue = value.replace(/\D/g, '');
       if (numericValue || value === '') {
-        setContact(value === '' ? '' : selectedCountry.dialCode + ' ' + numericValue);
+        setInputType('phone');
+        setContact(numericValue);
       }
     }
   };
@@ -70,11 +65,14 @@ export const ContactInputStep = ({
     const country = countryCodes.find(c => c.code === countryCode);
     if (country) {
       setSelectedCountry(country);
-      // Update the contact with new country code
-      const numericContact = contact.replace(/^\+\d+\s?/, '').replace(/\D/g, '');
-      if (numericContact) {
-        setContact(country.dialCode + ' ' + numericContact);
-      }
+    }
+  };
+
+  const getDisplayValue = () => {
+    if (inputType === 'email') {
+      return contact;
+    } else {
+      return contact;
     }
   };
 
@@ -100,8 +98,8 @@ export const ContactInputStep = ({
         </div>
         <Input
           type="text"
-          placeholder="Email or Phone Number"
-          value={contact}
+          placeholder={inputType === 'email' ? "Email address" : "Phone number"}
+          value={getDisplayValue()}
           onChange={(e) => handleContactChange(e.target.value)}
           className={`w-full py-3 ${inputType === 'phone' ? 'pl-32' : 'pl-10'} md:text-sm text-base bg-transparent border-t-0 border-x-0 border-b-2 border-gray-200 rounded-none focus:outline-none transition-colors placeholder:text-gray-400 text-gray-600 focus:border-[#7F3DFF] focus:ring-0`}
           disabled={isLoading}
