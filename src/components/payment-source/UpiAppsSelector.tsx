@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 
-const DEFAULT_UPI_APPS = ["GPay", "PhonePe", "Cred", "IppoPay"];
+const DEFAULT_UPI_APPS = ["GPay", "PhonePe", "Cred", "Paytm", "Amazon Pay"];
 
 type UpiAppsSelectorProps = {
   selectedUpiApps: string[];
