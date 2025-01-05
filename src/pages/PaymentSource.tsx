@@ -90,7 +90,9 @@ export const PaymentSource = () => {
         credit_limit: selectedType === "credit" ? Number(creditLimit) : undefined,
       };
 
-      const { data: newSource, error } = await addPaymentSource(newSourceData);
+      const result = await addPaymentSource(newSourceData);
+      const newSource = result.data;
+      const error = result.error;
       
       if (error) throw error;
       

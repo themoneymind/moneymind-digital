@@ -163,7 +163,7 @@ export const PaymentSourceForm = ({
                     placeholder="Enter Current Balance (Optional)"
                     value={currentBalance}
                     onChange={(e) => setCurrentBalance(e.target.value)}
-                    className="pl-8 h-12 border-t-0 border-x-0 rounded-none text-base placeholder:text-gray-400 focus:border-[#7F3DFF] transition-colors bg-transparent"
+                    className="pl-8 h-12 border-t-0 border-x-0 rounded-none text-sm placeholder:text-gray-400 focus:border-[#7F3DFF] transition-colors bg-transparent"
                   />
                 </div>
               </>
