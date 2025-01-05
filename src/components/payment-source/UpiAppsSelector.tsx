@@ -1,5 +1,4 @@
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Input } from "@/components/ui/input";
 
 const UPI_APPS = ["GPay", "PhonePe", "Cred", "IppoPay"];
 
@@ -41,9 +40,9 @@ export const UpiAppsSelector = ({
 
       <div className="space-y-2">
         <h3 className="font-medium text-base">Add Custom UPI App</h3>
-        <Input
+        <input
           placeholder="Enter UPI app name"
-          className="h-12 rounded-[12px] text-base"
+          className="w-full py-3 px-0 text-sm bg-transparent border-b-2 border-gray-200 focus:outline-none transition-colors placeholder:text-gray-400 text-gray-600 focus:border-primary"
         />
       </div>
     </div>
