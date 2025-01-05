@@ -1,11 +1,11 @@
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { useState, useEffect, useCallback } from "react";
 import { PaymentSourceDialogContent } from "./PaymentSourceDialogContent";
+import { PaymentSourceDialogHeader } from "./PaymentSourceDialogHeader";
+import { PaymentSourceDialogActions } from "./PaymentSourceDialogActions";
 import { usePaymentSourceOperations } from "@/hooks/usePaymentSourceOperations";
 import { useToast } from "@/hooks/use-toast";
 import { useDialogState } from "@/hooks/useDialogState";
-import { X } from "lucide-react";
-import { Button } from "@/components/ui/button";
 
 type PaymentSourceDialogProps = {
   open: boolean;
@@ -46,7 +46,7 @@ export const PaymentSourceDialog = ({
     }
   }, [open, resetState]);
 
-  const { isSubmitting, handleNameAndUpiChange } = usePaymentSourceOperations(
+  const { handleNameAndUpiChange } = usePaymentSourceOperations(
     source,
     () => {
       dialogState.initiateClose();
@@ -64,7 +64,6 @@ export const PaymentSourceDialog = ({
       return;
     }
 
-    // Create a new array with selected UPI apps and custom UPI if provided
     const allUpiApps = [...selectedUpiApps];
     if (customUpi.trim()) {
       allUpiApps.push(customUpi.trim());
@@ -125,28 +124,20 @@ export const PaymentSourceDialog = ({
           }
         }}
       >
-        <DialogHeader className="flex flex-row items-center justify-between">
-          <DialogTitle className="text-lg">Edit Payment Source</DialogTitle>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="h-8 w-8 rounded-full"
-            onClick={() => handleOpenChange(false)}
-          >
-            <X className="h-4 w-4" />
-          </Button>
-        </DialogHeader>
+        <PaymentSourceDialogHeader onClose={() => handleOpenChange(false)} />
         <PaymentSourceDialogContent
           name={name}
           setName={setName}
           selectedUpiApps={selectedUpiApps}
           setSelectedUpiApps={setSelectedUpiApps}
           sourceType={source?.type}
+          customUpi={customUpi}
+          onCustomUpiChange={setCustomUpi}
+        />
+        <PaymentSourceDialogActions
           onSave={handleSave}
           onDelete={handleDelete}
           isSubmitting={dialogState.isSubmitting}
-          customUpi={customUpi}
-          onCustomUpiChange={setCustomUpi}
         />
       </DialogContent>
     </Dialog>
