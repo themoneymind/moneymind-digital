@@ -58,12 +58,12 @@ export const PaymentSourceForm = ({
       <Tabs
         defaultValue={selectedType}
         onValueChange={(value) => onTypeChange(value as "bank" | "credit")}
-        className="w-full"
+        className="w-full max-w-md mx-auto"
       >
-        <TabsList className="grid w-full grid-cols-2 h-14 p-1 bg-[#F1F1F1] rounded-full mx-4">
+        <TabsList className="grid w-full grid-cols-2 h-11 p-1 bg-[#F1F1F1] rounded-full">
           <TabsTrigger
             value="bank"
-            className={`h-12 text-sm font-medium transition-all duration-200 rounded-full data-[state=active]:shadow-sm ${
+            className={`h-9 text-sm font-medium transition-all duration-200 rounded-full data-[state=active]:shadow-sm ${
               selectedType === "bank"
                 ? "data-[state=active]:bg-[#7F3DFF] data-[state=active]:text-white"
                 : "text-gray-600 hover:text-[#7F3DFF]"
@@ -73,7 +73,7 @@ export const PaymentSourceForm = ({
           </TabsTrigger>
           <TabsTrigger
             value="credit"
-            className={`h-12 text-sm font-medium transition-all duration-200 rounded-full data-[state=active]:shadow-sm ${
+            className={`h-9 text-sm font-medium transition-all duration-200 rounded-full data-[state=active]:shadow-sm ${
               selectedType === "credit"
                 ? "data-[state=active]:bg-[#7F3DFF] data-[state=active]:text-white"
                 : "text-gray-600 hover:text-[#7F3DFF]"
