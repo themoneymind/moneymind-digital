@@ -18,6 +18,7 @@ export const PaymentSourceInfo = ({
   showUpiList,
   onUpiToggle,
 }: PaymentSourceInfoProps) => {
+  console.log("PaymentSourceInfo - props:", { name, type, upiApps, linked, showUpiList });
   const hasUpiApps = Array.isArray(upiApps) && upiApps.length > 0;
 
   return (
