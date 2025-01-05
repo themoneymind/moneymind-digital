@@ -35,7 +35,10 @@ export const PinSignIn = ({
             }
           });
 
-          if (error) throw error;
+          if (error) {
+            console.error("OTP send error:", error);
+            throw error;
+          }
 
           toast({
             title: "OTP Sent",
