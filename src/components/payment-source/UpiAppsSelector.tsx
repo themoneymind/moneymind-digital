@@ -35,10 +35,12 @@ export const UpiAppsSelector = ({
         </RadioGroup>
       </div>
 
-      <input
-        placeholder="Enter UPI name is not listed"
-        className="w-full py-3 px-0 text-sm bg-transparent border-b-2 border-gray-200 focus:outline-none transition-colors placeholder:text-gray-400 text-gray-600 focus:border-primary"
-      />
+      <div className="space-y-2">
+        <p className="text-sm text-gray-400">Enter UPI name is not listed</p>
+        <input
+          className="w-full py-3 px-0 text-sm bg-transparent border-b-2 border-gray-200 focus:outline-none transition-colors placeholder:text-gray-400 text-gray-600 focus:border-primary"
+        />
+      </div>
     </div>
   );
 };
