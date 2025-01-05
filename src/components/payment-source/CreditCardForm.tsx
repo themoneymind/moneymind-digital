@@ -1,6 +1,5 @@
 import { Input } from "@/components/ui/input";
 import { BankSelectionDialog } from "./BankSelectionDialog";
-import { Label } from "@/components/ui/label";
 
 interface CreditCardFormProps {
   selectedBank: string;
@@ -63,39 +62,27 @@ export const CreditCardForm = ({
       />
       
       <div className="space-y-4">
-        <div className="space-y-2">
-          <Label htmlFor="cardName">Card Name</Label>
-          <Input
-            id="cardName"
-            placeholder="Enter your credit card name"
-            value={customBankName}
-            onChange={handleCustomNameChange}
-            className="h-14 rounded-[12px] bg-gray-50 border-0 focus:ring-2 focus:ring-primary focus:ring-offset-0"
-          />
-        </div>
+        <Input
+          placeholder="Enter your credit card name"
+          value={customBankName}
+          onChange={handleCustomNameChange}
+          className="h-12 w-full py-2 px-0 text-sm bg-transparent border-0 border-b-2 border-gray-200 focus:outline-none focus:border-primary rounded-none"
+        />
 
-        <div className="space-y-2">
-          <Label htmlFor="lastFourDigits">Last 4 Digits</Label>
-          <Input
-            id="lastFourDigits"
-            placeholder="Enter last 4 digits"
-            value={lastFourDigits}
-            onChange={handleLastFourDigitsChange}
-            maxLength={4}
-            className="h-14 rounded-[12px] bg-gray-50 border-0 focus:ring-2 focus:ring-primary focus:ring-offset-0"
-          />
-        </div>
+        <Input
+          placeholder="Enter last 4 digits"
+          value={lastFourDigits}
+          onChange={handleLastFourDigitsChange}
+          maxLength={4}
+          className="h-12 w-full py-2 px-0 text-sm bg-transparent border-0 border-b-2 border-gray-200 focus:outline-none focus:border-primary rounded-none"
+        />
 
-        <div className="space-y-2">
-          <Label htmlFor="creditLimit">Credit Limit</Label>
-          <Input
-            id="creditLimit"
-            placeholder="Enter credit limit"
-            value={creditLimit}
-            onChange={handleCreditLimitChange}
-            className="h-14 rounded-[12px] bg-gray-50 border-0 focus:ring-2 focus:ring-primary focus:ring-offset-0"
-          />
-        </div>
+        <Input
+          placeholder="Enter credit limit"
+          value={creditLimit}
+          onChange={handleCreditLimitChange}
+          className="h-12 w-full py-2 px-0 text-sm bg-transparent border-0 border-b-2 border-gray-200 focus:outline-none focus:border-primary rounded-none"
+        />
       </div>
     </div>
   );
