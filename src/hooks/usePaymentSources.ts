@@ -4,6 +4,11 @@ import { PaymentSource } from "@/types/finance";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 
+export type PaymentSourceResult = {
+  data: PaymentSource | null;
+  error: Error | null;
+};
+
 export const usePaymentSources = () => {
   const { user } = useAuth();
   const { toast } = useToast();
@@ -24,10 +29,7 @@ export const usePaymentSources = () => {
     return data || [];
   }, [user]);
 
-  const addPaymentSource = useCallback(async (newSource: Omit<PaymentSource, "id">): Promise<{
-    data: PaymentSource | null;
-    error: Error | null;
-  }> => {
+  const addPaymentSource = useCallback(async (newSource: Omit<PaymentSource, "id">): Promise<PaymentSourceResult> => {
     if (!user) return { data: null, error: new Error("No user found") };
 
     const { data, error } = await supabase
@@ -52,7 +54,6 @@ export const usePaymentSources = () => {
 
     console.log("Updating payment source:", updatedSource);
 
-    // Remove generated columns and only include updatable fields
     const { 
       id,
       name,
