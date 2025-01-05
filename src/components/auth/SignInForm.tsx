@@ -1,10 +1,10 @@
-import { useNavigate } from "react-router-dom";
-import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
-import { Mail, Lock, PiggyBank, Fingerprint, KeyRound } from "lucide-react";
-import { Checkbox } from "@/components/ui/checkbox";
 import { useState, useEffect } from "react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Link } from "react-router-dom";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { PiggyBank } from "lucide-react";
+import { PasswordSignIn } from "./signin/PasswordSignIn";
+import { PinSignIn } from "./signin/PinSignIn";
+import { BiometricSignIn } from "./signin/BiometricSignIn";
 
 interface SignInFormProps {
   email: string;
@@ -31,7 +31,6 @@ export const SignInForm = ({
   const [activeTab, setActiveTab] = useState("password");
 
   useEffect(() => {
-    // Check if WebAuthn is available
     const checkBiometricAvailability = async () => {
       if (window.PublicKeyCredential) {
         try {
@@ -59,12 +58,6 @@ export const SignInForm = ({
     handleSubmit(e);
   };
 
-  const handlePinChange = (value: string) => {
-    if (value === '' || /^\d+$/.test(value)) {
-      setPin(value);
-    }
-  };
-
   const handleBiometricLogin = async () => {
     // Biometric authentication logic will be implemented here
     console.log("Biometric login attempted");
@@ -82,145 +75,64 @@ export const SignInForm = ({
         </p>
       </div>
 
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-3">
-          <TabsTrigger value="password">Password</TabsTrigger>
-          <TabsTrigger value="pin">PIN</TabsTrigger>
+      <Tabs 
+        value={activeTab} 
+        onValueChange={setActiveTab} 
+        className="w-full"
+      >
+        <TabsList className="w-full bg-transparent border-b border-gray-200">
+          <TabsTrigger
+            value="password"
+            className="flex-1 text-gray-500 data-[state=active]:text-[#7F3DFF] data-[state=active]:border-b-2 data-[state=active]:border-[#7F3DFF] border-0 bg-transparent rounded-none transition-all duration-300 text-sm h-[40px] hover:text-[#7F3DFF]"
+          >
+            Password
+          </TabsTrigger>
+          <TabsTrigger
+            value="pin"
+            className="flex-1 text-gray-500 data-[state=active]:text-[#7F3DFF] data-[state=active]:border-b-2 data-[state=active]:border-[#7F3DFF] border-0 bg-transparent rounded-none transition-all duration-300 text-sm h-[40px] hover:text-[#7F3DFF]"
+          >
+            PIN
+          </TabsTrigger>
           {biometricAvailable && (
-            <TabsTrigger value="biometric">Biometric</TabsTrigger>
+            <TabsTrigger
+              value="biometric"
+              className="flex-1 text-gray-500 data-[state=active]:text-[#7F3DFF] data-[state=active]:border-b-2 data-[state=active]:border-[#7F3DFF] border-0 bg-transparent rounded-none transition-all duration-300 text-sm h-[40px] hover:text-[#7F3DFF]"
+            >
+              Biometric
+            </TabsTrigger>
           )}
         </TabsList>
 
-        <TabsContent value="password">
-          <form onSubmit={handleFormSubmit} className="space-y-6">
-            <div className="relative">
-              <div className="absolute left-0 top-2 flex h-7 w-7 items-center justify-center rounded-full bg-[#F5F3FF]">
-                <Mail className="h-4 w-4 text-[#7F3DFF]" />
-              </div>
-              <input
-                type="email"
-                placeholder="Email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="w-full py-3 pl-10 md:text-sm text-base bg-transparent border-b-2 border-gray-200 focus:outline-none transition-colors placeholder:text-gray-400 text-gray-600 focus:border-[#7F3DFF]"
-                disabled={isLoading}
-                required
-              />
-            </div>
-
-            <div className="space-y-4">
-              <div className="relative">
-                <div className="absolute left-0 top-2 flex h-7 w-7 items-center justify-center rounded-full bg-[#F5F3FF]">
-                  <Lock className="h-4 w-4 text-[#7F3DFF]" />
-                </div>
-                <input
-                  type="password"
-                  placeholder="Password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="w-full py-3 pl-10 md:text-sm text-base bg-transparent border-b-2 border-gray-200 focus:outline-none transition-colors placeholder:text-gray-400 text-gray-600 focus:border-[#7F3DFF]"
-                  disabled={isLoading}
-                  required
-                />
-              </div>
-
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-2">
-                  <Checkbox
-                    id="rememberMe"
-                    checked={rememberMe}
-                    onCheckedChange={(checked) => setRememberMe(checked as boolean)}
-                    className="border-gray-300"
-                  />
-                  <label
-                    htmlFor="rememberMe"
-                    className="text-sm text-gray-600 cursor-pointer"
-                  >
-                    Remember me
-                  </label>
-                </div>
-                <Link 
-                  to="/forgot-password" 
-                  className="text-sm text-[#7F3DFF] hover:text-[#7F3DFF]/90"
-                >
-                  Forgot Password?
-                </Link>
-              </div>
-            </div>
-            
-            <Button 
-              type="submit" 
-              className="w-full h-12 rounded-xl md:text-sm text-base bg-[#7F3DFF] hover:bg-[#7F3DFF]/90"
-              disabled={isLoading}
-            >
-              {isLoading ? "Signing in..." : "Sign In"}
-            </Button>
-          </form>
+        <TabsContent value="password" className="mt-6">
+          <PasswordSignIn
+            email={email}
+            setEmail={setEmail}
+            password={password}
+            setPassword={setPassword}
+            rememberMe={rememberMe}
+            setRememberMe={setRememberMe}
+            handleSubmit={handleFormSubmit}
+            isLoading={isLoading}
+          />
         </TabsContent>
 
-        <TabsContent value="pin">
-          <form onSubmit={handleFormSubmit} className="space-y-6">
-            <div className="relative">
-              <div className="absolute left-0 top-2 flex h-7 w-7 items-center justify-center rounded-full bg-[#F5F3FF]">
-                <Mail className="h-4 w-4 text-[#7F3DFF]" />
-              </div>
-              <input
-                type="email"
-                placeholder="Email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="w-full py-3 pl-10 md:text-sm text-base bg-transparent border-b-2 border-gray-200 focus:outline-none transition-colors placeholder:text-gray-400 text-gray-600 focus:border-[#7F3DFF]"
-                disabled={isLoading}
-                required
-              />
-            </div>
-
-            <div className="relative">
-              <div className="absolute left-0 top-2 flex h-7 w-7 items-center justify-center rounded-full bg-[#F5F3FF]">
-                <KeyRound className="h-4 w-4 text-[#7F3DFF]" />
-              </div>
-              <input
-                type="password"
-                inputMode="numeric"
-                pattern="\d*"
-                maxLength={6}
-                placeholder="Enter PIN"
-                value={pin}
-                onChange={(e) => handlePinChange(e.target.value)}
-                className="w-full py-3 pl-10 md:text-sm text-base bg-transparent border-b-2 border-gray-200 focus:outline-none transition-colors placeholder:text-gray-400 text-gray-600 focus:border-[#7F3DFF]"
-                disabled={isLoading}
-                required
-              />
-            </div>
-
-            <Button 
-              type="submit" 
-              className="w-full h-12 rounded-xl md:text-sm text-base bg-[#7F3DFF] hover:bg-[#7F3DFF]/90"
-              disabled={isLoading}
-            >
-              {isLoading ? "Signing in..." : "Sign In with PIN"}
-            </Button>
-          </form>
+        <TabsContent value="pin" className="mt-6">
+          <PinSignIn
+            email={email}
+            setEmail={setEmail}
+            pin={pin}
+            setPin={setPin}
+            handleSubmit={handleFormSubmit}
+            isLoading={isLoading}
+          />
         </TabsContent>
 
         {biometricAvailable && (
-          <TabsContent value="biometric">
-            <div className="space-y-6">
-              <div className="text-center">
-                <Fingerprint className="h-16 w-16 mx-auto text-[#7F3DFF]" />
-                <p className="mt-4 text-gray-600">
-                  Use your fingerprint or face ID to sign in
-                </p>
-              </div>
-
-              <Button 
-                onClick={handleBiometricLogin}
-                className="w-full h-12 rounded-xl md:text-sm text-base bg-[#7F3DFF] hover:bg-[#7F3DFF]/90"
-                disabled={isLoading}
-              >
-                {isLoading ? "Verifying..." : "Sign In with Biometrics"}
-              </Button>
-            </div>
+          <TabsContent value="biometric" className="mt-6">
+            <BiometricSignIn
+              handleBiometricLogin={handleBiometricLogin}
+              isLoading={isLoading}
+            />
           </TabsContent>
         )}
       </Tabs>
