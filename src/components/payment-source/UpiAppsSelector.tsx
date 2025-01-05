@@ -1,6 +1,8 @@
+import { useState } from "react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Input } from "@/components/ui/input";
 
-const UPI_APPS = ["GPay", "PhonePe", "Cred", "IppoPay"];
+const UPI_APPS = ["GPay", "PhonePe", "Cred", "IppoPay", "Custom UPI"];
 
 type UpiAppsSelectorProps = {
   selectedUpiApps: string[];
@@ -15,6 +17,17 @@ export const UpiAppsSelector = ({
   customUpi,
   onCustomUpiChange,
 }: UpiAppsSelectorProps) => {
+  const [showCustomInput, setShowCustomInput] = useState(false);
+
+  const handleUpiSelection = (app: string) => {
+    if (app === "Custom UPI") {
+      setShowCustomInput(true);
+    } else {
+      setShowCustomInput(false);
+    }
+    onUpiToggle(app);
+  };
+
   return (
     <div className="space-y-4">
       <div className="space-y-2">
@@ -29,7 +42,7 @@ export const UpiAppsSelector = ({
                 id={app}
                 value={app}
                 checked={selectedUpiApps.includes(app)}
-                onClick={() => onUpiToggle(app)}
+                onClick={() => handleUpiSelection(app)}
               />
               <span className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
                 {app}
@@ -39,14 +52,24 @@ export const UpiAppsSelector = ({
         </RadioGroup>
       </div>
 
-      <div className="space-y-2">
-        <input
-          value={customUpi}
-          onChange={(e) => onCustomUpiChange(e.target.value)}
-          placeholder="Enter UPI name is not listed"
-          className="w-full py-3 px-0 text-sm bg-transparent border-b-2 border-gray-200 focus:outline-none transition-colors placeholder:text-gray-400 text-gray-600 focus:border-primary"
-        />
-      </div>
+      {showCustomInput && (
+        <div className="space-y-2">
+          <Input
+            value={customUpi}
+            onChange={(e) => {
+              onCustomUpiChange(e.target.value);
+              if (e.target.value) {
+                // Add the custom UPI to selectedUpiApps if it's not empty
+                if (!selectedUpiApps.includes(e.target.value)) {
+                  onUpiToggle(e.target.value);
+                }
+              }
+            }}
+            placeholder="Enter your custom UPI name"
+            className="h-12 rounded-[12px] text-base"
+          />
+        </div>
+      )}
     </div>
   );
 };
