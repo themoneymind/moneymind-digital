@@ -2,15 +2,18 @@ import { Button } from "@/components/ui/button";
 import { useFinance } from "@/contexts/FinanceContext";
 
 interface PaymentSourceButtonsProps {
-  onAddSource: () => Promise<void>;
+  onAddSource: () => void;
   onComplete: () => void;
 }
 
-export const PaymentSourceButtons = ({ onAddSource, onComplete }: PaymentSourceButtonsProps) => {
+export const PaymentSourceButtons = ({
+  onAddSource,
+  onComplete,
+}: PaymentSourceButtonsProps) => {
   const { paymentSources } = useFinance();
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 px-4">
       <Button
         className="w-full h-[52px] rounded-[16px] bg-[#7C3AED] hover:bg-[#7C3AED]/90 text-white font-medium"
         onClick={onAddSource}
@@ -26,10 +29,6 @@ export const PaymentSourceButtons = ({ onAddSource, onComplete }: PaymentSourceB
       >
         Complete
       </Button>
-
-      <p className="text-xs text-muted-foreground text-center">
-        After adding payment sources, click 'Complete' to proceed
-      </p>
     </div>
   );
 };
