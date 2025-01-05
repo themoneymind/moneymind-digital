@@ -1,4 +1,5 @@
 import { Input } from "@/components/ui/input";
+import { User, Mail, Phone, Lock } from "lucide-react";
 
 interface SignUpInputsProps {
   fullName: string;
@@ -24,43 +25,66 @@ export const SignUpInputs = ({
   isLoading,
 }: SignUpInputsProps) => {
   return (
-    <div className="space-y-4">
-      <Input
-        type="text"
-        placeholder="Enter your name"
-        value={fullName}
-        onChange={(e) => setFullName(e.target.value)}
-        className="h-12 rounded-xl border-gray-200 bg-gray-50/50 px-4 text-gray-900/70 placeholder:text-gray-500/60 focus:border-blue-600 focus:ring-blue-600"
-        disabled={isLoading}
-        required
-      />
-      <Input
-        type="email"
-        placeholder="Enter your email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        className="h-12 rounded-xl border-gray-200 bg-gray-50/50 px-4 text-gray-900/70 placeholder:text-gray-500/60 focus:border-blue-600 focus:ring-blue-600"
-        disabled={isLoading}
-        required
-      />
-      <Input
-        type="tel"
-        placeholder="Enter your mobile number"
-        value={phoneNumber}
-        onChange={(e) => setPhoneNumber(e.target.value)}
-        className="h-12 rounded-xl border-gray-200 bg-gray-50/50 px-4 text-gray-900/70 placeholder:text-gray-500/60 focus:border-blue-600 focus:ring-blue-600"
-        disabled={isLoading}
-        required
-      />
-      <Input
-        type="password"
-        placeholder="Enter your password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        className="h-12 rounded-xl border-gray-200 bg-gray-50/50 px-4 text-gray-900/70 placeholder:text-gray-500/60 focus:border-blue-600 focus:ring-blue-600"
-        disabled={isLoading}
-        required
-      />
+    <div className="space-y-6">
+      <div className="relative">
+        <div className="absolute left-0 top-2 flex h-7 w-7 items-center justify-center rounded-full bg-gray-100">
+          <User className="h-4 w-4 text-gray-500" />
+        </div>
+        <input
+          type="text"
+          placeholder="Enter your name"
+          value={fullName}
+          onChange={(e) => setFullName(e.target.value)}
+          className="w-full py-3 pl-10 text-sm bg-transparent border-b-2 border-gray-200 focus:outline-none transition-colors placeholder:text-gray-400 text-gray-600 focus:border-[#7F3DFF]"
+          disabled={isLoading}
+          required
+        />
+      </div>
+
+      <div className="relative">
+        <div className="absolute left-0 top-2 flex h-7 w-7 items-center justify-center rounded-full bg-gray-100">
+          <Mail className="h-4 w-4 text-gray-500" />
+        </div>
+        <input
+          type="email"
+          placeholder="Enter your email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          className="w-full py-3 pl-10 text-sm bg-transparent border-b-2 border-gray-200 focus:outline-none transition-colors placeholder:text-gray-400 text-gray-600 focus:border-[#7F3DFF]"
+          disabled={isLoading}
+          required
+        />
+      </div>
+
+      <div className="relative">
+        <div className="absolute left-0 top-2 flex h-7 w-7 items-center justify-center rounded-full bg-gray-100">
+          <Phone className="h-4 w-4 text-gray-500" />
+        </div>
+        <input
+          type="tel"
+          placeholder="Enter your mobile number"
+          value={phoneNumber}
+          onChange={(e) => setPhoneNumber(e.target.value)}
+          className="w-full py-3 pl-10 text-sm bg-transparent border-b-2 border-gray-200 focus:outline-none transition-colors placeholder:text-gray-400 text-gray-600 focus:border-[#7F3DFF]"
+          disabled={isLoading}
+          required
+        />
+      </div>
+
+      <div className="relative">
+        <div className="absolute left-0 top-2 flex h-7 w-7 items-center justify-center rounded-full bg-gray-100">
+          <Lock className="h-4 w-4 text-gray-500" />
+        </div>
+        <input
+          type="password"
+          placeholder="Enter your password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          className="w-full py-3 pl-10 text-sm bg-transparent border-b-2 border-gray-200 focus:outline-none transition-colors placeholder:text-gray-400 text-gray-600 focus:border-[#7F3DFF]"
+          disabled={isLoading}
+          required
+        />
+      </div>
     </div>
   );
 };
