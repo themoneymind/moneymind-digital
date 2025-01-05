@@ -1,4 +1,4 @@
-import { PaymentSourceTypeSelector } from "./PaymentSourceTypeSelector";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CreditCardForm } from "./CreditCardForm";
 import { BankSection } from "./BankSection";
 import { UpiSection } from "./UpiSection";
@@ -55,48 +55,72 @@ export const PaymentSourceForm = ({
 }: PaymentSourceFormProps) => {
   return (
     <div className="space-y-4">
-      <PaymentSourceTypeSelector
-        selectedType={selectedType}
-        onTypeChange={onTypeChange}
-      />
+      <Tabs
+        defaultValue={selectedType}
+        onValueChange={(value) => onTypeChange(value as "bank" | "credit")}
+        className="w-full"
+      >
+        <TabsList className="grid w-full grid-cols-2 h-14 p-1 bg-[#F1F1F1] rounded-full mx-4">
+          <TabsTrigger
+            value="bank"
+            className={`h-12 text-sm font-medium transition-all duration-200 rounded-full data-[state=active]:shadow-sm ${
+              selectedType === "bank"
+                ? "data-[state=active]:bg-[#7F3DFF] data-[state=active]:text-white"
+                : "text-gray-600 hover:text-[#7F3DFF]"
+            }`}
+          >
+            Bank Account
+          </TabsTrigger>
+          <TabsTrigger
+            value="credit"
+            className={`h-12 text-sm font-medium transition-all duration-200 rounded-full data-[state=active]:shadow-sm ${
+              selectedType === "credit"
+                ? "data-[state=active]:bg-[#7F3DFF] data-[state=active]:text-white"
+                : "text-gray-600 hover:text-[#7F3DFF]"
+            }`}
+          >
+            Credit Card
+          </TabsTrigger>
+        </TabsList>
 
-      {selectedType === "bank" && (
-        <div className="space-y-4">
-          <BankSection
+        <TabsContent value="bank" className="mt-6">
+          <div className="space-y-4">
+            <BankSection
+              selectedBank={selectedBank}
+              onBankSelect={onBankSelect}
+              showBankSearch={showBankSearch}
+              setShowBankSearch={setShowBankSearch}
+              banks={INDIAN_BANKS}
+            />
+
+            {selectedBank && (
+              <UpiSection
+                selectedBank={selectedBank}
+                customUpi={customUpi}
+                selectedUpiApps={selectedUpiApps}
+                onUpiToggle={onUpiToggle}
+                onCustomUpiChange={setCustomUpi}
+              />
+            )}
+          </div>
+        </TabsContent>
+
+        <TabsContent value="credit" className="mt-6">
+          <CreditCardForm
             selectedBank={selectedBank}
             onBankSelect={onBankSelect}
             showBankSearch={showBankSearch}
             setShowBankSearch={setShowBankSearch}
             banks={INDIAN_BANKS}
+            customBankName={customBankName}
+            setCustomBankName={setCustomBankName}
+            lastFourDigits={lastFourDigits}
+            setLastFourDigits={setLastFourDigits}
+            creditLimit={creditLimit}
+            setCreditLimit={setCreditLimit}
           />
-
-          {selectedBank && (
-            <UpiSection
-              selectedBank={selectedBank}
-              customUpi={customUpi}
-              selectedUpiApps={selectedUpiApps}
-              onUpiToggle={onUpiToggle}
-              onCustomUpiChange={setCustomUpi}
-            />
-          )}
-        </div>
-      )}
-
-      {selectedType === "credit" && (
-        <CreditCardForm
-          selectedBank={selectedBank}
-          onBankSelect={onBankSelect}
-          showBankSearch={showBankSearch}
-          setShowBankSearch={setShowBankSearch}
-          banks={INDIAN_BANKS}
-          customBankName={customBankName}
-          setCustomBankName={setCustomBankName}
-          lastFourDigits={lastFourDigits}
-          setLastFourDigits={setLastFourDigits}
-          creditLimit={creditLimit}
-          setCreditLimit={setCreditLimit}
-        />
-      )}
+        </TabsContent>
+      </Tabs>
     </div>
   );
 };
