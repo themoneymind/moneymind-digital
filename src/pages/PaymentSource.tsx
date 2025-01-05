@@ -80,7 +80,7 @@ export const PaymentSource = () => {
     }
 
     try {
-      const newSource = {
+      const newSourceData = {
         name: sourceName,
         type: selectedType === "bank" ? "Bank" : "Credit Card",
         amount: currentBalance ? Number(currentBalance) : 0,
@@ -90,18 +90,19 @@ export const PaymentSource = () => {
         credit_limit: selectedType === "credit" ? Number(creditLimit) : undefined,
       };
 
-      const source = await addPaymentSource(newSource);
-
-      // If current balance is provided, create an income transaction
-      if (currentBalance && Number(currentBalance) > 0 && source) {
+      const { data: newSource, error } = await addPaymentSource(newSourceData);
+      
+      if (error) throw error;
+      
+      if (newSource && currentBalance && Number(currentBalance) > 0) {
         await addTransaction({
           type: "income",
           amount: Number(currentBalance),
           category: "Initial Balance",
-          source: source.id,
+          source: newSource.id,
           description: `Initial balance for ${sourceName}`,
           date: new Date(),
-          base_source_id: source.id,
+          base_source_id: newSource.id,
           display_source: sourceName,
         });
       }
