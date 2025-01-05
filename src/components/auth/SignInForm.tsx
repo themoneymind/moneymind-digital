@@ -115,7 +115,7 @@ export const SignInForm = ({
         </Button>
       </form>
 
-      <p className="text-gray-600 text-sm">
+      <p className="text-gray-600 text-sm text-center">
         Don't have an account?{" "}
         <Link to="/signup" className="text-[#7F3DFF] hover:text-[#7F3DFF]/90">
           Sign up
