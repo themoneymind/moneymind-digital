@@ -10,19 +10,22 @@ export const PaymentSourceButtons = ({ onAddSource, onComplete }: PaymentSourceB
   const { paymentSources } = useFinance();
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 px-6 pb-6">
       <Button
-        className="w-full h-14 rounded-[12px]"
+        className="w-full h-[52px] text-base font-medium rounded-[16px] bg-primary hover:bg-primary/90"
         onClick={onAddSource}
       >
         Add Payment Source
       </Button>
 
       <Button
-        className="w-full h-14 rounded-[12px]"
+        className={`w-full h-[52px] text-base font-medium rounded-[16px] ${
+          paymentSources.length === 0
+            ? "bg-muted text-muted-foreground hover:bg-muted/90"
+            : "bg-primary hover:bg-primary/90"
+        }`}
         onClick={onComplete}
         disabled={paymentSources.length === 0}
-        variant={paymentSources.length === 0 ? "outline" : "default"}
       >
         Complete
       </Button>
