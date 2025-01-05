@@ -2,6 +2,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CreditCardForm } from "./CreditCardForm";
 import { BankSection } from "./BankSection";
 import { UpiSection } from "./UpiSection";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 const INDIAN_BANKS = [
   // Public Sector Banks (PSBs)
@@ -69,6 +71,7 @@ interface PaymentSourceFormProps {
   customBankName: string;
   customUpi: string;
   selectedUpiApps: string[];
+  currentBalance: string;
   onTypeChange: (type: "bank" | "credit") => void;
   onBankSelect: (bank: string) => void;
   setCustomBankName: (name: string) => void;
@@ -80,6 +83,7 @@ interface PaymentSourceFormProps {
   setLastFourDigits: (digits: string) => void;
   creditLimit: string;
   setCreditLimit: (limit: string) => void;
+  setCurrentBalance: (balance: string) => void;
 }
 
 export const PaymentSourceForm = ({
@@ -88,6 +92,7 @@ export const PaymentSourceForm = ({
   customBankName,
   customUpi,
   selectedUpiApps,
+  currentBalance,
   onTypeChange,
   onBankSelect,
   setCustomBankName,
@@ -99,6 +104,7 @@ export const PaymentSourceForm = ({
   setLastFourDigits,
   creditLimit,
   setCreditLimit,
+  setCurrentBalance,
 }: PaymentSourceFormProps) => {
   return (
     <div className="space-y-4">
@@ -141,13 +147,29 @@ export const PaymentSourceForm = ({
             />
 
             {selectedBank && (
-              <UpiSection
-                selectedBank={selectedBank}
-                customUpi={customUpi}
-                selectedUpiApps={selectedUpiApps}
-                onUpiToggle={onUpiToggle}
-                onCustomUpiChange={setCustomUpi}
-              />
+              <>
+                <UpiSection
+                  selectedBank={selectedBank}
+                  customUpi={customUpi}
+                  selectedUpiApps={selectedUpiApps}
+                  onUpiToggle={onUpiToggle}
+                  onCustomUpiChange={setCustomUpi}
+                />
+                <div className="space-y-2">
+                  <Label htmlFor="currentBalance">Current Balance (Optional)</Label>
+                  <div className="relative">
+                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">₹</span>
+                    <Input
+                      id="currentBalance"
+                      type="number"
+                      placeholder="Enter current balance"
+                      value={currentBalance}
+                      onChange={(e) => setCurrentBalance(e.target.value)}
+                      className="pl-8 h-12 rounded-[12px]"
+                    />
+                  </div>
+                </div>
+              </>
             )}
           </div>
         </TabsContent>

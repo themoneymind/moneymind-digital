@@ -8,7 +8,7 @@ import { PaymentSourceButtons } from "@/components/payment-source/PaymentSourceB
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 
 export const PaymentSource = () => {
-  const { addPaymentSource, paymentSources } = useFinance();
+  const { addPaymentSource, addTransaction, paymentSources } = useFinance();
   const { toast } = useToast();
   const navigate = useNavigate();
   
@@ -20,6 +20,7 @@ export const PaymentSource = () => {
   const [showBankSearch, setShowBankSearch] = useState(false);
   const [lastFourDigits, setLastFourDigits] = useState("");
   const [creditLimit, setCreditLimit] = useState("");
+  const [currentBalance, setCurrentBalance] = useState("");
 
   const handleTypeChange = (type: "bank" | "credit") => {
     setSelectedType(type);
@@ -27,6 +28,7 @@ export const PaymentSource = () => {
     setCustomBankName("");
     setLastFourDigits("");
     setCreditLimit("");
+    setCurrentBalance("");
   };
 
   const handleBankSelect = (bank: string) => {
@@ -81,14 +83,28 @@ export const PaymentSource = () => {
       const newSource = {
         name: sourceName,
         type: selectedType === "bank" ? "Bank" : "Credit Card",
-        amount: 0,
+        amount: currentBalance ? Number(currentBalance) : 0,
         linked: selectedUpiApps.length > 0,
         upi_apps: selectedUpiApps.length > 0 ? selectedUpiApps : undefined,
         last_four_digits: lastFourDigits || undefined,
         credit_limit: selectedType === "credit" ? Number(creditLimit) : undefined,
       };
 
-      await addPaymentSource(newSource);
+      const source = await addPaymentSource(newSource);
+
+      // If current balance is provided, create an income transaction
+      if (currentBalance && Number(currentBalance) > 0 && source) {
+        await addTransaction({
+          type: "income",
+          amount: Number(currentBalance),
+          category: "Initial Balance",
+          source: source.id,
+          description: `Initial balance for ${sourceName}`,
+          date: new Date(),
+          base_source_id: source.id,
+          display_source: sourceName,
+        });
+      }
 
       toast({
         title: "Success",
@@ -101,6 +117,7 @@ export const PaymentSource = () => {
       setSelectedUpiApps([]);
       setLastFourDigits("");
       setCreditLimit("");
+      setCurrentBalance("");
     } catch (error) {
       console.error("Error adding payment source:", error);
       toast({
@@ -144,6 +161,7 @@ export const PaymentSource = () => {
                 customBankName={customBankName}
                 customUpi={customUpi}
                 selectedUpiApps={selectedUpiApps}
+                currentBalance={currentBalance}
                 onTypeChange={handleTypeChange}
                 onBankSelect={handleBankSelect}
                 setCustomBankName={setCustomBankName}
@@ -161,6 +179,7 @@ export const PaymentSource = () => {
                 setLastFourDigits={setLastFourDigits}
                 creditLimit={creditLimit}
                 setCreditLimit={setCreditLimit}
+                setCurrentBalance={setCurrentBalance}
               />
 
               <PaymentSourceButtons
