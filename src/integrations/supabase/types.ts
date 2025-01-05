@@ -185,6 +185,7 @@ export type Database = {
       profiles: {
         Row: {
           avatar_url: string | null
+          biometric_credentials: Json | null
           created_at: string
           currency_format: string | null
           data_sharing: boolean | null
@@ -196,15 +197,19 @@ export type Database = {
           last_name: string | null
           notification_time: string | null
           phone_number: string | null
+          pin_hash: string | null
+          preferred_auth_method: string | null
           text_size: string | null
           theme: string | null
           timezone: string | null
           transaction_alerts: boolean | null
+          trusted_devices: Json[] | null
           updated_at: string
           weekly_reports: boolean | null
         }
         Insert: {
           avatar_url?: string | null
+          biometric_credentials?: Json | null
           created_at?: string
           currency_format?: string | null
           data_sharing?: boolean | null
@@ -216,15 +221,19 @@ export type Database = {
           last_name?: string | null
           notification_time?: string | null
           phone_number?: string | null
+          pin_hash?: string | null
+          preferred_auth_method?: string | null
           text_size?: string | null
           theme?: string | null
           timezone?: string | null
           transaction_alerts?: boolean | null
+          trusted_devices?: Json[] | null
           updated_at?: string
           weekly_reports?: boolean | null
         }
         Update: {
           avatar_url?: string | null
+          biometric_credentials?: Json | null
           created_at?: string
           currency_format?: string | null
           data_sharing?: boolean | null
@@ -236,10 +245,13 @@ export type Database = {
           last_name?: string | null
           notification_time?: string | null
           phone_number?: string | null
+          pin_hash?: string | null
+          preferred_auth_method?: string | null
           text_size?: string | null
           theme?: string | null
           timezone?: string | null
           transaction_alerts?: boolean | null
+          trusted_devices?: Json[] | null
           updated_at?: string
           weekly_reports?: boolean | null
         }
