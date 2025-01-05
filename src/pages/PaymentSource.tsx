@@ -5,7 +5,6 @@ import { useToast } from "@/hooks/use-toast";
 import { PaymentSourceHeader } from "@/components/payment-source/PaymentSourceHeader";
 import { PaymentSourceForm } from "@/components/payment-source/PaymentSourceForm";
 import { PaymentSourceButtons } from "@/components/payment-source/PaymentSourceButtons";
-import { TopBar } from "@/components/TopBar";
 
 export const PaymentSource = () => {
   const { addPaymentSource, paymentSources } = useFinance();
@@ -125,13 +124,9 @@ export const PaymentSource = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#F5F5F7] relative overflow-hidden">
-      <TopBar title="Add Payment Source" />
-      
-      {/* Decorative Circle */}
-      <div className="absolute top-0 right-0 w-32 h-32 rounded-full bg-[#7F3DFF]/10 -mr-16 -mt-16" />
-      
-      <div className="p-6">
+    <div className="bg-white rounded-t-[30px] overflow-y-auto h-[95vh] min-h-[95vh]">
+      <div className="mx-auto h-1 w-[36px] rounded-full bg-gray-200 my-3" />
+      <div className="px-6">
         <div className="space-y-6">
           <PaymentSourceHeader />
           
