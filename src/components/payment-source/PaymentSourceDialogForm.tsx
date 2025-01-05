@@ -49,16 +49,6 @@ export const PaymentSourceDialogForm = ({
           onCustomUpiChange={onCustomUpiChange}
         />
       )}
-      <div className="relative">
-        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">₹</span>
-        <Input
-          type="number"
-          placeholder="Enter Current Balance (Optional)"
-          value={currentAmount}
-          onChange={(e) => setAmount(e.target.value)}
-          className="pl-8 h-12 rounded-[12px] text-base placeholder:text-gray-400"
-        />
-      </div>
       <AmountOperations
         operation={operation}
         setOperation={setOperation}

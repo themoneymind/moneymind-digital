@@ -25,23 +25,19 @@ export const usePaymentSources = () => {
   }, [user]);
 
   const addPaymentSource = useCallback(async (newSource: Omit<PaymentSource, "id">) => {
-    if (!user) return { data: null, error: new Error("No user found") };
+    if (!user) return;
 
-    const { data, error } = await supabase
+    const { error } = await supabase
       .from("payment_sources")
       .insert([{
         ...newSource,
         user_id: user.id
-      }])
-      .select()
-      .single();
+      }]);
 
     if (error) {
       console.error("Error adding payment source:", error);
-      return { data: null, error };
+      throw error;
     }
-
-    return { data, error: null };
   }, [user]);
 
   const editPaymentSource = useCallback(async (updatedSource: PaymentSource) => {
