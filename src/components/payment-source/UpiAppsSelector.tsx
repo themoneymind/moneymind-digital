@@ -70,7 +70,7 @@ export const UpiAppsSelector = ({
                 value={customUpi}
                 onChange={(e) => handleCustomUpiChange(e.target.value)}
                 placeholder="Enter custom UPI"
-                className="h-12 rounded-[12px] text-base w-full"
+                className="border-0 border-b border-gray-300 rounded-none focus:ring-0 px-0 h-10 text-base w-full"
                 autoFocus
               />
             ) : (
