@@ -29,7 +29,6 @@ export const CreditCardForm = ({
   creditLimit,
   setCreditLimit,
 }: CreditCardFormProps) => {
-  // Format the bank name to include "Bank" if not already present
   const formatBankName = (name: string) => {
     if (!name) return "";
     return name.toLowerCase().includes("bank") ? name : `${name} Bank`;
@@ -71,7 +70,7 @@ export const CreditCardForm = ({
             placeholder="Enter your credit card name"
             value={customBankName}
             onChange={handleCustomNameChange}
-            className="h-14 rounded-[12px] bg-white"
+            className="h-14 rounded-[12px] bg-gray-50 border-0 focus:ring-2 focus:ring-primary focus:ring-offset-0"
           />
         </div>
 
@@ -83,7 +82,7 @@ export const CreditCardForm = ({
             value={lastFourDigits}
             onChange={handleLastFourDigitsChange}
             maxLength={4}
-            className="h-14 rounded-[12px] bg-white"
+            className="h-14 rounded-[12px] bg-gray-50 border-0 focus:ring-2 focus:ring-primary focus:ring-offset-0"
           />
         </div>
 
@@ -94,7 +93,7 @@ export const CreditCardForm = ({
             placeholder="Enter credit limit"
             value={creditLimit}
             onChange={handleCreditLimitChange}
-            className="h-14 rounded-[12px] bg-white"
+            className="h-14 rounded-[12px] bg-gray-50 border-0 focus:ring-2 focus:ring-primary focus:ring-offset-0"
           />
         </div>
       </div>
