@@ -20,15 +20,13 @@ export const ContactInputStep = ({
   const [inputType, setInputType] = useState<'email' | 'phone'>('email');
 
   const handleContactChange = (value: string) => {
-    const isEmail = value.includes('@');
-    const isPhone = /^\d*$/.test(value);
-
-    if (isEmail) {
+    setContact(value);
+    
+    // Detect input type based on content
+    if (value.includes('@')) {
       setInputType('email');
-      setContact(value);
-    } else if (isPhone || value === '') {
+    } else if (value === '' || /^\d+$/.test(value)) {
       setInputType('phone');
-      setContact(value.replace(/\D/g, ''));
     }
   };
 
