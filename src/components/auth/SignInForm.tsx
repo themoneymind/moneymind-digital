@@ -31,6 +31,8 @@ export const SignInForm = ({
     biometricAvailable,
     setBiometricAvailable,
     handleBiometricLogin,
+    rememberMe,
+    setRememberMe,
   } = useSignInForm();
 
   useEffect(() => {

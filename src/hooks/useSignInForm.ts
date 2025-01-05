@@ -6,6 +6,9 @@ import { supabase } from "@/integrations/supabase/client";
 export const useSignInForm = () => {
   const [activeTab, setActiveTab] = useState("password");
   const [biometricAvailable, setBiometricAvailable] = useState(false);
+  const [rememberMe, setRememberMe] = useState(() => {
+    return localStorage.getItem("rememberMe") === "true";
+  });
   const { toast } = useToast();
   const navigate = useNavigate();
 
@@ -55,5 +58,7 @@ export const useSignInForm = () => {
     biometricAvailable,
     setBiometricAvailable,
     handleBiometricLogin,
+    rememberMe,
+    setRememberMe,
   };
 };
