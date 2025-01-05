@@ -13,11 +13,13 @@ type PaymentSourceInfoProps = {
 export const PaymentSourceInfo = ({
   name,
   type,
-  upiApps,
+  upiApps = [],
   linked,
   showUpiList,
   onUpiToggle,
 }: PaymentSourceInfoProps) => {
+  const hasUpiApps = Array.isArray(upiApps) && upiApps.length > 0;
+
   return (
     <div className="min-w-0 flex-1">
       <div className="flex flex-col justify-center">
@@ -25,7 +27,7 @@ export const PaymentSourceInfo = ({
           {name}
         </p>
         <span className="text-xs text-gray-500 leading-tight">{type}</span>
-        {linked && upiApps && upiApps.length > 0 && (
+        {linked && hasUpiApps && (
           <button
             onClick={onUpiToggle}
             className="flex items-center gap-0.5 text-xs text-blue-600 w-fit mt-0.5"
@@ -39,11 +41,11 @@ export const PaymentSourceInfo = ({
           </button>
         )}
       </div>
-      {showUpiList && upiApps && (
+      {showUpiList && hasUpiApps && (
         <div className="space-y-0.5 mt-1">
-          {upiApps.map((app) => (
+          {upiApps.map((app, index) => (
             <div
-              key={app}
+              key={`${app}-${index}`}
               className="text-xs text-gray-600 pl-2 leading-tight"
             >
               {`${name} ${app}`}
