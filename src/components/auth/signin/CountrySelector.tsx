@@ -1,4 +1,5 @@
 import { CountryCode, countryCodes } from "./constants/countryCodes";
+import { Separator } from "@/components/ui/separator";
 
 interface CountrySelectorProps {
   selectedCountry: CountryCode;
@@ -20,7 +21,7 @@ export const CountrySelector = ({
         <select
           value={selectedCountry.code}
           onChange={onCountryChange}
-          className="appearance-none bg-transparent border-none focus:ring-0 text-sm text-[#7F3DFF] font-medium cursor-pointer pr-4"
+          className="appearance-none bg-transparent border-none focus:ring-0 text-sm text-[#7F3DFF] font-bold cursor-pointer pr-2"
         >
           {countryCodes.map((country) => (
             <option key={country.code} value={country.code}>
@@ -28,6 +29,7 @@ export const CountrySelector = ({
             </option>
           ))}
         </select>
+        <Separator orientation="vertical" className="h-4 bg-gray-200" />
       </div>
     </div>
   );
