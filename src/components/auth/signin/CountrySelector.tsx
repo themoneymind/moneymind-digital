@@ -1,4 +1,3 @@
-import { ChevronDown } from "lucide-react";
 import { CountryCode, countryCodes } from "./constants/countryCodes";
 
 interface CountrySelectorProps {
@@ -29,7 +28,6 @@ export const CountrySelector = ({
             </option>
           ))}
         </select>
-        <ChevronDown className="h-3 w-3 text-[#7F3DFF]" />
       </div>
     </div>
   );
