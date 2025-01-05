@@ -23,26 +23,32 @@ export const ContactInput = ({
   const renderInputIcon = () => {
     if (inputType === 'phone' && contact.length > 0) {
       return (
-        <CountrySelector
-          selectedCountry={selectedCountry}
-          onCountryChange={onCountryChange}
-        />
+        <div className="absolute left-3 top-1/2 -translate-y-1/2">
+          <CountrySelector
+            selectedCountry={selectedCountry}
+            onCountryChange={onCountryChange}
+          />
+        </div>
       );
     }
-    return <Mail className="h-4 w-4 text-[#7F3DFF]" />;
+    return (
+      <div className="absolute left-3 top-1/2 -translate-y-1/2">
+        <Mail className="h-4 w-4 text-[#7F3DFF]" />
+      </div>
+    );
   };
 
   return (
     <div className="relative">
-      <div className="absolute left-3 top-1/2 -translate-y-1/2 flex items-center">
-        {renderInputIcon()}
-      </div>
+      {renderInputIcon()}
       <Input
-        type="text"
-        placeholder="Email or Phone number"
+        type={inputType === 'phone' ? 'tel' : 'email'}
+        placeholder={inputType === 'phone' ? 'Phone number' : 'Email'}
         value={contact}
         onChange={(e) => onContactChange(e.target.value)}
-        className={`w-full py-3 ${inputType === 'phone' && contact.length > 0 ? 'pl-24' : 'pl-10'} md:text-sm text-base bg-transparent border-t-0 border-x-0 border-b-2 border-gray-200 rounded-none focus:outline-none transition-colors placeholder:text-gray-400 text-gray-600 focus:border-[#7F3DFF] focus:ring-0`}
+        className={`w-full py-3 ${
+          inputType === 'phone' && contact.length > 0 ? 'pl-[160px]' : 'pl-10'
+        } md:text-sm text-base bg-transparent border-t-0 border-x-0 border-b-2 border-gray-200 rounded-none focus:outline-none transition-colors placeholder:text-gray-400 text-gray-600 focus:border-[#7F3DFF] focus:ring-0`}
         disabled={isLoading}
         required
       />
