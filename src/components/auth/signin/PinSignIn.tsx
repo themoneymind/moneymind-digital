@@ -1,8 +1,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Mail, Phone } from "lucide-react";
+import { Mail } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -18,17 +17,25 @@ export const PinSignIn = ({
   setEmail,
   isLoading,
 }: OtpSignInProps) => {
-  const [phoneNumber, setPhoneNumber] = useState("");
   const [otpSent, setOtpSent] = useState(false);
   const [otp, setOtp] = useState("");
-  const [method, setMethod] = useState<"email" | "phone">("email");
   const { toast } = useToast();
+
+  const isValidEmail = (value: string) => {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+  };
+
+  const isValidPhone = (value: string) => {
+    return /^\+?[\d\s-]{10,}$/.test(value);
+  };
 
   const handleSendOtp = async () => {
     try {
-      if (method === "email") {
+      const contact = email.trim();
+      
+      if (isValidEmail(contact)) {
         const { error } = await supabase.auth.signInWithOtp({
-          email: email.trim(),
+          email: contact,
         });
 
         if (error) throw error;
@@ -37,11 +44,18 @@ export const PinSignIn = ({
           title: "OTP Sent",
           description: "Please check your email for the login code",
         });
-      } else {
+      } else if (isValidPhone(contact)) {
         // Phone OTP functionality can be added here when Supabase supports it
         toast({
           title: "Coming Soon",
           description: "Phone number verification will be available soon!",
+          variant: "destructive",
+        });
+        return;
+      } else {
+        toast({
+          title: "Invalid Input",
+          description: "Please enter a valid email address or phone number",
           variant: "destructive",
         });
         return;
@@ -84,46 +98,20 @@ export const PinSignIn = ({
 
   return (
     <div className="space-y-6">
-      <Tabs value={method} onValueChange={(value) => setMethod(value as "email" | "phone")}>
-        <TabsList className="grid w-full grid-cols-2">
-          <TabsTrigger value="email">Email</TabsTrigger>
-          <TabsTrigger value="phone">Phone</TabsTrigger>
-        </TabsList>
-
-        <TabsContent value="email" className="space-y-4">
-          <div className="relative">
-            <div className="absolute left-0 top-2 flex h-7 w-7 items-center justify-center rounded-full bg-[#F5F3FF]">
-              <Mail className="h-4 w-4 text-[#7F3DFF]" />
-            </div>
-            <Input
-              type="email"
-              placeholder="Email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full py-3 pl-10 md:text-sm text-base bg-transparent border-b-2 border-gray-200 focus:outline-none transition-colors placeholder:text-gray-400 text-gray-600 focus:border-[#7F3DFF]"
-              disabled={isLoading || otpSent}
-              required
-            />
-          </div>
-        </TabsContent>
-
-        <TabsContent value="phone" className="space-y-4">
-          <div className="relative">
-            <div className="absolute left-0 top-2 flex h-7 w-7 items-center justify-center rounded-full bg-[#F5F3FF]">
-              <Phone className="h-4 w-4 text-[#7F3DFF]" />
-            </div>
-            <Input
-              type="tel"
-              placeholder="Phone Number"
-              value={phoneNumber}
-              onChange={(e) => setPhoneNumber(e.target.value)}
-              className="w-full py-3 pl-10 md:text-sm text-base bg-transparent border-b-2 border-gray-200 focus:outline-none transition-colors placeholder:text-gray-400 text-gray-600 focus:border-[#7F3DFF]"
-              disabled={isLoading || otpSent}
-              required
-            />
-          </div>
-        </TabsContent>
-      </Tabs>
+      <div className="relative">
+        <div className="absolute left-0 top-2 flex h-7 w-7 items-center justify-center rounded-full bg-[#F5F3FF]">
+          <Mail className="h-4 w-4 text-[#7F3DFF]" />
+        </div>
+        <Input
+          type="text"
+          placeholder="Email or Phone Number"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          className="w-full py-3 pl-10 md:text-sm text-base bg-transparent border-b-2 border-gray-200 focus:outline-none transition-colors placeholder:text-gray-400 text-gray-600 focus:border-[#7F3DFF]"
+          disabled={isLoading || otpSent}
+          required
+        />
+      </div>
 
       {otpSent ? (
         <div className="space-y-4">
@@ -148,7 +136,7 @@ export const PinSignIn = ({
         <Button 
           onClick={handleSendOtp}
           className="w-full h-12 rounded-xl md:text-sm text-base bg-[#7F3DFF] hover:bg-[#7F3DFF]/90"
-          disabled={isLoading || (!email && !phoneNumber)}
+          disabled={isLoading || !email}
         >
           {isLoading ? "Sending..." : "Send OTP"}
         </Button>
