@@ -35,11 +35,13 @@ export const BankSelectionDialog = ({
     <Dialog open={showBankSearch} onOpenChange={setShowBankSearch}>
       <DialogTrigger asChild>
         <Button
-          variant="outline"
-          className="w-full h-14 rounded-[12px] justify-between bg-white"
+          variant="ghost"
+          className="w-full py-3 px-0 h-auto justify-between bg-transparent border-b-2 border-gray-200 rounded-none hover:bg-transparent hover:border-gray-300 transition-colors"
         >
-          {selectedBank || "Select Bank"}
-          <Search className="h-4 w-4" />
+          <span className="text-sm text-gray-600">
+            {selectedBank || "Select Bank"}
+          </span>
+          <Search className="h-4 w-4 text-gray-400" />
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
