@@ -34,7 +34,7 @@ export const ContactInput = ({
 
   return (
     <div className="relative">
-      <div className="absolute left-3 top-1/2 -translate-y-1/2 flex items-center gap-2">
+      <div className="absolute left-3 top-1/2 -translate-y-1/2 flex items-center">
         {renderInputIcon()}
       </div>
       <Input
@@ -42,7 +42,7 @@ export const ContactInput = ({
         placeholder="Email or Phone number"
         value={contact}
         onChange={(e) => onContactChange(e.target.value)}
-        className={`w-full py-3 ${inputType === 'phone' && contact.length > 0 ? 'pl-32' : 'pl-10'} md:text-sm text-base bg-transparent border-t-0 border-x-0 border-b-2 border-gray-200 rounded-none focus:outline-none transition-colors placeholder:text-gray-400 text-gray-600 focus:border-[#7F3DFF] focus:ring-0`}
+        className={`w-full py-3 ${inputType === 'phone' && contact.length > 0 ? 'pl-24' : 'pl-10'} md:text-sm text-base bg-transparent border-t-0 border-x-0 border-b-2 border-gray-200 rounded-none focus:outline-none transition-colors placeholder:text-gray-400 text-gray-600 focus:border-[#7F3DFF] focus:ring-0`}
         disabled={isLoading}
         required
       />
