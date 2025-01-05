@@ -134,6 +134,7 @@ export const PaymentSource = () => {
         <div className="overflow-y-auto h-full">
           <div className="mx-auto h-1 w-[36px] rounded-full bg-gray-200 my-3" />
           <div className="px-6">
+            <h2 className="text-2xl font-semibold mb-6">Add Payment Source</h2>
             <div className="space-y-6">
               <PaymentSourceHeader />
               
