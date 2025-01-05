@@ -125,64 +125,66 @@ export const SignIn = () => {
       {/* Decorative Circle */}
       <div className="absolute top-0 right-0 w-32 h-32 rounded-full bg-[#7F3DFF]/10 -mr-16 -mt-16" />
       
-      <div className="p-6 pt-8">
-        <div className="space-y-6">
-          <div className="text-left space-y-2">
-            <div className="flex items-center mb-2">
-              <PiggyBank className="h-10 w-10 text-[#7F3DFF]" />
+      <div className="p-6 pt-8 md:flex md:items-center md:justify-center md:min-h-[calc(100vh-64px)]">
+        <div className="md:max-w-md w-full md:shadow-lg md:rounded-2xl md:p-8 md:bg-white/50 md:backdrop-blur-sm">
+          <div className="space-y-6">
+            <div className="text-left space-y-2">
+              <div className="flex items-center mb-2">
+                <PiggyBank className="h-10 w-10 text-[#7F3DFF]" />
+              </div>
+              <h1 className="text-2xl font-bold text-[#7F3DFF]">MoneyMind</h1>
+              <p className="text-gray-600 text-base">
+                Sign in to your account
+              </p>
             </div>
-            <h1 className="text-2xl font-bold text-[#7F3DFF]">MoneyMind</h1>
-            <p className="text-gray-600 text-base">
-              Sign in to your account
-            </p>
-          </div>
 
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <Input
-              type="email"
-              placeholder="Email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="h-12 rounded-xl border-gray-200 bg-gray-50/50 px-4 text-gray-900/70 placeholder:text-gray-500/60 focus:border-[#7F3DFF] focus:ring-[#7F3DFF]"
-              disabled={isLoading}
-              required
-            />
-            <div className="space-y-1">
+            <form onSubmit={handleSubmit} className="space-y-6">
               <Input
-                type="password"
-                placeholder="Password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                type="email"
+                placeholder="Email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 className="h-12 rounded-xl border-gray-200 bg-gray-50/50 px-4 text-gray-900/70 placeholder:text-gray-500/60 focus:border-[#7F3DFF] focus:ring-[#7F3DFF]"
                 disabled={isLoading}
                 required
               />
-            </div>
-            
-            <Button 
-              type="submit" 
-              className="w-full h-12 rounded-xl text-base bg-[#7F3DFF] hover:bg-[#7F3DFF]/90"
-              disabled={isLoading}
-            >
-              {isLoading ? "Signing in..." : "Sign In"}
-            </Button>
-
-            <div>
-              <Link 
-                to="/forgot-password" 
-                className="text-sm text-[#7F3DFF] hover:text-[#7F3DFF]/90"
+              <div className="space-y-1">
+                <Input
+                  type="password"
+                  placeholder="Password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="h-12 rounded-xl border-gray-200 bg-gray-50/50 px-4 text-gray-900/70 placeholder:text-gray-500/60 focus:border-[#7F3DFF] focus:ring-[#7F3DFF]"
+                  disabled={isLoading}
+                  required
+                />
+              </div>
+              
+              <Button 
+                type="submit" 
+                className="w-full h-12 rounded-xl text-base bg-[#7F3DFF] hover:bg-[#7F3DFF]/90"
+                disabled={isLoading}
               >
-                Forgot Password?
-              </Link>
-            </div>
-          </form>
+                {isLoading ? "Signing in..." : "Sign In"}
+              </Button>
 
-          <p className="text-gray-600 text-sm">
-            Don't have an account?{" "}
-            <Link to="/signup" className="text-[#7F3DFF] hover:text-[#7F3DFF]/90">
-              Sign up
-            </Link>
-          </p>
+              <div>
+                <Link 
+                  to="/forgot-password" 
+                  className="text-sm text-[#7F3DFF] hover:text-[#7F3DFF]/90"
+                >
+                  Forgot Password?
+                </Link>
+              </div>
+            </form>
+
+            <p className="text-gray-600 text-sm">
+              Don't have an account?{" "}
+              <Link to="/signup" className="text-[#7F3DFF] hover:text-[#7F3DFF]/90">
+                Sign up
+              </Link>
+            </p>
+          </div>
         </div>
       </div>
     </div>
