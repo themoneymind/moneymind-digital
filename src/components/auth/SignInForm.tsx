@@ -2,6 +2,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Link } from "react-router-dom";
 import { Mail, Lock, PiggyBank } from "lucide-react";
+import { Checkbox } from "@/components/ui/checkbox";
+import { useState } from "react";
 
 interface SignInFormProps {
   email: string;
@@ -20,6 +22,22 @@ export const SignInForm = ({
   handleSubmit,
   isLoading,
 }: SignInFormProps) => {
+  const [rememberMe, setRememberMe] = useState(() => {
+    return localStorage.getItem("rememberMe") === "true";
+  });
+
+  const handleFormSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (rememberMe) {
+      localStorage.setItem("rememberMe", "true");
+      localStorage.setItem("rememberedEmail", email);
+    } else {
+      localStorage.removeItem("rememberMe");
+      localStorage.removeItem("rememberedEmail");
+    }
+    handleSubmit(e);
+  };
+
   return (
     <div className="space-y-6">
       <div className="text-left space-y-2">
@@ -32,7 +50,7 @@ export const SignInForm = ({
         </p>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-6">
+      <form onSubmit={handleFormSubmit} className="space-y-6">
         <div className="relative">
           <div className="absolute left-0 top-2 flex h-7 w-7 items-center justify-center rounded-full bg-gray-100">
             <Mail className="h-4 w-4 text-gray-500" />
@@ -48,19 +66,44 @@ export const SignInForm = ({
           />
         </div>
 
-        <div className="relative">
-          <div className="absolute left-0 top-2 flex h-7 w-7 items-center justify-center rounded-full bg-gray-100">
-            <Lock className="h-4 w-4 text-gray-500" />
+        <div className="space-y-4">
+          <div className="relative">
+            <div className="absolute left-0 top-2 flex h-7 w-7 items-center justify-center rounded-full bg-gray-100">
+              <Lock className="h-4 w-4 text-gray-500" />
+            </div>
+            <input
+              type="password"
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full py-3 pl-10 text-sm bg-transparent border-b-2 border-gray-200 focus:outline-none transition-colors placeholder:text-gray-400 text-gray-600 focus:border-[#7F3DFF]"
+              disabled={isLoading}
+              required
+            />
           </div>
-          <input
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="w-full py-3 pl-10 text-sm bg-transparent border-b-2 border-gray-200 focus:outline-none transition-colors placeholder:text-gray-400 text-gray-600 focus:border-[#7F3DFF]"
-            disabled={isLoading}
-            required
-          />
+
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-2">
+              <Checkbox
+                id="rememberMe"
+                checked={rememberMe}
+                onCheckedChange={(checked) => setRememberMe(checked as boolean)}
+                className="border-gray-300"
+              />
+              <label
+                htmlFor="rememberMe"
+                className="text-sm text-gray-600 cursor-pointer"
+              >
+                Remember me
+              </label>
+            </div>
+            <Link 
+              to="/forgot-password" 
+              className="text-sm text-[#7F3DFF] hover:text-[#7F3DFF]/90"
+            >
+              Forgot Password?
+            </Link>
+          </div>
         </div>
         
         <Button 
@@ -70,15 +113,6 @@ export const SignInForm = ({
         >
           {isLoading ? "Signing in..." : "Sign In"}
         </Button>
-
-        <div>
-          <Link 
-            to="/forgot-password" 
-            className="text-sm text-[#7F3DFF] hover:text-[#7F3DFF]/90"
-          >
-            Forgot Password?
-          </Link>
-        </div>
       </form>
 
       <p className="text-gray-600 text-sm">
