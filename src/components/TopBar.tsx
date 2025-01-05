@@ -18,7 +18,7 @@ export const TopBar = ({ title }: TopBarProps) => {
           >
             <ArrowLeft className="w-5 h-5 text-white" />
           </button>
-          <h1 className="text-2xl font-semibold text-white">Add payment source</h1>
+          <h1 className="text-2xl font-semibold text-white">{title}</h1>
         </div>
       </div>
       <div className="h-6 bg-[#F5F5F7] dark:bg-gray-900 relative -mt-6 rounded-t-[28px]" />
