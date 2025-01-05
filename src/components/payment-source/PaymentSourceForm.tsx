@@ -155,19 +155,16 @@ export const PaymentSourceForm = ({
                   onUpiToggle={onUpiToggle}
                   onCustomUpiChange={setCustomUpi}
                 />
-                <div className="space-y-2">
-                  <Label htmlFor="currentBalance">Current Balance (Optional)</Label>
-                  <div className="relative">
-                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">₹</span>
-                    <Input
-                      id="currentBalance"
-                      type="number"
-                      placeholder="Enter current balance"
-                      value={currentBalance}
-                      onChange={(e) => setCurrentBalance(e.target.value)}
-                      className="pl-8 h-12 rounded-[12px]"
-                    />
-                  </div>
+                <div className="relative">
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">₹</span>
+                  <Input
+                    id="currentBalance"
+                    type="number"
+                    placeholder="Enter Current Balance (Optional)"
+                    value={currentBalance}
+                    onChange={(e) => setCurrentBalance(e.target.value)}
+                    className="pl-8 h-12 rounded-[12px] text-base placeholder:text-gray-400"
+                  />
                 </div>
               </>
             )}
