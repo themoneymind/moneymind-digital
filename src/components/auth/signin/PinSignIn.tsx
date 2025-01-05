@@ -30,6 +30,9 @@ export const PinSignIn = ({
         case 'email':
           const { error } = await supabase.auth.signInWithOtp({
             email: contact,
+            options: {
+              emailRedirectTo: `${window.location.origin}/signin`
+            }
           });
 
           if (error) throw error;

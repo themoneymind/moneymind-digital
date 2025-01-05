@@ -1,4 +1,4 @@
-import { CountryCode } from "./constants/countryCodes";
+import { CountryCode, countryCodes } from "./constants/countryCodes";
 
 interface CountrySelectorProps {
   selectedCountry: CountryCode;
