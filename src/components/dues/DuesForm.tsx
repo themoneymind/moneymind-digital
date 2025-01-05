@@ -104,7 +104,7 @@ export const DuesForm = () => {
 
         <Input
           placeholder="Person/Group Name"
-          className="h-14 border-gray-200 rounded-[12px]"
+          className="h-14 border-gray-200 rounded-[12px] md:text-sm text-base"
           value={personName}
           onChange={(e) => setPersonName(e.target.value)}
         />
@@ -114,7 +114,7 @@ export const DuesForm = () => {
             <Button
               variant="outline"
               className={cn(
-                "w-full h-14 justify-start text-left font-normal border-gray-200 rounded-[12px]",
+                "w-full h-14 justify-start text-left font-normal border-gray-200 rounded-[12px] md:text-sm text-base",
                 !repaymentDate && "text-muted-foreground"
               )}
             >
@@ -141,14 +141,14 @@ export const DuesForm = () => {
 
         <Input
           placeholder="UPI ID or Phone Number"
-          className="h-14 border-gray-200 rounded-[12px]"
+          className="h-14 border-gray-200 rounded-[12px] md:text-sm text-base"
           value={upiId}
           onChange={(e) => setUpiId(e.target.value)}
         />
 
         <Input
           placeholder="Description (Optional)"
-          className="h-14 border-gray-200 rounded-[12px]"
+          className="h-14 border-gray-200 rounded-[12px] md:text-sm text-base"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
         />
@@ -161,7 +161,7 @@ export const DuesForm = () => {
         />
 
         <Button
-          className="w-full h-14 bg-blue-600 hover:bg-blue-700 rounded-[12px]"
+          className="w-full h-14 bg-blue-600 hover:bg-blue-700 rounded-[12px] md:text-sm text-base"
           onClick={handleSubmit}
           disabled={isSubmitting}
         >

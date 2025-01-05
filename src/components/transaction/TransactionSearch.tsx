@@ -18,7 +18,7 @@ export const TransactionSearch = ({
         placeholder="Search transactions..."
         value={searchQuery}
         onChange={(e) => setSearchQuery(e.target.value)}
-        className="w-full pl-9 text-[15px]"
+        className="w-full pl-9 md:text-sm text-base"
       />
     </div>
   );
