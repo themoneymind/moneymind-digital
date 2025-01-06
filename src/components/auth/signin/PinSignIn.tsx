@@ -27,7 +27,10 @@ export const PinSignIn = ({
           const { error } = await supabase.auth.signInWithOtp({
             email: contactValue,
             options: {
-              emailRedirectTo: `${window.location.origin}/signin`
+              shouldCreateUser: true,
+              data: {
+                email: contactValue,
+              },
             }
           });
 
@@ -38,7 +41,7 @@ export const PinSignIn = ({
 
           toast({
             title: "OTP Sent",
-            description: "Please check your email for the login code",
+            description: "Please check your email for the verification code",
           });
           setOtpSent(true);
           break;
