@@ -6,7 +6,7 @@ export const sendOtpEmail = async (email: string) => {
       email,
       options: {
         shouldCreateUser: true,
-        emailRedirectTo: window.location.origin + '/app',
+        emailRedirectTo: `${window.location.origin}/app`,
       }
     });
 
@@ -15,7 +15,11 @@ export const sendOtpEmail = async (email: string) => {
       throw error;
     }
 
-    return data;
+    // Return only necessary data to prevent response stream issues
+    return {
+      success: true,
+      message: "OTP sent successfully"
+    };
   } catch (error) {
     console.error("Error in sendOtpEmail:", error);
     throw error;
@@ -35,7 +39,11 @@ export const verifyOtpCode = async (email: string, token: string) => {
       throw error;
     }
 
-    return data;
+    // Return only necessary data to prevent response stream issues
+    return {
+      success: true,
+      session: data.session
+    };
   } catch (error) {
     console.error("Error in verifyOtpCode:", error);
     throw error;
