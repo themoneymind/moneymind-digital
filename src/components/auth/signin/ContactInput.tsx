@@ -25,24 +25,32 @@ export const ContactInput = ({
   const cursorPositionRef = useRef<number | null>(null);
 
   useEffect(() => {
+    // Only attempt to set cursor position for phone number input
     if (
       inputRef.current && 
       cursorPositionRef.current !== null && 
       inputType === 'phone' && 
       /^\d*$/.test(contact)
     ) {
-      inputRef.current.setSelectionRange(
-        cursorPositionRef.current,
-        cursorPositionRef.current
-      );
+      // Delay the cursor position update to ensure it happens after React's re-render
+      setTimeout(() => {
+        if (inputRef.current) {
+          inputRef.current.setSelectionRange(
+            cursorPositionRef.current!,
+            cursorPositionRef.current!
+          );
+        }
+      }, 0);
     }
-  });
+  }, [contact, inputType]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (inputType === 'phone' && /^\d*$/.test(e.target.value)) {
+    const newValue = e.target.value;
+    // Store cursor position only for phone number input
+    if (inputType === 'phone' && /^\d*$/.test(newValue)) {
       cursorPositionRef.current = e.target.selectionStart;
     }
-    onContactChange(e.target.value);
+    onContactChange(newValue);
   };
 
   const renderInputIcon = () => {
