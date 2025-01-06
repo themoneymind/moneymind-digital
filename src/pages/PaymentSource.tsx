@@ -6,11 +6,19 @@ import { PaymentSourceForm } from "@/components/payment-source/PaymentSourceForm
 import { PaymentSourceButtons } from "@/components/payment-source/PaymentSourceButtons";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { usePaymentSourceForm } from "@/hooks/usePaymentSourceForm";
+import { useState } from "react";
+import { useDialogState } from "@/hooks/useDialogState";
 
 export const PaymentSource = () => {
   const { paymentSources } = useFinance();
   const { toast } = useToast();
   const navigate = useNavigate();
+  const [isOpen, setIsOpen] = useState(true);
+  const { isClosing, handleOpenChange } = useDialogState((open) => {
+    if (!open) {
+      navigate("/app");
+    }
+  });
 
   const handleComplete = () => {
     if (paymentSources.length === 0) {
@@ -22,7 +30,7 @@ export const PaymentSource = () => {
       return;
     }
     localStorage.removeItem("isFirstTimeUser");
-    navigate("/app");
+    setIsOpen(false);
   };
 
   const {
@@ -48,14 +56,18 @@ export const PaymentSource = () => {
   } = usePaymentSourceForm(handleComplete);
 
   return (
-    <Sheet defaultOpen>
+    <Sheet open={isOpen} onOpenChange={handleOpenChange}>
       <SheetContent
         side="bottom"
         className="h-[85vh] p-0 overflow-hidden rounded-t-[28px]"
         closeButton={false}
       >
         <div className="flex flex-col h-full">
-          <div className="mx-auto h-1 w-[36px] rounded-full bg-gray-200 my-3 cursor-grab active:cursor-grabbing" />
+          <div 
+            className="mx-auto h-1 w-[36px] rounded-full bg-gray-200 my-3 cursor-grab active:cursor-grabbing" 
+            role="button"
+            aria-label="Drag to close"
+          />
           <div className="px-6 flex-1 overflow-y-auto">
             <h2 className="text-2xl font-semibold mb-6">Add Payment Source</h2>
             <div className="space-y-6">
