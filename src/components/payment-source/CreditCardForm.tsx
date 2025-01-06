@@ -28,13 +28,19 @@ export const CreditCardForm = ({
   creditLimit,
   setCreditLimit,
 }: CreditCardFormProps) => {
-  const formatBankName = (name: string) => {
+  const formatBankName = (name: string, isDeleting: boolean = false) => {
     if (!name) return "";
-    return name.toLowerCase().includes("bank") ? name : `${name} Bank`;
+    // Only append 'Bank' if we're not deleting and it's not already there
+    if (!isDeleting && !name.toLowerCase().includes('bank')) {
+      return `${name} Bank`;
+    }
+    return name;
   };
 
   const handleCustomNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setCustomBankName(formatBankName(e.target.value));
+    const newValue = e.target.value;
+    const isDeleting = newValue.length < customBankName.length;
+    setCustomBankName(formatBankName(newValue, isDeleting));
   };
 
   const handleBankSelection = (bank: string) => {
