@@ -4,7 +4,7 @@ import { TopBar } from "@/components/TopBar";
 
 export const SignUp = () => {
   return (
-    <div className="min-h-screen bg-[#F5F3FF] relative overflow-hidden">
+    <div className="min-h-screen bg-white relative overflow-hidden">
       <TopBar title="Sign Up" />
       
       {/* Decorative Circle */}
