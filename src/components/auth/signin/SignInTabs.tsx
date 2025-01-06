@@ -1,4 +1,5 @@
 import { TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Key, Fingerprint, MessageSquare } from "lucide-react";
 
 interface SignInTabsProps {
   biometricAvailable: boolean;
@@ -6,24 +7,27 @@ interface SignInTabsProps {
 
 export const SignInTabs = ({ biometricAvailable }: SignInTabsProps) => {
   return (
-    <TabsList className="flex p-1 bg-gray-100 rounded-full gap-2 w-[80%] max-w-md mx-auto">
+    <TabsList className="grid w-full grid-cols-2 lg:grid-cols-3 h-12 items-stretch bg-gray-100 rounded-xl p-1">
       <TabsTrigger
         value="password"
-        className="flex-1 px-6 py-2 rounded-full text-sm transition-all data-[state=active]:bg-[#7F3DFF] data-[state=active]:text-white data-[state=inactive]:bg-transparent data-[state=inactive]:text-gray-500"
+        className="rounded-lg data-[state=active]:bg-white data-[state=active]:text-[#7F3DFF] data-[state=active]:shadow-sm"
       >
+        <Key className="h-4 w-4 mr-2" />
         Password
       </TabsTrigger>
       <TabsTrigger
         value="otp"
-        className="flex-1 px-6 py-2 rounded-full text-sm transition-all data-[state=active]:bg-[#7F3DFF] data-[state=active]:text-white data-[state=inactive]:bg-transparent data-[state=inactive]:text-gray-500"
+        className="rounded-lg data-[state=active]:bg-white data-[state=active]:text-[#7F3DFF] data-[state=active]:shadow-sm"
       >
-        OTP Login
+        <MessageSquare className="h-4 w-4 mr-2" />
+        OTP
       </TabsTrigger>
       {biometricAvailable && (
         <TabsTrigger
           value="biometric"
-          className="flex-1 px-6 py-2 rounded-full text-sm transition-all data-[state=active]:bg-[#7F3DFF] data-[state=active]:text-white data-[state=inactive]:bg-transparent data-[state=inactive]:text-gray-500"
+          className="rounded-lg data-[state=active]:bg-white data-[state=active]:text-[#7F3DFF] data-[state=active]:shadow-sm"
         >
+          <Fingerprint className="h-4 w-4 mr-2" />
           Biometric
         </TabsTrigger>
       )}
