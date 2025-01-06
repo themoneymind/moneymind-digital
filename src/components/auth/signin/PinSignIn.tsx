@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { getContactType } from "@/utils/otpValidation";
 import { sendOtpEmail, verifyOtpCode } from "@/utils/otpUtils";
@@ -15,21 +15,64 @@ export const PinSignIn = ({
   const [otpSent, setOtpSent] = useState(false);
   const [otp, setOtp] = useState("");
   const [contact, setContact] = useState("");
+  const [cooldownTime, setCooldownTime] = useState(0);
   const { toast } = useToast();
+
+  // Handle cooldown timer
+  useEffect(() => {
+    if (cooldownTime > 0) {
+      const timer = setTimeout(() => {
+        setCooldownTime(time => time - 1);
+      }, 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [cooldownTime]);
 
   const handleSendOtp = async () => {
     try {
+      // Check if in cooldown
+      if (cooldownTime > 0) {
+        toast({
+          title: "Please wait",
+          description: `You can request another OTP in ${cooldownTime} seconds`,
+          variant: "destructive",
+        });
+        return;
+      }
+
       const contactValue = contact.trim();
       const contactType = getContactType(contactValue);
       
       switch (contactType) {
         case 'email':
-          await sendOtpEmail(contactValue);
-          toast({
-            title: "OTP Sent",
-            description: "Please check your email for the verification code",
-          });
-          setOtpSent(true);
+          try {
+            await sendOtpEmail(contactValue);
+            toast({
+              title: "OTP Sent",
+              description: "Please check your email for the verification code",
+            });
+            setOtpSent(true);
+            // Set 60 second cooldown after successful send
+            setCooldownTime(60);
+          } catch (error: any) {
+            console.error("Error sending OTP:", error);
+            
+            // Handle rate limit error specifically
+            if (error.status === 429) {
+              setCooldownTime(60); // Force cooldown on rate limit
+              toast({
+                title: "Too Many Attempts",
+                description: "Please wait a minute before requesting another OTP",
+                variant: "destructive",
+              });
+            } else {
+              toast({
+                title: "Error",
+                description: error.message || "Failed to send OTP",
+                variant: "destructive",
+              });
+            }
+          }
           break;
 
         case 'phone':
@@ -49,10 +92,10 @@ export const PinSignIn = ({
           return;
       }
     } catch (error: any) {
-      console.error("Error sending OTP:", error);
+      console.error("Error in handleSendOtp:", error);
       toast({
         title: "Error",
-        description: error.message || "Failed to send OTP",
+        description: "An unexpected error occurred. Please try again.",
         variant: "destructive",
       });
     }
@@ -89,7 +132,7 @@ export const PinSignIn = ({
           contact={contact}
           setContact={setContact}
           handleSendOtp={handleSendOtp}
-          isLoading={isLoading}
+          isLoading={isLoading || cooldownTime > 0}
         />
       )}
     </div>

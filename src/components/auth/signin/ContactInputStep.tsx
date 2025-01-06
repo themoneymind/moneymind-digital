@@ -54,7 +54,7 @@ export const ContactInputStep = ({
         className="w-full h-12 rounded-xl md:text-sm text-base bg-[#7F3DFF] hover:bg-[#7F3DFF]/90"
         disabled={isLoading || !contact}
       >
-        {isLoading ? "Sending..." : "Send OTP"}
+        {isLoading ? "Please wait..." : "Send OTP"}
       </Button>
     </div>
   );
