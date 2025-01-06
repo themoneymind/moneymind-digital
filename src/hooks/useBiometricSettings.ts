@@ -52,21 +52,15 @@ export const useBiometricSettings = () => {
       }
 
       try {
-        const credential = await enrollBiometric();
+        const credential = await enrollBiometric() as unknown as BiometricCredentials;
         
-        if (!credential || typeof credential !== 'object') {
-          throw new Error("Invalid credential response");
-        }
-
-        const biometricCredential = credential as unknown as BiometricCredentials;
-        
-        if (!biometricCredential.id || !biometricCredential.type) {
+        if (!credential?.id || !credential?.type) {
           throw new Error("Invalid credential response");
         }
         
         const serializedCredentials = {
-          id: biometricCredential.id,
-          type: biometricCredential.type,
+          id: credential.id,
+          type: credential.type,
           email: user.email!,
           rawId: Array.from(new Uint8Array((credential as any).rawId))
         };
