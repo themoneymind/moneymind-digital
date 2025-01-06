@@ -2,6 +2,7 @@ import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
+import { Json } from "@/integrations/supabase/types";
 
 interface BiometricCredentials {
   id: string;
@@ -85,7 +86,7 @@ export const useBiometricAuth = () => {
 
       if (profileError) throw profileError;
 
-      const biometricCredentials = profileData?.biometric_credentials as BiometricCredentials;
+      const biometricCredentials = profileData?.biometric_credentials as unknown as BiometricCredentials;
       
       if (!biometricCredentials?.email) {
         throw new Error("Biometric credentials not found. Please set up biometric authentication first.");

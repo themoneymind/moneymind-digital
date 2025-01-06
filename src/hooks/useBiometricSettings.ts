@@ -3,6 +3,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useBiometricAuth } from "./useBiometricAuth";
+import { Json } from "@/integrations/supabase/types";
 
 interface BiometricCredentials {
   id: string;
@@ -54,7 +55,7 @@ export const useBiometricSettings = () => {
       try {
         const credential = await enrollBiometric();
         
-        const serializedCredentials: BiometricCredentials = {
+        const serializedCredentials: Json = {
           id: credential.id,
           type: credential.type,
           email: user.email!,
