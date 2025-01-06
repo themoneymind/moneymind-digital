@@ -28,7 +28,6 @@ export const PinSignIn = ({
             email: contactValue,
             options: {
               shouldCreateUser: true,
-              type: 'otp',
               data: {
                 email: contactValue,
               },
