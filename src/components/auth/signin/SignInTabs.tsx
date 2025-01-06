@@ -13,7 +13,7 @@ export const SignInTabs = ({ activeTab, onTabChange, biometricAvailable }: SignI
         value="password" 
         className={`flex-1 h-8 text-sm font-medium transition-all duration-200 rounded-full ${
           activeTab === "password"
-            ? "bg-[#7F3DFF] text-white shadow-sm"
+            ? "bg-[#9B51E0] text-white shadow-sm"
             : "text-gray-600 hover:text-gray-900 hover:bg-white/80"
         }`}
       >
@@ -23,7 +23,7 @@ export const SignInTabs = ({ activeTab, onTabChange, biometricAvailable }: SignI
         value="otp" 
         className={`flex-1 h-8 text-sm font-medium transition-all duration-200 rounded-full ${
           activeTab === "otp"
-            ? "bg-[#7F3DFF] text-white shadow-sm"
+            ? "bg-[#9B51E0] text-white shadow-sm"
             : "text-gray-600 hover:text-gray-900 hover:bg-white/80"
         }`}
       >
@@ -34,7 +34,7 @@ export const SignInTabs = ({ activeTab, onTabChange, biometricAvailable }: SignI
           value="biometric" 
           className={`flex-1 h-8 text-sm font-medium transition-all duration-200 rounded-full ${
             activeTab === "biometric"
-              ? "bg-[#7F3DFF] text-white shadow-sm"
+              ? "bg-[#9B51E0] text-white shadow-sm"
               : "text-gray-600 hover:text-gray-900 hover:bg-white/80"
           }`}
         >
