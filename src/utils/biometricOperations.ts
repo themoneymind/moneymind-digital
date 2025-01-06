@@ -1,4 +1,5 @@
 import { supabase } from "@/integrations/supabase/client";
+import { BiometricCredentials } from "@/types/biometric";
 
 export const getAuthenticatedUserId = async () => {
   const { data: { session }, error: sessionError } = await supabase.auth.getSession();
@@ -11,7 +12,7 @@ export const getAuthenticatedUserId = async () => {
   return session.user.id;
 };
 
-export const verifyBiometricCredentials = async (userId: string) => {
+export const verifyBiometricCredentials = async (userId: string): Promise<BiometricCredentials> => {
   const { data, error } = await supabase
     .from("profiles")
     .select("biometric_credentials")
@@ -23,7 +24,7 @@ export const verifyBiometricCredentials = async (userId: string) => {
     throw new Error("Biometric credentials not found. Please set up biometric authentication first.");
   }
   
-  return data.biometric_credentials;
+  return data.biometric_credentials as BiometricCredentials;
 };
 
 export const getAuthChallenge = async () => {

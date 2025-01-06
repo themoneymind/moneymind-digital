@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { BiometricCredentials } from "@/types/biometric";
 import { 
   getAuthenticatedUserId, 
   verifyBiometricCredentials,
@@ -35,15 +36,15 @@ export const useBiometricAuth = () => {
       const challenge = await getAuthChallenge();
 
       // Create authentication options
-      const options = {
+      const options: PublicKeyCredentialRequestOptions = {
         challenge: Uint8Array.from(atob(challenge), c => c.charCodeAt(0)),
         allowCredentials: [{
           id: Uint8Array.from(atob(biometricCredentials.credentialId), c => c.charCodeAt(0)),
           type: 'public-key',
-          transports: ['internal']
+          transports: ['internal'] as AuthenticatorTransport[]
         }],
         timeout: 60000,
-        userVerification: "required" as UserVerificationRequirement,
+        userVerification: "required",
         rpId: window.location.hostname,
       };
 
@@ -86,8 +87,14 @@ export const useBiometricAuth = () => {
     }
   };
 
+  const enrollBiometric = async () => {
+    // Implementation for biometric enrollment
+    throw new Error("Not implemented");
+  };
+
   return {
     authenticating,
-    startBiometricAuth
+    startBiometricAuth,
+    enrollBiometric
   };
 };
