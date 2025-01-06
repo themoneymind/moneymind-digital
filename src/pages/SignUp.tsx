@@ -11,7 +11,7 @@ export const SignUp = () => {
       <div className="absolute top-0 right-0 w-32 h-32 rounded-full bg-[#7F3DFF]/10 -mr-16 -mt-16" />
       
       <div className="p-6 pt-8 md:flex md:items-center md:justify-center md:min-h-[calc(100vh-64px)]">
-        <div className="md:max-w-md w-full md:shadow-lg md:rounded-2xl md:p-8 md:bg-white/50 md:backdrop-blur-sm">
+        <div className="md:max-w-md w-full md:shadow-xl md:rounded-2xl md:p-8 md:bg-white">
           <div className="space-y-6">
             <div className="text-left space-y-2">
               <div className="flex items-center mb-2">
