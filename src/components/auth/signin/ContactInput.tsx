@@ -22,45 +22,44 @@ export const ContactInput = ({
   onCountryChange,
 }: ContactInputProps) => {
   const inputRef = useRef<HTMLInputElement>(null);
-  const cursorPositionRef = useRef<number | null>(null);
+  const cursorPositionRef = useRef<number>(0);
 
   useEffect(() => {
-    if (
-      inputRef.current && 
-      cursorPositionRef.current !== null && 
-      inputType === 'phone' && 
-      /^\d*$/.test(contact)
-    ) {
+    if (inputRef.current && inputType === 'phone' && /^\d*$/.test(contact)) {
+      const input = inputRef.current;
+      // Ensure cursor position is within bounds
       const position = Math.min(cursorPositionRef.current, contact.length);
-      inputRef.current.setSelectionRange(position, position);
+      // Use requestAnimationFrame to ensure the cursor is set after the input value updates
+      requestAnimationFrame(() => {
+        input.setSelectionRange(position, position);
+      });
     }
   }, [contact, inputType]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newValue = e.target.value;
+    const input = e.target;
+    const newValue = input.value;
     
-    if (inputType === 'phone' && /^\d*$/.test(newValue)) {
-      // Store cursor position before the change
-      const currentPosition = e.target.selectionStart || 0;
-      const previousLength = contact.length;
-      const valueBeforeCursor = newValue.slice(0, currentPosition);
-      const digitsBeforeCursor = valueBeforeCursor.replace(/\D/g, '').length;
-      
-      // Calculate new cursor position
-      cursorPositionRef.current = digitsBeforeCursor;
+    if (inputType === 'phone') {
+      const cursorStart = input.selectionStart || 0;
+      cursorPositionRef.current = cursorStart;
     }
     
     onContactChange(newValue);
   };
 
-  const handleClick = (e: React.MouseEvent<HTMLInputElement>) => {
-    const target = e.target as HTMLInputElement;
-    cursorPositionRef.current = target.selectionStart;
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (inputType === 'phone') {
+      const input = e.target as HTMLInputElement;
+      cursorPositionRef.current = input.selectionStart || 0;
+    }
   };
 
-  const handleKeyUp = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    const target = e.target as HTMLInputElement;
-    cursorPositionRef.current = target.selectionStart;
+  const handleClick = (e: React.MouseEvent<HTMLInputElement>) => {
+    if (inputType === 'phone') {
+      const input = e.target as HTMLInputElement;
+      cursorPositionRef.current = input.selectionStart || 0;
+    }
   };
 
   const renderInputIcon = () => {
@@ -101,8 +100,8 @@ export const ContactInput = ({
         placeholder={getPlaceholder()}
         value={contact}
         onChange={handleInputChange}
+        onKeyDown={handleKeyDown}
         onClick={handleClick}
-        onKeyUp={handleKeyUp}
         className={`w-full py-3 ${inputPadding} md:text-sm text-base bg-transparent border-t-0 border-x-0 border-b-2 border-gray-200 rounded-none focus:outline-none transition-colors placeholder:text-gray-400 text-gray-600 focus:border-[#7F3DFF] focus:ring-0`}
         disabled={isLoading}
         required
