@@ -4,6 +4,13 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useBiometricAuth } from "./useBiometricAuth";
 
+interface BiometricCredentials {
+  id: string;
+  type: string;
+  email: string;
+  rawId: number[];
+}
+
 export const useBiometricSettings = () => {
   const [biometricEnabled, setBiometricEnabled] = useState(false);
   const { user } = useAuth();
@@ -47,11 +54,10 @@ export const useBiometricSettings = () => {
       try {
         const credential = await enrollBiometric();
         
-        // Create a JSON-serializable object from the credentials
-        const serializedCredentials = {
+        const serializedCredentials: BiometricCredentials = {
           id: credential.id,
           type: credential.type,
-          email: user.email, // Store the email with biometric credentials
+          email: user.email!,
           rawId: Array.from(new Uint8Array((credential as any).rawId))
         };
         

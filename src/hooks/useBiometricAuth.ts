@@ -3,6 +3,13 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 
+interface BiometricCredentials {
+  id: string;
+  type: string;
+  email: string;
+  rawId: number[];
+}
+
 export const useBiometricAuth = () => {
   const [authenticating, setAuthenticating] = useState(false);
   const { toast } = useToast();
@@ -71,14 +78,17 @@ export const useBiometricAuth = () => {
     setAuthenticating(true);
 
     try {
-      // Get the stored biometric credentials and email
       const { data: profileData, error: profileError } = await supabase
         .from("profiles")
         .select("biometric_credentials")
         .single();
 
-      if (profileError || !profileData?.biometric_credentials?.email) {
-        throw new Error("Biometric credentials not found");
+      if (profileError) throw profileError;
+
+      const biometricCredentials = profileData?.biometric_credentials as BiometricCredentials;
+      
+      if (!biometricCredentials?.email) {
+        throw new Error("Biometric credentials not found. Please set up biometric authentication first.");
       }
 
       const { data: { challenge }, error: challengeError } = await supabase.functions.invoke('get-auth-challenge', {
@@ -104,7 +114,7 @@ export const useBiometricAuth = () => {
         body: {
           credential,
           challenge,
-          email: profileData.biometric_credentials.email
+          email: biometricCredentials.email
         }
       });
 
