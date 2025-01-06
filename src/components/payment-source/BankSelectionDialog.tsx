@@ -11,6 +11,19 @@ export const BankSelectionDialog = ({
   onBankSelect,
   banks,
 }: BankSelectionDialogProps) => {
+  const formatBankName = (name: string) => {
+    // If "Bank" is not in the name, or if it's in the middle (like "Bank of" or "Union Bank of"),
+    // return the original name
+    if (!name.includes('Bank') || 
+        (name.toLowerCase().includes('bank of') || 
+         name.toLowerCase().includes('bank india'))) {
+      return name;
+    }
+    
+    // If "Bank" is at the end, remove it
+    return name.replace(/\sBank$/i, '').trim();
+  };
+
   return (
     <select
       value={selectedBank || ""}
@@ -29,7 +42,7 @@ export const BankSelectionDialog = ({
       </option>
       {banks.map((bank) => (
         <option key={bank} value={bank} className="text-gray-600">
-          {bank}
+          {formatBankName(bank)}
         </option>
       ))}
     </select>

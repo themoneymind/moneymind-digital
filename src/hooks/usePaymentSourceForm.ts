@@ -31,19 +31,21 @@ export const usePaymentSourceForm = (onSuccess: () => void) => {
   };
 
   const formatSourceName = (bankName: string) => {
-    // Remove any numbers and trim whitespace
-    const cleanName = bankName.replace(/\d+/g, '').trim();
+    // If it's a credit card, handle it as before
+    if (selectedType === "credit") {
+      const nameWithoutSuffixes = bankName
+        .replace(/\s*bank\s*/gi, '')
+        .replace(/\s*credit\s*card\s*/gi, '')
+        .trim();
+      return `${nameWithoutSuffixes} Credit Card`;
+    }
     
-    // Remove both "Bank" and "Credit Card" suffixes first
-    const nameWithoutSuffixes = cleanName
-      .replace(/\s*bank\s*/gi, '')
-      .replace(/\s*credit\s*card\s*/gi, '')
-      .trim();
-    
-    // Add appropriate suffix based on type
-    return selectedType === "credit" 
-      ? `${nameWithoutSuffixes} Credit Card`
-      : `${nameWithoutSuffixes} Bank`;
+    // For bank accounts, only add "Bank" suffix if it's not already part of the name
+    const cleanName = bankName.trim();
+    if (!cleanName.toLowerCase().includes('bank')) {
+      return `${cleanName} Bank`;
+    }
+    return cleanName;
   };
 
   const handleUpiToggle = (upiApp: string) => {
