@@ -1,142 +1,82 @@
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { useToast } from "@/hooks/use-toast";
-import { useAuth } from "@/contexts/AuthContext";
-import { getBiometricCredentials, isBiometricSupported } from "@/utils/biometricUtils";
+import { toast } from "sonner";
+import { 
+  getAuthenticatedUserId, 
+  verifyBiometricCredentials,
+  getAuthChallenge,
+  verifyBiometricAssertion
+} from "@/utils/biometricOperations";
 
 export const useBiometricAuth = () => {
   const [authenticating, setAuthenticating] = useState(false);
-  const { toast } = useToast();
-  const { user } = useAuth();
 
-  const enrollBiometric = async () => {
-    if (!isBiometricSupported()) {
-      throw new Error("Biometric authentication is not supported on this device");
-    }
-
-    if (!user?.email) {
-      throw new Error("User email not found");
-    }
-
-    try {
-      const { data: { challenge }, error: challengeError } = await supabase.functions.invoke('get-auth-challenge', {
-        body: { type: 'enroll' }
-      });
-
-      if (challengeError) throw challengeError;
-
-      const challengeBuffer = Uint8Array.from(atob(challenge), c => c.charCodeAt(0));
-      
-      const credential = await navigator.credentials.create({
-        publicKey: {
-          challenge: challengeBuffer,
-          rp: {
-            name: "MoneyMind",
-            id: window.location.hostname,
-          },
-          user: {
-            id: Uint8Array.from(user.id, c => c.charCodeAt(0)),
-            name: user.email,
-            displayName: user.email.split('@')[0],
-          },
-          pubKeyCredParams: [{alg: -7, type: "public-key"}],
-          authenticatorSelection: {
-            authenticatorAttachment: "platform",
-            userVerification: "required",
-          },
-          timeout: 60000,
-        }
-      });
-
-      if (!credential) throw new Error("No credentials received");
-
-      return credential;
-    } catch (error) {
-      console.error('Biometric enrollment error:', error);
-      throw error;
-    }
-  };
-
-  const startBiometricAuth = async (onSuccess: () => Promise<void>) => {
-    if (!isBiometricSupported()) {
-      toast({
-        title: "Error",
-        description: "Your device doesn't support biometric authentication",
-        variant: "destructive",
-      });
+  const handleBiometricAuth = async () => {
+    if (!window.PublicKeyCredential) {
+      toast.error("Biometric authentication is not supported on this device");
       return;
     }
 
     setAuthenticating(true);
 
     try {
-      const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
+      // Get authenticated user ID
+      const userId = await getAuthenticatedUserId();
       
-      if (sessionError) throw sessionError;
+      // Verify biometric credentials exist
+      const biometricCredentials = await verifyBiometricCredentials(userId);
       
-      const userId = sessionData.session?.user?.id;
-      if (!userId) {
-        throw new Error("No authenticated user found");
-      }
+      // Get authentication challenge
+      const challenge = await getAuthChallenge();
 
-      const biometricCredentials = await getBiometricCredentials(userId);
-      
-      if (!biometricCredentials?.email) {
-        throw new Error("Biometric credentials not found. Please set up biometric authentication first.");
-      }
+      // Create authentication options
+      const options = {
+        challenge: Uint8Array.from(atob(challenge), c => c.charCodeAt(0)),
+        allowCredentials: [{
+          id: Uint8Array.from(atob(biometricCredentials.credentialId), c => c.charCodeAt(0)),
+          type: 'public-key',
+          transports: ['internal']
+        }],
+        timeout: 60000,
+        userVerification: "required" as UserVerificationRequirement,
+        rpId: window.location.hostname,
+      };
 
-      const { data: { challenge }, error: challengeError } = await supabase.functions.invoke('get-auth-challenge', {
-        body: { type: 'get' }
-      });
-
-      if (challengeError) throw challengeError;
-
-      const challengeBuffer = Uint8Array.from(atob(challenge), c => c.charCodeAt(0));
-      
+      // Get credential
       const credential = await navigator.credentials.get({
-        publicKey: {
-          challenge: challengeBuffer,
-          timeout: 60000,
-          userVerification: "required",
-          rpId: window.location.hostname,
-        }
+        publicKey: options
       });
 
-      if (!credential) throw new Error("No credentials received");
+      if (!credential) {
+        throw new Error("No credential received");
+      }
 
-      const { error: verifyError } = await supabase.functions.invoke('verify-biometric', {
-        body: {
-          credential,
-          challenge,
-          email: biometricCredentials.email
-        }
+      // Verify the assertion
+      await verifyBiometricAssertion(
+        credential,
+        challenge,
+        biometricCredentials.email
+      );
+
+      // Sign in with email
+      const { error: signInError } = await supabase.auth.signInWithPassword({
+        email: biometricCredentials.email,
+        password: biometricCredentials.password,
       });
 
-      if (verifyError) throw verifyError;
+      if (signInError) throw signInError;
 
-      await onSuccess();
-
-      toast({
-        title: "Success",
-        description: "Biometric authentication successful",
-      });
-
+      toast.success("Successfully authenticated with biometrics");
     } catch (error: any) {
-      console.error('Biometric auth error:', error);
-      toast({
-        title: "Authentication Failed",
-        description: error.message || "Failed to authenticate using biometrics",
-        variant: "destructive",
-      });
+      console.error("Biometric authentication error:", error);
+      toast.error(error.message || "Biometric authentication failed");
     } finally {
       setAuthenticating(false);
     }
   };
 
   return {
-    authenticating,
-    startBiometricAuth,
-    isBiometricSupported,
-    enrollBiometric
+    handleBiometricAuth,
+    authenticating
   };
 };
