@@ -45,14 +45,14 @@ export const useBiometricSettings = () => {
       }
 
       try {
-        const credentials = await enrollBiometric();
+        const credential = await enrollBiometric();
         
         // Create a JSON-serializable object from the credentials
         const serializedCredentials = {
-          id: credentials.id,
-          type: credentials.type,
-          // Only include properties that exist on the Credential type
-          rawId: Array.from(new Uint8Array(credentials.rawId))
+          id: credential.id,
+          type: credential.type,
+          // Convert ArrayBuffer to array for storage
+          rawId: Array.from(new Uint8Array((credential as any).rawId))
         };
         
         const { error } = await supabase
