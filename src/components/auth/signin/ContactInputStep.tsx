@@ -22,7 +22,6 @@ export const ContactInputStep = ({
   const handleContactChange = (value: string) => {
     setContact(value);
     
-    // Detect input type based on content
     if (/[a-zA-Z]/.test(value) || value.includes('@')) {
       setInputType('email');
     } else if (value === '' || /^\d*$/.test(value)) {
