@@ -68,10 +68,7 @@ export const Header = () => {
   };
 
   return (
-    <header className="flex-none bg-[#7F3DFF] pb-8">
-      {/* Decorative Circle */}
-      <div className="absolute right-0 top-0 w-32 h-32 bg-white/10 rounded-full transform translate-x-16 -translate-y-8" />
-      
+    <header className="bg-[#7F3DFF] pb-8">
       {/* First Row - Navigation and Actions */}
       <div className="max-w-2xl mx-auto flex items-center justify-between px-4 py-4 relative">
         <div className="flex items-center gap-3 pl-2">
