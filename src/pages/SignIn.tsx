@@ -118,7 +118,7 @@ export const SignIn = () => {
   };
 
   return (
-    <div className="min-h-screen bg-white relative overflow-hidden">
+    <div className="min-h-screen bg-[#F5F3FF] relative overflow-hidden">
       <TopBar title="Sign In" />
       
       {/* Decorative Circle */}

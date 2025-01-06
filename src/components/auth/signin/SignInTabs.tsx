@@ -1,44 +1,30 @@
 import { TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 interface SignInTabsProps {
-  activeTab: string;
-  onTabChange: (value: string) => void;
   biometricAvailable: boolean;
 }
 
-export const SignInTabs = ({ activeTab, onTabChange, biometricAvailable }: SignInTabsProps) => {
+export const SignInTabs = ({ biometricAvailable }: SignInTabsProps) => {
   return (
-    <TabsList className="grid w-full grid-cols-3 h-10 items-center bg-transparent rounded-full p-1" style={{ background: '#F1F1F1' }}>
-      <TabsTrigger 
-        value="password" 
-        className={`flex-1 h-8 text-sm font-medium transition-all duration-200 rounded-full ${
-          activeTab === "password"
-            ? "bg-[#9B51E0] text-white shadow-sm"
-            : "text-gray-600 hover:text-gray-900 hover:bg-[#9B51E0]/10"
-        }`}
+    <TabsList className="flex p-1 bg-gray-100 rounded-full gap-2">
+      <TabsTrigger
+        value="password"
+        className="flex-1 px-6 py-2 rounded-full text-sm transition-all data-[state=active]:bg-[#7F3DFF] data-[state=active]:text-white data-[state=inactive]:bg-transparent data-[state=inactive]:text-gray-500"
       >
         Password
       </TabsTrigger>
-      <TabsTrigger 
-        value="otp" 
-        className={`flex-1 h-8 text-sm font-medium transition-all duration-200 rounded-full ${
-          activeTab === "otp"
-            ? "bg-[#9B51E0] text-white shadow-sm"
-            : "text-gray-600 hover:text-gray-900 hover:bg-[#9B51E0]/10"
-        }`}
+      <TabsTrigger
+        value="otp"
+        className="flex-1 px-6 py-2 rounded-full text-sm transition-all data-[state=active]:bg-[#7F3DFF] data-[state=active]:text-white data-[state=inactive]:bg-transparent data-[state=inactive]:text-gray-500"
       >
-        OTP
+        Login with OTP
       </TabsTrigger>
       {biometricAvailable && (
-        <TabsTrigger 
-          value="biometric" 
-          className={`flex-1 h-8 text-sm font-medium transition-all duration-200 rounded-full ${
-            activeTab === "biometric"
-              ? "bg-[#9B51E0] text-white shadow-sm"
-              : "text-gray-600 hover:text-gray-900 hover:bg-[#9B51E0]/10"
-          }`}
+        <TabsTrigger
+          value="biometric"
+          className="flex-1 px-6 py-2 rounded-full text-sm transition-all data-[state=active]:bg-[#7F3DFF] data-[state=active]:text-white data-[state=inactive]:bg-transparent data-[state=inactive]:text-gray-500"
         >
-          Bio
+          Biometric
         </TabsTrigger>
       )}
     </TabsList>

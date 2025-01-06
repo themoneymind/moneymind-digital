@@ -19,7 +19,7 @@ export const BiometricSignIn = ({
 
   return (
     <div className="space-y-8">
-      <div className="bg-[#7F3DFF] p-8 rounded-2xl shadow-sm">
+      <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
         <BiometricIcon />
       </div>
       <Button 

@@ -80,11 +80,7 @@ export const SignInForm = ({
         onValueChange={setActiveTab} 
         className="w-full"
       >
-        <SignInTabs 
-          activeTab={activeTab}
-          onTabChange={setActiveTab}
-          biometricAvailable={biometricAvailable} 
-        />
+        <SignInTabs biometricAvailable={biometricAvailable} />
 
         <TabsContent value="password" className="mt-6">
           <PasswordSignIn
