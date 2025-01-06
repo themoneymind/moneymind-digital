@@ -25,7 +25,12 @@ export const ContactInput = ({
   const cursorPositionRef = useRef<number | null>(null);
 
   useEffect(() => {
-    if (inputRef.current && cursorPositionRef.current !== null) {
+    if (
+      inputRef.current && 
+      cursorPositionRef.current !== null && 
+      inputType === 'phone' && 
+      /^\d*$/.test(contact)
+    ) {
       inputRef.current.setSelectionRange(
         cursorPositionRef.current,
         cursorPositionRef.current
@@ -34,7 +39,9 @@ export const ContactInput = ({
   });
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    cursorPositionRef.current = e.target.selectionStart;
+    if (inputType === 'phone' && /^\d*$/.test(e.target.value)) {
+      cursorPositionRef.current = e.target.selectionStart;
+    }
     onContactChange(e.target.value);
   };
 
