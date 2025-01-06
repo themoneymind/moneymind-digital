@@ -31,20 +31,36 @@ export const ContactInput = ({
       inputType === 'phone' && 
       /^\d*$/.test(contact)
     ) {
-      const position = cursorPositionRef.current;
+      const position = Math.min(cursorPositionRef.current, contact.length);
       inputRef.current.setSelectionRange(position, position);
     }
   }, [contact, inputType]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value;
-    const cursorPosition = e.target.selectionStart || 0;
     
     if (inputType === 'phone' && /^\d*$/.test(newValue)) {
-      cursorPositionRef.current = cursorPosition;
+      // Store cursor position before the change
+      const currentPosition = e.target.selectionStart || 0;
+      const previousLength = contact.length;
+      const valueBeforeCursor = newValue.slice(0, currentPosition);
+      const digitsBeforeCursor = valueBeforeCursor.replace(/\D/g, '').length;
+      
+      // Calculate new cursor position
+      cursorPositionRef.current = digitsBeforeCursor;
     }
     
     onContactChange(newValue);
+  };
+
+  const handleClick = (e: React.MouseEvent<HTMLInputElement>) => {
+    const target = e.target as HTMLInputElement;
+    cursorPositionRef.current = target.selectionStart;
+  };
+
+  const handleKeyUp = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    const target = e.target as HTMLInputElement;
+    cursorPositionRef.current = target.selectionStart;
   };
 
   const renderInputIcon = () => {
@@ -85,6 +101,8 @@ export const ContactInput = ({
         placeholder={getPlaceholder()}
         value={contact}
         onChange={handleInputChange}
+        onClick={handleClick}
+        onKeyUp={handleKeyUp}
         className={`w-full py-3 ${inputPadding} md:text-sm text-base bg-transparent border-t-0 border-x-0 border-b-2 border-gray-200 rounded-none focus:outline-none transition-colors placeholder:text-gray-400 text-gray-600 focus:border-[#7F3DFF] focus:ring-0`}
         disabled={isLoading}
         required
