@@ -46,16 +46,20 @@ export const useFinanceUtils = (
       } else {
         let displayName;
         if (source.type === "Credit Card") {
-          // For credit cards, remove "Bank" and add "Credit Card"
-          displayName = `${source.name.replace(/\s*bank\s*/i, '')} Credit Card`;
+          // For credit cards, remove both "Bank" and "Credit Card" then add "Credit Card"
+          displayName = `${source.name
+            .replace(/\s*bank\s*/i, '')
+            .replace(/\s*credit\s*card\s*/i, '')} Credit Card`;
         } else {
-          // For bank accounts, ensure "Bank" suffix
-          displayName = formatSourceName(source.name);
+          // For bank accounts, remove both "Bank" and "Credit Card" then add "Bank"
+          displayName = `${source.name
+            .replace(/\s*bank\s*/i, '')
+            .replace(/\s*credit\s*card\s*/i, '')} Bank`;
         }
         
         formattedSources.push({
           id: source.id,
-          name: displayName
+          name: displayName.trim()
         });
       }
 
