@@ -1,7 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { BiometricIcon } from "./BiometricIcon";
 import { useBiometricAuth } from "@/hooks/useBiometricAuth";
-import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
 
 interface BiometricSignInProps {
@@ -17,12 +16,8 @@ export const BiometricSignIn = ({
   const navigate = useNavigate();
 
   const handleBiometricAuth = () => {
-    startBiometricAuth(async () => {
-      const { data: { session }, error } = await supabase.auth.getSession();
-      if (error) throw error;
-      if (session) {
-        navigate("/app");
-      }
+    startBiometricAuth(() => {
+      navigate("/app");
     });
   };
 

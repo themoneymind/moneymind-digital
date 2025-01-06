@@ -1,28 +1,29 @@
 import { supabase } from "@/integrations/supabase/client";
-import { getBiometricCredentials } from "./biometricUtils";
-import { Session } from "@supabase/supabase-js";
 
 export const getAuthenticatedUserId = async () => {
-  const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
+  const { data: { session }, error: sessionError } = await supabase.auth.getSession();
   
   if (sessionError) throw sessionError;
-  
-  const userId = sessionData.session?.user?.id;
-  if (!userId) {
+  if (!session?.user?.id) {
     throw new Error("No authenticated user found");
   }
   
-  return userId;
+  return session.user.id;
 };
 
 export const verifyBiometricCredentials = async (userId: string) => {
-  const biometricCredentials = await getBiometricCredentials(userId);
+  const { data, error } = await supabase
+    .from("profiles")
+    .select("biometric_credentials")
+    .eq("id", userId)
+    .single();
   
-  if (!biometricCredentials?.email) {
+  if (error) throw error;
+  if (!data?.biometric_credentials?.email || !data?.biometric_credentials?.credentialId) {
     throw new Error("Biometric credentials not found. Please set up biometric authentication first.");
   }
   
-  return biometricCredentials;
+  return data.biometric_credentials;
 };
 
 export const getAuthChallenge = async () => {
@@ -45,9 +46,8 @@ export const getAuthChallenge = async () => {
 };
 
 export const verifyBiometricAssertion = async (
-  credential: any,
-  challenge: string,
-  email: string
+  credential: PublicKeyCredential,
+  challenge: string
 ) => {
   const response = await fetch(
     `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/verify-biometric`,
@@ -57,7 +57,10 @@ export const verifyBiometricAssertion = async (
         'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ credential, challenge, email }),
+      body: JSON.stringify({ 
+        credential,
+        challenge,
+      }),
     }
   );
 

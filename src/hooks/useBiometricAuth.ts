@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { toast } from "sonner";
+import { useToast } from "@/hooks/use-toast";
 import { 
   getAuthenticatedUserId, 
   verifyBiometricCredentials,
@@ -10,10 +10,15 @@ import {
 
 export const useBiometricAuth = () => {
   const [authenticating, setAuthenticating] = useState(false);
+  const { toast } = useToast();
 
-  const handleBiometricAuth = async () => {
+  const startBiometricAuth = async (onSuccess: () => void) => {
     if (!window.PublicKeyCredential) {
-      toast.error("Biometric authentication is not supported on this device");
+      toast({
+        title: "Error",
+        description: "Biometric authentication is not supported on this device",
+        variant: "destructive",
+      });
       return;
     }
 
@@ -45,38 +50,44 @@ export const useBiometricAuth = () => {
       // Get credential
       const credential = await navigator.credentials.get({
         publicKey: options
-      });
+      }) as PublicKeyCredential;
 
       if (!credential) {
         throw new Error("No credential received");
       }
 
       // Verify the assertion
-      await verifyBiometricAssertion(
-        credential,
-        challenge,
-        biometricCredentials.email
-      );
+      await verifyBiometricAssertion(credential, challenge);
 
-      // Sign in with email
-      const { error: signInError } = await supabase.auth.signInWithPassword({
+      // Sign in with stored credentials
+      const { data: { session }, error: signInError } = await supabase.auth.signInWithPassword({
         email: biometricCredentials.email,
         password: biometricCredentials.password,
       });
 
       if (signInError) throw signInError;
+      if (!session) throw new Error("No session created");
 
-      toast.success("Successfully authenticated with biometrics");
+      toast({
+        title: "Success",
+        description: "Successfully authenticated with biometrics",
+      });
+
+      onSuccess();
     } catch (error: any) {
       console.error("Biometric authentication error:", error);
-      toast.error(error.message || "Biometric authentication failed");
+      toast({
+        title: "Authentication Failed",
+        description: error.message || "Failed to authenticate with biometrics",
+        variant: "destructive",
+      });
     } finally {
       setAuthenticating(false);
     }
   };
 
   return {
-    handleBiometricAuth,
-    authenticating
+    authenticating,
+    startBiometricAuth
   };
 };
