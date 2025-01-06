@@ -20,11 +20,14 @@ export const verifyBiometricCredentials = async (userId: string): Promise<Biomet
     .single();
   
   if (error) throw error;
-  if (!data?.biometric_credentials?.email || !data?.biometric_credentials?.credentialId) {
+  
+  const credentials = data?.biometric_credentials as BiometricCredentials | null;
+  
+  if (!credentials?.email || !credentials?.credentialId) {
     throw new Error("Biometric credentials not found. Please set up biometric authentication first.");
   }
   
-  return data.biometric_credentials as BiometricCredentials;
+  return credentials;
 };
 
 export const getAuthChallenge = async () => {

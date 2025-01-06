@@ -4,7 +4,7 @@ export interface BiometricCredentials {
   id: string;
   type: string;
   email: string;
-  password: string;
+  password?: string;
   credentialId: string;
   rawId: number[];
 }

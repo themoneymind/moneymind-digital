@@ -8,7 +8,7 @@ import {
   createBiometricNotification,
   isBiometricSupported 
 } from "@/utils/biometricUtils";
-import { Json } from "@/integrations/supabase/types";
+import { BiometricCredentials } from "@/types/biometric";
 import { supabase } from "@/integrations/supabase/client";
 
 export const useBiometricSettings = () => {
@@ -52,9 +52,13 @@ export const useBiometricSettings = () => {
       }
 
       try {
-        const credential = await enrollBiometric();
+        const credential = await enrollBiometric() as BiometricCredentials;
         
-        const serializedCredentials: Json = {
+        if (!credential?.id || !credential?.type) {
+          throw new Error("Invalid credential response");
+        }
+        
+        const serializedCredentials = {
           id: credential.id,
           type: credential.type,
           email: user.email!,
