@@ -15,7 +15,7 @@ export const BankSelectionDialog = ({
     <select
       value={selectedBank || ""}
       onChange={(e) => onBankSelect(e.target.value)}
-      className="h-12 w-full py-2 px-0 text-sm bg-transparent border-0 border-b-2 border-gray-200 focus:outline-none focus:border-primary rounded-none font-sans text-gray-400 appearance-none"
+      className="h-12 w-full py-2 px-0 text-base bg-transparent border-0 border-b-2 border-gray-200 focus:outline-none focus:border-primary rounded-none font-sans text-gray-400 appearance-none"
       style={{
         backgroundImage: `url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%236B7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3E%3C/svg%3E")`,
         backgroundPosition: "right 0 center",
