@@ -1,8 +1,8 @@
 import { Link } from "react-router-dom";
+import { Mail, Lock } from "lucide-react";
+import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Input } from "@/components/ui/input";
-import { Lock } from "lucide-react";
 
 interface PasswordSignInProps {
   email: string;
@@ -10,7 +10,7 @@ interface PasswordSignInProps {
   password: string;
   setPassword: (password: string) => void;
   rememberMe: boolean;
-  setRememberMe: (value: boolean) => void;
+  setRememberMe: (checked: boolean) => void;
   handleSubmit: (e: React.FormEvent) => void;
   isLoading: boolean;
 }
@@ -29,33 +29,33 @@ export const PasswordSignIn = ({
     <form onSubmit={handleSubmit} className="space-y-6">
       <div className="space-y-4">
         <div className="relative">
+          <div className="absolute left-3 top-1/2 -translate-y-1/2">
+            <Mail className="h-4 w-4 text-[#7F3DFF]" />
+          </div>
           <Input
             type="email"
+            placeholder="Email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            placeholder="Email"
-            className="pl-10 py-3 md:text-sm text-base bg-transparent border-t-0 border-x-0 border-b-2 border-gray-200 rounded-none focus:outline-none transition-colors placeholder:text-gray-400 text-gray-600 focus:border-[#7F3DFF] focus:ring-0"
+            className="w-full py-3 pl-10 md:text-sm text-base bg-transparent border-t-0 border-x-0 border-b-2 border-gray-200 rounded-none focus:outline-none transition-colors placeholder:text-gray-400 text-gray-600 focus:border-[#7F3DFF] focus:ring-0"
             disabled={isLoading}
             required
           />
-          <div className="absolute left-3 top-1/2 -translate-y-1/2">
-            <Lock className="h-4 w-4 text-[#7F3DFF]" />
-          </div>
         </div>
 
         <div className="relative">
-          <Input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="Password"
-            className="pl-10 py-3 md:text-sm text-base bg-transparent border-t-0 border-x-0 border-b-2 border-gray-200 rounded-none focus:outline-none transition-colors placeholder:text-gray-400 text-gray-600 focus:border-[#7F3DFF] focus:ring-0"
-            disabled={isLoading}
-            required
-          />
           <div className="absolute left-3 top-1/2 -translate-y-1/2">
             <Lock className="h-4 w-4 text-[#7F3DFF]" />
           </div>
+          <Input
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="w-full py-3 pl-10 md:text-sm text-base bg-transparent border-t-0 border-x-0 border-b-2 border-gray-200 rounded-none focus:outline-none transition-colors placeholder:text-gray-400 text-gray-600 focus:border-[#7F3DFF] focus:ring-0"
+            disabled={isLoading}
+            required
+          />
         </div>
       </div>
 
@@ -65,7 +65,7 @@ export const PasswordSignIn = ({
             id="rememberMe"
             checked={rememberMe}
             onCheckedChange={(checked) => setRememberMe(checked as boolean)}
-            className="border-[#7F3DFF] data-[state=checked]:bg-[#7F3DFF] data-[state=checked]:text-white"
+            className="border-2 border-gray-300 data-[state=checked]:bg-[#7F3DFF] data-[state=checked]:border-[#7F3DFF]"
           />
           <label
             htmlFor="rememberMe"
