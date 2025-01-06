@@ -1,5 +1,5 @@
 import { Input } from "@/components/ui/input";
-import { User, Mail, Phone, Lock, KeyRound, Fingerprint } from "lucide-react";
+import { User, Mail, Phone, Lock, Fingerprint } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import { useState, useEffect } from "react";
 
@@ -26,8 +26,6 @@ export const SignUpInputs = ({
   setPassword,
   isLoading,
 }: SignUpInputsProps) => {
-  const [pin, setPin] = useState("");
-  const [confirmPin, setConfirmPin] = useState("");
   const [enableBiometric, setEnableBiometric] = useState(false);
   const [biometricAvailable, setBiometricAvailable] = useState(false);
 
@@ -48,20 +46,6 @@ export const SignUpInputs = ({
     checkBiometricAvailability();
   }, []);
 
-  const validatePin = (value: string) => {
-    return /^\d{4,6}$/.test(value);
-  };
-
-  const handlePinChange = (value: string, field: 'pin' | 'confirmPin') => {
-    if (value === '' || /^\d+$/.test(value)) {
-      if (field === 'pin') {
-        setPin(value);
-      } else {
-        setConfirmPin(value);
-      }
-    }
-  };
-
   return (
     <div className="space-y-6">
       <div className="relative">
@@ -73,7 +57,7 @@ export const SignUpInputs = ({
           placeholder="Enter your name"
           value={fullName}
           onChange={(e) => setFullName(e.target.value)}
-          className="w-full py-3 pl-10 text-sm bg-transparent border-b-2 border-gray-200 focus:outline-none transition-colors placeholder:text-gray-400 text-gray-600 focus:border-[#7F3DFF]"
+          className="w-full py-3 pl-10 text-base bg-transparent border-b-2 border-gray-200 focus:outline-none transition-colors placeholder:text-gray-400 text-gray-600 focus:border-[#7F3DFF]"
           disabled={isLoading}
           required
         />
@@ -88,7 +72,7 @@ export const SignUpInputs = ({
           placeholder="Enter your email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className="w-full py-3 pl-10 text-sm bg-transparent border-b-2 border-gray-200 focus:outline-none transition-colors placeholder:text-gray-400 text-gray-600 focus:border-[#7F3DFF]"
+          className="w-full py-3 pl-10 text-base bg-transparent border-b-2 border-gray-200 focus:outline-none transition-colors placeholder:text-gray-400 text-gray-600 focus:border-[#7F3DFF]"
           disabled={isLoading}
           required
         />
@@ -103,7 +87,7 @@ export const SignUpInputs = ({
           placeholder="Enter your mobile number"
           value={phoneNumber}
           onChange={(e) => setPhoneNumber(e.target.value)}
-          className="w-full py-3 pl-10 text-sm bg-transparent border-b-2 border-gray-200 focus:outline-none transition-colors placeholder:text-gray-400 text-gray-600 focus:border-[#7F3DFF]"
+          className="w-full py-3 pl-10 text-base bg-transparent border-b-2 border-gray-200 focus:outline-none transition-colors placeholder:text-gray-400 text-gray-600 focus:border-[#7F3DFF]"
           disabled={isLoading}
           required
         />
@@ -118,43 +102,7 @@ export const SignUpInputs = ({
           placeholder="Enter your password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          className="w-full py-3 pl-10 text-sm bg-transparent border-b-2 border-gray-200 focus:outline-none transition-colors placeholder:text-gray-400 text-gray-600 focus:border-[#7F3DFF]"
-          disabled={isLoading}
-          required
-        />
-      </div>
-
-      <div className="relative">
-        <div className="absolute left-0 top-2 flex h-7 w-7 items-center justify-center rounded-full bg-[#F5F3FF]">
-          <KeyRound className="h-4 w-4 text-[#7F3DFF]" />
-        </div>
-        <input
-          type="password"
-          inputMode="numeric"
-          pattern="\d*"
-          maxLength={6}
-          placeholder="Enter 4-6 digit PIN"
-          value={pin}
-          onChange={(e) => handlePinChange(e.target.value, 'pin')}
-          className="w-full py-3 pl-10 text-sm bg-transparent border-b-2 border-gray-200 focus:outline-none transition-colors placeholder:text-gray-400 text-gray-600 focus:border-[#7F3DFF]"
-          disabled={isLoading}
-          required
-        />
-      </div>
-
-      <div className="relative">
-        <div className="absolute left-0 top-2 flex h-7 w-7 items-center justify-center rounded-full bg-[#F5F3FF]">
-          <KeyRound className="h-4 w-4 text-[#7F3DFF]" />
-        </div>
-        <input
-          type="password"
-          inputMode="numeric"
-          pattern="\d*"
-          maxLength={6}
-          placeholder="Confirm PIN"
-          value={confirmPin}
-          onChange={(e) => handlePinChange(e.target.value, 'confirmPin')}
-          className="w-full py-3 pl-10 text-sm bg-transparent border-b-2 border-gray-200 focus:outline-none transition-colors placeholder:text-gray-400 text-gray-600 focus:border-[#7F3DFF]"
+          className="w-full py-3 pl-10 text-base bg-transparent border-b-2 border-gray-200 focus:outline-none transition-colors placeholder:text-gray-400 text-gray-600 focus:border-[#7F3DFF]"
           disabled={isLoading}
           required
         />
