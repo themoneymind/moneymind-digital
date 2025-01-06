@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useFinance } from "@/contexts/FinanceContext";
 import { useToast } from "@/hooks/use-toast";
-import { PaymentSource } from "@/types/finance";
 
 export const usePaymentSourceForm = (onSuccess: () => void) => {
   const { addPaymentSource, addTransaction, paymentSources } = useFinance();
@@ -32,8 +31,13 @@ export const usePaymentSourceForm = (onSuccess: () => void) => {
   };
 
   const formatSourceName = (bankName: string) => {
+    // Remove any numbers and trim whitespace
     const cleanName = bankName.replace(/\d+/g, '').trim();
-    return cleanName.toLowerCase().includes('bank') ? cleanName : `${cleanName} Bank`;
+    // Remove the word "Bank" if it exists
+    const nameWithoutBank = cleanName.replace(/\sBank/i, '');
+    // For bank selection, append "Credit Card"
+    // For custom cards, use the name as is
+    return selectedBank ? `${nameWithoutBank} Credit Card` : bankName;
   };
 
   const handleUpiToggle = (upiApp: string) => {
@@ -65,9 +69,7 @@ export const usePaymentSourceForm = (onSuccess: () => void) => {
       return;
     }
 
-    const sourceName = selectedType === "credit" 
-      ? `${formatSourceName(bankName)} Credit Card`
-      : formatSourceName(bankName);
+    const sourceName = formatSourceName(bankName);
 
     const checkDuplicateSource = (sourceName: string) => {
       return paymentSources.some(source => source.name === sourceName);
