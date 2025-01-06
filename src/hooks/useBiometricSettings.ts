@@ -52,7 +52,7 @@ export const useBiometricSettings = () => {
       }
 
       try {
-        const credential = await enrollBiometric() as BiometricCredentials;
+        const credential = await enrollBiometric() as unknown as BiometricCredentials;
         
         if (!credential?.id || !credential?.type) {
           throw new Error("Invalid credential response");

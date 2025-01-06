@@ -34,6 +34,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     setSession(null);
     setUser(null);
     localStorage.removeItem("isFirstTimeUser");
+    localStorage.removeItem("rememberMe");
+    localStorage.removeItem("rememberedEmail");
     navigate("/signin");
   };
 
@@ -55,14 +57,17 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     } = supabase.auth.onAuthStateChange(async (event, session) => {
       console.log("Auth state changed:", event);
       
-      if (event === 'SIGNED_OUT' || event === 'TOKEN_REFRESHED') {
-        if (!session) {
-          handleAuthError();
-          return;
-        }
+      if (event === 'SIGNED_OUT') {
+        handleAuthError();
+        return;
       }
 
       if (event === 'TOKEN_REFRESHED') {
+        if (!session) {
+          console.error("No session after token refresh");
+          handleAuthError();
+          return;
+        }
         console.log('Token refreshed successfully');
       }
 

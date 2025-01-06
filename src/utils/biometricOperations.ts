@@ -21,7 +21,7 @@ export const verifyBiometricCredentials = async (userId: string): Promise<Biomet
   
   if (error) throw error;
   
-  const credentials = data?.biometric_credentials as BiometricCredentials | null;
+  const credentials = data?.biometric_credentials as unknown as BiometricCredentials;
   
   if (!credentials?.email || !credentials?.credentialId) {
     throw new Error("Biometric credentials not found. Please set up biometric authentication first.");
