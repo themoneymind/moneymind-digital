@@ -2,24 +2,15 @@ import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
-import { Json } from "@/integrations/supabase/types";
-
-interface BiometricCredentials {
-  id: string;
-  type: string;
-  email: string;
-  rawId: number[];
-}
+import { getBiometricCredentials, isBiometricSupported } from "@/utils/biometricUtils";
 
 export const useBiometricAuth = () => {
   const [authenticating, setAuthenticating] = useState(false);
   const { toast } = useToast();
   const { user } = useAuth();
 
-  const isBiometricSupported = window.PublicKeyCredential !== undefined;
-
   const enrollBiometric = async () => {
-    if (!isBiometricSupported) {
+    if (!isBiometricSupported()) {
       throw new Error("Biometric authentication is not supported on this device");
     }
 
@@ -67,7 +58,7 @@ export const useBiometricAuth = () => {
   };
 
   const startBiometricAuth = async (onSuccess: () => Promise<void>) => {
-    if (!isBiometricSupported) {
+    if (!isBiometricSupported()) {
       toast({
         title: "Error",
         description: "Your device doesn't support biometric authentication",
@@ -79,14 +70,7 @@ export const useBiometricAuth = () => {
     setAuthenticating(true);
 
     try {
-      const { data: profileData, error: profileError } = await supabase
-        .from("profiles")
-        .select("biometric_credentials")
-        .single();
-
-      if (profileError) throw profileError;
-
-      const biometricCredentials = profileData?.biometric_credentials as unknown as BiometricCredentials;
+      const biometricCredentials = await getBiometricCredentials(user?.id!);
       
       if (!biometricCredentials?.email) {
         throw new Error("Biometric credentials not found. Please set up biometric authentication first.");

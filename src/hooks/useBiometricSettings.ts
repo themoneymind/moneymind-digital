@@ -1,22 +1,21 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
-import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useBiometricAuth } from "./useBiometricAuth";
+import { 
+  updateBiometricCredentials, 
+  disableBiometricAuth, 
+  createBiometricNotification,
+  isBiometricSupported 
+} from "@/utils/biometricUtils";
 import { Json } from "@/integrations/supabase/types";
-
-interface BiometricCredentials {
-  id: string;
-  type: string;
-  email: string;
-  rawId: number[];
-}
+import { supabase } from "@/integrations/supabase/client";
 
 export const useBiometricSettings = () => {
   const [biometricEnabled, setBiometricEnabled] = useState(false);
   const { user } = useAuth();
   const { toast } = useToast();
-  const { isBiometricSupported, enrollBiometric } = useBiometricAuth();
+  const { enrollBiometric } = useBiometricAuth();
 
   useEffect(() => {
     const fetchBiometricSettings = async () => {
@@ -43,7 +42,7 @@ export const useBiometricSettings = () => {
     if (!user) return;
 
     if (checked && !biometricEnabled) {
-      if (!isBiometricSupported) {
+      if (!isBiometricSupported()) {
         toast({
           title: "Not Supported",
           description: "Biometric authentication is not supported on this device",
@@ -62,26 +61,13 @@ export const useBiometricSettings = () => {
           rawId: Array.from(new Uint8Array((credential as any).rawId))
         };
         
-        const { error } = await supabase
-          .from("profiles")
-          .update({
-            biometric_credentials: serializedCredentials,
-            preferred_auth_method: "biometric"
-          })
-          .eq("id", user.id);
-
-        if (error) throw error;
+        await updateBiometricCredentials(user.id, serializedCredentials);
+        await createBiometricNotification(user.id, true);
 
         setBiometricEnabled(true);
         toast({
           title: "Success",
           description: "Biometric authentication enabled",
-        });
-
-        await supabase.from("notifications").insert({
-          user_id: user.id,
-          message: "Biometric authentication has been enabled for your account",
-          type: "security_update"
         });
 
       } catch (error) {
@@ -95,15 +81,8 @@ export const useBiometricSettings = () => {
       }
     } else if (!checked && biometricEnabled) {
       try {
-        const { error } = await supabase
-          .from("profiles")
-          .update({
-            biometric_credentials: null,
-            preferred_auth_method: "password"
-          })
-          .eq("id", user.id);
-
-        if (error) throw error;
+        await disableBiometricAuth(user.id);
+        await createBiometricNotification(user.id, false);
 
         setBiometricEnabled(false);
         toast({
