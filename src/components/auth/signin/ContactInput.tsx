@@ -1,8 +1,8 @@
 import { useRef, useEffect } from "react";
-import { Mail } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { CountrySelector } from "./CountrySelector";
+import { InputIcon } from "./InputIcon";
 import { CountryCode } from "./constants/countryCodes";
+import { isPhoneNumber, getInputType, getPlaceholder } from "@/utils/phoneInputUtils";
 
 interface ContactInputProps {
   contact: string;
@@ -24,80 +24,57 @@ export const ContactInput = ({
   const inputRef = useRef<HTMLInputElement>(null);
   const cursorPositionRef = useRef<number>(0);
 
+  // Update cursor position after value changes
   useEffect(() => {
-    if (inputRef.current && inputType === 'phone' && /^\d*$/.test(contact)) {
-      const input = inputRef.current;
-      // Ensure cursor position is within bounds
-      const position = Math.min(cursorPositionRef.current, contact.length);
-      // Use requestAnimationFrame to ensure the cursor is set after the input value updates
-      requestAnimationFrame(() => {
-        input.setSelectionRange(position, position);
-      });
+    if (!inputRef.current || inputType !== 'phone' || !isPhoneNumber(contact)) {
+      return;
     }
+
+    const input = inputRef.current;
+    const position = Math.min(cursorPositionRef.current, contact.length);
+    
+    // Ensure cursor position is set after React updates the input value
+    window.requestAnimationFrame(() => {
+      if (document.activeElement === input) {
+        input.setSelectionRange(position, position);
+      }
+    });
   }, [contact, inputType]);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const input = e.target;
-    const newValue = input.value;
-    
+  const updateCursorPosition = (input: HTMLInputElement) => {
     if (inputType === 'phone') {
-      const cursorStart = input.selectionStart || 0;
-      cursorPositionRef.current = cursorStart;
+      cursorPositionRef.current = input.selectionStart || 0;
     }
-    
-    onContactChange(newValue);
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    updateCursorPosition(e.target);
+    onContactChange(e.target.value);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (inputType === 'phone') {
-      const input = e.target as HTMLInputElement;
-      cursorPositionRef.current = input.selectionStart || 0;
-    }
+    updateCursorPosition(e.target as HTMLInputElement);
   };
 
   const handleClick = (e: React.MouseEvent<HTMLInputElement>) => {
-    if (inputType === 'phone') {
-      const input = e.target as HTMLInputElement;
-      cursorPositionRef.current = input.selectionStart || 0;
-    }
+    updateCursorPosition(e.target as HTMLInputElement);
   };
 
-  const renderInputIcon = () => {
-    if (inputType === 'phone' && contact.length > 0 && /^\d*$/.test(contact)) {
-      return (
-        <div className="absolute left-3 top-1/2 -translate-y-1/2">
-          <CountrySelector
-            selectedCountry={selectedCountry}
-            onCountryChange={onCountryChange}
-          />
-        </div>
-      );
-    }
-    return (
-      <div className="absolute left-3 top-1/2 -translate-y-1/2">
-        <Mail className="h-4 w-4 text-[#7F3DFF]" />
-      </div>
-    );
-  };
-
-  const getPlaceholder = () => {
-    if (contact.length === 0) {
-      return "Email or Phone number";
-    }
-    return inputType === 'phone' && /^\d*$/.test(contact) ? 'Phone number' : 'Email';
-  };
-
-  const inputPadding = inputType === 'phone' && contact.length > 0 && /^\d*$/.test(contact)
+  const inputPadding = inputType === 'phone' && contact.length > 0 && isPhoneNumber(contact)
     ? 'pl-[100px]'
     : 'pl-10';
 
   return (
     <div className="relative">
-      {renderInputIcon()}
+      <InputIcon
+        contact={contact}
+        selectedCountry={selectedCountry}
+        onCountryChange={onCountryChange}
+      />
       <Input
         ref={inputRef}
-        type={inputType === 'phone' && /^\d*$/.test(contact) ? 'tel' : 'email'}
-        placeholder={getPlaceholder()}
+        type={inputType === 'phone' && isPhoneNumber(contact) ? 'tel' : 'email'}
+        placeholder={getPlaceholder(contact)}
         value={contact}
         onChange={handleInputChange}
         onKeyDown={handleKeyDown}
