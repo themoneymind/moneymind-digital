@@ -71,10 +71,14 @@ export const useBiometricAuth = () => {
     setAuthenticating(true);
 
     try {
-      const rememberedEmail = localStorage.getItem("rememberedEmail");
-      
-      if (!rememberedEmail) {
-        throw new Error("No remembered email found");
+      // Get the stored biometric credentials and email
+      const { data: profileData, error: profileError } = await supabase
+        .from("profiles")
+        .select("biometric_credentials")
+        .single();
+
+      if (profileError || !profileData?.biometric_credentials?.email) {
+        throw new Error("Biometric credentials not found");
       }
 
       const { data: { challenge }, error: challengeError } = await supabase.functions.invoke('get-auth-challenge', {
@@ -100,7 +104,7 @@ export const useBiometricAuth = () => {
         body: {
           credential,
           challenge,
-          email: rememberedEmail
+          email: profileData.biometric_credentials.email
         }
       });
 

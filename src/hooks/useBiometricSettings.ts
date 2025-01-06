@@ -51,7 +51,7 @@ export const useBiometricSettings = () => {
         const serializedCredentials = {
           id: credential.id,
           type: credential.type,
-          // Convert ArrayBuffer to array for storage
+          email: user.email, // Store the email with biometric credentials
           rawId: Array.from(new Uint8Array((credential as any).rawId))
         };
         
