@@ -22,42 +22,52 @@ export const ContactInput = ({
   onCountryChange,
 }: ContactInputProps) => {
   const inputRef = useRef<HTMLInputElement>(null);
-  const cursorPositionRef = useRef<number | null>(null);
-
-  useEffect(() => {
-    if (inputRef.current && cursorPositionRef.current !== null) {
-      const position = Math.min(cursorPositionRef.current, contact.length);
-      inputRef.current.setSelectionRange(position, position);
-      cursorPositionRef.current = null;
-    }
-  }, [contact]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const input = e.target;
     const newValue = input.value;
     
-    // Store cursor position before the change
-    const currentPosition = input.selectionStart;
-    if (currentPosition !== null) {
-      // For phone numbers, ensure cursor stays after the typed digit
-      if (isPhoneNumber(newValue)) {
-        cursorPositionRef.current = currentPosition + 1;
-      } else {
-        cursorPositionRef.current = currentPosition;
-      }
-    }
-    
     onContactChange(newValue);
+
+    // For phone numbers, always place cursor at the end
+    if (isPhoneNumber(newValue)) {
+      requestAnimationFrame(() => {
+        if (inputRef.current) {
+          const position = newValue.length;
+          inputRef.current.setSelectionRange(position, position);
+        }
+      });
+    }
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    const input = e.target as HTMLInputElement;
-    cursorPositionRef.current = input.selectionStart;
+    // No need to store cursor position for phone numbers
+    if (!isPhoneNumber(contact)) {
+      const input = e.target as HTMLInputElement;
+      const position = input.selectionStart;
+      if (position !== null) {
+        requestAnimationFrame(() => {
+          if (inputRef.current) {
+            inputRef.current.setSelectionRange(position, position);
+          }
+        });
+      }
+    }
   };
 
   const handleClick = (e: React.MouseEvent<HTMLInputElement>) => {
-    const input = e.target as HTMLInputElement;
-    cursorPositionRef.current = input.selectionStart;
+    // Allow manual cursor positioning only for non-phone number input
+    if (!isPhoneNumber(contact)) {
+      const input = e.target as HTMLInputElement;
+      const position = input.selectionStart;
+      if (position !== null) {
+        requestAnimationFrame(() => {
+          if (inputRef.current) {
+            inputRef.current.setSelectionRange(position, position);
+          }
+        });
+      }
+    }
   };
 
   const inputPadding = inputType === 'phone' && contact.length > 0 && isPhoneNumber(contact)
