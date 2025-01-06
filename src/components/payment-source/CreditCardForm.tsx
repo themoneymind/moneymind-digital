@@ -66,7 +66,7 @@ export const CreditCardForm = ({
           placeholder="Enter your credit card name"
           value={customBankName}
           onChange={handleCustomNameChange}
-          className="h-12 w-full py-2 px-0 text-sm bg-transparent border-0 border-b-2 border-gray-200 focus:outline-none focus:border-primary rounded-none placeholder:text-gray-400"
+          className="h-12 w-full py-2 px-0 text-sm bg-transparent border-0 border-b-2 border-gray-200 focus:outline-none focus:border-primary rounded-none font-sans text-gray-600 placeholder:text-gray-400"
         />
 
         <Input
@@ -74,14 +74,14 @@ export const CreditCardForm = ({
           value={lastFourDigits}
           onChange={handleLastFourDigitsChange}
           maxLength={4}
-          className="h-12 w-full py-2 px-0 text-sm bg-transparent border-0 border-b-2 border-gray-200 focus:outline-none focus:border-primary rounded-none placeholder:text-gray-400"
+          className="h-12 w-full py-2 px-0 text-sm bg-transparent border-0 border-b-2 border-gray-200 focus:outline-none focus:border-primary rounded-none font-sans text-gray-600 placeholder:text-gray-400"
         />
 
         <Input
           placeholder="Enter credit limit"
           value={creditLimit}
           onChange={handleCreditLimitChange}
-          className="h-12 w-full py-2 px-0 text-sm bg-transparent border-0 border-b-2 border-gray-200 focus:outline-none focus:border-primary rounded-none placeholder:text-gray-400"
+          className="h-12 w-full py-2 px-0 text-sm bg-transparent border-0 border-b-2 border-gray-200 focus:outline-none focus:border-primary rounded-none font-sans text-gray-600 placeholder:text-gray-400"
         />
       </div>
     </div>
