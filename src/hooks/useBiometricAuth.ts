@@ -70,11 +70,16 @@ export const useBiometricAuth = () => {
     setAuthenticating(true);
 
     try {
-      const { data: { user: currentUser }, error: sessionError } = await supabase.auth.getSession();
+      const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
       
       if (sessionError) throw sessionError;
+      
+      const userId = sessionData.session?.user?.id;
+      if (!userId) {
+        throw new Error("No authenticated user found");
+      }
 
-      const biometricCredentials = await getBiometricCredentials(currentUser?.user?.id);
+      const biometricCredentials = await getBiometricCredentials(userId);
       
       if (!biometricCredentials?.email) {
         throw new Error("Biometric credentials not found. Please set up biometric authentication first.");
