@@ -14,10 +14,13 @@ export const useFinanceUtils = (
       .replace(/\s+/g, ' ')           // Normalize spaces
       .trim();
     
-    // For UPI apps, remove "Bank" and append the UPI app name if provided
+    // For UPI apps, remove both "Bank" and "Credit Card" suffixes before adding UPI app
     if (isUpi) {
-      const nameWithoutBank = cleanName.replace(/\s*bank\s*/i, '');
-      const finalName = upiApp ? `${nameWithoutBank} ${upiApp}` : nameWithoutBank;
+      const nameWithoutSuffixes = cleanName
+        .replace(/\s*bank\s*/gi, '')
+        .replace(/\s*credit\s*card\s*/gi, '')
+        .trim();
+      const finalName = upiApp ? `${nameWithoutSuffixes} ${upiApp}` : nameWithoutSuffixes;
       console.log("formatSourceName - UPI name result:", finalName);
       return finalName;
     }
@@ -37,7 +40,7 @@ export const useFinanceUtils = (
     const formattedSources: { id: string; name: string }[] = [];
     
     paymentSources.forEach(source => {
-      // Use display_name if available, otherwise format based on type
+      // If display_name is set, use it directly
       if (source.display_name) {
         formattedSources.push({
           id: source.id,
@@ -45,18 +48,25 @@ export const useFinanceUtils = (
         });
       } else {
         let displayName;
+        
         if (source.type === "Credit Card") {
-          // For credit cards, remove both "Bank" and any existing "Credit Card" text
+          // For credit cards:
+          // 1. Remove any "Bank" mentions
+          // 2. Remove any existing "Credit Card" mentions
+          // 3. Add "Credit Card" suffix
           displayName = source.name
-            .replace(/\s*bank\s*/i, '')
-            .replace(/\s*credit\s*card\s*/i, '')
+            .replace(/\s*bank\s*/gi, '')
+            .replace(/\s*credit\s*card\s*/gi, '')
             .trim() + " Credit Card";
         } else {
-          // For bank accounts, just use the original name and ensure it ends with "Bank"
-          const nameWithoutCreditCard = source.name.replace(/\s*credit\s*card\s*/i, '').trim();
-          displayName = nameWithoutCreditCard.toLowerCase().includes('bank') 
-            ? nameWithoutCreditCard 
-            : `${nameWithoutCreditCard} Bank`;
+          // For bank accounts:
+          // 1. Remove any "Credit Card" mentions
+          // 2. Remove any existing "Bank" mentions
+          // 3. Add "Bank" suffix
+          displayName = source.name
+            .replace(/\s*credit\s*card\s*/gi, '')
+            .replace(/\s*bank\s*/gi, '')
+            .trim() + " Bank";
         }
         
         formattedSources.push({
