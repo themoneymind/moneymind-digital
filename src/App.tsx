@@ -1,23 +1,20 @@
-import { Routes } from "./components/routing/AppRoutes";
-import { Toaster } from "@/components/ui/toaster";
-import { Toaster as SonnerToaster } from "sonner";
-import { BiometricNotification } from "@/components/settings/BiometricNotification";
+import { BrowserRouter as Router } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
-import { BrowserRouter } from "react-router-dom";
 import { FinanceProvider } from "@/contexts/FinanceContext";
+import { PublicRoutes } from "@/components/routing/PublicRoutes";
+import { Toaster } from "@/components/ui/toaster";
+import "./App.css";
 
 function App() {
   return (
-    <BrowserRouter>
+    <Router>
       <AuthProvider>
         <FinanceProvider>
-          <Routes />
+          <PublicRoutes />
           <Toaster />
-          <SonnerToaster position="top-center" />
-          <BiometricNotification />
         </FinanceProvider>
       </AuthProvider>
-    </BrowserRouter>
+    </Router>
   );
 }
 
