@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes as RouterRoutes, Route } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { PublicRoutes } from "./PublicRoutes";
 import { ProtectedRoutes } from "./ProtectedRoutes";
@@ -6,7 +6,7 @@ import { useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
 
-export const AppRoutes = () => {
+export const Routes = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
 
@@ -26,8 +26,8 @@ export const AppRoutes = () => {
   }, [navigate]);
 
   return (
-    <Routes>
+    <RouterRoutes>
       <Route path="/*" element={user ? <ProtectedRoutes /> : <PublicRoutes />} />
-    </Routes>
+    </RouterRoutes>
   );
 };
