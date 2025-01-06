@@ -1,3 +1,4 @@
+import { useRef, useEffect } from "react";
 import { Mail } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { CountrySelector } from "./CountrySelector";
@@ -20,6 +21,23 @@ export const ContactInput = ({
   onContactChange,
   onCountryChange,
 }: ContactInputProps) => {
+  const inputRef = useRef<HTMLInputElement>(null);
+  const cursorPositionRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    if (inputRef.current && cursorPositionRef.current !== null) {
+      inputRef.current.setSelectionRange(
+        cursorPositionRef.current,
+        cursorPositionRef.current
+      );
+    }
+  });
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    cursorPositionRef.current = e.target.selectionStart;
+    onContactChange(e.target.value);
+  };
+
   const renderInputIcon = () => {
     if (inputType === 'phone' && contact.length > 0 && /^\d*$/.test(contact)) {
       return (
@@ -45,17 +63,20 @@ export const ContactInput = ({
     return inputType === 'phone' && /^\d*$/.test(contact) ? 'Phone number' : 'Email';
   };
 
+  const inputPadding = inputType === 'phone' && contact.length > 0 && /^\d*$/.test(contact)
+    ? 'pl-[100px]'
+    : 'pl-10';
+
   return (
     <div className="relative">
       {renderInputIcon()}
       <Input
+        ref={inputRef}
         type={inputType === 'phone' && /^\d*$/.test(contact) ? 'tel' : 'email'}
         placeholder={getPlaceholder()}
         value={contact}
-        onChange={(e) => onContactChange(e.target.value)}
-        className={`w-full py-3 ${
-          inputType === 'phone' && contact.length > 0 && /^\d*$/.test(contact) ? 'pl-[100px]' : 'pl-10'
-        } md:text-sm text-base bg-transparent border-t-0 border-x-0 border-b-2 border-gray-200 rounded-none focus:outline-none transition-colors placeholder:text-gray-400 text-gray-600 focus:border-[#7F3DFF] focus:ring-0`}
+        onChange={handleInputChange}
+        className={`w-full py-3 ${inputPadding} md:text-sm text-base bg-transparent border-t-0 border-x-0 border-b-2 border-gray-200 rounded-none focus:outline-none transition-colors placeholder:text-gray-400 text-gray-600 focus:border-[#7F3DFF] focus:ring-0`}
         disabled={isLoading}
         required
       />
