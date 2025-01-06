@@ -2,7 +2,7 @@ import { supabase } from "@/integrations/supabase/client";
 
 export const sendOtpEmail = async (email: string) => {
   try {
-    const { data, error } = await supabase.auth.signInWithOtp({
+    const { error } = await supabase.auth.signInWithOtp({
       email,
       options: {
         shouldCreateUser: true,
@@ -11,16 +11,21 @@ export const sendOtpEmail = async (email: string) => {
     });
 
     if (error) {
-      console.error("Error sending OTP:", error);
+      // Handle rate limit error specifically
+      if (error.status === 429) {
+        throw {
+          status: 429,
+          message: "Too many attempts. Please wait a minute before trying again."
+        };
+      }
       throw error;
     }
 
-    // Return only necessary data to prevent response stream issues
     return {
       success: true,
       message: "OTP sent successfully"
     };
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error in sendOtpEmail:", error);
     throw error;
   }
@@ -35,16 +40,14 @@ export const verifyOtpCode = async (email: string, token: string) => {
     });
 
     if (error) {
-      console.error("Error verifying OTP:", error);
       throw error;
     }
 
-    // Return only necessary data to prevent response stream issues
     return {
       success: true,
       session: data.session
     };
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error in verifyOtpCode:", error);
     throw error;
   }

@@ -48,7 +48,7 @@ export const PinSignIn = ({
           try {
             await sendOtpEmail(contactValue);
             toast({
-              title: "OTP Sent",
+              title: "Success",
               description: "Please check your email for the verification code",
             });
             setOtpSent(true);
