@@ -21,7 +21,7 @@ export const TopBar = ({ title }: TopBarProps) => {
           <h1 className="text-2xl font-semibold text-white">{title}</h1>
         </div>
       </div>
-      <div className="h-6 bg-[#F5F5F7] dark:bg-gray-900 relative -mt-6 rounded-t-[28px]" />
+      <div className="h-6 bg-white dark:bg-gray-900 relative -mt-6 rounded-t-[28px]" />
     </header>
   );
 };
