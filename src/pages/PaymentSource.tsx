@@ -4,9 +4,9 @@ import { useToast } from "@/hooks/use-toast";
 import { PaymentSourceHeader } from "@/components/payment-source/PaymentSourceHeader";
 import { PaymentSourceForm } from "@/components/payment-source/PaymentSourceForm";
 import { PaymentSourceButtons } from "@/components/payment-source/PaymentSourceButtons";
-import { Sheet, SheetContent } from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetClose } from "@/components/ui/sheet";
 import { usePaymentSourceForm } from "@/hooks/usePaymentSourceForm";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useDialogState } from "@/hooks/useDialogState";
 
 export const PaymentSource = () => {
@@ -14,6 +14,8 @@ export const PaymentSource = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(true);
+  const dragStartY = useRef<number | null>(null);
+  const sheetRef = useRef<HTMLDivElement>(null);
   const { isClosing, handleOpenChange } = useDialogState((open) => {
     if (!open) {
       navigate("/app");
@@ -31,6 +33,26 @@ export const PaymentSource = () => {
     }
     localStorage.removeItem("isFirstTimeUser");
     setIsOpen(false);
+  };
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    dragStartY.current = e.touches[0].clientY;
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (!dragStartY.current || !sheetRef.current) return;
+
+    const currentY = e.touches[0].clientY;
+    const deltaY = currentY - dragStartY.current;
+
+    if (deltaY > 100) { // Threshold for closing
+      setIsOpen(false);
+      navigate("/app");
+    }
+  };
+
+  const handleTouchEnd = () => {
+    dragStartY.current = null;
   };
 
   const {
@@ -61,13 +83,19 @@ export const PaymentSource = () => {
         side="bottom"
         className="h-[85vh] p-0 overflow-hidden rounded-t-[28px]"
         closeButton={false}
+        ref={sheetRef}
       >
         <div className="flex flex-col h-full">
-          <div 
-            className="mx-auto h-1 w-[36px] rounded-full bg-gray-200 my-3 cursor-grab active:cursor-grabbing" 
-            role="button"
-            aria-label="Drag to close"
-          />
+          <SheetClose asChild>
+            <div 
+              className="mx-auto h-1 w-[36px] rounded-full bg-gray-200 my-3 cursor-grab active:cursor-grabbing" 
+              role="button"
+              aria-label="Drag to close"
+              onTouchStart={handleTouchStart}
+              onTouchMove={handleTouchMove}
+              onTouchEnd={handleTouchEnd}
+            />
+          </SheetClose>
           <div className="px-6 flex-1 overflow-y-auto">
             <h2 className="text-2xl font-semibold mb-6">Add Payment Source</h2>
             <div className="space-y-6">
