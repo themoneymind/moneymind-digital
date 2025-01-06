@@ -1,4 +1,4 @@
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 interface SignInTabsProps {
   activeTab: string;
@@ -8,20 +8,27 @@ interface SignInTabsProps {
 
 export const SignInTabs = ({ activeTab, onTabChange, biometricAvailable }: SignInTabsProps) => {
   return (
-    <Tabs value={activeTab} onValueChange={onTabChange} className="w-full">
-      <TabsList className="grid w-full grid-cols-3 h-9 items-center text-xs sm:text-sm">
-        <TabsTrigger value="password" className="px-1 sm:px-3">
-          Password
+    <TabsList className="grid w-full grid-cols-3 h-9 items-center bg-muted p-1 text-muted-foreground rounded-md">
+      <TabsTrigger 
+        value="password" 
+        className="text-xs sm:text-sm data-[state=active]:bg-white data-[state=active]:text-foreground data-[state=active]:shadow-sm px-2"
+      >
+        Password
+      </TabsTrigger>
+      <TabsTrigger 
+        value="otp" 
+        className="text-xs sm:text-sm data-[state=active]:bg-white data-[state=active]:text-foreground data-[state=active]:shadow-sm px-2"
+      >
+        Login with OTP
+      </TabsTrigger>
+      {biometricAvailable && (
+        <TabsTrigger 
+          value="biometric" 
+          className="text-xs sm:text-sm data-[state=active]:bg-white data-[state=active]:text-foreground data-[state=active]:shadow-sm px-2"
+        >
+          Biometric
         </TabsTrigger>
-        <TabsTrigger value="otp" className="px-1 sm:px-3">
-          Login with OTP
-        </TabsTrigger>
-        {biometricAvailable && (
-          <TabsTrigger value="biometric" className="px-1 sm:px-3">
-            Biometric
-          </TabsTrigger>
-        )}
-      </TabsList>
-    </Tabs>
+      )}
+    </TabsList>
   );
 };
