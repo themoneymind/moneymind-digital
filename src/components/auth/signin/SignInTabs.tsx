@@ -1,32 +1,27 @@
-import { TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 interface SignInTabsProps {
+  activeTab: string;
+  onTabChange: (value: string) => void;
   biometricAvailable: boolean;
 }
 
-export const SignInTabs = ({ biometricAvailable }: SignInTabsProps) => {
+export const SignInTabs = ({ activeTab, onTabChange, biometricAvailable }: SignInTabsProps) => {
   return (
-    <TabsList className="flex p-1 bg-gray-100 rounded-full gap-2">
-      <TabsTrigger
-        value="password"
-        className="flex-1 px-6 py-2 rounded-full text-sm transition-all data-[state=active]:bg-[#7F3DFF] data-[state=active]:text-white data-[state=inactive]:bg-transparent data-[state=inactive]:text-gray-500"
-      >
-        Password
-      </TabsTrigger>
-      <TabsTrigger
-        value="otp"
-        className="flex-1 px-6 py-2 rounded-full text-sm transition-all data-[state=active]:bg-[#7F3DFF] data-[state=active]:text-white data-[state=inactive]:bg-transparent data-[state=inactive]:text-gray-500"
-      >
-        Login with OTP
-      </TabsTrigger>
-      {biometricAvailable && (
-        <TabsTrigger
-          value="biometric"
-          className="flex-1 px-6 py-2 rounded-full text-sm transition-all data-[state=active]:bg-[#7F3DFF] data-[state=active]:text-white data-[state=inactive]:bg-transparent data-[state=inactive]:text-gray-500"
-        >
-          Biometric
+    <Tabs value={activeTab} onValueChange={onTabChange} className="w-full">
+      <TabsList className="grid w-full grid-cols-3 h-9 items-center text-xs sm:text-sm">
+        <TabsTrigger value="password" className="px-1 sm:px-3">
+          Password
         </TabsTrigger>
-      )}
-    </TabsList>
+        <TabsTrigger value="otp" className="px-1 sm:px-3">
+          Login with OTP
+        </TabsTrigger>
+        {biometricAvailable && (
+          <TabsTrigger value="biometric" className="px-1 sm:px-3">
+            Biometric
+          </TabsTrigger>
+        )}
+      </TabsList>
+    </Tabs>
   );
 };
