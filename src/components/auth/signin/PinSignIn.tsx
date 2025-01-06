@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
-import { supabase } from "@/integrations/supabase/client";
 import { getContactType } from "@/utils/otpValidation";
+import { sendOtpEmail, verifyOtpCode } from "@/utils/otpUtils";
 import { ContactInputStep } from "./ContactInputStep";
 import { OtpVerificationStep } from "./OtpVerificationStep";
 
@@ -24,21 +24,7 @@ export const PinSignIn = ({
       
       switch (contactType) {
         case 'email':
-          const { error } = await supabase.auth.signInWithOtp({
-            email: contactValue,
-            options: {
-              shouldCreateUser: true,
-              data: {
-                email: contactValue,
-              },
-            }
-          });
-
-          if (error) {
-            console.error("OTP send error:", error);
-            throw error;
-          }
-
+          await sendOtpEmail(contactValue);
           toast({
             title: "OTP Sent",
             description: "Please check your email for the verification code",
@@ -74,14 +60,7 @@ export const PinSignIn = ({
 
   const handleVerifyOtp = async () => {
     try {
-      const { error } = await supabase.auth.verifyOtp({
-        email: contact.trim(),
-        token: otp,
-        type: 'email'
-      });
-
-      if (error) throw error;
-
+      await verifyOtpCode(contact.trim(), otp);
       toast({
         title: "Success",
         description: "Successfully verified OTP",
