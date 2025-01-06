@@ -8,7 +8,7 @@ interface SignInTabsProps {
 
 export const SignInTabs = ({ activeTab, onTabChange, biometricAvailable }: SignInTabsProps) => {
   return (
-    <TabsList className="grid w-full grid-cols-3 h-10 items-center bg-[#F1F1F1] rounded-full p-1">
+    <TabsList className="grid w-full grid-cols-3 h-10 items-center bg-transparent rounded-full p-1" style={{ background: '#F1F1F1' }}>
       <TabsTrigger 
         value="password" 
         className={`flex-1 h-8 text-sm font-medium transition-all duration-200 rounded-full ${
