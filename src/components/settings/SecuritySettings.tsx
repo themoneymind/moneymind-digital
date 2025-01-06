@@ -52,7 +52,6 @@ export const SecuritySettings = () => {
     if (!user) return;
 
     if (checked && !biometricEnabled) {
-      // Check if biometric is supported
       if (!isBiometricSupported) {
         toast({
           title: "Not Supported",
@@ -63,14 +62,19 @@ export const SecuritySettings = () => {
       }
 
       try {
-        // Enroll biometric
         const credentials = await enrollBiometric();
         
-        // Update profile with biometric credentials
+        // Serialize the credential object to JSON-compatible format
+        const serializedCredentials = {
+          id: credentials.id,
+          type: credentials.type,
+          authenticatorAttachment: credentials.authenticatorAttachment,
+        };
+        
         const { error } = await supabase
           .from("profiles")
           .update({
-            biometric_credentials: credentials,
+            biometric_credentials: serializedCredentials,
             preferred_auth_method: "biometric"
           })
           .eq("id", user.id);
@@ -83,7 +87,6 @@ export const SecuritySettings = () => {
           description: "Biometric authentication enabled",
         });
 
-        // Create notification for the user
         await supabase.from("notifications").insert({
           user_id: user.id,
           message: "Biometric authentication has been enabled for your account",
