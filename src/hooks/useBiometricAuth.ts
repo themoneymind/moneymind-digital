@@ -1,16 +1,22 @@
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/contexts/AuthContext";
 
 export const useBiometricAuth = () => {
   const [authenticating, setAuthenticating] = useState(false);
   const { toast } = useToast();
+  const { user } = useAuth();
 
   const isBiometricSupported = window.PublicKeyCredential !== undefined;
 
   const enrollBiometric = async () => {
     if (!isBiometricSupported) {
       throw new Error("Biometric authentication is not supported on this device");
+    }
+
+    if (!user?.email) {
+      throw new Error("User email not found");
     }
 
     try {
@@ -30,9 +36,9 @@ export const useBiometricAuth = () => {
             id: window.location.hostname,
           },
           user: {
-            id: Uint8Array.from("SOME_USER_ID", c => c.charCodeAt(0)),
-            name: "user@example.com",
-            displayName: "User",
+            id: Uint8Array.from(user.id, c => c.charCodeAt(0)),
+            name: user.email,
+            displayName: user.email.split('@')[0],
           },
           pubKeyCredParams: [{alg: -7, type: "public-key"}],
           authenticatorSelection: {
@@ -65,6 +71,12 @@ export const useBiometricAuth = () => {
     setAuthenticating(true);
 
     try {
+      const rememberedEmail = localStorage.getItem("rememberedEmail");
+      
+      if (!rememberedEmail) {
+        throw new Error("No remembered email found");
+      }
+
       const { data: { challenge }, error: challengeError } = await supabase.functions.invoke('get-auth-challenge', {
         body: { type: 'get' }
       });
@@ -87,7 +99,8 @@ export const useBiometricAuth = () => {
       const { error: verifyError } = await supabase.functions.invoke('verify-biometric', {
         body: {
           credential,
-          challenge
+          challenge,
+          email: rememberedEmail
         }
       });
 

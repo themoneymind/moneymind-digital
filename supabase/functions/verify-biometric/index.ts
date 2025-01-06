@@ -12,13 +12,17 @@ serve(async (req) => {
   }
 
   try {
-    const { credential, challenge } = await req.json()
+    const { credential, challenge, email } = await req.json()
 
     // Here you would verify the credential against stored credentials
-    // For now, we'll just verify that we received valid data
-    if (!credential || !challenge) {
+    if (!credential || !challenge || !email) {
       throw new Error('Invalid credential data')
     }
+
+    // In a real implementation, you would:
+    // 1. Retrieve the stored credentials for this user
+    // 2. Verify the authentication assertion
+    // 3. Update the credential's counter if necessary
 
     return new Response(
       JSON.stringify({ success: true }),
