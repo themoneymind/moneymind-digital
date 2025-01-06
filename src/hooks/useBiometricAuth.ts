@@ -31,7 +31,7 @@ export const useBiometricAuth = () => {
         publicKey: {
           challenge: challengeBuffer,
           rp: {
-            name: "Your App",
+            name: "MoneyMind",
             id: window.location.hostname,
           },
           user: {
@@ -70,7 +70,11 @@ export const useBiometricAuth = () => {
     setAuthenticating(true);
 
     try {
-      const biometricCredentials = await getBiometricCredentials(user?.id!);
+      const { data: { user: currentUser }, error: sessionError } = await supabase.auth.getSession();
+      
+      if (sessionError) throw sessionError;
+
+      const biometricCredentials = await getBiometricCredentials(currentUser?.user?.id);
       
       if (!biometricCredentials?.email) {
         throw new Error("Biometric credentials not found. Please set up biometric authentication first.");
