@@ -51,12 +51,12 @@ export const PaymentSource = () => {
     <Sheet defaultOpen>
       <SheetContent
         side="bottom"
-        className="h-[95vh] p-0 overflow-hidden"
+        className="h-[85vh] p-0 overflow-hidden rounded-t-[28px]"
         closeButton={false}
       >
-        <div className="overflow-y-auto h-full">
-          <div className="mx-auto h-1 w-[36px] rounded-full bg-gray-200 my-3" />
-          <div className="px-6">
+        <div className="flex flex-col h-full">
+          <div className="mx-auto h-1 w-[36px] rounded-full bg-gray-200 my-3 cursor-grab active:cursor-grabbing" />
+          <div className="px-6 flex-1 overflow-y-auto">
             <h2 className="text-2xl font-semibold mb-6">Add Payment Source</h2>
             <div className="space-y-6">
               <PaymentSourceHeader />
