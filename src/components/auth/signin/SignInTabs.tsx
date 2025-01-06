@@ -8,25 +8,37 @@ interface SignInTabsProps {
 
 export const SignInTabs = ({ activeTab, onTabChange, biometricAvailable }: SignInTabsProps) => {
   return (
-    <TabsList className="grid w-full grid-cols-3 h-9 items-center bg-muted p-1 text-muted-foreground rounded-md">
+    <TabsList className="grid w-full grid-cols-3 h-10 items-center bg-[#F1F1F1] rounded-full p-1">
       <TabsTrigger 
         value="password" 
-        className="text-xs sm:text-sm data-[state=active]:bg-white data-[state=active]:text-foreground data-[state=active]:shadow-sm px-2"
+        className={`flex-1 h-8 text-sm font-medium transition-all duration-200 rounded-full ${
+          activeTab === "password"
+            ? "bg-white text-gray-900 shadow-sm"
+            : "text-gray-600 hover:text-gray-900 hover:bg-white/80"
+        }`}
       >
         Password
       </TabsTrigger>
       <TabsTrigger 
         value="otp" 
-        className="text-xs sm:text-sm data-[state=active]:bg-white data-[state=active]:text-foreground data-[state=active]:shadow-sm px-2"
+        className={`flex-1 h-8 text-sm font-medium transition-all duration-200 rounded-full ${
+          activeTab === "otp"
+            ? "bg-white text-gray-900 shadow-sm"
+            : "text-gray-600 hover:text-gray-900 hover:bg-white/80"
+        }`}
       >
-        Login with OTP
+        OTP
       </TabsTrigger>
       {biometricAvailable && (
         <TabsTrigger 
           value="biometric" 
-          className="text-xs sm:text-sm data-[state=active]:bg-white data-[state=active]:text-foreground data-[state=active]:shadow-sm px-2"
+          className={`flex-1 h-8 text-sm font-medium transition-all duration-200 rounded-full ${
+            activeTab === "biometric"
+              ? "bg-white text-gray-900 shadow-sm"
+              : "text-gray-600 hover:text-gray-900 hover:bg-white/80"
+          }`}
         >
-          Biometric
+          Bio
         </TabsTrigger>
       )}
     </TabsList>
