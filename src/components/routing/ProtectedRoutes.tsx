@@ -2,6 +2,7 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import Index from "@/pages/Index";
 import { PaymentSource } from "@/pages/PaymentSource";
+import { AddPaymentSourcePage } from "@/pages/AddPaymentSourcePage";
 import Settings from "@/pages/Settings";
 import Report from "@/pages/Report";
 import Dues from "@/pages/Dues";
@@ -44,6 +45,14 @@ export const ProtectedRoutes = () => {
     return () => clearInterval(interval);
   }, [navigate, toast]);
 
+  // Check if user is a first-time user
+  useEffect(() => {
+    const isFirstTimeUser = localStorage.getItem("isFirstTimeUser") === "true";
+    if (isFirstTimeUser && !window.location.pathname.includes("/add-payment-source")) {
+      navigate("/app/add-payment-source");
+    }
+  }, [navigate]);
+
   if (!user) {
     return <Navigate to="/signin" />;
   }
@@ -53,6 +62,7 @@ export const ProtectedRoutes = () => {
       <Route path="/" element={<Index />} />
       <Route path="/app" element={<Index />} />
       <Route path="/app/payment-source" element={<PaymentSource />} />
+      <Route path="/app/add-payment-source" element={<AddPaymentSourcePage />} />
       <Route path="/app/settings" element={<Settings />} />
       <Route path="/app/settings/account" element={<AccountSettingsPage />} />
       <Route path="/app/settings/account/edit" element={<ProfileEditPage />} />
