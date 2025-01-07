@@ -48,11 +48,11 @@ export const AddPaymentSourcePage = () => {
   } = usePaymentSourceForm(handleComplete);
 
   return (
-    <div className="min-h-screen bg-[#F5F5F7]">
+    <div className="min-h-screen bg-[#F5F5F7] flex flex-col">
       <TopBar title="Add Payment Source" />
       
-      <div className="px-6 py-8">
-        <div className="space-y-6">
+      <main className="flex-1 bg-background">
+        <div className="max-w-md mx-auto px-6 py-8 space-y-6">
           <PaymentSourceHeader />
           
           <PaymentSourceForm
@@ -81,7 +81,7 @@ export const AddPaymentSourcePage = () => {
             onComplete={handleComplete}
           />
         </div>
-      </div>
+      </main>
     </div>
   );
 };
