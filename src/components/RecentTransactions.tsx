@@ -1,86 +1,49 @@
+import { useState, useCallback, useEffect } from "react";
 import { useFinance } from "@/contexts/FinanceContext";
-import { useState } from "react";
-import { Transaction } from "@/types/transactions";
 import { TransactionEditDialog } from "./transaction/TransactionEditDialog";
+import { TransactionSearch } from "./transaction/TransactionSearch";
 import { TransactionFilters } from "./transaction/TransactionFilters";
 import { TransactionList } from "./transaction/TransactionList";
-import { startOfDay, startOfMonth, endOfMonth, isSameMonth } from "date-fns";
-import { getBaseSourceId } from "@/utils/paymentSourceUtils";
+import { startOfMonth, endOfMonth, isWithinInterval } from "date-fns";
+import { Loader2 } from "lucide-react";
 
-interface RecentTransactionsProps {
-  filterByType?: string;
-  showViewAll?: boolean;
-  sourceId?: string;
-}
+export const RecentTransactions = () => {
+  const { transactions, currentMonth, setCurrentMonth, isLoading } = useFinance();
+  const [filter, setFilter] = useState<"all" | "income" | "expense" | "date">("all");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedTransaction, setSelectedTransaction] = useState<typeof transactions[0] | null>(null);
+  const [showEditDialog, setShowEditDialog] = useState(false);
+  const [selectedSourceId, setSelectedSourceId] = useState<string | null>(null);
 
-export const RecentTransactions = ({ 
-  filterByType,
-  showViewAll = true,
-  sourceId
-}: RecentTransactionsProps) => {
-  const { transactions, paymentSources, currentMonth } = useFinance();
-  const [selectedTransaction, setSelectedTransaction] = useState<Transaction | null>(null);
-  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
-  const [filter, setFilter] = useState<"all" | "income" | "expense" | "date">("date");
-  const [selectedSource, setSelectedSource] = useState<string | null>(null);
-  
-  let availableTransactions = transactions.filter(transaction => {
+  const filteredTransactions = transactions.filter((transaction) => {
+    // Type filter
+    const matchesFilter = filter === "all" ? true : transaction.type === filter;
+    
+    // Search filter
+    const matchesSearch = transaction.category.toLowerCase().includes(searchQuery.toLowerCase());
+    
+    // Source filter
+    const matchesSource = selectedSourceId ? transaction.source === selectedSourceId : true;
+    
+    // Date filter
     const transactionDate = new Date(transaction.date);
+    const monthStart = startOfMonth(currentMonth);
+    const monthEnd = endOfMonth(currentMonth);
     
-    // First, filter by current month
-    if (!isSameMonth(transactionDate, currentMonth)) return false;
-    
-    if (filterByType === "Credit Card") {
-      // If sourceId is provided, only show transactions for that specific card
-      if (sourceId) {
-        return (
-          // Show transactions made with this card
-          transaction.base_source_id === sourceId ||
-          // Show payments made to this card
-          (transaction.type === "transfer" && 
-           transaction.reference_type === "credit_card_payment" && 
-           getBaseSourceId(transaction.display_source) === sourceId)
-        );
-      }
+    const matchesDate = isWithinInterval(transactionDate, {
+      start: monthStart,
+      end: monthEnd
+    });
 
-      const creditCardIds = paymentSources
-        .filter(source => source.type === "Credit Card")
-        .map(source => source.id);
-      
-      // For credit card view, include:
-      // 1. Transactions where the source is a credit card
-      // 2. Credit card payment transfers to this card
-      return creditCardIds.includes(transaction.base_source_id) || 
-        (transaction.type === "transfer" && 
-         transaction.reference_type === "credit_card_payment" && 
-         creditCardIds.includes(getBaseSourceId(transaction.display_source)));
-    } else {
-      // For main view, exclude credit card transactions except payments
-      const source = paymentSources.find(s => s.id === transaction.base_source_id);
-      const isSourceCreditCard = source?.type === "Credit Card";
-      
-      return !isSourceCreditCard || (transaction.type === "transfer" && transaction.reference_type === "credit_card_payment");
-    }
+    return matchesFilter && matchesSearch && matchesSource && matchesDate;
   });
 
-  // For credit card view, show payments as "Payment Received"
-  if (filterByType === "Credit Card") {
-    availableTransactions = availableTransactions.map(transaction => {
-      if (transaction.type === "transfer" && transaction.reference_type === "credit_card_payment") {
-        return {
-          ...transaction,
-          type: "income", // Show credit card payments as received in card view
-          description: `Payment Received: ${transaction.description}`
-        };
-      }
-      return transaction;
-    });
-  }
-
-  const handleEdit = (transaction: Transaction) => {
-    setSelectedTransaction(transaction);
-    setIsEditDialogOpen(true);
-  };
+  // Reset filters when month changes
+  useEffect(() => {
+    setSearchQuery("");
+    setSelectedSourceId(null);
+    setFilter("all");
+  }, [currentMonth]);
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat("en-IN", {
@@ -90,40 +53,65 @@ export const RecentTransactions = ({
     }).format(amount);
   };
 
+  const handleEditClick = useCallback((transaction: typeof transactions[0]) => {
+    setSelectedTransaction(transaction);
+    setShowEditDialog(true);
+  }, []);
+
+  const handleEditDialogClose = useCallback((open: boolean) => {
+    if (!open) {
+      setSelectedTransaction(null);
+      setShowEditDialog(false);
+    }
+  }, []);
+
+  const handleDeleteClick = (transactionId: string) => {
+    console.log("Delete transaction:", transactionId);
+  };
+
   const toSentenceCase = (str: string) => {
     return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
   };
 
+  if (isLoading) {
+    return (
+      <div className="p-5 mx-4 bg-white rounded-apple shadow-sm min-h-[200px] flex items-center justify-center">
+        <Loader2 className="w-6 h-6 animate-spin text-primary" />
+      </div>
+    );
+  }
+
   return (
-    <div className="bg-white rounded-apple">
-      <div className="flex items-center justify-between p-6">
+    <div className="p-5 mx-4 bg-white rounded-apple shadow-sm">
+      <div className="flex items-center mb-6">
         <h2 className="text-lg font-semibold text-gray-900">Recent Transactions</h2>
-        {showViewAll && (
-          <TransactionFilters
-            filter={filter}
-            setFilter={setFilter}
-            currentMonth={currentMonth}
-            onSourceSelect={setSelectedSource}
-          />
-        )}
       </div>
       
-      <div className="px-6 overflow-x-hidden">
-        <TransactionList
-          transactions={availableTransactions}
-          filter={filter}
-          selectedDate={currentMonth}
-          selectedSource={selectedSource}
-          onEdit={handleEdit}
-          formatCurrency={formatCurrency}
-          toSentenceCase={toSentenceCase}
-        />
-      </div>
+      <TransactionSearch 
+        searchQuery={searchQuery}
+        setSearchQuery={setSearchQuery}
+      />
+      
+      <TransactionFilters 
+        filter={filter}
+        setFilter={setFilter}
+        currentMonth={currentMonth}
+        setCurrentMonth={setCurrentMonth}
+        onSourceSelect={setSelectedSourceId}
+      />
+      
+      <TransactionList
+        transactions={filteredTransactions}
+        onEdit={handleEditClick}
+        onDelete={handleDeleteClick}
+        formatCurrency={formatCurrency}
+        toSentenceCase={toSentenceCase}
+      />
 
       {selectedTransaction && (
         <TransactionEditDialog
-          open={isEditDialogOpen}
-          onOpenChange={setIsEditDialogOpen}
+          open={showEditDialog}
+          onOpenChange={handleEditDialogClose}
           transaction={selectedTransaction}
         />
       )}

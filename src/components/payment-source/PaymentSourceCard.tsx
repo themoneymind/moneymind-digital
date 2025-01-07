@@ -13,7 +13,6 @@ type PaymentSourceCardProps = {
     amount: number;
     linked?: boolean;
     upi_apps?: string[];
-    credit_limit?: number;
   };
 };
 
@@ -64,18 +63,6 @@ export const PaymentSourceCard = ({ source }: PaymentSourceCardProps) => {
     setShowUpiList(!showUpiList);
   };
 
-  // Calculate the display amount based on source type
-  const getDisplayAmount = () => {
-    if (source.type === "Credit Card") {
-      // For credit cards, show available credit (credit_limit - amount)
-      const usedCredit = Number(source.amount) < 0 ? Math.abs(Number(source.amount)) : Number(source.amount);
-      const availableCredit = (source.credit_limit || 0) - usedCredit;
-      return availableCredit;
-    }
-    // For other sources, show the regular amount
-    return source.amount;
-  };
-
   return (
     <div 
       className="flex items-center justify-between p-4 hover:bg-gray-50 transition-colors rounded-xl border border-gray-100 cursor-pointer space-y-0"
@@ -99,7 +86,7 @@ export const PaymentSourceCard = ({ source }: PaymentSourceCardProps) => {
       
       <div className="flex items-center gap-4 ml-4">
         <span className="text-sm font-medium text-gray-900 whitespace-nowrap">
-          {formatCurrency(getDisplayAmount())}
+          {formatCurrency(source.amount)}
         </span>
       </div>
 

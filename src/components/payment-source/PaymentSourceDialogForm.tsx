@@ -13,8 +13,6 @@ interface PaymentSourceDialogFormProps {
   setAmount: (amount: string) => void;
   sourceType?: string;
   currentAmount: number;
-  customUpi: string;
-  onCustomUpiChange: (value: string) => void;
 }
 
 export const PaymentSourceDialogForm = ({
@@ -28,8 +26,6 @@ export const PaymentSourceDialogForm = ({
   setAmount,
   sourceType,
   currentAmount,
-  customUpi,
-  onCustomUpiChange,
 }: PaymentSourceDialogFormProps) => {
   return (
     <div className="grid gap-4 py-4">
@@ -45,8 +41,6 @@ export const PaymentSourceDialogForm = ({
         <UpiAppsSelector
           selectedUpiApps={selectedUpiApps}
           onUpiToggle={onUpiToggle}
-          customUpi={customUpi}
-          onCustomUpiChange={onCustomUpiChange}
         />
       )}
       <AmountOperations

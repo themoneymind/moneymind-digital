@@ -1,33 +1,12 @@
-import { Routes as RouterRoutes, Route } from "react-router-dom";
-import { useAuth } from "@/contexts/AuthContext";
-import { PublicRoutes } from "./PublicRoutes";
+import { Routes, Route } from "react-router-dom";
 import { ProtectedRoutes } from "./ProtectedRoutes";
-import { useEffect } from "react";
-import { supabase } from "@/integrations/supabase/client";
-import { useNavigate } from "react-router-dom";
+import { PublicRoutes } from "./PublicRoutes";
 
-export const Routes = () => {
-  const { user } = useAuth();
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    // Listen for auth state changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      console.log("Auth state changed:", event);
-      
-      if (event === 'SIGNED_OUT') {
-        navigate('/signin');
-      }
-    });
-
-    return () => {
-      subscription.unsubscribe();
-    };
-  }, [navigate]);
-
+export const AppRoutes = () => {
   return (
-    <RouterRoutes>
-      <Route path="/*" element={user ? <ProtectedRoutes /> : <PublicRoutes />} />
-    </RouterRoutes>
+    <Routes>
+      <Route path="/*" element={<PublicRoutes />} />
+      <Route path="/app/*" element={<ProtectedRoutes />} />
+    </Routes>
   );
 };

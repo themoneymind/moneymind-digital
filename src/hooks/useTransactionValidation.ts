@@ -1,55 +1,90 @@
-import { PaymentSource, TransactionType } from "@/types/finance";
-import { toast } from "sonner";
+import { useToast } from "@/hooks/use-toast";
+import { PaymentSource } from "@/types/finance";
 import { getBaseSourceId } from "@/utils/paymentSourceUtils";
 
 export const useTransactionValidation = () => {
-  const validateAmount = (amount: string): number | false => {
-    const numAmount = Number(amount);
-    if (isNaN(numAmount) || numAmount <= 0) {
-      toast.error("Please enter a valid amount greater than 0");
+  const { toast } = useToast();
+
+  const validateAmount = (amount: string) => {
+    if (!amount) {
+      toast({
+        title: "Error",
+        description: "Please fill in all required fields",
+        variant: "destructive",
+      });
       return false;
     }
+
+    const numAmount = Number(amount);
+    if (isNaN(numAmount) || numAmount <= 0) {
+      toast({
+        title: "Error",
+        description: "Please enter a valid amount",
+        variant: "destructive",
+      });
+      return false;
+    }
+
     return numAmount;
   };
 
   const validatePaymentSource = (
-    sourceId: string,
+    source: string,
     paymentSources: PaymentSource[]
-  ): { baseSource: PaymentSource } | false => {
-    // Extract base ID (removes UPI app suffix if present)
-    const baseSourceId = getBaseSourceId(sourceId);
-    console.log("Validating source:", { sourceId, baseSourceId });
-    
-    const baseSource = paymentSources.find(s => s.id === baseSourceId);
-    
-    if (!baseSource) {
-      toast.error("Invalid payment source");
-      return false;
+  ) => {
+    if (!source) {
+      toast({
+        title: "Error",
+        description: "Please select a payment source",
+        variant: "destructive",
+      });
+      return null;
     }
 
-    return { baseSource };
+    try {
+      const baseSourceId = getBaseSourceId(source);
+      console.log("Validating payment source:", {
+        sourceId: source,
+        baseSourceId,
+        availableSources: paymentSources.map(s => ({ id: s.id, name: s.name }))
+      });
+      
+      const baseSource = paymentSources.find(s => s.id === baseSourceId);
+      console.log("Found base source:", baseSource);
+      
+      if (!baseSource) {
+        toast({
+          title: "Error",
+          description: "Selected payment source not found",
+          variant: "destructive",
+        });
+        return null;
+      }
+
+      return { baseSourceId, baseSource };
+    } catch (error) {
+      console.error("Error validating payment source:", error);
+      toast({
+        title: "Error",
+        description: "Invalid payment source format",
+        variant: "destructive",
+      });
+      return null;
+    }
   };
 
   const validateExpenseBalance = (
-    source: PaymentSource,
+    baseSource: PaymentSource,
     amount: number,
-    type: TransactionType
-  ): boolean => {
-    if (type === "expense") {
-      const availableBalance = source.type === "Credit Card"
-        ? (source.credit_limit || 0) - (source.amount || 0)
-        : source.amount || 0;
-
-      if (availableBalance < amount) {
-        toast.error("Insufficient balance in selected payment source");
-        return false;
-      }
-    } else if (type === "transfer") {
-      // For transfers, check if source account has sufficient balance
-      if (source.amount < amount) {
-        toast.error("Insufficient balance for transfer in source account");
-        return false;
-      }
+    type: "income" | "expense"
+  ) => {
+    if (type === "expense" && Number(baseSource.amount) < amount) {
+      toast({
+        title: "Error",
+        description: "Insufficient balance in the selected payment source",
+        variant: "destructive",
+      });
+      return false;
     }
     return true;
   };

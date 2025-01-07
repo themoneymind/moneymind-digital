@@ -1,42 +1,30 @@
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useFinance } from "@/contexts/FinanceContext";
-import { format, addMonths, subMonths, isSameMonth } from "date-fns";
+import { format, addMonths, subMonths, startOfMonth } from "date-fns";
 
 export const MonthSelector = () => {
-  const context = useFinance();
+  const { currentMonth, setCurrentMonth } = useFinance();
 
-  // If context is not available, render nothing
-  if (!context || !context.currentMonth || !context.setCurrentMonth) {
-    return null;
+  if (!currentMonth || !setCurrentMonth) {
+    return null; // Return null instead of early return to maintain hook consistency
   }
 
-  const { currentMonth, setCurrentMonth } = context;
-
   const handlePrevMonth = () => {
-    const newDate = subMonths(currentMonth, 1);
-    setCurrentMonth(newDate);
+    setCurrentMonth(startOfMonth(subMonths(currentMonth, 1)));
   };
 
   const handleNextMonth = () => {
-    const newDate = addMonths(currentMonth, 1);
-    
-    // Only reset to today when explicitly navigating to current month via arrows
-    const today = new Date();
-    if (isSameMonth(newDate, today)) {
-      setCurrentMonth(today);
-    } else {
-      setCurrentMonth(newDate);
-    }
+    setCurrentMonth(startOfMonth(addMonths(currentMonth, 1)));
   };
 
   return (
-    <div className="flex items-center justify-between bg-white rounded-apple shadow-sm p-4 w-full mb-4">
+    <div className="flex items-center justify-between p-4 mx-4 bg-white rounded-apple shadow-sm">
       <button 
         className="p-2 hover:bg-gray-50 rounded-full transition-colors" 
         onClick={handlePrevMonth}
         aria-label="Previous month"
       >
-        <ChevronLeft className="w-5 h-5 text-gray-600" />
+        <ChevronLeft className="w-4 h-4 text-gray-600" />
       </button>
       <span className="text-sm font-medium text-gray-900">
         {format(currentMonth, "MMMM yyyy")}
@@ -46,7 +34,7 @@ export const MonthSelector = () => {
         onClick={handleNextMonth}
         aria-label="Next month"
       >
-        <ChevronRight className="w-5 h-5 text-gray-600" />
+        <ChevronRight className="w-4 h-4 text-gray-600" />
       </button>
     </div>
   );

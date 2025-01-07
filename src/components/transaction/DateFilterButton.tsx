@@ -2,7 +2,6 @@ import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Calendar as CalendarIcon } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { format } from "date-fns";
 
 type DateFilterButtonProps = {
   currentMonth: Date;
@@ -19,21 +18,15 @@ export const DateFilterButton = ({
     <Popover>
       <PopoverTrigger asChild>
         <Button
-          variant="outline"
-          className={`flex items-center gap-2 ${
-            isActive 
-              ? "bg-blue-50 text-blue-600 border-blue-200" 
-              : "bg-white border-gray-200"
+          className={`rounded-full w-9 h-9 p-0 ${
+            isActive ? "bg-blue-600 text-white" : "bg-gray-100 text-gray-600"
           }`}
+          variant={isActive ? "default" : "outline"}
         >
           <CalendarIcon className="h-4 w-4" />
-          <span>{format(currentMonth, "MMM d, yyyy")}</span>
         </Button>
       </PopoverTrigger>
-      <PopoverContent 
-        className="w-auto p-0 bg-white border border-gray-200 shadow-lg rounded-lg" 
-        align="start"
-      >
+      <PopoverContent className="w-auto p-0 bg-white border border-gray-200 shadow-lg rounded-[12px]" align="start">
         <Calendar
           mode="single"
           selected={currentMonth}

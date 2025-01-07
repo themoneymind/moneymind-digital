@@ -70,12 +70,12 @@ export const ResetDataDialog = () => {
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button variant="destructive" className="w-full rounded-lg h-11">
+        <Button variant="destructive" className="w-full">
           <Trash2 className="w-4 h-4 mr-2" />
           Reset All Data
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-md rounded-apple">
+      <DialogContent>
         <DialogHeader>
           <DialogTitle>Reset All Data</DialogTitle>
           <DialogDescription className="pt-4">
@@ -99,16 +99,15 @@ export const ResetDataDialog = () => {
             value={confirmText}
             onChange={(e) => setConfirmText(e.target.value)}
             placeholder="reset"
-            className="w-full border-gray-200 rounded-lg focus:ring-primary focus:border-primary"
+            className="w-full"
           />
         </div>
 
-        <DialogFooter className="gap-2 sm:gap-0">
+        <DialogFooter>
           <Button
             variant="outline"
             onClick={() => setIsOpen(false)}
             disabled={isResetting}
-            className="border-gray-200 hover:bg-gray-50 rounded-lg"
           >
             Cancel
           </Button>
@@ -116,7 +115,6 @@ export const ResetDataDialog = () => {
             variant="destructive"
             onClick={handleReset}
             disabled={isResetting || confirmText.toLowerCase() !== "reset"}
-            className="rounded-lg"
           >
             {isResetting ? "Resetting..." : "Reset All Data"}
           </Button>

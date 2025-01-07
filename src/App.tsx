@@ -1,24 +1,37 @@
-import { Routes } from "./components/routing/AppRoutes";
 import { Toaster } from "@/components/ui/toaster";
-import { Toaster as SonnerToaster } from "sonner";
-import { BiometricNotification } from "@/components/settings/BiometricNotification";
-import { AuthProvider } from "@/contexts/AuthContext";
+import { Toaster as Sonner } from "@/components/ui/sonner";
+import { TooltipProvider } from "@/components/ui/tooltip";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter } from "react-router-dom";
-import { FinanceProvider } from "@/contexts/FinanceContext";
+import { AuthProvider } from "./contexts/AuthContext";
+import { FinanceProvider } from "./contexts/FinanceContext";
+import { AppRoutes } from "./components/routing/AppRoutes";
 
-function App() {
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: 1,
+      refetchOnWindowFocus: false,
+    },
+  },
+});
+
+const App = () => {
   return (
-    <BrowserRouter>
-      <AuthProvider>
-        <FinanceProvider>
-          <Routes />
-          <Toaster />
-          <SonnerToaster position="top-center" />
-          <BiometricNotification />
-        </FinanceProvider>
-      </AuthProvider>
-    </BrowserRouter>
+    <QueryClientProvider client={queryClient}>
+      <BrowserRouter>
+        <AuthProvider>
+          <FinanceProvider>
+            <TooltipProvider>
+              <AppRoutes />
+              <Toaster />
+              <Sonner />
+            </TooltipProvider>
+          </FinanceProvider>
+        </AuthProvider>
+      </BrowserRouter>
+    </QueryClientProvider>
   );
-}
+};
 
 export default App;

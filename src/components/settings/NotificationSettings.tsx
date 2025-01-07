@@ -47,29 +47,26 @@ export const NotificationSettings = () => {
   };
 
   return (
-    <Card className="border-none shadow-none bg-white rounded-apple">
+    <Card>
       <CardHeader>
-        <CardTitle className="text-xl font-semibold">Notification Settings</CardTitle>
-        <CardDescription className="text-gray-500">
+        <CardTitle>Notification Settings</CardTitle>
+        <CardDescription>
           Set your preferred notification time
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
-        <div className="space-y-2">
-          <label className="text-sm text-gray-500 font-medium">Daily Notification Time</label>
-          <Input
-            type="time"
-            value={notificationTime}
-            onChange={(e) => setNotificationTime(e.target.value)}
-            className="border-gray-200 rounded-lg focus:ring-primary focus:border-primary"
-          />
-        </div>
+        <Input
+          type="time"
+          value={notificationTime}
+          onChange={(e) => setNotificationTime(e.target.value)}
+          placeholder="Select Time"
+        />
         <Button
           onClick={handleNotificationUpdate}
           disabled={isUpdating}
-          className="w-full bg-primary hover:bg-primary/90 text-white rounded-lg h-11"
+          className="w-full bg-primary hover:bg-primary/90"
         >
-          {isUpdating ? "Saving..." : "Save Changes"}
+          {isUpdating ? "Saving..." : "Save Notification Settings"}
         </Button>
       </CardContent>
     </Card>

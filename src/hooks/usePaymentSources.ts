@@ -4,11 +4,6 @@ import { PaymentSource } from "@/types/finance";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 
-export type PaymentSourceResult = {
-  data: PaymentSource | null;
-  error: Error | null;
-};
-
 export const usePaymentSources = () => {
   const { user } = useAuth();
   const { toast } = useToast();
@@ -29,24 +24,20 @@ export const usePaymentSources = () => {
     return data || [];
   }, [user]);
 
-  const addPaymentSource = useCallback(async (newSource: Omit<PaymentSource, "id">): Promise<PaymentSourceResult> => {
-    if (!user) return { data: null, error: new Error("No user found") };
+  const addPaymentSource = useCallback(async (newSource: Omit<PaymentSource, "id">) => {
+    if (!user) return;
 
-    const { data, error } = await supabase
+    const { error } = await supabase
       .from("payment_sources")
       .insert([{
         ...newSource,
         user_id: user.id
-      }])
-      .select()
-      .single();
+      }]);
 
     if (error) {
       console.error("Error adding payment source:", error);
-      return { data: null, error };
+      throw error;
     }
-
-    return { data, error: null };
   }, [user]);
 
   const editPaymentSource = useCallback(async (updatedSource: PaymentSource) => {
@@ -54,35 +45,13 @@ export const usePaymentSources = () => {
 
     console.log("Updating payment source:", updatedSource);
 
-    const { 
-      id,
-      name,
-      type,
-      amount,
-      linked,
-      upi_apps,
-      credit_limit,
-      statement_date,
-      due_date,
-      interest_rate,
-      last_four_digits
-    } = updatedSource;
-
     const { error } = await supabase
       .from("payment_sources")
       .update({
-        name,
-        type,
-        amount: Number(amount),
-        linked,
-        upi_apps,
-        credit_limit,
-        statement_date,
-        due_date,
-        interest_rate,
-        last_four_digits
+        ...updatedSource,
+        amount: Number(updatedSource.amount)
       })
-      .eq("id", id);
+      .eq("id", updatedSource.id);
 
     if (error) {
       console.error("Error updating payment source:", error);
@@ -93,18 +62,6 @@ export const usePaymentSources = () => {
   const deletePaymentSource = useCallback(async (id: string) => {
     if (!user) return;
 
-    // First, delete all related transactions
-    const { error: transactionsError } = await supabase
-      .from("transactions")
-      .delete()
-      .eq("base_source_id", id);
-
-    if (transactionsError) {
-      console.error("Error deleting related transactions:", transactionsError);
-      throw transactionsError;
-    }
-
-    // Then delete the payment source
     const { error } = await supabase
       .from("payment_sources")
       .delete()

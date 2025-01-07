@@ -1,4 +1,5 @@
 import { useRef } from "react";
+import { Button } from "@/components/ui/button";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { useAuth } from "@/contexts/AuthContext";
 
@@ -11,25 +12,21 @@ export const ProfilePictureUploader = ({ imageUrl, onFileSelect }: ProfilePictur
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { user } = useAuth();
 
-  const handleClick = () => {
-    fileInputRef.current?.click();
-  };
-
   return (
-    <div className="relative group cursor-pointer" onClick={handleClick}>
-      <Avatar className="w-full h-full bg-primary/10 transition-opacity group-hover:opacity-90">
+    <>
+      <Avatar 
+        className="w-12 h-12 cursor-pointer hover:opacity-90 transition-opacity"
+        onClick={() => fileInputRef.current?.click()}
+      >
         <AvatarImage 
           src={imageUrl || "/placeholder.svg"} 
           alt="Profile" 
           className="object-cover"
         />
-        <AvatarFallback className="bg-primary/10 text-primary">
+        <AvatarFallback>
           {user?.email?.charAt(0).toUpperCase() || 'U'}
         </AvatarFallback>
       </Avatar>
-      <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity rounded-full">
-        <span className="text-white text-xs font-medium">Change</span>
-      </div>
       <input
         type="file"
         ref={fileInputRef}
@@ -37,6 +34,6 @@ export const ProfilePictureUploader = ({ imageUrl, onFileSelect }: ProfilePictur
         accept="image/*"
         onChange={onFileSelect}
       />
-    </div>
+    </>
   );
 };

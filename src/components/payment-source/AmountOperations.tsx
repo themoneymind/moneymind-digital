@@ -26,9 +26,9 @@ export const AmountOperations = ({
   };
 
   return (
-    <div className="space-y-3">
-      <div className="flex items-center justify-between p-3 bg-gray-50 rounded-[12px] border border-gray-100">
-        <p className="text-sm text-gray-500">Current Amount</p>
+    <div className="space-y-4">
+      <div className="p-4 bg-gray-50 rounded-[12px] border border-gray-100">
+        <p className="text-sm text-gray-500 mb-1">Current Amount</p>
         <p className="text-lg font-semibold">{formatCurrency(currentAmount)}</p>
       </div>
       <div className="flex gap-2">

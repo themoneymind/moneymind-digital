@@ -20,8 +20,8 @@ export const MotivationalQuote = () => {
   }, []);
 
   return (
-    <div className="pl-0.5 -mt-0.5">
-      <p className="text-sm text-white/80 leading-relaxed">
+    <div className="pl-2 -mt-0.5">
+      <p className="text-sm text-gray-600">
         {quote}
       </p>
     </div>

@@ -1,29 +1,16 @@
-import { useNavigate } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Link } from "react-router-dom";
+import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { TopBar } from "@/components/TopBar";
-import { SignInForm } from "@/components/auth/SignInForm";
-import { SignInDecoration } from "@/components/auth/SignInDecoration";
+import { PiggyBank } from "lucide-react";
 
 export const SignIn = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
-  const navigate = useNavigate();
-
-  // Check for existing session on mount
-  useEffect(() => {
-    const checkSession = async () => {
-      const { data: { session }, error } = await supabase.auth.getSession();
-      if (session && !error) {
-        navigate("/app");
-      }
-    };
-    
-    checkSession();
-  }, [navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -47,37 +34,27 @@ export const SignIn = () => {
         password: password.trim(),
       });
 
+      console.log("Sign in response:", { data, error });
+
       if (error) {
         console.error("Sign in error details:", error);
         
-        if (error.message?.includes("Email not confirmed")) {
+        if (error.message.includes("Email not confirmed")) {
           toast({
-            title: "Email Not Verified",
-            description: "Please check your email and verify your account before signing in.",
+            title: "Error",
+            description: "Please confirm your email before signing in",
             variant: "destructive",
           });
-        } else if (error.message?.includes("Invalid login credentials")) {
+        } else if (error.message.includes("Invalid login credentials")) {
           toast({
-            title: "Invalid Credentials",
-            description: "The email or password you entered is incorrect. Please try again.",
-            variant: "destructive",
-          });
-        } else if (error.status === 400) {
-          toast({
-            title: "Sign In Failed",
-            description: "Please make sure you've confirmed your email and are using the correct password.",
-            variant: "destructive",
-          });
-        } else if (error.status === 429) {
-          toast({
-            title: "Too Many Attempts",
-            description: "Please wait a few minutes before trying again for security purposes.",
+            title: "Error",
+            description: "Invalid email or password",
             variant: "destructive",
           });
         } else {
           toast({
             title: "Error",
-            description: error.message || "An unexpected error occurred. Please try again.",
+            description: "Wrong login credentials",
             variant: "destructive",
           });
         }
@@ -94,30 +71,13 @@ export const SignIn = () => {
         return;
       }
 
-      // Check if this is a first-time user
-      const { data: sources } = await supabase
-        .from("payment_sources")
-        .select("id")
-        .eq("user_id", data.user.id)
-        .limit(1);
-
-      const isFirstTimeUser = !sources || sources.length === 0;
-      localStorage.setItem("isFirstTimeUser", isFirstTimeUser.toString());
-
       console.log("Sign in successful:", data.user);
       toast({
         title: "Success",
         description: "Successfully signed in",
       });
       
-      // Redirect based on user status
-      if (isFirstTimeUser) {
-        navigate("/app/payment-source");
-      } else {
-        navigate("/app");
-      }
-      
-    } catch (error: any) {
+    } catch (error) {
       console.error("Unexpected sign in error:", error);
       toast({
         title: "Error",
@@ -130,31 +90,66 @@ export const SignIn = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#F5F3FF] relative overflow-hidden">
-      <TopBar title="Sign In" />
-      
-      {/* Decorative Circle */}
-      <div className="absolute top-0 right-0 w-32 h-32 rounded-full bg-[#7F3DFF]/10 -mr-16 -mt-16" />
-      
-      <div className="p-6 pt-8 md:flex md:items-center md:justify-center md:min-h-[calc(100vh-64px)]">
-        <div className="w-full max-w-6xl mx-auto">
-          <div className="md:grid md:grid-cols-2 md:gap-8">
-            {/* Left Column - Sign In Form */}
-            <div className="md:bg-white/50 md:backdrop-blur-sm md:p-8 md:rounded-2xl md:shadow-lg">
-              <SignInForm
-                email={email}
-                setEmail={setEmail}
-                password={password}
-                setPassword={setPassword}
-                handleSubmit={handleSubmit}
-                isLoading={isLoading}
-              />
+    <div className="min-h-screen bg-[#F5F3FF] flex items-center justify-center px-6 py-8">
+      <div className="w-full max-w-[400px]">
+        <div className="bg-white rounded-[32px] p-8 shadow-lg">
+          <div className="space-y-8">
+            <div className="text-center space-y-2">
+              <div className="flex items-center justify-center mb-2">
+                <PiggyBank className="h-10 w-10 text-blue-600" />
+              </div>
+              <h1 className="text-2xl font-bold text-blue-600">MoneyMind</h1>
+              <p className="text-gray-600 text-base">
+                Sign in to your account
+              </p>
             </div>
 
-            {/* Right Column - Decorative Area */}
-            <div className="hidden md:block">
-              <SignInDecoration />
-            </div>
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <Input
+                type="email"
+                placeholder="Email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="h-12 rounded-xl border-gray-200 bg-gray-50/50 px-4 text-gray-900/70 placeholder:text-gray-500/60 focus:border-blue-600 focus:ring-blue-600"
+                disabled={isLoading}
+                required
+              />
+              <div className="space-y-1">
+                <Input
+                  type="password"
+                  placeholder="Password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="h-12 rounded-xl border-gray-200 bg-gray-50/50 px-4 text-gray-900/70 placeholder:text-gray-500/60 focus:border-blue-600 focus:ring-blue-600"
+                  disabled={isLoading}
+                  required
+                />
+              </div>
+              
+              <Button 
+                type="submit" 
+                className="w-full h-12 rounded-xl text-base bg-blue-600 hover:bg-blue-700"
+                disabled={isLoading}
+              >
+                {isLoading ? "Signing in..." : "Sign In"}
+              </Button>
+
+              <div className="text-center">
+                <Link 
+                  to="/forgot-password" 
+                  className="text-sm text-blue-600 hover:text-blue-700"
+                >
+                  Forgot Password?
+                </Link>
+              </div>
+            </form>
+
+            <p className="text-center text-gray-600 text-sm">
+              Don't have an account?{" "}
+              <Link to="/signup" className="text-blue-600 hover:text-blue-700">
+                Sign up
+              </Link>
+            </p>
           </div>
         </div>
       </div>
