@@ -56,10 +56,22 @@ export const SignIn = () => {
             description: "Please check your email and verify your account before signing in.",
             variant: "destructive",
           });
-        } else if (error.message?.includes("Invalid login credentials") || error.status === 400) {
+        } else if (error.message?.includes("Invalid login credentials")) {
           toast({
             title: "Invalid Credentials",
             description: "The email or password you entered is incorrect. Please try again.",
+            variant: "destructive",
+          });
+        } else if (error.status === 400) {
+          toast({
+            title: "Sign In Failed",
+            description: "Please make sure you've confirmed your email and are using the correct password.",
+            variant: "destructive",
+          });
+        } else if (error.status === 429) {
+          toast({
+            title: "Too Many Attempts",
+            description: "Please wait a few minutes before trying again for security purposes.",
             variant: "destructive",
           });
         } else {
