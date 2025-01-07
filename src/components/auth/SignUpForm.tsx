@@ -6,6 +6,7 @@ import { useSignUpValidation } from "./SignUpValidation";
 import { useSignUp } from "@/hooks/useSignUp";
 import { useToast } from "@/hooks/use-toast";
 import { Checkbox } from "@/components/ui/checkbox";
+import { AuthError } from "@supabase/supabase-js";
 
 export const SignUpForm = () => {
   const [fullName, setFullName] = useState("");
@@ -43,7 +44,34 @@ export const SignUpForm = () => {
       return;
     }
 
-    await handleSignUp(fullName, email, password, phoneNumber);
+    try {
+      const success = await handleSignUp(fullName, email, password, phoneNumber);
+      
+      if (success) {
+        toast({
+          title: "Success!",
+          description: "Please check your email to verify your account. You will be able to set your password after verification.",
+          duration: 6000,
+        });
+      }
+    } catch (error) {
+      const authError = error as AuthError;
+      let errorMessage = "An unexpected error occurred. Please try again.";
+
+      if (authError?.message?.toLowerCase().includes("email already registered")) {
+        errorMessage = "This email is already registered. Please use a different email or try signing in.";
+      } else if (authError?.message?.toLowerCase().includes("phone number already registered")) {
+        errorMessage = "This phone number is already registered. Please use a different number or try signing in.";
+      } else if (authError.status === 429) {
+        errorMessage = "Please wait a few minutes before trying again for security purposes.";
+      }
+
+      toast({
+        title: "Error",
+        description: errorMessage,
+        variant: "destructive",
+      });
+    }
   };
 
   return (

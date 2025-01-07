@@ -3,6 +3,7 @@ import { Mail, Lock } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
+import { useEffect } from "react";
 
 interface PasswordSignInProps {
   email: string;
@@ -25,6 +26,15 @@ export const PasswordSignIn = ({
   handleSubmit,
   isLoading,
 }: PasswordSignInProps) => {
+  // Check for temporary password from signup
+  useEffect(() => {
+    const tempPassword = localStorage.getItem("tempSignUpPassword");
+    if (tempPassword) {
+      setPassword(tempPassword);
+      localStorage.removeItem("tempSignUpPassword");
+    }
+  }, [setPassword]);
+
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       <div className="space-y-4">
