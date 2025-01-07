@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { AuthError } from "@supabase/supabase-js";
 
 export const useSignUp = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -34,35 +35,17 @@ export const useSignUp = () => {
       });
 
       if (error) {
-        if (error.status === 429) {
-          toast({
-            title: "Too many attempts",
-            description: "Please wait a few minutes before trying again.",
-            variant: "destructive",
-          });
-          return false;
-        }
-        
-        toast({
-          title: "Error",
-          description: error.message,
-          variant: "destructive",
-        });
-        return false;
+        throw error;
       }
 
       if (data?.user) {
         localStorage.setItem("isFirstTimeUser", "true");
+        localStorage.setItem("tempSignUpPassword", password); // Store password temporarily
         
-        toast({
-          title: "Success!",
-          description: "Please check your email to verify your account. Then you can sign in.",
-        });
-        
-        // Give user time to read the success message
+        // Set a timeout to remove the temporary password after 1 hour
         setTimeout(() => {
-          navigate("/signin");
-        }, 3000);
+          localStorage.removeItem("tempSignUpPassword");
+        }, 3600000); // 1 hour in milliseconds
         
         return true;
       }
@@ -70,12 +53,7 @@ export const useSignUp = () => {
       return false;
     } catch (error: any) {
       console.error("Unexpected error during signup:", error);
-      toast({
-        title: "Error",
-        description: "An unexpected error occurred. Please try again.",
-        variant: "destructive",
-      });
-      return false;
+      throw error;
     } finally {
       setIsLoading(false);
     }

@@ -5,6 +5,8 @@ import { SignUpInputs } from "./SignUpInputs";
 import { useSignUpValidation } from "./SignUpValidation";
 import { useSignUp } from "@/hooks/useSignUp";
 import { useToast } from "@/hooks/use-toast";
+import { Checkbox } from "@/components/ui/checkbox";
+import { AuthError } from "@supabase/supabase-js";
 
 export const SignUpForm = () => {
   const [fullName, setFullName] = useState("");
@@ -42,7 +44,34 @@ export const SignUpForm = () => {
       return;
     }
 
-    await handleSignUp(fullName, email, password, phoneNumber);
+    try {
+      const success = await handleSignUp(fullName, email, password, phoneNumber);
+      
+      if (success) {
+        toast({
+          title: "Success!",
+          description: "Please check your email to verify your account. You will be able to set your password after verification.",
+          duration: 6000,
+        });
+      }
+    } catch (error) {
+      const authError = error as AuthError;
+      let errorMessage = "An unexpected error occurred. Please try again.";
+
+      if (authError?.message?.toLowerCase().includes("email already registered")) {
+        errorMessage = "This email is already registered. Please use a different email or try signing in.";
+      } else if (authError?.message?.toLowerCase().includes("phone number already registered")) {
+        errorMessage = "This phone number is already registered. Please use a different number or try signing in.";
+      } else if (authError.status === 429) {
+        errorMessage = "Please wait a few minutes before trying again for security purposes.";
+      }
+
+      toast({
+        title: "Error",
+        description: errorMessage,
+        variant: "destructive",
+      });
+    }
   };
 
   return (
@@ -60,15 +89,14 @@ export const SignUpForm = () => {
       />
       
       <div className="flex items-center space-x-2">
-        <input 
-          type="checkbox" 
+        <Checkbox 
           id="terms" 
-          className="rounded border-gray-300 text-blue-600 focus:ring-blue-600"
+          className="border-2 border-[#7F3DFF] data-[state=checked]:bg-[#7F3DFF] data-[state=checked]:border-[#7F3DFF]"
           required 
         />
         <label htmlFor="terms" className="text-sm text-gray-600">
           I agree to the{" "}
-          <Link to="/terms" className="text-blue-600 hover:text-blue-700">
+          <Link to="/terms" className="text-[#7F3DFF] hover:text-[#6366F1] transition-colors">
             Terms & Conditions
           </Link>
         </label>
@@ -76,7 +104,7 @@ export const SignUpForm = () => {
       
       <Button 
         type="submit" 
-        className="w-full h-12 rounded-xl text-base bg-blue-600 hover:bg-blue-700"
+        className="w-full h-12 rounded-xl text-base bg-[#7F3DFF] hover:bg-[#6366F1] transition-colors"
         disabled={isLoading}
       >
         {isLoading ? "Creating Account..." : "Sign Up"}
@@ -84,7 +112,7 @@ export const SignUpForm = () => {
 
       <p className="text-center text-gray-600 text-sm">
         Already have an account?{" "}
-        <Link to="/signin" className="text-blue-600 hover:text-blue-700">
+        <Link to="/signin" className="text-[#7F3DFF] hover:text-[#6366F1] transition-colors">
           Sign In
         </Link>
       </p>

@@ -19,6 +19,7 @@ export const ProfilePicture = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [position, setPosition] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
     if (user) {
@@ -36,7 +37,12 @@ export const ProfilePicture = () => {
       .single();
 
     if (profile?.avatar_url) {
-      setImageUrl(profile.avatar_url);
+      // Preload the image to prevent flash
+      const img = new Image();
+      img.src = profile.avatar_url;
+      img.onload = () => {
+        setImageUrl(profile.avatar_url);
+      };
     }
   };
 
@@ -67,7 +73,7 @@ export const ProfilePicture = () => {
           canvas.width = width;
           canvas.height = height;
           const ctx = canvas.getContext('2d');
-          ctx?.drawImage(img, 0, 0, width, height);
+          ctx?.drawImage(img, position.x, position.y, width * scale, height * scale);
 
           canvas.toBlob(
             (blob) => {
@@ -156,7 +162,9 @@ export const ProfilePicture = () => {
           <ProfilePictureEditor
             imageUrl={imageUrl}
             scale={scale}
+            position={position}
             onScaleChange={(e) => setScale(Number(e.target.value))}
+            onPositionChange={setPosition}
             onSave={handleSave}
             isLoading={isLoading}
           />

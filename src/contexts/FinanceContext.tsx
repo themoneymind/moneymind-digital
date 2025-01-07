@@ -7,7 +7,7 @@ import { useFinanceCalculations } from "@/hooks/useFinanceCalculations";
 import { useFinanceDataSync } from "@/hooks/useFinanceDataSync";
 import { useFinanceUtils } from "@/hooks/useFinanceUtils";
 import { useTransactionOperations } from "@/hooks/useTransactionOperations";
-import { usePaymentSources } from "@/hooks/usePaymentSources";
+import { usePaymentSources, PaymentSourceResult } from "@/hooks/usePaymentSources";
 
 type FinanceContextType = {
   currentMonth: Date;
@@ -19,10 +19,10 @@ type FinanceContextType = {
   paymentSources: PaymentSource[];
   isLoading: boolean;
   refreshData: () => Promise<void>;
-  addTransaction: (transaction: Omit<Transaction, "id" | "date" | "user_id" | "created_at" | "updated_at">) => Promise<void>;
+  addTransaction: (transaction: Omit<Transaction, "id" | "user_id" | "created_at" | "updated_at">) => Promise<void>;
   editTransaction: (id: string, updates: Partial<Omit<Transaction, "id" | "created_at" | "updated_at">>) => Promise<void>;
   deleteTransaction: (id: string) => Promise<void>;
-  addPaymentSource: (source: Omit<PaymentSource, "id">) => Promise<void>;
+  addPaymentSource: (source: Omit<PaymentSource, "id">) => Promise<PaymentSourceResult>;
   editPaymentSource: (source: PaymentSource) => Promise<void>;
   deletePaymentSource: (id: string) => Promise<void>;
   getFormattedPaymentSources: () => { id: string; name: string }[];
@@ -77,8 +77,11 @@ export const FinanceProvider = ({ children }: { children: React.ReactNode }) => 
   } = usePaymentSources();
 
   const addPaymentSource = async (source: Omit<PaymentSource, "id">) => {
-    await addSource(source);
-    await refreshData();
+    const result = await addSource(source);
+    if (!result.error) {
+      await refreshData();
+    }
+    return result;
   };
 
   const editPaymentSource = async (source: PaymentSource) => {
@@ -93,8 +96,17 @@ export const FinanceProvider = ({ children }: { children: React.ReactNode }) => 
 
   useEffect(() => {
     if (!user) return;
-    refreshData();
-    return setupSubscriptions();
+    
+    const initializeData = async () => {
+      try {
+        await refreshData();
+        return setupSubscriptions();
+      } catch (error) {
+        console.error("Error initializing data:", error);
+      }
+    };
+
+    initializeData();
   }, [user]);
 
   return (

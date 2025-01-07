@@ -1,15 +1,8 @@
 import { Header } from "@/components/Header";
-import { MonthSelector } from "@/components/MonthSelector";
-import { BalanceCard } from "@/components/BalanceCard";
-import { NewTransaction } from "@/components/NewTransaction";
-import { RecentTransactions } from "@/components/RecentTransactions";
-import { PaymentSources } from "@/components/PaymentSources";
 import { BottomNav } from "@/components/BottomNav";
-import { ProfilePicture } from "@/components/ProfilePicture";
 import { useAuth } from "@/contexts/AuthContext";
 import { Navigate } from "react-router-dom";
-import { Greeting } from "@/components/Greeting";
-import { MotivationalQuote } from "@/components/MotivationalQuote";
+import { DashboardTabs } from "@/components/DashboardTabs";
 
 const Index = () => {
   const { user } = useAuth();
@@ -19,22 +12,13 @@ const Index = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 pb-24 max-w-md mx-auto font-sans">
+    <div className="relative flex flex-col min-h-screen max-w-md mx-auto font-sans overflow-hidden">
       <Header />
-      <div className="space-y-6 py-4">
-        <div className="flex items-center justify-between px-6">
-          <div className="flex flex-col items-start">
-            <Greeting />
-            <MotivationalQuote />
-          </div>
-          <ProfilePicture />
+      <main className="flex-1 bg-[#F5F5F7] dark:bg-gray-900 rounded-t-[28px] -mt-6 relative pb-20">
+        <div className="mt-6">
+          <DashboardTabs />
         </div>
-        <MonthSelector />
-        <BalanceCard />
-        <NewTransaction />
-        <RecentTransactions />
-        <PaymentSources />
-      </div>
+      </main>
       <BottomNav />
     </div>
   );
