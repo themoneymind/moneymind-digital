@@ -18,8 +18,14 @@ export const PaymentSource = () => {
   const sheetRef = useRef<HTMLDivElement>(null);
   const animationTimeout = useRef<NodeJS.Timeout>();
   const isDragging = useRef(false);
+  const lastTouchY = useRef<number | null>(null);
+  const dragThreshold = 100; // Pixels needed to trigger close
 
   const handleClose = useCallback(() => {
+    if (sheetRef.current) {
+      sheetRef.current.style.transform = 'translateY(100%)';
+      sheetRef.current.style.transition = 'transform 0.3s ease-out';
+    }
     setIsOpen(false);
     animationTimeout.current = setTimeout(() => {
       navigate("/app");
@@ -36,7 +42,7 @@ export const PaymentSource = () => {
     const handle = e.target as HTMLElement;
     if (handle.getAttribute('role') === 'button') {
       dragStartY.current = e.touches[0].clientY;
-      currentDragY.current = e.touches[0].clientY;
+      lastTouchY.current = e.touches[0].clientY;
       isDragging.current = true;
       if (sheetRef.current) {
         sheetRef.current.style.transition = 'none';
@@ -45,38 +51,40 @@ export const PaymentSource = () => {
   };
 
   const handleTouchMove = (e: React.TouchEvent) => {
-    if (!dragStartY.current || !sheetRef.current || !isDragging.current) return;
+    if (!isDragging.current || !sheetRef.current || !lastTouchY.current) return;
 
-    currentDragY.current = e.touches[0].clientY;
-    const deltaY = currentDragY.current - dragStartY.current;
+    const currentY = e.touches[0].clientY;
+    const deltaY = currentY - lastTouchY.current;
+    lastTouchY.current = currentY;
 
-    if (deltaY > 0) {
-      sheetRef.current.style.transform = `translateY(${deltaY}px)`;
+    if (sheetRef.current) {
+      const currentTransform = sheetRef.current.style.transform;
+      const currentY = currentTransform 
+        ? parseInt(currentTransform.replace(/[^\d.-]/g, '')) 
+        : 0;
+      
+      const newY = Math.max(0, currentY + deltaY);
+      sheetRef.current.style.transform = `translateY(${newY}px)`;
     }
   };
 
   const handleTouchEnd = () => {
-    if (!dragStartY.current || !currentDragY.current || !sheetRef.current || !isDragging.current) return;
+    if (!isDragging.current || !sheetRef.current || !dragStartY.current || !lastTouchY.current) return;
 
-    const deltaY = currentDragY.current - dragStartY.current;
+    const totalDrag = lastTouchY.current - dragStartY.current;
     
     if (sheetRef.current) {
-      sheetRef.current.style.transition = 'transform 0.2s ease-out';
-    }
-    
-    if (deltaY > 100) {
-      if (sheetRef.current) {
-        sheetRef.current.style.transform = 'translateY(100%)';
-      }
-      handleClose();
-    } else {
-      if (sheetRef.current) {
+      sheetRef.current.style.transition = 'transform 0.3s ease-out';
+      
+      if (totalDrag > dragThreshold) {
+        handleClose();
+      } else {
         sheetRef.current.style.transform = '';
       }
     }
 
     dragStartY.current = null;
-    currentDragY.current = null;
+    lastTouchY.current = null;
     isDragging.current = false;
   };
 
@@ -112,7 +120,7 @@ export const PaymentSource = () => {
         closeButton={false}
         ref={sheetRef}
       >
-        <div className="flex flex-col h-full">
+        <div className="flex flex-col h-full bg-background">
           <div 
             className="mx-auto h-1 w-[36px] rounded-full bg-gray-200 my-3 cursor-grab active:cursor-grabbing" 
             role="button"
