@@ -4,89 +4,40 @@ import { PaymentSourceHeader } from "@/components/payment-source/PaymentSourceHe
 import { PaymentSourceForm } from "@/components/payment-source/PaymentSourceForm";
 import { Sheet, SheetContent, SheetClose } from "@/components/ui/sheet";
 import { usePaymentSourceForm } from "@/hooks/usePaymentSourceForm";
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef } from "react";
 import { useDialogState } from "@/hooks/useDialogState";
 import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
+import { useDragToClose } from "@/hooks/useDragToClose";
 
 export const PaymentSource = () => {
   const { paymentSources } = useFinance();
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(true);
-  const dragStartY = useRef<number | null>(null);
-  const currentDragY = useRef<number | null>(null);
-  const sheetRef = useRef<HTMLDivElement>(null);
   const animationTimeout = useRef<NodeJS.Timeout>();
-  const isDragging = useRef(false);
-  const lastTouchY = useRef<number | null>(null);
-  const dragThreshold = 100; // Pixels needed to trigger close
 
-  const handleClose = useCallback(() => {
-    if (sheetRef.current) {
-      sheetRef.current.style.transform = 'translateY(100%)';
-      sheetRef.current.style.transition = 'transform 0.3s ease-out';
-    }
+  const handleCloseComplete = () => {
     setIsOpen(false);
     animationTimeout.current = setTimeout(() => {
       navigate("/app");
     }, 300);
-  }, [navigate]);
+  };
+
+  const {
+    sheetRef,
+    handleTouchStart,
+    handleTouchMove,
+    handleTouchEnd,
+    handleClose,
+  } = useDragToClose({
+    onClose: handleCloseComplete,
+  });
 
   const { handleOpenChange } = useDialogState((open) => {
     if (!open) {
       handleClose();
     }
   });
-
-  const handleTouchStart = (e: React.TouchEvent) => {
-    const handle = e.target as HTMLElement;
-    if (handle.getAttribute('role') === 'button') {
-      dragStartY.current = e.touches[0].clientY;
-      lastTouchY.current = e.touches[0].clientY;
-      isDragging.current = true;
-      if (sheetRef.current) {
-        sheetRef.current.style.transition = 'none';
-      }
-    }
-  };
-
-  const handleTouchMove = (e: React.TouchEvent) => {
-    if (!isDragging.current || !sheetRef.current || !lastTouchY.current) return;
-
-    const currentY = e.touches[0].clientY;
-    const deltaY = currentY - lastTouchY.current;
-    lastTouchY.current = currentY;
-
-    if (sheetRef.current) {
-      const currentTransform = sheetRef.current.style.transform;
-      const currentY = currentTransform 
-        ? parseInt(currentTransform.replace(/[^\d.-]/g, '')) 
-        : 0;
-      
-      const newY = Math.max(0, currentY + deltaY);
-      sheetRef.current.style.transform = `translateY(${newY}px)`;
-    }
-  };
-
-  const handleTouchEnd = () => {
-    if (!isDragging.current || !sheetRef.current || !dragStartY.current || !lastTouchY.current) return;
-
-    const totalDrag = lastTouchY.current - dragStartY.current;
-    
-    if (sheetRef.current) {
-      sheetRef.current.style.transition = 'transform 0.3s ease-out';
-      
-      if (totalDrag > dragThreshold) {
-        handleClose();
-      } else {
-        sheetRef.current.style.transform = '';
-      }
-    }
-
-    dragStartY.current = null;
-    lastTouchY.current = null;
-    isDragging.current = false;
-  };
 
   const {
     selectedType,
