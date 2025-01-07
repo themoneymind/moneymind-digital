@@ -67,11 +67,11 @@ export const PaymentSource = () => {
     <Sheet open={isOpen} onOpenChange={handleOpenChange}>
       <SheetContent
         side="bottom"
-        className="h-[85vh] p-0 overflow-hidden rounded-t-[28px] bg-transparent"
+        className="h-[85vh] p-0 bg-transparent border-none shadow-none"
         closeButton={false}
         ref={sheetRef}
       >
-        <div className="flex flex-col h-full bg-background rounded-t-[28px]">
+        <div className="flex flex-col h-full bg-background rounded-t-[28px] transition-transform duration-300">
           <div 
             className="mx-auto h-1 w-[36px] rounded-full bg-gray-200 my-3 cursor-grab active:cursor-grabbing" 
             role="button"
