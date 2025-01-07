@@ -5,29 +5,19 @@ export const sendOtpEmail = async (email: string) => {
     const { error } = await supabase.auth.signInWithOtp({
       email,
       options: {
-        shouldCreateUser: true,
-        emailRedirectTo: `${window.location.origin}/app`,
-      }
+        shouldCreateUser: false, // Only allow existing users
+      },
     });
-
-    if (error) {
-      // Handle rate limit error specifically
-      if (error.message?.includes('rate limit') || error.status === 429) {
-        throw {
-          status: 429,
-          message: "Email rate limit exceeded. Please wait a minute before requesting another OTP."
-        };
-      }
-      throw error;
-    }
-
-    return {
-      success: true,
-      message: "OTP sent successfully"
-    };
+    
+    if (error) throw error;
+    
+    return { success: true };
   } catch (error: any) {
-    console.error("Error in sendOtpEmail:", error);
-    throw error;
+    console.error("Error sending OTP:", error);
+    throw {
+      message: error.message || "Failed to send OTP",
+      status: error.status || 500,
+    };
   }
 };
 
@@ -36,19 +26,17 @@ export const verifyOtpCode = async (email: string, token: string) => {
     const { data, error } = await supabase.auth.verifyOtp({
       email,
       token,
-      type: 'email'
+      type: 'email',
     });
 
-    if (error) {
-      throw error;
-    }
-
-    return {
-      success: true,
-      session: data.session
-    };
+    if (error) throw error;
+    
+    return { success: true, data };
   } catch (error: any) {
-    console.error("Error in verifyOtpCode:", error);
-    throw error;
+    console.error("Error verifying OTP:", error);
+    throw {
+      message: error.message || "Failed to verify OTP",
+      status: error.status || 500,
+    };
   }
 };
