@@ -12,10 +12,10 @@ export const sendOtpEmail = async (email: string) => {
 
     if (error) {
       // Handle rate limit error specifically
-      if (error.status === 429) {
+      if (error.message?.includes('rate limit') || error.status === 429) {
         throw {
           status: 429,
-          message: "Too many attempts. Please wait a minute before trying again."
+          message: "Email rate limit exceeded. Please wait a minute before requesting another OTP."
         };
       }
       throw error;
