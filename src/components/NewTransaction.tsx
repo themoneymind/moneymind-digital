@@ -1,87 +1,76 @@
-import { useState } from "react";
 import { useFinance } from "@/contexts/FinanceContext";
-import { TransactionType } from "@/types/finance";
 import { TransactionForm } from "./transaction/TransactionForm";
-import { useTransactionValidation } from "@/hooks/useTransactionValidation";
+import { TransactionHeader } from "./transaction/TransactionHeader";
+import { useTransactionForm } from "@/hooks/useTransactionForm";
+import { useTransactionSubmit } from "@/hooks/useTransactionSubmit";
 
-export const NewTransaction = () => {
-  const { addTransaction, getFormattedPaymentSources, paymentSources } = useFinance();
-  const { validateAmount, validatePaymentSource, validateExpenseBalance } = useTransactionValidation();
-  
-  const [type, setType] = useState<TransactionType>("expense");
-  const [amount, setAmount] = useState("");
-  const [category, setCategory] = useState("");
-  const [source, setSource] = useState("");
-  const [description, setDescription] = useState("");
-  const [customCategories, setCustomCategories] = useState<{
-    expense: string[];
-    income: string[];
-  }>({
-    expense: [],
-    income: [],
+type NewTransactionProps = {
+  onClose: () => void;
+};
+
+export const NewTransaction = ({ onClose }: NewTransactionProps) => {
+  const { getFormattedPaymentSources } = useFinance();
+  const {
+    type,
+    amount,
+    category,
+    source,
+    destinationSource,
+    description,
+    selectedDate,
+    customCategories,
+    setType,
+    setAmount,
+    setCategory,
+    setSource,
+    setDestinationSource,
+    setDescription,
+    setSelectedDate,
+    resetForm,
+  } = useTransactionForm();
+
+  const { handleSubmit } = useTransactionSubmit(() => {
+    resetForm();
+    onClose();
   });
 
-  const formattedSources = getFormattedPaymentSources();
-  console.log("Available formatted sources:", formattedSources);
-
-  const handleAddCustomCategory = (newCategory: string) => {
-    setCustomCategories((prev) => ({
-      ...prev,
-      [type]: [...prev[type], newCategory],
-    }));
-  };
-
-  const handleSubmit = async () => {
-    console.log("Submitting transaction with source:", source);
-    
-    const validAmount = validateAmount(amount);
-    if (!validAmount) return;
-
-    const sourceValidation = validatePaymentSource(source, paymentSources);
-    if (!sourceValidation) return;
-
-    const { baseSourceId, baseSource } = sourceValidation;
-
-    if (!validateExpenseBalance(baseSource, validAmount, type)) return;
-
-    try {
-      await addTransaction({
-        type,
-        amount: validAmount,
-        category,
-        source: baseSourceId,
-        description,
-      });
-
-      // Reset form after successful submission
-      setAmount("");
-      setCategory("");
-      setSource("");
-      setDescription("");
-    } catch (error) {
-      console.error("Error adding transaction:", error);
-    }
+  const onSubmit = () => {
+    handleSubmit({
+      type,
+      amount,
+      category,
+      source,
+      destinationSource,
+      description,
+      selectedDate,
+    });
   };
 
   return (
-    <div className="p-6 mx-4 bg-white rounded-[20px]">
-      <h2 className="mb-6 text-base font-semibold">New Transaction</h2>
-      <TransactionForm
-        type={type}
-        amount={amount}
-        category={category}
-        source={source}
-        description={description}
-        onTypeChange={setType}
-        onAmountChange={setAmount}
-        onCategoryChange={setCategory}
-        onSourceChange={setSource}
-        onDescriptionChange={setDescription}
-        onSubmit={handleSubmit}
-        customCategories={customCategories}
-        onAddCustomCategory={handleAddCustomCategory}
-        formattedSources={formattedSources}
-      />
+    <div className="bg-white rounded-t-[30px] overflow-y-auto h-[95vh] min-h-[95vh]">
+      <div className="mx-auto h-1 w-[36px] rounded-full bg-gray-200 my-3" />
+      <div className="px-4">
+        <TransactionHeader onClose={onClose} />
+        <TransactionForm
+          type={type}
+          amount={amount}
+          category={category}
+          source={source}
+          destinationSource={destinationSource}
+          description={description}
+          selectedDate={selectedDate}
+          onTypeChange={setType}
+          onAmountChange={setAmount}
+          onCategoryChange={setCategory}
+          onSourceChange={setSource}
+          onDestinationSourceChange={setDestinationSource}
+          onDescriptionChange={setDescription}
+          onDateChange={setSelectedDate}
+          onSubmit={onSubmit}
+          customCategories={customCategories}
+          formattedSources={getFormattedPaymentSources()}
+        />
+      </div>
     </div>
   );
 };

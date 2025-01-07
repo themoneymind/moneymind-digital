@@ -1,0 +1,4 @@
+project_id = "vnuxoxkozfgfrqjbsifs"
+
+[process-recurring-transactions]
+verify_jwt = true

@@ -6,7 +6,6 @@ import { ForgotPassword } from "@/pages/ForgotPassword";
 import { ResetPassword } from "@/pages/ResetPassword";
 import { Onboarding } from "@/pages/Onboarding";
 import { Terms } from "@/pages/Terms";
-import { PaymentSource } from "@/pages/PaymentSource";
 
 export const PublicRoutes = () => {
   const { user } = useAuth();
@@ -14,7 +13,6 @@ export const PublicRoutes = () => {
   const isEmailVerified = user?.email_confirmed_at != null;
 
   if (user) {
-    // If email is not verified, stay on the current page
     if (!isEmailVerified) {
       return (
         <Routes>
@@ -24,17 +22,16 @@ export const PublicRoutes = () => {
       );
     }
 
-    // If first time user, go to payment source
     if (isFirstTimeUser) {
       return <Navigate to="/app/payment-source" />;
     }
 
-    // Otherwise, go to dashboard
     return <Navigate to="/app" />;
   }
 
   return (
     <Routes>
+      <Route path="/" element={<Navigate to="/signin" />} />
       <Route path="/signin" element={<SignIn />} />
       <Route path="/signup" element={<SignUp />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />

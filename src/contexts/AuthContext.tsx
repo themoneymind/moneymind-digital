@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
 import { Session, User } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
@@ -20,7 +20,11 @@ export const useAuth = () => {
   return context;
 };
 
-export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
+interface AuthProviderProps {
+  children: React.ReactNode;
+}
+
+export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [session, setSession] = useState<Session | null>(null);
   const [user, setUser] = useState<User | null>(null);
   const navigate = useNavigate();
@@ -30,6 +34,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     setSession(null);
     setUser(null);
     localStorage.removeItem("isFirstTimeUser");
+    localStorage.removeItem("rememberMe");
+    localStorage.removeItem("rememberedEmail");
     navigate("/signin");
   };
 
@@ -51,14 +57,17 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     } = supabase.auth.onAuthStateChange(async (event, session) => {
       console.log("Auth state changed:", event);
       
-      if (event === 'SIGNED_OUT' || event === 'TOKEN_REFRESHED') {
-        if (!session) {
-          handleAuthError();
-          return;
-        }
+      if (event === 'SIGNED_OUT') {
+        handleAuthError();
+        return;
       }
 
       if (event === 'TOKEN_REFRESHED') {
+        if (!session) {
+          console.error("No session after token refresh");
+          handleAuthError();
+          return;
+        }
         console.log('Token refreshed successfully');
       }
 

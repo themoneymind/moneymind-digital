@@ -1,63 +1,69 @@
-import { useState, useEffect } from "react";
-import { Transaction } from "@/types/transactions";
-import { useTransactions } from "./useTransactions";
-import { format, startOfDay, startOfWeek, startOfMonth, startOfYear } from "date-fns";
+import { useEffect, useState } from "react";
+import { useAuth } from "@/contexts/AuthContext";
+import { supabase } from "@/integrations/supabase/client";
+import { Transaction, RepeatOption, AuditTrailEntry } from "@/types/transactions";
 
-type TimeFrame = "daily" | "weekly" | "monthly" | "yearly";
+type TimeframeType = "daily" | "weekly" | "monthly" | "yearly";
 
 export const useReport = () => {
-  const { fetchTransactions } = useTransactions();
-  const [timeframe, setTimeframe] = useState<TimeFrame>("monthly");
   const [transactions, setTransactions] = useState<Transaction[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [timeframe, setTimeframe] = useState<TimeframeType>("monthly");
+  const { user } = useAuth();
 
   useEffect(() => {
-    const loadTransactions = async () => {
-      setIsLoading(true);
+    const fetchTransactions = async () => {
+      if (!user) return;
+
       try {
-        const data = await fetchTransactions();
-        setTransactions(data);
+        const { data: txnsData, error } = await supabase
+          .from('transactions')
+          .select('*')
+          .eq('user_id', user.id);
+
+        if (error) throw error;
+
+        // Transform the transactions to match our TypeScript type
+        const txns = txnsData.map(t => ({
+          ...t,
+          date: new Date(t.date),
+          audit_trail: (t.audit_trail || []).map((entry: any) => ({
+            action: entry.action as string,
+            timestamp: entry.timestamp as string
+          })) as AuditTrailEntry[],
+          repeat_frequency: (t.repeat_frequency || 'never') as RepeatOption
+        }));
+
+        setTransactions(txns as Transaction[]);
       } catch (error) {
-        console.error("Error loading transactions:", error);
+        console.error('Error fetching transactions:', error);
       } finally {
         setIsLoading(false);
       }
     };
 
-    loadTransactions();
-  }, [fetchTransactions]);
-
-  const getStartDate = (date: Date, timeframe: TimeFrame) => {
-    switch (timeframe) {
-      case "daily":
-        return startOfDay(date);
-      case "weekly":
-        return startOfWeek(date);
-      case "monthly":
-        return startOfMonth(date);
-      case "yearly":
-        return startOfYear(date);
-    }
-  };
+    fetchTransactions();
+  }, [user]);
 
   const prepareChartData = () => {
+    // Implementation of chart data preparation based on timeframe
     return transactions.map(t => ({
-      date: format(new Date(t.date), "MMM dd"),
-      amount: t.type === 'expense' ? -Number(t.amount) : Number(t.amount)
+      date: t.date.toLocaleDateString(),
+      amount: Number(t.amount)
     }));
   };
 
-  const downloadReport = async (format: 'excel' | 'pdf') => {
-    // Implementation for download functionality would go here
+  const downloadReport = (format: 'excel' | 'pdf') => {
+    // Implementation of report download functionality
     console.log(`Downloading ${format} report...`);
   };
 
-  return {
-    timeframe,
-    setTimeframe,
-    prepareChartData,
-    downloadReport,
-    transactions,
-    isLoading
+  return { 
+    transactions, 
+    isLoading, 
+    timeframe, 
+    setTimeframe, 
+    prepareChartData, 
+    downloadReport 
   };
 };

@@ -1,5 +1,9 @@
 import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { TransactionType } from "@/types/finance";
+import { PaymentSourceSelector } from "./PaymentSourceSelector";
+import { TransactionDateSelector } from "./TransactionDateSelector";
+import { RepeatSelector } from "./RepeatSelector";
+import { RepeatOption } from "@/types/transactions";
 import { TransactionAmountOperations } from "./TransactionAmountOperations";
 
 interface TransactionEditDialogFormProps {
@@ -14,6 +18,13 @@ interface TransactionEditDialogFormProps {
   setDescription: (description: string) => void;
   formattedSources: { id: string; name: string }[];
   onDropdownOpenChange: (open: boolean) => void;
+  selectedDate: Date;
+  onDateChange: (date: Date) => void;
+  repeatFrequency: RepeatOption;
+  onRepeatChange: (frequency: RepeatOption) => void;
+  transactionType?: TransactionType;
+  initialSource?: string;
+  initialDisplaySource?: string;
 }
 
 export const TransactionEditDialogForm = ({
@@ -28,55 +39,80 @@ export const TransactionEditDialogForm = ({
   setDescription,
   formattedSources,
   onDropdownOpenChange,
+  selectedDate,
+  onDateChange,
+  repeatFrequency,
+  onRepeatChange,
+  transactionType,
+  initialSource,
+  initialDisplaySource,
 }: TransactionEditDialogFormProps) => {
-  // Set the initial amount to 10000 (the difference we want to subtract)
-  const handleAmountChange = (newAmount: string) => {
-    setAmount(newAmount);
-  };
-
   return (
-    <div className="space-y-6">
-      <TransactionAmountOperations
-        currentAmount={currentAmount}
-        operation={operation}
-        setOperation={setOperation}
-        amount={amount}
-        setAmount={handleAmountChange}
+    <div className="space-y-4">
+      {transactionType !== "transfer" && (
+        <TransactionAmountOperations
+          currentAmount={currentAmount}
+          operation={operation}
+          setOperation={setOperation}
+          amount={amount}
+          setAmount={setAmount}
+        />
+      )}
+
+      {transactionType === "transfer" ? (
+        <div className="space-y-4">
+          <div className="px-3 py-2 bg-gray-50 rounded-[12px] border border-gray-100 flex justify-between items-center">
+            <p className="text-sm text-gray-500">Transfer Amount</p>
+            <p className="text-lg font-semibold">₹{currentAmount}</p>
+          </div>
+          <div className="relative">
+            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500">₹</span>
+            <Input
+              type="number"
+              placeholder="0"
+              className="text-sm pl-8 h-12 border-gray-200 rounded-[12px] bg-white"
+              value={amount}
+              onChange={(e) => setAmount(e.target.value)}
+            />
+          </div>
+        </div>
+      ) : null}
+
+      <PaymentSourceSelector
+        source={selectedSource || initialSource}
+        onSourceChange={setSelectedSource}
+        formattedSources={formattedSources}
+        placeholder={transactionType === "transfer" ? "Transfer from" : "Select payment source"}
+        initialDisplaySource={initialDisplaySource}
       />
 
-      <div className="space-y-2">
-        <label htmlFor="source" className="text-sm font-medium">
-          Payment Source
-        </label>
-        <Select 
-          value={selectedSource} 
-          onValueChange={setSelectedSource}
-          onOpenChange={onDropdownOpenChange}
-        >
-          <SelectTrigger className="h-12 rounded-[12px]">
-            <SelectValue placeholder="Select payment source" />
-          </SelectTrigger>
-          <SelectContent>
-            {formattedSources.map((source) => (
-              <SelectItem key={source.id} value={source.id}>
-                {source.name}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
-
-      <div className="space-y-2">
-        <label htmlFor="description" className="text-sm font-medium">
-          Description
-        </label>
-        <Input
-          id="description"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          className="h-12 rounded-[12px]"
+      {transactionType === "transfer" && (
+        <PaymentSourceSelector
+          source={selectedSource}
+          onSourceChange={setSelectedSource}
+          formattedSources={formattedSources.filter(s => s.id !== selectedSource)}
+          placeholder="Transfer to"
+          isTransferTo={true}
+          fromSource={selectedSource}
         />
-      </div>
+      )}
+
+      <TransactionDateSelector
+        selectedDate={selectedDate}
+        onDateChange={onDateChange}
+      />
+
+      <RepeatSelector
+        value={repeatFrequency}
+        onValueChange={onRepeatChange}
+      />
+
+      <Input
+        placeholder="Add a description"
+        className="h-12 border-gray-200 rounded-[12px] text-sm bg-white"
+        value={description}
+        onChange={(e) => setDescription(e.target.value)}
+      />
     </div>
   );
 };
