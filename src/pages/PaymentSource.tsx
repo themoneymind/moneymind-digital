@@ -67,11 +67,11 @@ export const PaymentSource = () => {
     <Sheet open={isOpen} onOpenChange={handleOpenChange}>
       <SheetContent
         side="bottom"
-        className="h-[85vh] p-0 bg-transparent border-none shadow-none"
+        className="h-[85vh] p-0 rounded-t-[28px] overflow-hidden"
         closeButton={false}
         ref={sheetRef}
       >
-        <div className="flex flex-col h-full bg-background rounded-t-[28px] transition-transform duration-300">
+        <div className="bg-background rounded-t-[28px] pb-8 overflow-y-auto h-full">
           <div 
             className="mx-auto h-1 w-[36px] rounded-full bg-gray-200 my-3 cursor-grab active:cursor-grabbing" 
             role="button"
@@ -80,7 +80,7 @@ export const PaymentSource = () => {
             onTouchMove={handleTouchMove}
             onTouchEnd={handleTouchEnd}
           />
-          <div className="px-6 flex-1 overflow-y-auto">
+          <div className="px-6">
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-2xl font-semibold">Add Payment Source</h2>
               <Button
