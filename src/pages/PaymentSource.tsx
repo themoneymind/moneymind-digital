@@ -21,10 +21,9 @@ export const PaymentSource = () => {
 
   const handleClose = useCallback(() => {
     setIsOpen(false);
-    // Wait for the animation to complete before navigating
     animationTimeout.current = setTimeout(() => {
       navigate("/app");
-    }, 300); // Match this with the animation duration in sheet.tsx
+    }, 300);
   }, [navigate]);
 
   const { handleOpenChange } = useDialogState((open) => {
@@ -34,9 +33,15 @@ export const PaymentSource = () => {
   });
 
   const handleTouchStart = (e: React.TouchEvent) => {
-    dragStartY.current = e.touches[0].clientY;
-    currentDragY.current = e.touches[0].clientY;
-    isDragging.current = true;
+    const handle = e.target as HTMLElement;
+    if (handle.getAttribute('role') === 'button') {
+      dragStartY.current = e.touches[0].clientY;
+      currentDragY.current = e.touches[0].clientY;
+      isDragging.current = true;
+      if (sheetRef.current) {
+        sheetRef.current.style.transition = 'none';
+      }
+    }
   };
 
   const handleTouchMove = (e: React.TouchEvent) => {
@@ -45,25 +50,31 @@ export const PaymentSource = () => {
     currentDragY.current = e.touches[0].clientY;
     const deltaY = currentDragY.current - dragStartY.current;
 
-    // Apply transform to follow finger movement
-    if (deltaY > 0) { // Only allow dragging downwards
+    if (deltaY > 0) {
       sheetRef.current.style.transform = `translateY(${deltaY}px)`;
     }
   };
 
   const handleTouchEnd = () => {
-    if (!dragStartY.current || !currentDragY.current || !sheetRef.current) return;
+    if (!dragStartY.current || !currentDragY.current || !sheetRef.current || !isDragging.current) return;
 
     const deltaY = currentDragY.current - dragStartY.current;
     
-    // Reset the transform
-    sheetRef.current.style.transform = '';
+    if (sheetRef.current) {
+      sheetRef.current.style.transition = 'transform 0.2s ease-out';
+    }
     
-    if (deltaY > 100) { // Threshold for closing
+    if (deltaY > 100) {
+      if (sheetRef.current) {
+        sheetRef.current.style.transform = 'translateY(100%)';
+      }
       handleClose();
+    } else {
+      if (sheetRef.current) {
+        sheetRef.current.style.transform = '';
+      }
     }
 
-    // Reset refs
     dragStartY.current = null;
     currentDragY.current = null;
     isDragging.current = false;
@@ -91,14 +102,13 @@ export const PaymentSource = () => {
     setCurrentBalance,
   } = usePaymentSourceForm(() => {
     // Don't close the sheet after adding a source
-    // This prevents the default closing behavior
   });
 
   return (
     <Sheet open={isOpen} onOpenChange={handleOpenChange}>
       <SheetContent
         side="bottom"
-        className="h-[85vh] p-0 overflow-hidden rounded-t-[28px]"
+        className="h-[85vh] p-0 overflow-hidden rounded-t-[28px] bg-background"
         closeButton={false}
         ref={sheetRef}
       >
@@ -117,7 +127,7 @@ export const PaymentSource = () => {
               <Button
                 variant="ghost"
                 size="icon"
-                className="h-8 w-8 rounded-full"
+                className="h-8 w-8 rounded-full text-red-600 hover:bg-red-50 hover:text-red-700"
                 onClick={handleClose}
               >
                 <X className="h-4 w-4" />
