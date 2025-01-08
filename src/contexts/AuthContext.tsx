@@ -91,29 +91,27 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const signOut = async () => {
     try {
-      // Try to sign out from Supabase
-      const { error } = await supabase.auth.signOut();
-      
-      // Even if there's an error, we want to clear the local state
+      // First clear local state and redirect
       handleAuthError();
+      
+      // Then try to sign out from Supabase
+      const { error } = await supabase.auth.signOut();
       
       // Only show error toast if it's not a session_not_found error
       if (error && !error.message.includes('session_not_found')) {
         console.error("Error signing out:", error);
         toast({
-          title: "Warning",
-          description: "You have been signed out, but there was an issue with the server.",
-          variant: "destructive",
+          title: "Note",
+          description: "You have been signed out locally, but there was an issue with the server.",
+          variant: "default",
         });
       }
     } catch (error) {
       console.error("Unexpected error during sign out:", error);
-      // Still clear local state and redirect
-      handleAuthError();
       toast({
-        title: "Warning",
-        description: "You have been signed out, but there was an unexpected error.",
-        variant: "destructive",
+        title: "Note",
+        description: "You have been signed out locally, but there was an unexpected error.",
+        variant: "default",
       });
     }
   };
