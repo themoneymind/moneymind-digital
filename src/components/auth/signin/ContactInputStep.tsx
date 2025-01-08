@@ -1,7 +1,5 @@
 import { Button } from "@/components/ui/button";
 import { ContactInput } from "./ContactInput";
-import { countryCodes, type CountryCode } from "./constants/countryCodes";
-import { useState } from "react";
 
 interface ContactInputStepProps {
   contact: string;
@@ -16,35 +14,12 @@ export const ContactInputStep = ({
   handleSendOtp,
   isLoading,
 }: ContactInputStepProps) => {
-  const [selectedCountry, setSelectedCountry] = useState<CountryCode>(countryCodes[0]);
-  const [inputType, setInputType] = useState<'email' | 'phone'>('email');
-
-  const handleContactChange = (value: string) => {
-    setContact(value);
-    if (/[a-zA-Z]/.test(value) || value.includes('@')) {
-      setInputType('email');
-    } else if (value === '' || /^\d*$/.test(value)) {
-      setInputType('phone');
-    }
-  };
-
-  const handleCountryChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const countryCode = event.target.value;
-    const country = countryCodes.find(c => c.code === countryCode);
-    if (country) {
-      setSelectedCountry(country);
-    }
-  };
-
   return (
     <div className="space-y-6">
       <ContactInput
         contact={contact}
-        inputType={inputType}
         isLoading={isLoading}
-        selectedCountry={selectedCountry}
-        onContactChange={handleContactChange}
-        onCountryChange={handleCountryChange}
+        onContactChange={setContact}
       />
 
       <Button 
