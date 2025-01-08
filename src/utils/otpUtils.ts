@@ -18,6 +18,15 @@ export const sendOtpEmail = async (email: string) => {
           status: 404,
         };
       }
+      
+      // Handle OTP disabled error
+      if (error.message.includes('otp_disabled') || error.message.includes('Signups not allowed for otp')) {
+        throw {
+          message: "Email OTP authentication is not enabled. Please contact support or use password authentication.",
+          status: 422,
+        };
+      }
+      
       throw error;
     }
     
