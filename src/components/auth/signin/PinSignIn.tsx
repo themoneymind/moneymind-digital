@@ -71,7 +71,7 @@ export const PinSignIn = ({
             if (error.status === 404) {
               toast({
                 title: "Account Not Found",
-                description: "This email is not registered. Please sign up first or use password authentication.",
+                description: error.message || "No account exists with this email address. Please sign up first.",
                 variant: "destructive",
               });
             } else if (error.status === 429) {
@@ -83,14 +83,14 @@ export const PinSignIn = ({
               });
             } else if (error.status === 422) {
               toast({
-                title: "Email OTP Not Available",
-                description: "Email verification is currently disabled. Please use password authentication to sign in.",
+                title: "OTP Not Available",
+                description: error.message || "Email OTP authentication is not enabled. Please use password authentication.",
                 variant: "destructive",
               });
             } else {
               toast({
                 title: "Error",
-                description: error.message || "Failed to send OTP. Please try password authentication instead.",
+                description: error.message || "Failed to send OTP",
                 variant: "destructive",
               });
             }
@@ -109,7 +109,7 @@ export const PinSignIn = ({
       console.error("Error in handleSendOtp:", error);
       toast({
         title: "Error",
-        description: "An unexpected error occurred. Please try password authentication.",
+        description: "An unexpected error occurred. Please try again.",
         variant: "destructive",
       });
     }
