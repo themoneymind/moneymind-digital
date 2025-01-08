@@ -1,18 +1,21 @@
+import { AuthError } from '@supabase/supabase-js';
 import { supabase } from "@/integrations/supabase/client";
-import { User } from "@supabase/supabase-js";
 
 export const sendOtpEmail = async (email: string) => {
   try {
-    // First check if the user exists using the auth API
-    const { data: { users }, error: authError } = await supabase.auth.admin.listUsers({
-      page: 1,
-      perPage: 100  // Get a page of users
+    // First check if the user exists
+    const { data: { users }, error: userCheckError } = await supabase.auth.admin.listUsers({
+      filters: {
+        email: email
+      }
     });
 
-    // Check if the email exists in the users list
-    const userExists = users?.some((user: User) => user.email === email);
+    if (userCheckError) {
+      throw userCheckError;
+    }
 
-    if (authError || !userExists) {
+    // If no users found with this email
+    if (!users || users.length === 0) {
       throw {
         message: "No account exists with this email address. Please sign up first.",
         status: 404,
