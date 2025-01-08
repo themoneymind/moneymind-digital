@@ -53,10 +53,13 @@ export const ContactInput = ({
     }
   };
 
+  // Temporarily force email input type
+  const showEmailOnly = true;
+
   return (
     <div className="relative">
       <InputIcon
-        contact={contact}
+        contact={showEmailOnly ? "" : contact}  // This prevents phone UI from showing
         selectedCountry={selectedCountry}
         onCountryChange={onCountryChange}
       />
