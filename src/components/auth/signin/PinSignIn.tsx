@@ -2,13 +2,11 @@ import { useOtpSignIn } from "@/hooks/useOtpSignIn";
 import { ContactInputStep } from "./ContactInputStep";
 import { OtpVerificationStep } from "./OtpVerificationStep";
 
-interface OtpSignInProps {
+interface PinSignInProps {
   isLoading: boolean;
 }
 
-export const PinSignIn = ({
-  isLoading,
-}: OtpSignInProps) => {
+export const PinSignIn = ({ isLoading }: PinSignInProps) => {
   const {
     otpSent,
     otp,
@@ -21,20 +19,21 @@ export const PinSignIn = ({
   } = useOtpSignIn();
 
   return (
-    <div className="space-y-6">
-      {otpSent ? (
+    <div className="space-y-4">
+      {!otpSent ? (
+        <ContactInputStep
+          contact={contact}
+          setContact={setContact}
+          handleSendOtp={handleSendOtp}
+          isLoading={isLoading}
+          cooldownTime={cooldownTime}
+        />
+      ) : (
         <OtpVerificationStep
           otp={otp}
           setOtp={setOtp}
           handleVerifyOtp={handleVerifyOtp}
           isLoading={isLoading}
-        />
-      ) : (
-        <ContactInputStep
-          contact={contact}
-          setContact={setContact}
-          handleSendOtp={handleSendOtp}
-          isLoading={isLoading || cooldownTime > 0}
         />
       )}
     </div>

@@ -1,31 +1,29 @@
 import { Input } from "@/components/ui/input";
-import { Mail } from "lucide-react";
+import { Label } from "@/components/ui/label";
+import { InputIcon } from "./InputIcon";
 
 interface ContactInputProps {
   contact: string;
+  setContact: (value: string) => void;
   isLoading: boolean;
-  onContactChange: (value: string) => void;
 }
 
-export const ContactInput = ({
-  contact,
-  isLoading,
-  onContactChange,
-}: ContactInputProps) => {
+export const ContactInput = ({ contact, setContact, isLoading }: ContactInputProps) => {
   return (
-    <div className="relative">
-      <div className="absolute left-3 top-1/2 -translate-y-1/2">
-        <Mail className="h-4 w-4 text-[#7F3DFF]" />
+    <div className="space-y-2">
+      <Label htmlFor="email">Email</Label>
+      <div className="relative">
+        <InputIcon />
+        <Input
+          id="email"
+          type="email"
+          placeholder="Enter your email"
+          value={contact}
+          onChange={(e) => setContact(e.target.value)}
+          className="pl-10"
+          disabled={isLoading}
+        />
       </div>
-      <Input
-        type="email"
-        placeholder="Email"
-        value={contact}
-        onChange={(e) => onContactChange(e.target.value)}
-        className="w-full py-3 pl-10 md:text-sm text-base bg-transparent border-t-0 border-x-0 border-b-2 border-gray-200 rounded-none focus:outline-none transition-colors placeholder:text-gray-400 text-gray-600 focus:border-[#7F3DFF] focus:ring-0"
-        disabled={isLoading}
-        required
-      />
     </div>
   );
 };

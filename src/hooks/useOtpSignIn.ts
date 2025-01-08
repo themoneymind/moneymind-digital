@@ -16,11 +16,25 @@ export const useOtpSignIn = () => {
       });
 
       if (error) {
-        toast({
-          title: "Error",
-          description: error.message,
-          variant: "destructive",
-        });
+        if (error.message.includes("Email rate limit exceeded")) {
+          toast({
+            title: "Error",
+            description: "Please wait a few minutes before requesting another OTP",
+            variant: "destructive",
+          });
+        } else if (error.message.includes("Unable to validate email address")) {
+          toast({
+            title: "Error",
+            description: "This email is not registered. Please sign up first or use password authentication.",
+            variant: "destructive",
+          });
+        } else {
+          toast({
+            title: "Error",
+            description: error.message,
+            variant: "destructive",
+          });
+        }
         return;
       }
 

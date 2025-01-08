@@ -6,6 +6,7 @@ interface ContactInputStepProps {
   setContact: (value: string) => void;
   handleSendOtp: () => void;
   isLoading: boolean;
+  cooldownTime: number;
 }
 
 export const ContactInputStep = ({
@@ -13,21 +14,25 @@ export const ContactInputStep = ({
   setContact,
   handleSendOtp,
   isLoading,
+  cooldownTime,
 }: ContactInputStepProps) => {
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       <ContactInput
         contact={contact}
+        setContact={setContact}
         isLoading={isLoading}
-        onContactChange={setContact}
       />
-
-      <Button 
+      <Button
         onClick={handleSendOtp}
-        className="w-full h-12 rounded-xl md:text-sm text-base bg-[#7F3DFF] hover:bg-[#7F3DFF]/90"
-        disabled={isLoading || !contact}
+        disabled={!contact || isLoading || cooldownTime > 0}
+        className="w-full"
       >
-        {isLoading ? "Please wait..." : "Send OTP"}
+        {cooldownTime > 0
+          ? `Resend OTP in ${cooldownTime}s`
+          : isLoading
+          ? "Sending..."
+          : "Send OTP"}
       </Button>
     </div>
   );
