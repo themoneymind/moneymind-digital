@@ -112,7 +112,7 @@ export const SignIn = () => {
       
       // Redirect based on user status
       if (isFirstTimeUser) {
-        navigate("/app/payment-source");
+        navigate("/app/add-payment-source");
       } else {
         navigate("/app");
       }

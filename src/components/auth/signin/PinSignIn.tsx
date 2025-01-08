@@ -41,6 +41,17 @@ export const PinSignIn = ({
       }
 
       const contactValue = contact.trim();
+      
+      // If input contains only numbers, show the "coming soon" message
+      if (/^\d+$/.test(contactValue)) {
+        toast({
+          title: "Phone Authentication Coming Soon",
+          description: "Currently, only email authentication is available. Please use your email address.",
+          variant: "default",
+        });
+        return;
+      }
+
       const contactType = getContactType(contactValue);
       
       switch (contactType) {
@@ -52,17 +63,28 @@ export const PinSignIn = ({
               description: "Please check your email for the verification code",
             });
             setOtpSent(true);
-            // Set 60 second cooldown after successful send
             setCooldownTime(60);
           } catch (error: any) {
             console.error("Error sending OTP:", error);
             
-            // Handle rate limit error specifically
-            if (error.status === 429) {
-              setCooldownTime(60); // Force cooldown on rate limit
+            // Handle specific error cases
+            if (error.status === 404) {
+              toast({
+                title: "Account Not Found",
+                description: error.message || "No account exists with this email address. Please sign up first.",
+                variant: "destructive",
+              });
+            } else if (error.status === 429) {
+              setCooldownTime(60);
               toast({
                 title: "Too Many Attempts",
                 description: "Please wait a minute before requesting another OTP",
+                variant: "destructive",
+              });
+            } else if (error.status === 422) {
+              toast({
+                title: "OTP Not Available",
+                description: error.message || "Email OTP authentication is not enabled. Please use password authentication.",
                 variant: "destructive",
               });
             } else {
@@ -75,18 +97,10 @@ export const PinSignIn = ({
           }
           break;
 
-        case 'phone':
-          toast({
-            title: "Coming Soon",
-            description: "Phone number verification will be available soon!",
-            variant: "destructive",
-          });
-          return;
-
         case 'invalid':
           toast({
             title: "Invalid Input",
-            description: "Please enter a valid email address or phone number",
+            description: "Please enter a valid email address",
             variant: "destructive",
           });
           return;

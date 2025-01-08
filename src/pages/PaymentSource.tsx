@@ -1,59 +1,43 @@
 import { useNavigate } from "react-router-dom";
 import { useFinance } from "@/contexts/FinanceContext";
-import { useToast } from "@/hooks/use-toast";
 import { PaymentSourceHeader } from "@/components/payment-source/PaymentSourceHeader";
 import { PaymentSourceForm } from "@/components/payment-source/PaymentSourceForm";
-import { PaymentSourceButtons } from "@/components/payment-source/PaymentSourceButtons";
 import { Sheet, SheetContent, SheetClose } from "@/components/ui/sheet";
 import { usePaymentSourceForm } from "@/hooks/usePaymentSourceForm";
 import { useState, useRef } from "react";
 import { useDialogState } from "@/hooks/useDialogState";
+import { Button } from "@/components/ui/button";
+import { X } from "lucide-react";
+import { useDragToClose } from "@/hooks/useDragToClose";
 
 export const PaymentSource = () => {
   const { paymentSources } = useFinance();
-  const { toast } = useToast();
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(true);
-  const dragStartY = useRef<number | null>(null);
-  const sheetRef = useRef<HTMLDivElement>(null);
-  const { isClosing, handleOpenChange } = useDialogState((open) => {
-    if (!open) {
+  const animationTimeout = useRef<NodeJS.Timeout>();
+
+  const handleCloseComplete = () => {
+    setIsOpen(false);
+    animationTimeout.current = setTimeout(() => {
       navigate("/app");
-    }
+    }, 300);
+  };
+
+  const {
+    sheetRef,
+    handleTouchStart,
+    handleTouchMove,
+    handleTouchEnd,
+    handleClose,
+  } = useDragToClose({
+    onClose: handleCloseComplete,
   });
 
-  const handleComplete = () => {
-    if (paymentSources.length === 0) {
-      toast({
-        title: "Error",
-        description: "Add payment source to complete",
-        variant: "destructive",
-      });
-      return;
+  const { handleOpenChange } = useDialogState((open) => {
+    if (!open) {
+      handleClose();
     }
-    localStorage.removeItem("isFirstTimeUser");
-    setIsOpen(false);
-  };
-
-  const handleTouchStart = (e: React.TouchEvent) => {
-    dragStartY.current = e.touches[0].clientY;
-  };
-
-  const handleTouchMove = (e: React.TouchEvent) => {
-    if (!dragStartY.current || !sheetRef.current) return;
-
-    const currentY = e.touches[0].clientY;
-    const deltaY = currentY - dragStartY.current;
-
-    if (deltaY > 100) { // Threshold for closing
-      setIsOpen(false);
-      navigate("/app");
-    }
-  };
-
-  const handleTouchEnd = () => {
-    dragStartY.current = null;
-  };
+  });
 
   const {
     selectedType,
@@ -75,29 +59,39 @@ export const PaymentSource = () => {
     setLastFourDigits,
     setCreditLimit,
     setCurrentBalance,
-  } = usePaymentSourceForm(handleComplete);
+  } = usePaymentSourceForm(() => {
+    // Don't close the sheet after adding a source
+  });
 
   return (
     <Sheet open={isOpen} onOpenChange={handleOpenChange}>
       <SheetContent
         side="bottom"
-        className="h-[85vh] p-0 overflow-hidden rounded-t-[28px]"
+        className="h-[85vh] p-0 rounded-t-[28px] overflow-hidden"
         closeButton={false}
         ref={sheetRef}
       >
-        <div className="flex flex-col h-full">
-          <SheetClose asChild>
-            <div 
-              className="mx-auto h-1 w-[36px] rounded-full bg-gray-200 my-3 cursor-grab active:cursor-grabbing" 
-              role="button"
-              aria-label="Drag to close"
-              onTouchStart={handleTouchStart}
-              onTouchMove={handleTouchMove}
-              onTouchEnd={handleTouchEnd}
-            />
-          </SheetClose>
-          <div className="px-6 flex-1 overflow-y-auto">
-            <h2 className="text-2xl font-semibold mb-6">Add Payment Source</h2>
+        <div className="bg-background rounded-t-[28px] pb-8 overflow-y-auto h-full">
+          <div 
+            className="mx-auto h-1 w-[36px] rounded-full bg-gray-200 my-3 cursor-grab active:cursor-grabbing" 
+            role="button"
+            aria-label="Drag to close"
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}
+          />
+          <div className="px-6">
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-2xl font-semibold">Add Payment Source</h2>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-8 w-8 rounded-full text-red-600 hover:bg-red-50 hover:text-red-700"
+                onClick={handleClose}
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            </div>
             <div className="space-y-6">
               <PaymentSourceHeader />
               
@@ -122,10 +116,12 @@ export const PaymentSource = () => {
                 setCurrentBalance={setCurrentBalance}
               />
 
-              <PaymentSourceButtons
-                onAddSource={handleAddSource}
-                onComplete={handleComplete}
-              />
+              <Button
+                className="w-full h-[52px] rounded-[16px] bg-[#7C3AED] hover:bg-[#7C3AED]/90 text-white font-medium"
+                onClick={handleAddSource}
+              >
+                Add Payment Source
+              </Button>
             </div>
           </div>
         </div>

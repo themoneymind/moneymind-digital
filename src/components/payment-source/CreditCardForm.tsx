@@ -51,7 +51,7 @@ export const CreditCardForm = ({
     <div className="space-y-6">
       <div className="flex items-center justify-between space-x-2">
         <Label htmlFor="custom-card" className="text-sm font-medium">
-          Custom Credit Card
+          Custom Cards
         </Label>
         <Switch
           id="custom-card"
@@ -70,7 +70,7 @@ export const CreditCardForm = ({
         />
       ) : (
         <Input
-          placeholder="Enter credit card name"
+          placeholder="Enter your card name"
           value={customBankName}
           onChange={handleCustomNameChange}
           className="h-12 w-full py-2 px-0 text-base bg-transparent border-0 border-b-2 border-gray-200 focus:outline-none focus:border-primary rounded-none font-sans text-gray-600 placeholder:text-gray-400"

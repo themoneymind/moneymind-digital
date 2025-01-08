@@ -1,33 +1,45 @@
+import { AuthError } from '@supabase/supabase-js';
 import { supabase } from "@/integrations/supabase/client";
 
 export const sendOtpEmail = async (email: string) => {
   try {
-    const { error } = await supabase.auth.signInWithOtp({
+    console.log("Attempting to send OTP to:", email);
+    
+    const { data, error } = await supabase.auth.signInWithOtp({
       email,
       options: {
-        shouldCreateUser: true,
-        emailRedirectTo: `${window.location.origin}/app`,
-      }
+        shouldCreateUser: false, // Only allow existing users
+      },
     });
-
+    
     if (error) {
-      // Handle rate limit error specifically
-      if (error.message?.includes('rate limit') || error.status === 429) {
+      // Handle specific Supabase auth errors
+      if (error.message.includes('Email not found') || error.message.includes('User not found')) {
         throw {
-          status: 429,
-          message: "Email rate limit exceeded. Please wait a minute before requesting another OTP."
+          message: "No account exists with this email address. Please sign up first.",
+          status: 404,
         };
       }
+      
+      if (error.message.includes('otp_disabled') || error.message.includes('Signups not allowed for otp')) {
+        throw {
+          message: "Email OTP authentication is not enabled. Please contact support or use password authentication.",
+          status: 422,
+        };
+      }
+      
       throw error;
     }
-
-    return {
-      success: true,
-      message: "OTP sent successfully"
-    };
+    
+    return { success: true, data };
   } catch (error: any) {
-    console.error("Error in sendOtpEmail:", error);
-    throw error;
+    console.error("Error sending OTP:", error);
+    
+    // Format the error response consistently
+    throw {
+      message: error.message || "Failed to send OTP",
+      status: error.status || 500,
+    };
   }
 };
 
@@ -36,19 +48,17 @@ export const verifyOtpCode = async (email: string, token: string) => {
     const { data, error } = await supabase.auth.verifyOtp({
       email,
       token,
-      type: 'email'
+      type: 'email',
     });
 
-    if (error) {
-      throw error;
-    }
-
-    return {
-      success: true,
-      session: data.session
-    };
+    if (error) throw error;
+    
+    return { success: true, data };
   } catch (error: any) {
-    console.error("Error in verifyOtpCode:", error);
-    throw error;
+    console.error("Error verifying OTP:", error);
+    throw {
+      message: error.message || "Failed to verify OTP",
+      status: error.status || 500,
+    };
   }
 };
