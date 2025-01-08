@@ -67,11 +67,24 @@ export const PinSignIn = ({
           } catch (error: any) {
             console.error("Error sending OTP:", error);
             
-            if (error.status === 429) {
+            // Handle specific error cases
+            if (error.status === 404) {
+              toast({
+                title: "Account Not Found",
+                description: error.message || "No account exists with this email address. Please sign up first.",
+                variant: "destructive",
+              });
+            } else if (error.status === 429) {
               setCooldownTime(60);
               toast({
                 title: "Too Many Attempts",
                 description: "Please wait a minute before requesting another OTP",
+                variant: "destructive",
+              });
+            } else if (error.status === 422) {
+              toast({
+                title: "OTP Not Available",
+                description: error.message || "Email OTP authentication is not enabled. Please use password authentication.",
                 variant: "destructive",
               });
             } else {
