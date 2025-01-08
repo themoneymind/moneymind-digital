@@ -1,4 +1,5 @@
 import { supabase } from "@/integrations/supabase/client";
+import { User } from "@supabase/supabase-js";
 
 export const sendOtpEmail = async (email: string) => {
   try {
@@ -9,7 +10,7 @@ export const sendOtpEmail = async (email: string) => {
     });
 
     // Check if the email exists in the users list
-    const userExists = users?.some(user => user.email === email);
+    const userExists = users?.some((user: User) => user.email === email);
 
     if (authError || !userExists) {
       throw {
