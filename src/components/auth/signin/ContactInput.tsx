@@ -1,50 +1,80 @@
-import { useState } from "react";
+import { useRef, useEffect } from "react";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { InputIcon } from "./InputIcon";
-import { CountryCode, countryCodes } from "./constants/countryCodes";
-import { isPhoneNumber } from "@/utils/phoneInputUtils";
+import { CountryCode } from "./constants/countryCodes";
+import { isPhoneNumber, getInputType, getPlaceholder } from "@/utils/phoneInputUtils";
 
 interface ContactInputProps {
   contact: string;
-  setContact: (value: string) => void;
+  inputType: 'email' | 'phone';
   isLoading: boolean;
+  selectedCountry: CountryCode;
+  onContactChange: (value: string) => void;
+  onCountryChange: (event: React.ChangeEvent<HTMLSelectElement>) => void;
 }
 
-export const ContactInput = ({ contact, setContact, isLoading }: ContactInputProps) => {
-  const [selectedCountry, setSelectedCountry] = useState<CountryCode>(countryCodes[0]);
+export const ContactInput = ({
+  contact,
+  inputType,
+  isLoading,
+  selectedCountry,
+  onContactChange,
+  onCountryChange,
+}: ContactInputProps) => {
+  const inputRef = useRef<HTMLInputElement>(null);
 
-  const handleCountryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const newCountry = countryCodes.find(country => country.code === e.target.value);
-    if (newCountry) {
-      setSelectedCountry(newCountry);
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const input = e.target;
+    const newValue = input.value;
+    onContactChange(newValue);
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    const input = e.target as HTMLInputElement;
+    const position = input.selectionStart;
+    if (position !== null) {
+      requestAnimationFrame(() => {
+        if (inputRef.current) {
+          inputRef.current.setSelectionRange(position, position);
+        }
+      });
     }
   };
 
-  const handleContactChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setContact(value);
+  const handleClick = (e: React.MouseEvent<HTMLInputElement>) => {
+    const input = e.target as HTMLInputElement;
+    const position = input.selectionStart;
+    if (position !== null) {
+      requestAnimationFrame(() => {
+        if (inputRef.current) {
+          inputRef.current.setSelectionRange(position, position);
+        }
+      });
+    }
   };
 
+  // Temporarily force email input type
+  const showEmailOnly = true;
+
   return (
-    <div className="space-y-2">
-      <Label htmlFor="email">Email or Phone</Label>
-      <div className="relative">
-        <InputIcon
-          contact={contact}
-          selectedCountry={selectedCountry}
-          onCountryChange={handleCountryChange}
-        />
-        <Input
-          id="email"
-          type={isPhoneNumber(contact) ? "tel" : "email"}
-          placeholder={isPhoneNumber(contact) ? "Enter your phone number" : "Enter your email"}
-          value={contact}
-          onChange={handleContactChange}
-          className={isPhoneNumber(contact) ? "pl-24" : "pl-10"}
-          disabled={isLoading}
-        />
-      </div>
+    <div className="relative">
+      <InputIcon
+        contact={showEmailOnly ? "" : contact}  // This prevents phone UI from showing
+        selectedCountry={selectedCountry}
+        onCountryChange={onCountryChange}
+      />
+      <Input
+        ref={inputRef}
+        type="email"
+        placeholder="Enter your email"
+        value={contact}
+        onChange={handleInputChange}
+        onKeyDown={handleKeyDown}
+        onClick={handleClick}
+        className="w-full py-3 pl-10 md:text-sm text-base bg-transparent border-t-0 border-x-0 border-b-2 border-gray-200 rounded-none focus:outline-none transition-colors placeholder:text-gray-400 text-gray-600 focus:border-[#7F3DFF] focus:ring-0"
+        disabled={isLoading}
+        required
+      />
     </div>
   );
 };
