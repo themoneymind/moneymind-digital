@@ -3,13 +3,18 @@ import { supabase } from "@/integrations/supabase/client";
 
 export const sendOtpEmail = async (email: string) => {
   try {
-    const { data: userExists } = await supabase
+    // First check if a user exists with this email
+    const { data: existingUser, error: userError } = await supabase
       .from('profiles')
       .select('id')
-      .eq('id', (await supabase.auth.getUser()).data.user?.id)
-      .single();
+      .eq('id', email)
+      .maybeSingle();
 
-    if (!userExists) {
+    console.log("Checking for existing user:", email);
+    
+    // If no user exists, throw the appropriate error
+    if (!existingUser) {
+      console.log("No user found with email:", email);
       throw {
         message: "No account exists with this email address. Please sign up first.",
         status: 404,
