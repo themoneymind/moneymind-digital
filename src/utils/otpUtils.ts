@@ -1,3 +1,4 @@
+import { AuthError } from '@supabase/supabase-js';
 import { supabase } from "@/integrations/supabase/client";
 
 export const sendOtpEmail = async (email: string) => {
@@ -9,11 +10,22 @@ export const sendOtpEmail = async (email: string) => {
       },
     });
     
-    if (error) throw error;
+    if (error) {
+      // Handle specific Supabase auth errors
+      if (error.message.includes('User not found')) {
+        throw {
+          message: "No account exists with this email address. Please sign up first.",
+          status: 404,
+        };
+      }
+      throw error;
+    }
     
     return { success: true };
   } catch (error: any) {
     console.error("Error sending OTP:", error);
+    
+    // Format the error response consistently
     throw {
       message: error.message || "Failed to send OTP",
       status: error.status || 500,
