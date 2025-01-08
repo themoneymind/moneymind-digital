@@ -1,4 +1,3 @@
-import { AuthError } from '@supabase/supabase-js';
 import { supabase } from "@/integrations/supabase/client";
 
 export const sendOtpEmail = async (email: string) => {
@@ -7,10 +6,11 @@ export const sendOtpEmail = async (email: string) => {
     const { data, error: userCheckError } = await supabase
       .from('profiles')
       .select('id')
-      .single();
+      .eq('id', email)  // We need to filter by email
+      .maybeSingle();   // Use maybeSingle instead of single
 
-    if (userCheckError) {
-      // If no user found or other error
+    if (!data) {
+      // If no user found
       throw {
         message: "No account exists with this email address. Please sign up first.",
         status: 404,
