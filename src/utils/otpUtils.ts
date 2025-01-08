@@ -5,13 +5,13 @@ export const sendOtpEmail = async (email: string) => {
     // First check if the user exists using the auth API
     const { data: { users }, error: authError } = await supabase.auth.admin.listUsers({
       page: 1,
-      perPage: 1,
-      filters: {
-        email: email
-      }
+      perPage: 100  // Get a page of users
     });
 
-    if (authError || !users || users.length === 0) {
+    // Check if the email exists in the users list
+    const userExists = users?.some(user => user.email === email);
+
+    if (authError || !userExists) {
       throw {
         message: "No account exists with this email address. Please sign up first.",
         status: 404,
