@@ -3,26 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 
 export const sendOtpEmail = async (email: string) => {
   try {
-    // First check if the user exists
-    const { data: { users }, error: userCheckError } = await supabase.auth.admin.listUsers({
-      filters: {
-        email: email
-      }
-    });
-
-    if (userCheckError) {
-      throw userCheckError;
-    }
-
-    // If no users found with this email
-    if (!users || users.length === 0) {
-      throw {
-        message: "No account exists with this email address. Please sign up first.",
-        status: 404,
-      };
-    }
-
-    const { error } = await supabase.auth.signInWithOtp({
+    const { data, error } = await supabase.auth.signInWithOtp({
       email,
       options: {
         shouldCreateUser: false, // Only allow existing users
@@ -31,6 +12,13 @@ export const sendOtpEmail = async (email: string) => {
     
     if (error) {
       // Handle specific Supabase auth errors
+      if (error.message.includes('Email not found') || error.message.includes('User not found')) {
+        throw {
+          message: "No account exists with this email address. Please sign up first.",
+          status: 404,
+        };
+      }
+      
       if (error.message.includes('otp_disabled') || error.message.includes('Signups not allowed for otp')) {
         throw {
           message: "Email OTP authentication is not enabled. Please contact support or use password authentication.",
@@ -41,7 +29,7 @@ export const sendOtpEmail = async (email: string) => {
       throw error;
     }
     
-    return { success: true };
+    return { success: true, data };
   } catch (error: any) {
     console.error("Error sending OTP:", error);
     
