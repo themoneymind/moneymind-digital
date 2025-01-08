@@ -8,7 +8,10 @@ export const isValidPhone = (value: string): boolean => {
 };
 
 export const getContactType = (value: string): 'email' | 'phone' | 'invalid' => {
+  // Temporarily only return email validation
   if (isValidEmail(value)) return 'email';
-  if (isValidPhone(value) || value.startsWith('+')) return 'phone';
   return 'invalid';
+  
+  // Code kept for future phone implementation
+  // if (isValidPhone(value) || value.startsWith('+')) return 'phone';
 };
