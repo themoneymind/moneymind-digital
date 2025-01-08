@@ -3,6 +3,19 @@ import { supabase } from "@/integrations/supabase/client";
 
 export const sendOtpEmail = async (email: string) => {
   try {
+    const { data: userExists } = await supabase
+      .from('profiles')
+      .select('id')
+      .eq('id', (await supabase.auth.getUser()).data.user?.id)
+      .single();
+
+    if (!userExists) {
+      throw {
+        message: "No account exists with this email address. Please sign up first.",
+        status: 404,
+      };
+    }
+
     const { data, error } = await supabase.auth.signInWithOtp({
       email,
       options: {
