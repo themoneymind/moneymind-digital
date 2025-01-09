@@ -11,7 +11,6 @@ import { NotificationSettingsPage } from "@/pages/settings/NotificationSettingsP
 import { SecuritySettingsPage } from "@/pages/settings/SecuritySettingsPage";
 import { PrivacySettingsPage } from "@/pages/settings/PrivacySettingsPage";
 import { ProfileEditPage } from "@/pages/settings/ProfileEditPage";
-import { ResetPassword } from "@/pages/ResetPassword";
 import { useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
@@ -71,7 +70,6 @@ export const ProtectedRoutes = () => {
       <Route path="/app/settings/privacy" element={<PrivacySettingsPage />} />
       <Route path="/app/report" element={<Report />} />
       <Route path="/app/dues" element={<Dues />} />
-      <Route path="/reset-password" element={<ResetPassword />} />
       <Route path="*" element={<Navigate to="/app" />} />
     </Routes>
   );
