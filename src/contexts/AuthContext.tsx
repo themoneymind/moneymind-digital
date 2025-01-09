@@ -81,7 +81,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       }
 
       if (event === 'USER_UPDATED') {
-        if (session?.user.email_confirmed_at) {
+        // Check if this is an email confirmation
+        const currentUser = session?.user;
+        const isEmailConfirmation = currentUser?.email_confirmed_at && 
+                                  currentUser?.email_confirmed_at !== user?.email_confirmed_at;
+        
+        if (isEmailConfirmation) {
+          // Navigate to email confirmation success page
           navigate('/email-confirmation-success');
           return;
         }

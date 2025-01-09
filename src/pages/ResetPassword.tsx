@@ -45,7 +45,7 @@ export const ResetPassword = () => {
       if (error) throw error;
       
       // Navigate to success page
-      navigate("/reset-password-success", { replace: true });
+      navigate("/reset-password-success");
       
     } catch (error: any) {
       toast({
