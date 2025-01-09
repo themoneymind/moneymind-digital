@@ -4,6 +4,8 @@ import { SignIn } from "@/pages/SignIn";
 import { SignUp } from "@/pages/SignUp";
 import { ForgotPassword } from "@/pages/ForgotPassword";
 import { ResetPassword } from "@/pages/ResetPassword";
+import { ResetPasswordSuccess } from "@/pages/ResetPasswordSuccess";
+import { EmailConfirmationSuccess } from "@/pages/EmailConfirmationSuccess";
 import { Onboarding } from "@/pages/Onboarding";
 import { Terms } from "@/pages/Terms";
 
@@ -17,6 +19,7 @@ export const PublicRoutes = () => {
       return (
         <Routes>
           <Route path="/signup" element={<SignUp />} />
+          <Route path="/email-confirmation-success" element={<EmailConfirmationSuccess />} />
           <Route path="*" element={<Navigate to="/signup" />} />
         </Routes>
       );
@@ -36,6 +39,8 @@ export const PublicRoutes = () => {
       <Route path="/signup" element={<SignUp />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
       <Route path="/reset-password" element={<ResetPassword />} />
+      <Route path="/reset-password-success" element={<ResetPasswordSuccess />} />
+      <Route path="/email-confirmation-success" element={<EmailConfirmationSuccess />} />
       <Route path="/onboarding" element={<Onboarding />} />
       <Route path="/terms" element={<Terms />} />
       <Route path="*" element={<Navigate to="/signin" />} />

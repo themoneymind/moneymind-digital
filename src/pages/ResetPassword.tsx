@@ -16,6 +16,7 @@ export const ResetPassword = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    console.log("Starting password reset process");
     
     if (password !== confirmPassword) {
       toast({
@@ -38,33 +39,22 @@ export const ResetPassword = () => {
     setIsLoading(true);
 
     try {
+      console.log("Attempting to update password");
       const { error } = await supabase.auth.updateUser({ 
         password: password 
       });
 
-      if (error) {
-        toast({
-          title: "Error",
-          description: error.message,
-          variant: "destructive",
-        });
-        return;
-      }
-
-      toast({
-        title: "Success",
-        description: "Password has been updated successfully",
-      });
+      if (error) throw error;
       
-      // Navigate back to settings after successful password change
-      setTimeout(() => {
-        navigate("/app/settings/security");
-      }, 2000);
+      console.log("Password updated successfully - navigating to success page");
+      // Navigate to success page with replace to prevent going back
+      navigate("/reset-password-success", { replace: true });
       
     } catch (error: any) {
+      console.error("Error updating password:", error);
       toast({
         title: "Error",
-        description: "An unexpected error occurred",
+        description: error.message || "Failed to update password",
         variant: "destructive",
       });
     } finally {
@@ -85,7 +75,7 @@ export const ResetPassword = () => {
             <div className="flex items-center mb-2">
               <PiggyBank className="h-10 w-10 text-[#7F3DFF]" />
             </div>
-            <h1 className="text-2xl font-bold text-[#7F3DFF]">Change Password</h1>
+            <h1 className="text-2xl font-bold text-[#7F3DFF]">Reset Password</h1>
             <p className="text-gray-600 text-base">
               Enter your new password
             </p>
@@ -97,7 +87,7 @@ export const ResetPassword = () => {
               placeholder="New Password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="h-12 rounded-xl border-gray-200 bg-gray-50/50 px-4 text-gray-900/70 placeholder:text-gray-500/60 focus:border-[#7F3DFF] focus:ring-[#7F3DFF]"
+              className="h-12 py-3 bg-transparent border-t-0 border-x-0 border-b-2 border-gray-200 rounded-none focus:outline-none transition-colors placeholder:text-gray-400 text-gray-600 focus:border-[#7F3DFF] focus:ring-0"
               disabled={isLoading}
               required
             />
@@ -106,7 +96,7 @@ export const ResetPassword = () => {
               placeholder="Confirm New Password"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
-              className="h-12 rounded-xl border-gray-200 bg-gray-50/50 px-4 text-gray-900/70 placeholder:text-gray-500/60 focus:border-[#7F3DFF] focus:ring-[#7F3DFF]"
+              className="h-12 py-3 bg-transparent border-t-0 border-x-0 border-b-2 border-gray-200 rounded-none focus:outline-none transition-colors placeholder:text-gray-400 text-gray-600 focus:border-[#7F3DFF] focus:ring-0"
               disabled={isLoading}
               required
             />
@@ -115,7 +105,7 @@ export const ResetPassword = () => {
               className="w-full h-12 rounded-xl text-base bg-[#7F3DFF] hover:bg-[#7F3DFF]/90"
               disabled={isLoading}
             >
-              {isLoading ? "Updating Password..." : "Update Password"}
+              {isLoading ? "Updating Password..." : "Reset Password"}
             </Button>
           </form>
         </div>
