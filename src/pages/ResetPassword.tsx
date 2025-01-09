@@ -43,16 +43,9 @@ export const ResetPassword = () => {
       });
 
       if (error) throw error;
-
-      toast({
-        title: "Success",
-        description: "Password has been updated successfully",
-      });
       
-      // Navigate to sign in after successful password reset
-      setTimeout(() => {
-        navigate("/signin");
-      }, 2000);
+      // Navigate to success page instead of sign in
+      navigate("/reset-password-success");
       
     } catch (error: any) {
       toast({
