@@ -16,13 +16,7 @@ export const PublicRoutes = () => {
 
   if (user) {
     if (!isEmailVerified) {
-      return (
-        <Routes>
-          <Route path="/signup" element={<SignUp />} />
-          <Route path="/email-confirmation-success" element={<EmailConfirmationSuccess />} />
-          <Route path="*" element={<Navigate to="/signup" />} />
-        </Routes>
-      );
+      return <Navigate to="/signup" />;
     }
 
     if (isFirstTimeUser) {
