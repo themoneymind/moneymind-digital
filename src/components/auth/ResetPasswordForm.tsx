@@ -44,13 +44,10 @@ export const ResetPasswordForm = () => {
 
       if (error) throw error;
       
-      console.log("Password updated successfully - signing out before navigation");
-      
-      // Sign out the user after password reset
+      console.log("Password updated successfully - signing out");
       await supabase.auth.signOut();
       
       console.log("Successfully signed out - navigating to success page");
-      // Navigate to success page with replace to prevent going back
       navigate("/reset-password-success", { replace: true });
       
     } catch (error: any) {
