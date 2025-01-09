@@ -15,8 +15,14 @@ export const Routes = () => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       console.log("Auth state changed:", event);
       
+      // Only redirect on sign out, not on email confirmation
       if (event === 'SIGNED_OUT') {
         navigate('/signin');
+      }
+
+      // Handle email confirmation
+      if (event === 'USER_UPDATED' && session?.user?.email_confirmed_at) {
+        navigate('/email-confirmation-success');
       }
     });
 
