@@ -18,7 +18,7 @@ export const ForgotPassword = () => {
 
     try {
       const { error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: `https://themoneymind.in/reset-password`,
+        redirectTo: `https://moneymind-digital.lovable.app/reset-password`,
       });
 
       if (error) throw error;
