@@ -13,6 +13,7 @@ export const PublicRoutes = () => {
   const { user } = useAuth();
   const isFirstTimeUser = localStorage.getItem("isFirstTimeUser") === "true";
   const isEmailVerified = user?.email_confirmed_at != null;
+  const currentPath = window.location.pathname;
 
   if (user) {
     if (!isEmailVerified) {
@@ -29,10 +30,11 @@ export const PublicRoutes = () => {
       return <Navigate to="/app/payment-source" />;
     }
 
-    // Allow access to reset-password-success even when authenticated
-    if (window.location.pathname === '/reset-password-success') {
+    // Allow access to reset-password and reset-password-success even when authenticated
+    if (currentPath === '/reset-password' || currentPath === '/reset-password-success') {
       return (
         <Routes>
+          <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/reset-password-success" element={<ResetPasswordSuccess />} />
         </Routes>
       );
