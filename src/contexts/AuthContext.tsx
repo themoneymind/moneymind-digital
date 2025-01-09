@@ -80,9 +80,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         console.log('Signed in successfully');
       }
 
-      // Removed automatic navigation after email confirmation
-      // Now users will need to manually sign in
-
       setSession(session);
       setUser(session?.user ?? null);
     });
