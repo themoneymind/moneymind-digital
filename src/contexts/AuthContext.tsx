@@ -80,6 +80,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         console.log('Signed in successfully');
       }
 
+      if (event === 'USER_UPDATED') {
+        if (session?.user.email_confirmed_at) {
+          navigate('/email-confirmation-success');
+          return;
+        }
+      }
+
       setSession(session);
       setUser(session?.user ?? null);
     });
