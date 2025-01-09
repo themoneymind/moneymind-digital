@@ -16,6 +16,7 @@ export const ResetPassword = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    console.log("Starting password reset process");
     
     if (password !== confirmPassword) {
       toast({
@@ -38,16 +39,19 @@ export const ResetPassword = () => {
     setIsLoading(true);
 
     try {
+      console.log("Attempting to update password");
       const { error } = await supabase.auth.updateUser({ 
         password: password 
       });
 
       if (error) throw error;
       
-      // Navigate to success page
-      navigate("/reset-password-success");
+      console.log("Password updated successfully - navigating to success page");
+      // Navigate to success page with replace to prevent going back
+      navigate("/reset-password-success", { replace: true });
       
     } catch (error: any) {
+      console.error("Error updating password:", error);
       toast({
         title: "Error",
         description: error.message || "Failed to update password",

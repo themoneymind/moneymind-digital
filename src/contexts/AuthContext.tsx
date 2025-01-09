@@ -31,6 +31,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const { toast } = useToast();
 
   const handleAuthError = () => {
+    console.log("Handling auth error - clearing session and user");
     setSession(null);
     setUser(null);
     localStorage.removeItem("isFirstTimeUser");
@@ -47,6 +48,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         handleAuthError();
         return;
       }
+      console.log("Initial session retrieved:", session?.user?.id);
       setSession(session);
       setUser(session?.user ?? null);
     });
@@ -55,9 +57,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (event, session) => {
-      console.log("Auth state changed:", event);
+      console.log("Auth state changed:", event, session?.user?.id);
       
       if (event === 'SIGNED_OUT') {
+        console.log("User signed out - clearing session");
         handleAuthError();
         return;
       }
@@ -81,13 +84,21 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       }
 
       if (event === 'USER_UPDATED') {
+        console.log("User updated event received");
         // Check if this is an email confirmation
         const currentUser = session?.user;
-        const isEmailConfirmation = currentUser?.email_confirmed_at && 
-                                  currentUser?.email_confirmed_at !== user?.email_confirmed_at;
+        const previousEmailConfirmed = user?.email_confirmed_at;
+        const newEmailConfirmed = currentUser?.email_confirmed_at;
+        
+        console.log("Previous email confirmed:", previousEmailConfirmed);
+        console.log("New email confirmed:", newEmailConfirmed);
+        
+        const isEmailConfirmation = newEmailConfirmed && 
+                                  (!previousEmailConfirmed || 
+                                   new Date(newEmailConfirmed).getTime() > new Date(previousEmailConfirmed).getTime());
         
         if (isEmailConfirmation) {
-          // Navigate to email confirmation success page
+          console.log("Email confirmation detected - navigating to success page");
           navigate('/email-confirmation-success');
           return;
         }
@@ -100,10 +111,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     return () => {
       subscription.unsubscribe();
     };
-  }, [navigate]);
+  }, [navigate, user?.email_confirmed_at]);
 
   const signOut = async () => {
     try {
+      console.log("Attempting to sign out");
       const { error } = await supabase.auth.signOut();
       if (error) {
         console.error("Error signing out:", error);
@@ -115,6 +127,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         return;
       }
       
+      console.log("Sign out successful");
       handleAuthError();
     } catch (error) {
       console.error("Unexpected error during sign out:", error);
