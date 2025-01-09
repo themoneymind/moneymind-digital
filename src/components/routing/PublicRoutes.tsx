@@ -34,7 +34,6 @@ export const PublicRoutes = () => {
       return (
         <Routes>
           <Route path="/reset-password-success" element={<ResetPasswordSuccess />} />
-          <Route path="*" element={<Navigate to="/signin" />} />
         </Routes>
       );
     }
