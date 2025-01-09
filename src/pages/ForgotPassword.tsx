@@ -1,89 +1,36 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Link } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { PiggyBank } from "lucide-react";
 import { TopBar } from "@/components/TopBar";
-import { sendOtpEmail, verifyOtpCode } from "@/utils/otpUtils";
-import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
 
 export const ForgotPassword = () => {
   const [email, setEmail] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [cooldownTime, setCooldownTime] = useState(0);
-  const [otpSent, setOtpSent] = useState(false);
-  const [otp, setOtp] = useState("");
   const { toast } = useToast();
 
-  useEffect(() => {
-    if (cooldownTime > 0) {
-      const timer = setTimeout(() => {
-        setCooldownTime(time => time - 1);
-      }, 1000);
-      return () => clearTimeout(timer);
-    }
-  }, [cooldownTime]);
-
-  const handleSendOtp = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (cooldownTime > 0) {
-      toast({
-        title: "Please wait",
-        description: `You can request another OTP in ${cooldownTime} seconds`,
-        variant: "destructive",
-      });
-      return;
-    }
-
-    setIsLoading(true);
-
-    try {
-      await sendOtpEmail(email);
-      toast({
-        title: "Success",
-        description: "OTP has been sent to your email",
-      });
-      setOtpSent(true);
-      setCooldownTime(60);
-    } catch (error: any) {
-      if (error.status === 429) {
-        setCooldownTime(60);
-        toast({
-          title: "Too many attempts",
-          description: "Please wait a minute before trying again",
-          variant: "destructive",
-        });
-      } else {
-        toast({
-          title: "Error",
-          description: error.message || "Failed to send OTP",
-          variant: "destructive",
-        });
-      }
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleVerifyOtp = async (e: React.FormEvent) => {
+  const handleResetPassword = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
 
     try {
-      await verifyOtpCode(email, otp);
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/reset-password`,
+      });
+
+      if (error) throw error;
+
       toast({
         title: "Success",
-        description: "Email verified successfully. You can now set a new password.",
+        description: "Password reset link has been sent to your email",
       });
-      // Redirect to reset password page after successful verification
-      window.location.href = `/reset-password?email=${encodeURIComponent(email)}`;
     } catch (error: any) {
       toast({
         title: "Error",
-        description: error.message || "Invalid OTP",
+        description: error.message || "Failed to send reset link",
         variant: "destructive",
       });
     } finally {
@@ -106,57 +53,28 @@ export const ForgotPassword = () => {
             </div>
             <h1 className="text-2xl font-bold text-[#7F3DFF]">Forgot Password</h1>
             <p className="text-gray-600 text-base">
-              {otpSent 
-                ? "Enter the verification code sent to your email" 
-                : "Enter your email to reset your password"}
+              Enter your email to reset your password
             </p>
           </div>
 
-          {otpSent ? (
-            <form onSubmit={handleVerifyOtp} className="space-y-6">
-              <div className="flex flex-col space-y-4 items-center">
-                <InputOTP
-                  value={otp}
-                  onChange={setOtp}
-                  maxLength={6}
-                  render={({ slots }) => (
-                    <InputOTPGroup className="gap-2">
-                      {slots.map((slot, index) => (
-                        <InputOTPSlot key={index} {...slot} index={index} />
-                      ))}
-                    </InputOTPGroup>
-                  )}
-                />
-              </div>
-              <Button 
-                type="submit" 
-                className="w-full h-12 rounded-xl text-base bg-[#7F3DFF] hover:bg-[#7F3DFF]/90"
-                disabled={isLoading || otp.length !== 6}
-              >
-                {isLoading ? "Verifying..." : "Verify OTP"}
-              </Button>
-            </form>
-          ) : (
-            <form onSubmit={handleSendOtp} className="space-y-6">
-              <Input
-                type="email"
-                placeholder="Email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="h-12 rounded-xl border-gray-200 bg-gray-50/50 px-4 text-gray-900/70 placeholder:text-gray-500/60 focus:border-[#7F3DFF] focus:ring-[#7F3DFF]"
-                disabled={isLoading || cooldownTime > 0}
-                required
-              />
-              <Button 
-                type="submit" 
-                className="w-full h-12 rounded-xl text-base bg-[#7F3DFF] hover:bg-[#7F3DFF]/90"
-                disabled={isLoading || cooldownTime > 0}
-              >
-                {isLoading ? "Sending OTP..." : 
-                 cooldownTime > 0 ? `Wait ${cooldownTime}s` : "Send OTP"}
-              </Button>
-            </form>
-          )}
+          <form onSubmit={handleResetPassword} className="space-y-6">
+            <Input
+              type="email"
+              placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="h-12 py-3 bg-transparent border-t-0 border-x-0 border-b-2 border-gray-200 rounded-none focus:outline-none transition-colors placeholder:text-gray-400 text-gray-600 focus:border-[#7F3DFF] focus:ring-0"
+              disabled={isLoading}
+              required
+            />
+            <Button 
+              type="submit" 
+              className="w-full h-12 rounded-xl text-base bg-[#7F3DFF] hover:bg-[#7F3DFF]/90"
+              disabled={isLoading}
+            >
+              {isLoading ? "Sending Reset Link..." : "Forget Password"}
+            </Button>
+          </form>
 
           <p className="text-gray-600 text-sm">
             Remember your password?{" "}
