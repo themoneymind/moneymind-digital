@@ -29,6 +29,16 @@ export const PublicRoutes = () => {
       return <Navigate to="/app/payment-source" />;
     }
 
+    // Allow access to reset-password-success even when authenticated
+    if (window.location.pathname === '/reset-password-success') {
+      return (
+        <Routes>
+          <Route path="/reset-password-success" element={<ResetPasswordSuccess />} />
+          <Route path="*" element={<Navigate to="/app" />} />
+        </Routes>
+      );
+    }
+
     return <Navigate to="/app" />;
   }
 
