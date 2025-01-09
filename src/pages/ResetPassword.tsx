@@ -5,6 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { PasswordRequirements } from "@/components/auth/PasswordRequirements";
+import { PiggyBank } from "lucide-react";
 
 export const ResetPassword = () => {
   const [password, setPassword] = useState("");
@@ -44,39 +45,53 @@ export const ResetPassword = () => {
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-background">
-      <div className="border-b">
-        <div className="px-4 h-14 flex items-center">
-          <h1 className="text-lg font-semibold">Reset Password</h1>
-        </div>
+    <div className="min-h-screen bg-white flex flex-col">
+      {/* Purple Header */}
+      <div className="bg-primary-gradient-from text-white p-4 rounded-b-[32px]">
+        <h1 className="text-2xl font-semibold">Reset Password</h1>
       </div>
 
-      <form onSubmit={handleResetPassword} className="flex-1 p-4 space-y-4">
-        <Input
-          type="password"
-          placeholder="New Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
-        <Input
-          type="password"
-          placeholder="Confirm New Password"
-          value={confirmPassword}
-          onChange={(e) => setConfirmPassword(e.target.value)}
-          required
-        />
+      {/* Main Content */}
+      <div className="flex-1 px-4 pt-8">
+        <div className="flex flex-col items-center mb-6">
+          <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mb-4">
+            <PiggyBank className="w-6 h-6 text-primary" />
+          </div>
+          <h2 className="text-2xl font-semibold text-primary mb-2">Reset Password</h2>
+          <p className="text-muted-foreground">Enter your new password</p>
+        </div>
 
-        <PasswordRequirements password={password} />
+        <form onSubmit={handleResetPassword} className="space-y-6">
+          <div className="space-y-4">
+            <Input
+              type="password"
+              placeholder="New Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="h-14 bg-accent rounded-2xl border-0"
+              required
+            />
+            <Input
+              type="password"
+              placeholder="Confirm New Password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              className="h-14 bg-accent rounded-2xl border-0"
+              required
+            />
+          </div>
 
-        <Button
-          type="submit"
-          className="w-full"
-          disabled={isLoading}
-        >
-          {isLoading ? "Resetting Password..." : "Reset Password"}
-        </Button>
-      </form>
+          <PasswordRequirements password={password} />
+
+          <Button
+            type="submit"
+            className="w-full h-14 rounded-2xl text-base bg-primary hover:bg-primary/90"
+            disabled={isLoading}
+          >
+            {isLoading ? "Resetting Password..." : "Reset Password"}
+          </Button>
+        </form>
+      </div>
     </div>
   );
 };
