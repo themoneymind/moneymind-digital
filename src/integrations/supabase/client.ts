@@ -15,9 +15,9 @@ export const supabase = createClient<Database>(
       detectSessionInUrl: true,
     },
     global: {
-      fetch: (...args) => {
-        console.log('Supabase API Request:', args[0]);
-        return fetch(...args).then(response => {
+      fetch: (url: RequestInfo | URL, options?: RequestInit) => {
+        console.log('Supabase API Request:', url);
+        return fetch(url, options).then(response => {
           if (!response.ok) {
             console.error('Supabase API Error:', {
               status: response.status,
