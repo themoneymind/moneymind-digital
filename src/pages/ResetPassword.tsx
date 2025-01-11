@@ -16,8 +16,10 @@ export const ResetPassword = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    console.log("Starting password reset process");
     
     if (password !== confirmPassword) {
+      console.log("Password mismatch");
       toast({
         title: "Error",
         description: "Passwords do not match",
@@ -27,6 +29,7 @@ export const ResetPassword = () => {
     }
 
     if (password.length < 6) {
+      console.log("Password too short");
       toast({
         title: "Error",
         description: "Password must be at least 6 characters long",
@@ -36,18 +39,31 @@ export const ResetPassword = () => {
     }
 
     setIsLoading(true);
+    console.log("Attempting to update password with Supabase");
 
     try {
       const { error } = await supabase.auth.updateUser({ 
         password: password 
       });
 
-      if (error) throw error;
+      if (error) {
+        console.error("Supabase error:", error);
+        throw error;
+      }
       
-      // Navigate to success page
-      navigate("/reset-password-success", { replace: true });
+      console.log("Password updated successfully, navigating to success page");
+      toast({
+        title: "Success",
+        description: "Password has been reset successfully",
+      });
+      
+      // Add a small delay before navigation to ensure toast is visible
+      setTimeout(() => {
+        navigate("/reset-password-success", { replace: true });
+      }, 1000);
       
     } catch (error: any) {
+      console.error("Error in password reset:", error);
       toast({
         title: "Error",
         description: error.message || "Failed to update password",
