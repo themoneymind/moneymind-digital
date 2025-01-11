@@ -18,7 +18,7 @@ export const ForgotPassword = () => {
 
     try {
       const { error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: `https://themoneymind.in/reset-password`,
+        redirectTo: `${window.location.origin}/reset-password`,
       });
 
       if (error) throw error;
@@ -72,7 +72,7 @@ export const ForgotPassword = () => {
               className="w-full h-12 rounded-xl text-base bg-[#7F3DFF] hover:bg-[#7F3DFF]/90"
               disabled={isLoading}
             >
-              {isLoading ? "Sending Reset Link..." : "Forget Password"}
+              {isLoading ? "Sending Reset Link..." : "Reset Password"}
             </Button>
           </form>
 

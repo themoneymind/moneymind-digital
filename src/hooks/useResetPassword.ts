@@ -57,6 +57,7 @@ export const useResetPassword = () => {
         description: "Password has been reset successfully",
       });
       
+      // Wait for toast to be visible before redirecting
       setTimeout(() => {
         navigate("/reset-password-success", { replace: true });
       }, 1000);

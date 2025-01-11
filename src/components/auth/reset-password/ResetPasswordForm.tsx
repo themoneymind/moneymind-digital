@@ -28,6 +28,8 @@ export const ResetPasswordForm = ({
         className="h-12 py-3 bg-transparent border-t-0 border-x-0 border-b-2 border-gray-200 rounded-none focus:outline-none transition-colors placeholder:text-gray-400 text-gray-600 focus:border-[#7F3DFF] focus:ring-0"
         disabled={isLoading}
         required
+        minLength={6}
+        aria-label="New password"
       />
       <Input
         type="password"
@@ -37,6 +39,8 @@ export const ResetPasswordForm = ({
         className="h-12 py-3 bg-transparent border-t-0 border-x-0 border-b-2 border-gray-200 rounded-none focus:outline-none transition-colors placeholder:text-gray-400 text-gray-600 focus:border-[#7F3DFF] focus:ring-0"
         disabled={isLoading}
         required
+        minLength={6}
+        aria-label="Confirm new password"
       />
       <Button 
         type="submit" 
