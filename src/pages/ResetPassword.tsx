@@ -43,13 +43,9 @@ export const ResetPassword = () => {
       });
 
       if (error) throw error;
-
-      // Sign out after password update
-      await supabase.auth.signOut();
       
-      // Set success flag and navigate
-      localStorage.setItem("passwordResetSuccess", "true");
-      navigate("/reset-password-success");
+      // Navigate to success page
+      navigate("/reset-password-success", { replace: true });
       
     } catch (error: any) {
       toast({
