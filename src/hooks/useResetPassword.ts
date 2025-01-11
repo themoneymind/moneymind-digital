@@ -52,6 +52,10 @@ export const useResetPassword = () => {
       }
       
       console.log("Password updated successfully");
+      
+      // Sign out the user to ensure clean state
+      await supabase.auth.signOut();
+      
       toast({
         title: "Success",
         description: "Password has been reset successfully",
