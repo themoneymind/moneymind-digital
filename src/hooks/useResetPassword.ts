@@ -57,8 +57,8 @@ export const useResetPassword = () => {
         description: "Password has been reset successfully",
       });
       
-      // Navigate to success page immediately
-      navigate("/reset-password-success");
+      // Navigate to success page with replace to prevent back navigation
+      navigate("/reset-password-success", { replace: true });
       
     } catch (error: any) {
       console.error("Error in password reset:", error);
