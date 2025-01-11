@@ -13,9 +13,9 @@ export const PublicRoutes = () => {
   const { user } = useAuth();
   const isFirstTimeUser = localStorage.getItem("isFirstTimeUser") === "true";
   const isEmailVerified = user?.email_confirmed_at != null;
-
-  // Allow access to email confirmation and reset password success pages regardless of auth state
   const currentPath = window.location.pathname;
+
+  // Allow access to success pages regardless of auth state
   if (currentPath === "/email-confirmation-success" || currentPath === "/reset-password-success") {
     return (
       <Routes>
@@ -26,6 +26,7 @@ export const PublicRoutes = () => {
     );
   }
 
+  // Handle authenticated user routes
   if (user) {
     if (!isEmailVerified) {
       return <Navigate to="/signup" />;
@@ -38,6 +39,7 @@ export const PublicRoutes = () => {
     return <Navigate to="/app" />;
   }
 
+  // Public routes for unauthenticated users
   return (
     <Routes>
       <Route path="/" element={<Navigate to="/signin" />} />
