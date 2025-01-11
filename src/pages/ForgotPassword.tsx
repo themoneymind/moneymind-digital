@@ -27,11 +27,7 @@ export const ForgotPassword = () => {
         title: "Success",
         description: "Password reset link has been sent to your email",
       });
-      
-      // Clear the form
-      setEmail("");
     } catch (error: any) {
-      console.error("Reset password error:", error);
       toast({
         title: "Error",
         description: error.message || "Failed to send reset link",
@@ -76,7 +72,7 @@ export const ForgotPassword = () => {
               className="w-full h-12 rounded-xl text-base bg-[#7F3DFF] hover:bg-[#7F3DFF]/90"
               disabled={isLoading}
             >
-              {isLoading ? "Sending Reset Link..." : "Send Reset Link"}
+              {isLoading ? "Sending Reset Link..." : "Reset Password"}
             </Button>
           </form>
 
