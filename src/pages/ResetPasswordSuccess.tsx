@@ -11,12 +11,22 @@ export const ResetPasswordSuccess = () => {
   const [showConfetti, setShowConfetti] = useState(true);
 
   useEffect(() => {
+    // Check if we came from a successful password reset
+    const success = localStorage.getItem("passwordResetSuccess");
+    if (!success) {
+      navigate("/signin");
+      return;
+    }
+
+    // Clear the success flag
+    localStorage.removeItem("passwordResetSuccess");
+
     const timer = setTimeout(() => {
       setShowConfetti(false);
     }, 5000);
 
     return () => clearTimeout(timer);
-  }, []);
+  }, [navigate]);
 
   return (
     <div className="min-h-screen bg-[#F5F3FF] flex flex-col items-center justify-center p-4">
