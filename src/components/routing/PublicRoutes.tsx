@@ -21,6 +21,7 @@ export const PublicRoutes = () => {
       <Routes>
         <Route path="/email-confirmation-success" element={<EmailConfirmationSuccess />} />
         <Route path="/reset-password-success" element={<ResetPasswordSuccess />} />
+        <Route path="*" element={<Navigate to="/signin" />} />
       </Routes>
     );
   }
