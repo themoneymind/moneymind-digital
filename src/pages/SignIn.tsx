@@ -18,7 +18,31 @@ export const SignIn = () => {
     const checkSession = async () => {
       const { data: { session }, error } = await supabase.auth.getSession();
       if (session && !error) {
-        navigate("/app");
+        // Clear any temporary auth states
+        localStorage.removeItem("tempSignUpPassword");
+        
+        // Check if email is verified
+        if (!session.user.email_confirmed_at) {
+          navigate("/signup");
+          return;
+        }
+
+        // Check if first time user
+        const { data: sources } = await supabase
+          .from("payment_sources")
+          .select("id")
+          .eq("user_id", session.user.id)
+          .limit(1);
+
+        const isFirstTimeUser = !sources || sources.length === 0;
+        
+        if (isFirstTimeUser) {
+          localStorage.setItem("isFirstTimeUser", "true");
+          navigate("/app/payment-source");
+        } else {
+          localStorage.removeItem("isFirstTimeUser");
+          navigate("/app");
+        }
       }
     };
     
@@ -94,6 +118,17 @@ export const SignIn = () => {
         return;
       }
 
+      // Check if email is verified
+      if (!data.user.email_confirmed_at) {
+        toast({
+          title: "Email Not Verified",
+          description: "Please check your email and verify your account before signing in.",
+          variant: "destructive",
+        });
+        navigate("/signup");
+        return;
+      }
+
       // Check if this is a first-time user
       const { data: sources } = await supabase
         .from("payment_sources")
@@ -102,7 +137,12 @@ export const SignIn = () => {
         .limit(1);
 
       const isFirstTimeUser = !sources || sources.length === 0;
-      localStorage.setItem("isFirstTimeUser", isFirstTimeUser.toString());
+      
+      if (isFirstTimeUser) {
+        localStorage.setItem("isFirstTimeUser", "true");
+      } else {
+        localStorage.removeItem("isFirstTimeUser");
+      }
 
       console.log("Sign in successful:", data.user);
       toast({
@@ -112,7 +152,7 @@ export const SignIn = () => {
       
       // Redirect based on user status
       if (isFirstTimeUser) {
-        navigate("/app/add-payment-source");
+        navigate("/app/payment-source");
       } else {
         navigate("/app");
       }
