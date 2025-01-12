@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Check } from "lucide-react";
@@ -10,14 +10,13 @@ export const EmailConfirmationSuccess = () => {
   const { width, height } = useWindowSize();
   const [showConfetti, setShowConfetti] = useState(true);
 
-  // Hide confetti after 5 seconds
-  setTimeout(() => {
-    setShowConfetti(false);
-  }, 5000);
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowConfetti(false);
+    }, 5000);
 
-  const handleSignIn = () => {
-    navigate("/signin");
-  };
+    return () => clearTimeout(timer);
+  }, []);
 
   return (
     <div className="min-h-screen bg-[#F5F3FF] flex flex-col items-center justify-center p-4">
@@ -33,12 +32,12 @@ export const EmailConfirmationSuccess = () => {
             Email Confirmed Successfully!
           </h1>
           <p className="text-gray-600">
-            Your email has been successfully verified. Please sign in to continue setting up your account.
+            You're one step ahead to track your money. Your email has been successfully verified.
           </p>
         </div>
 
         <Button
-          onClick={handleSignIn}
+          onClick={() => navigate("/signin")}
           className="w-full h-12 rounded-xl text-base bg-[#7F3DFF] hover:bg-[#7F3DFF]/90 animate-fade-in"
         >
           Sign In
