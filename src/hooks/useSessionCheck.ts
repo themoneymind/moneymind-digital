@@ -10,12 +10,6 @@ export const useSessionCheck = () => {
     // If there's no session, don't do anything (let component handle it)
     if (!session || error) return;
 
-    // Check if email is verified
-    if (!session.user.email_confirmed_at) {
-      navigate("/signup");
-      return;
-    }
-
     // Check if first time user
     const { data: sources } = await supabase
       .from("payment_sources")
