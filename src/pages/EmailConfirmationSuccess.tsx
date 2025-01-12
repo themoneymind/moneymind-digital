@@ -1,33 +1,21 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Check } from "lucide-react";
 import Confetti from "react-confetti";
 import { useWindowSize } from "@/hooks/use-window-size";
-import { supabase } from "@/integrations/supabase/client";
 
 export const EmailConfirmationSuccess = () => {
   const navigate = useNavigate();
   const { width, height } = useWindowSize();
   const [showConfetti, setShowConfetti] = useState(true);
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setShowConfetti(false);
-    }, 5000);
+  // Hide confetti after 5 seconds
+  setTimeout(() => {
+    setShowConfetti(false);
+  }, 5000);
 
-    return () => clearTimeout(timer);
-  }, []);
-
-  const handleSignIn = async () => {
-    // Clear all auth data
-    await supabase.auth.signOut();
-    
-    // Clear local storage items
-    localStorage.removeItem("isFirstTimeUser");
-    localStorage.removeItem("sb-vnuxoxkozfgfrqjbsifs-auth-token");
-    
-    // Navigate to sign in
+  const handleSignIn = () => {
     navigate("/signin");
   };
 

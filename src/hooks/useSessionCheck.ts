@@ -6,32 +6,25 @@ export const useSessionCheck = () => {
 
   const checkSession = async () => {
     const { data: { session }, error } = await supabase.auth.getSession();
-    if (session && !error) {
-      // Clear any temporary auth states
-      localStorage.removeItem("tempSignUpPassword");
-      
-      // Check if email is verified
-      if (!session.user.email_confirmed_at) {
-        navigate("/signup");
-        return;
-      }
+    
+    // If there's no session, don't do anything (let component handle it)
+    if (!session || error) return;
 
-      // Check if first time user
-      const { data: sources } = await supabase
-        .from("payment_sources")
-        .select("id")
-        .eq("user_id", session.user.id)
-        .limit(1);
+    // Check if first time user
+    const { data: sources } = await supabase
+      .from("payment_sources")
+      .select("id")
+      .eq("user_id", session.user.id)
+      .limit(1);
 
-      const isFirstTimeUser = !sources || sources.length === 0;
-      
-      if (isFirstTimeUser) {
-        localStorage.setItem("isFirstTimeUser", "true");
-        navigate("/app/payment-source");
-      } else {
-        localStorage.removeItem("isFirstTimeUser");
-        navigate("/app");
-      }
+    const isFirstTimeUser = !sources || sources.length === 0;
+    
+    if (isFirstTimeUser) {
+      localStorage.setItem("isFirstTimeUser", "true");
+      navigate("/app/payment-source");
+    } else {
+      localStorage.removeItem("isFirstTimeUser");
+      navigate("/app");
     }
   };
 
