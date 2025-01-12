@@ -19,16 +19,6 @@ export const Routes = () => {
       if (event === 'SIGNED_OUT') {
         navigate('/signin');
       }
-
-      // Handle email confirmation specifically
-      if (event === 'USER_UPDATED') {
-        const currentPath = window.location.pathname;
-        
-        // Only redirect to email confirmation if not in password reset flow
-        if (session?.user?.email_confirmed_at && !currentPath.includes('reset-password')) {
-          navigate('/email-confirmation-success');
-        }
-      }
     });
 
     return () => {

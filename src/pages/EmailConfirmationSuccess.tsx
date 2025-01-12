@@ -18,6 +18,12 @@ export const EmailConfirmationSuccess = () => {
     return () => clearTimeout(timer);
   }, []);
 
+  const handleSignIn = () => {
+    // Clear any existing session to ensure fresh login
+    localStorage.removeItem("sb-vnuxoxkozfgfrqjbsifs-auth-token");
+    navigate("/signin");
+  };
+
   return (
     <div className="min-h-screen bg-[#F5F3FF] flex flex-col items-center justify-center p-4">
       {showConfetti && <Confetti width={width} height={height} recycle={false} />}
@@ -32,12 +38,12 @@ export const EmailConfirmationSuccess = () => {
             Email Confirmed Successfully!
           </h1>
           <p className="text-gray-600">
-            You're one step ahead to track your money. Your email has been successfully verified.
+            Your email has been successfully verified. Please sign in to continue setting up your account.
           </p>
         </div>
 
         <Button
-          onClick={() => navigate("/signin")}
+          onClick={handleSignIn}
           className="w-full h-12 rounded-xl text-base bg-[#7F3DFF] hover:bg-[#7F3DFF]/90 animate-fade-in"
         >
           Sign In
