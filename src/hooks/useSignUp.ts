@@ -30,7 +30,7 @@ export const useSignUp = () => {
             last_name: lastName || null,
             phone_number: phoneNumber,
           },
-          emailRedirectTo: `${window.location.origin}/email-confirmation-success`,
+          emailRedirectTo: `${window.location.origin}/signin`,
         },
       });
 

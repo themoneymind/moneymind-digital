@@ -14,7 +14,7 @@ export const PublicRoutes = () => {
   const isFirstTimeUser = localStorage.getItem("isFirstTimeUser") === "true";
   const isEmailVerified = user?.email_confirmed_at != null;
 
-  // Always allow access to email confirmation success page
+  // Allow access to email confirmation success page regardless of auth state
   if (window.location.pathname === "/email-confirmation-success") {
     return (
       <Routes>
