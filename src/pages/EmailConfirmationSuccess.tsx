@@ -11,6 +11,16 @@ export const EmailConfirmationSuccess = () => {
   const { width, height } = useWindowSize();
   const [showConfetti, setShowConfetti] = useState(true);
 
+  // Clear any existing session on mount
+  useEffect(() => {
+    const clearSession = async () => {
+      await supabase.auth.signOut();
+      localStorage.removeItem("isFirstTimeUser");
+      localStorage.removeItem("sb-vnuxoxkozfgfrqjbsifs-auth-token");
+    };
+    clearSession();
+  }, []);
+
   useEffect(() => {
     const timer = setTimeout(() => {
       setShowConfetti(false);
@@ -19,15 +29,8 @@ export const EmailConfirmationSuccess = () => {
     return () => clearTimeout(timer);
   }, []);
 
-  const handleSignIn = async () => {
-    // Clear all auth data
-    await supabase.auth.signOut();
-    
-    // Clear local storage items
-    localStorage.removeItem("isFirstTimeUser");
-    localStorage.removeItem("sb-vnuxoxkozfgfrqjbsifs-auth-token");
-    
-    // Navigate to sign in
+  const handleSignIn = () => {
+    // Simply navigate to sign in, no automatic redirect
     navigate("/signin");
   };
 
