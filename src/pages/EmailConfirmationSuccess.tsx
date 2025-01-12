@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Check } from "lucide-react";
 import Confetti from "react-confetti";
 import { useWindowSize } from "@/hooks/use-window-size";
+import { supabase } from "@/integrations/supabase/client";
 
 export const EmailConfirmationSuccess = () => {
   const navigate = useNavigate();
@@ -18,9 +19,15 @@ export const EmailConfirmationSuccess = () => {
     return () => clearTimeout(timer);
   }, []);
 
-  const handleSignIn = () => {
-    // Clear any existing session to ensure fresh login
+  const handleSignIn = async () => {
+    // Clear all auth data
+    await supabase.auth.signOut();
+    
+    // Clear local storage items
+    localStorage.removeItem("isFirstTimeUser");
     localStorage.removeItem("sb-vnuxoxkozfgfrqjbsifs-auth-token");
+    
+    // Navigate to sign in
     navigate("/signin");
   };
 
