@@ -14,20 +14,20 @@ export const Routes = () => {
     // Listen for auth state changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       console.log("Auth state changed:", event);
+      console.log("Session:", session);
+      console.log("User email confirmed at:", session?.user?.email_confirmed_at);
+      
+      // Handle email confirmation specifically
+      if (event === 'USER_UPDATED' && session?.user?.email_confirmed_at) {
+        console.log("Email confirmed, redirecting to success page");
+        navigate('/email-confirmation-success');
+        return;
+      }
       
       // Only redirect on sign out
       if (event === 'SIGNED_OUT') {
+        console.log("User signed out, redirecting to signin");
         navigate('/signin');
-      }
-
-      // Handle email confirmation specifically
-      if (event === 'USER_UPDATED') {
-        const currentPath = window.location.pathname;
-        
-        // Only redirect to email confirmation if not in password reset flow
-        if (session?.user?.email_confirmed_at && !currentPath.includes('reset-password')) {
-          navigate('/email-confirmation-success');
-        }
       }
     });
 
