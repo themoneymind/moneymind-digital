@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { getContactType } from "@/utils/otpValidation";
 import { sendOtpEmail, verifyOtpCode } from "@/utils/otpUtils";
@@ -10,26 +10,35 @@ interface OtpSignInProps {
 }
 
 export const PinSignIn = ({
-  isLoading,
+  isLoading: externalLoading,
 }: OtpSignInProps) => {
   const [otpSent, setOtpSent] = useState(false);
   const [otp, setOtp] = useState("");
   const [contact, setContact] = useState("");
   const [cooldownTime, setCooldownTime] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
 
   // Handle cooldown timer
   useEffect(() => {
+    let timer: NodeJS.Timeout;
     if (cooldownTime > 0) {
-      const timer = setTimeout(() => {
+      timer = setTimeout(() => {
         setCooldownTime(time => time - 1);
       }, 1000);
-      return () => clearTimeout(timer);
     }
+    return () => {
+      if (timer) clearTimeout(timer);
+    };
   }, [cooldownTime]);
 
-  const handleSendOtp = async () => {
+  const handleSendOtp = useCallback(async () => {
     try {
+      // Prevent multiple clicks while processing
+      if (isLoading || externalLoading) {
+        return;
+      }
+
       // Check if in cooldown
       if (cooldownTime > 0) {
         toast({
@@ -54,56 +63,54 @@ export const PinSignIn = ({
 
       const contactType = getContactType(contactValue);
       
-      switch (contactType) {
-        case 'email':
-          try {
-            await sendOtpEmail(contactValue);
-            toast({
-              title: "Success",
-              description: "Please check your email for the verification code",
-            });
-            setOtpSent(true);
-            setCooldownTime(60);
-          } catch (error: any) {
-            console.error("Error sending OTP:", error);
-            
-            // Handle specific error cases
-            if (error.status === 404) {
-              toast({
-                title: "Account Not Found",
-                description: error.message || "No account exists with this email address. Please sign up first.",
-                variant: "destructive",
-              });
-            } else if (error.status === 429) {
-              setCooldownTime(60);
-              toast({
-                title: "Too Many Attempts",
-                description: "Please wait a minute before requesting another OTP",
-                variant: "destructive",
-              });
-            } else if (error.status === 422) {
-              toast({
-                title: "OTP Not Available",
-                description: error.message || "Email OTP authentication is not enabled. Please use password authentication.",
-                variant: "destructive",
-              });
-            } else {
-              toast({
-                title: "Error",
-                description: error.message || "Failed to send OTP",
-                variant: "destructive",
-              });
-            }
-          }
-          break;
+      if (contactType === 'invalid') {
+        toast({
+          title: "Invalid Input",
+          description: "Please enter a valid email address",
+          variant: "destructive",
+        });
+        return;
+      }
 
-        case 'invalid':
+      setIsLoading(true);
+
+      try {
+        await sendOtpEmail(contactValue);
+        toast({
+          title: "Success",
+          description: "Please check your email for the verification code",
+        });
+        setOtpSent(true);
+        setCooldownTime(60); // Start cooldown
+      } catch (error: any) {
+        console.error("Error sending OTP:", error);
+        
+        if (error.status === 404) {
           toast({
-            title: "Invalid Input",
-            description: "Please enter a valid email address",
+            title: "Account Not Found",
+            description: error.message || "No account exists with this email address. Please sign up first.",
             variant: "destructive",
           });
-          return;
+        } else if (error.status === 429) {
+          setCooldownTime(60);
+          toast({
+            title: "Too Many Attempts",
+            description: "Please wait a minute before requesting another OTP",
+            variant: "destructive",
+          });
+        } else if (error.status === 422) {
+          toast({
+            title: "OTP Not Available",
+            description: error.message || "Email OTP authentication is not enabled. Please use password authentication.",
+            variant: "destructive",
+          });
+        } else {
+          toast({
+            title: "Error",
+            description: error.message || "Failed to send OTP",
+            variant: "destructive",
+          });
+        }
       }
     } catch (error: any) {
       console.error("Error in handleSendOtp:", error);
@@ -112,10 +119,15 @@ export const PinSignIn = ({
         description: "An unexpected error occurred. Please try again.",
         variant: "destructive",
       });
+    } finally {
+      setIsLoading(false);
     }
-  };
+  }, [contact, cooldownTime, isLoading, externalLoading, toast]);
 
   const handleVerifyOtp = async () => {
+    if (isLoading || externalLoading) return;
+
+    setIsLoading(true);
     try {
       await verifyOtpCode(contact.trim(), otp);
       toast({
@@ -129,6 +141,8 @@ export const PinSignIn = ({
         description: error.message || "Failed to verify OTP",
         variant: "destructive",
       });
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -139,14 +153,14 @@ export const PinSignIn = ({
           otp={otp}
           setOtp={setOtp}
           handleVerifyOtp={handleVerifyOtp}
-          isLoading={isLoading}
+          isLoading={isLoading || externalLoading}
         />
       ) : (
         <ContactInputStep
           contact={contact}
           setContact={setContact}
           handleSendOtp={handleSendOtp}
-          isLoading={isLoading || cooldownTime > 0}
+          isLoading={isLoading || externalLoading || cooldownTime > 0}
         />
       )}
     </div>
