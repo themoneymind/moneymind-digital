@@ -150,7 +150,10 @@ export const ProfilePicture = () => {
                   variant="outline" 
                   type="button"
                   className="w-full"
-                  onClick={() => document.querySelector('input[type="file"]')?.click()}
+                  onClick={() => {
+                    const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
+                    if (fileInput) fileInput.click();
+                  }}
                 >
                   Change Profile Picture
                 </Button>
