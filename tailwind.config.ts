@@ -51,7 +51,6 @@ export default {
           DEFAULT: "#F3F4F6",
           foreground: "#1F2937",
         },
-        // Adding new transaction type colors
         transaction: {
           income: "#00AF1E",
           expense: "#FF1122",
@@ -87,12 +86,26 @@ export default {
           "60%": { transform: "rotate(0.0deg)" },
           "100%": { transform: "rotate(0.0deg)" },
         },
+        "aurora": {
+          "0%, 100%": { transform: "translate(0%, 0%) rotate(0deg)" },
+          "25%": { transform: "translate(-1%, 1%) rotate(-1deg)" },
+          "50%": { transform: "translate(1%, -1%) rotate(1deg)" },
+          "75%": { transform: "translate(-1%, 1%) rotate(-2deg)" },
+        },
+        "aurora-reverse": {
+          "0%, 100%": { transform: "translate(0%, 0%) rotate(0deg)" },
+          "25%": { transform: "translate(1%, -1%) rotate(1deg)" },
+          "50%": { transform: "translate(-1%, 1%) rotate(-1deg)" },
+          "75%": { transform: "translate(1%, -1%) rotate(2deg)" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
         "fade-in": "fade-in 0.3s ease-out",
         "wave": "wave 2.5s ease-in-out infinite",
+        "aurora": "aurora 15s ease-in-out infinite",
+        "aurora-reverse": "aurora-reverse 20s ease-in-out infinite",
       },
     },
   },

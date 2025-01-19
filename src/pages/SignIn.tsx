@@ -130,17 +130,20 @@ export const SignIn = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#F5F3FF] relative overflow-hidden">
+    <div className="min-h-screen relative overflow-hidden bg-gradient-to-b from-background to-background/80">
       <TopBar title="Sign In" />
       
-      {/* Decorative Circle */}
-      <div className="absolute top-0 right-0 w-32 h-32 rounded-full bg-[#7F3DFF]/10 -mr-16 -mt-16" />
+      {/* Aurora Background Effect */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-primary/10 to-transparent animate-aurora" />
+        <div className="absolute inset-0 bg-gradient-to-tr from-primary/10 via-primary/5 to-transparent animate-aurora-reverse" />
+      </div>
       
       <div className="p-6 pt-8 md:flex md:items-center md:justify-center md:min-h-[calc(100vh-64px)]">
         <div className="w-full max-w-6xl mx-auto">
           <div className="md:grid md:grid-cols-2 md:gap-8">
             {/* Left Column - Sign In Form */}
-            <div className="md:bg-white/50 md:backdrop-blur-sm md:p-8 md:rounded-2xl md:shadow-lg">
+            <div className="md:bg-white/50 dark:md:bg-black/20 md:backdrop-blur-sm md:p-8 md:rounded-2xl md:shadow-lg">
               <SignInForm
                 email={email}
                 setEmail={setEmail}
