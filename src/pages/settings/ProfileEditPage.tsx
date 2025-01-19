@@ -6,11 +6,18 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { SettingsHeader } from "@/components/settings/SettingsHeader";
 import { ProfilePictureUploader } from "@/components/profile/ProfilePictureUploader";
+import { Dialog } from "@/components/ui/dialog";
+import { DialogContent } from "@/components/ui/dialog";
+import { ProfilePictureEditor } from "@/components/profile/ProfilePictureEditor";
 
 export const ProfileEditPage = () => {
   const { user } = useAuth();
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const [scale, setScale] = useState(1);
+  const [position, setPosition] = useState({ x: 0, y: 0 });
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [profile, setProfile] = useState({
     first_name: "",
     last_name: "",
@@ -49,14 +56,12 @@ export const ProfileEditPage = () => {
 
     setIsLoading(true);
     try {
-      // Create an update object excluding empty values
       const updateData: any = {
         first_name: profile.first_name || null,
         last_name: profile.last_name || null,
         phone_number: profile.phone_number || null,
       };
 
-      // Only include date_of_birth if it's not empty
       if (profile.date_of_birth) {
         updateData.date_of_birth = profile.date_of_birth;
       }
@@ -88,13 +93,24 @@ export const ProfileEditPage = () => {
     const file = event.target.files?.[0];
     if (!file || !user) return;
 
+    setSelectedFile(file);
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      setProfile(prev => ({ ...prev, avatar_url: e.target?.result as string }));
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleSave = async () => {
+    if (!selectedFile || !user) return;
+
     try {
-      const fileExt = file.name.split('.').pop();
+      const fileExt = selectedFile.name.split('.').pop();
       const filePath = `${user.id}-${Math.random()}.${fileExt}`;
 
       const { error: uploadError } = await supabase.storage
         .from('profile_pictures')
-        .upload(filePath, file);
+        .upload(filePath, selectedFile);
 
       if (uploadError) throw uploadError;
 
@@ -110,6 +126,8 @@ export const ProfileEditPage = () => {
       if (updateError) throw updateError;
 
       setProfile(prev => ({ ...prev, avatar_url: publicUrl }));
+      setIsOpen(false);
+      setSelectedFile(null);
       toast({
         title: "Success",
         description: "Profile picture updated successfully",
@@ -133,8 +151,38 @@ export const ProfileEditPage = () => {
             <ProfilePictureUploader
               imageUrl={profile.avatar_url}
               onFileSelect={handleFileSelect}
+              onOpenDialog={() => setIsOpen(true)}
             />
           </div>
+
+          <Dialog open={isOpen} onOpenChange={setIsOpen}>
+            <DialogContent className="sm:max-w-md">
+              {selectedFile ? (
+                <ProfilePictureEditor
+                  imageUrl={profile.avatar_url}
+                  scale={scale}
+                  position={position}
+                  onScaleChange={(e) => setScale(Number(e.target.value))}
+                  onPositionChange={setPosition}
+                  onSave={handleSave}
+                  isLoading={isLoading}
+                />
+              ) : (
+                <div className="p-6 space-y-4">
+                  <p className="text-sm text-gray-500">
+                    Choose a new profile picture to upload
+                  </p>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleFileSelect}
+                    className="w-full"
+                  />
+                </div>
+              )}
+            </DialogContent>
+          </Dialog>
+
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
               <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
