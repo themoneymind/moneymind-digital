@@ -97,6 +97,7 @@ export const ProfilePicture = () => {
         setImageUrl(e.target?.result as string);
       };
       reader.readAsDataURL(file);
+      setIsOpen(true); // Open the scaling dialog immediately after file selection
     }
   };
 
@@ -155,11 +156,9 @@ export const ProfilePicture = () => {
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle>
-              {selectedFile ? "Adjust Profile Picture" : "Update Profile Picture"}
-            </DialogTitle>
+            <DialogTitle>Adjust Profile Picture</DialogTitle>
           </DialogHeader>
-          {selectedFile ? (
+          {selectedFile && (
             <ProfilePictureEditor
               imageUrl={imageUrl}
               scale={scale}
@@ -169,18 +168,6 @@ export const ProfilePicture = () => {
               onSave={handleSave}
               isLoading={isLoading}
             />
-          ) : (
-            <div className="p-6 space-y-4">
-              <p className="text-sm text-gray-500">
-                Choose a new profile picture to upload
-              </p>
-              <input
-                type="file"
-                accept="image/*"
-                onChange={handleFileChange}
-                className="w-full"
-              />
-            </div>
           )}
         </DialogContent>
       </Dialog>
