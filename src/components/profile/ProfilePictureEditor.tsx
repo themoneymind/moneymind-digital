@@ -25,19 +25,29 @@ export const ProfilePictureEditor = ({
 }: ProfilePictureEditorProps) => {
   const { user } = useAuth();
   const [isDragging, setIsDragging] = useState(false);
+  const [startPosition, setStartPosition] = useState({ x: 0, y: 0 });
 
-  const handleDragStart = (e: React.DragEvent<HTMLDivElement>) => {
+  const handleDragStart = (e: React.MouseEvent<HTMLDivElement>) => {
     e.preventDefault();
     setIsDragging(true);
+    setStartPosition({
+      x: e.clientX - position.x,
+      y: e.clientY - position.y,
+    });
   };
 
-  const handleDrag = (e: React.DragEvent<HTMLDivElement>) => {
+  const handleDrag = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!isDragging) return;
     
-    const bounds = e.currentTarget.getBoundingClientRect();
-    const x = (e.clientX - bounds.left) / scale;
-    const y = (e.clientY - bounds.top) / scale;
-    onPositionChange({ x, y });
+    const newX = e.clientX - startPosition.x;
+    const newY = e.clientY - startPosition.y;
+    
+    // Limit the dragging area based on scale
+    const maxOffset = 100 * (scale - 1);
+    const boundedX = Math.max(-maxOffset, Math.min(maxOffset, newX));
+    const boundedY = Math.max(-maxOffset, Math.min(maxOffset, newY));
+    
+    onPositionChange({ x: boundedX, y: boundedY });
   };
 
   const handleDragEnd = () => {
@@ -50,10 +60,10 @@ export const ProfilePictureEditor = ({
         className={`relative w-32 h-32 cursor-move rounded-full overflow-hidden border-2 transition-all duration-200 ${
           isDragging ? 'border-primary' : 'border-transparent'
         }`}
-        onDragStart={handleDragStart}
-        onDrag={handleDrag}
-        onDragEnd={handleDragEnd}
-        draggable="true"
+        onMouseDown={handleDragStart}
+        onMouseMove={handleDrag}
+        onMouseUp={handleDragEnd}
+        onMouseLeave={handleDragEnd}
         style={{ 
           background: "rgba(0,0,0,0.05)",
         }}
@@ -64,8 +74,9 @@ export const ProfilePictureEditor = ({
             alt="Profile" 
             className="object-cover transition-transform duration-200"
             style={{ 
-              transform: `scale(${scale}) translate(${position.x}px, ${position.y}px)`,
-              transformOrigin: 'center'
+              transform: `scale(${scale}) translate(${position.x / scale}px, ${position.y / scale}px)`,
+              transformOrigin: 'center',
+              willChange: 'transform'
             }}
           />
           <AvatarFallback>
@@ -81,8 +92,8 @@ export const ProfilePictureEditor = ({
             <span className="text-xs text-gray-400">{scale.toFixed(1)}x</span>
           </div>
           <Slider
-            min={0.5}
-            max={2}
+            min={1}
+            max={3}
             step={0.1}
             value={[scale]}
             onValueChange={([value]) => onScaleChange({ target: { value: value.toString() } })}
