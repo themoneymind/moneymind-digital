@@ -40,11 +40,7 @@ export const ProfilePicture = () => {
       .single();
 
     if (profile?.avatar_url) {
-      const img = new Image();
-      img.src = profile.avatar_url;
-      img.onload = () => {
-        setImageUrl(profile.avatar_url);
-      };
+      setImageUrl(profile.avatar_url);
     }
   };
 
@@ -65,6 +61,8 @@ export const ProfilePicture = () => {
 
   const handleProfileClick = () => {
     if (imageUrl) {
+      setScale(1); // Reset scale when opening dialog
+      setPosition({ x: 0, y: 0 }); // Reset position when opening dialog
       setIsOpen(true);
     }
   };
@@ -141,19 +139,20 @@ export const ProfilePicture = () => {
               />
             )}
             <div className="flex justify-center">
-              <label className="cursor-pointer">
+              <label className="cursor-pointer w-full">
+                <input
+                  type="file"
+                  className="hidden"
+                  onChange={handleFileChange}
+                  accept="image/*"
+                />
                 <Button 
                   variant="outline" 
                   type="button"
                   className="w-full"
+                  onClick={() => document.querySelector('input[type="file"]')?.click()}
                 >
                   Change Profile Picture
-                  <input
-                    type="file"
-                    className="hidden"
-                    onChange={handleFileChange}
-                    accept="image/*"
-                  />
                 </Button>
               </label>
             </div>
