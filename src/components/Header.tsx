@@ -63,10 +63,6 @@ export const Header = () => {
     }
   };
 
-  const handleProfileClick = () => {
-    navigate("/app/settings/account/edit");
-  };
-
   return (
     <header className="flex-none bg-[#7F3DFF] pb-8">
       {/* Decorative Circle */}
@@ -75,10 +71,7 @@ export const Header = () => {
       {/* First Row - Navigation and Actions */}
       <div className="max-w-2xl mx-auto flex items-center justify-between px-4 py-4 relative">
         <div className="flex items-center gap-3 pl-2">
-          <div 
-            className="w-6 h-6 ring-2 ring-white/20 rounded-full cursor-pointer"
-            onClick={handleProfileClick}
-          >
+          <div className="w-6 h-6 ring-2 ring-white/20 rounded-full cursor-pointer">
             <ProfilePicture />
           </div>
           <h1 className="text-lg font-semibold text-white/90">Dashboard</h1>
