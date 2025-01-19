@@ -1,5 +1,5 @@
 import { Input } from "@/components/ui/input";
-import { User, Mail, Phone, Lock, Fingerprint } from "lucide-react";
+import { User, Mail, Phone, Lock, Fingerprint, Eye, EyeOff } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import { useState, useEffect } from "react";
 
@@ -28,6 +28,7 @@ export const SignUpInputs = ({
 }: SignUpInputsProps) => {
   const [enableBiometric, setEnableBiometric] = useState(false);
   const [biometricAvailable, setBiometricAvailable] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   useEffect(() => {
     // Check if WebAuthn is available
@@ -45,6 +46,10 @@ export const SignUpInputs = ({
 
     checkBiometricAvailability();
   }, []);
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
 
   return (
     <div className="space-y-6">
@@ -98,14 +103,26 @@ export const SignUpInputs = ({
           <Lock className="h-4 w-4 text-[#7F3DFF]" />
         </div>
         <input
-          type="password"
+          type={showPassword ? "text" : "password"}
           placeholder="Enter your password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          className="w-full py-3 pl-10 text-base bg-transparent border-b-2 border-gray-200 focus:outline-none transition-colors placeholder:text-gray-400 text-gray-600 focus:border-[#7F3DFF]"
+          className="w-full py-3 pl-10 pr-10 text-base bg-transparent border-b-2 border-gray-200 focus:outline-none transition-colors placeholder:text-gray-400 text-gray-600 focus:border-[#7F3DFF]"
           disabled={isLoading}
           required
         />
+        <button
+          type="button"
+          onClick={togglePasswordVisibility}
+          className="absolute right-0 top-2 p-2 text-gray-400 hover:text-gray-600 focus:outline-none"
+          disabled={isLoading}
+        >
+          {showPassword ? (
+            <EyeOff className="h-5 w-5" />
+          ) : (
+            <Eye className="h-5 w-5" />
+          )}
+        </button>
       </div>
 
       {biometricAvailable && (
