@@ -6,12 +6,14 @@ import { useSignUpValidation } from "./SignUpValidation";
 import { useSignUp } from "@/hooks/useSignUp";
 import { useToast } from "@/hooks/use-toast";
 import { AuthError } from "@supabase/supabase-js";
+import { PasswordRequirements } from "./PasswordRequirements";
 
 export const SignUpForm = () => {
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [password, setPassword] = useState("");
+  const [showRequirements, setShowRequirements] = useState(false);
   const { validateInputs } = useSignUpValidation();
   const { isLoading, handleSignUp } = useSignUp();
   const { toast } = useToast();
@@ -20,20 +22,15 @@ export const SignUpForm = () => {
   const handlePasswordChange = (value: string) => {
     setPassword(value);
     
-    // Check password requirements and show toast
-    const requirements = [];
-    if (value.length < 8) requirements.push("8+ characters");
-    if (!/[A-Z]/.test(value)) requirements.push("uppercase letter");
-    if (!/[a-z]/.test(value)) requirements.push("lowercase letter");
-    if (!/[0-9]/.test(value)) requirements.push("number");
-    if (!/[!@#$%^&*]/.test(value)) requirements.push("special character");
+    // Show requirements when user starts typing
+    if (value.length === 1) {
+      setShowRequirements(true);
+    }
     
-    if (requirements.length > 0) {
-      toast({
-        title: "Password Requirements",
-        description: `Password must include: ${requirements.join(", ")}`,
-        variant: "default",
-      });
+    // Hide requirements when all conditions are met
+    const isValid = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/.test(value);
+    if (isValid) {
+      setShowRequirements(false);
     }
   };
 
@@ -88,6 +85,8 @@ export const SignUpForm = () => {
         setPassword={handlePasswordChange}
         isLoading={isLoading}
       />
+      
+      <PasswordRequirements password={password} show={showRequirements} />
       
       <Button 
         type="submit" 
