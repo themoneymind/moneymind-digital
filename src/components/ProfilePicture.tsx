@@ -57,7 +57,7 @@ export const ProfilePicture = () => {
           if (!ctx) return;
 
           // Set canvas size to final desired dimensions
-          const SIZE = 400; // Final size
+          const SIZE = 400;
           canvas.width = SIZE;
           canvas.height = SIZE;
 
@@ -65,15 +65,17 @@ export const ProfilePicture = () => {
           const scaledWidth = img.width * scale;
           const scaledHeight = img.height * scale;
 
-          // Calculate centering offsets
+          // Calculate centering offsets including the position adjustment
           const centerX = (SIZE - scaledWidth) / 2 + position.x;
           const centerY = (SIZE - scaledHeight) / 2 + position.y;
 
-          // Draw with transformations
+          // Apply transformations in the correct order
           ctx.save();
           ctx.translate(SIZE / 2, SIZE / 2);
           ctx.scale(scale, scale);
           ctx.translate(-SIZE / 2, -SIZE / 2);
+          
+          // Draw the image with position adjustments
           ctx.drawImage(
             img,
             centerX / scale,

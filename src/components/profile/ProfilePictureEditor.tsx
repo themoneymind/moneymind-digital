@@ -1,6 +1,5 @@
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { DraggableArea } from "./DraggableArea";
+import { DragHandler } from "./DragHandler";
 import { ScaleControl } from "./ScaleControl";
 import { Position } from "./types";
 
@@ -23,23 +22,14 @@ export const ProfilePictureEditor = ({
   onSave,
   isLoading,
 }: ProfilePictureEditorProps) => {
-  const [isDragging, setIsDragging] = useState(false);
-
   return (
     <div className="flex flex-col items-center gap-6 py-4">
-      <div
-        onMouseUp={() => setIsDragging(false)}
-        onMouseLeave={() => setIsDragging(false)}
-        onMouseDown={() => setIsDragging(true)}
-      >
-        <DraggableArea
-          scale={scale}
-          position={position}
-          imageUrl={imageUrl}
-          onPositionChange={onPositionChange}
-          isDragging={isDragging}
-        />
-      </div>
+      <DragHandler
+        scale={scale}
+        position={position}
+        imageUrl={imageUrl}
+        onPositionChange={onPositionChange}
+      />
 
       <div className="w-full max-w-xs space-y-4">
         <ScaleControl scale={scale} onScaleChange={onScaleChange} />
