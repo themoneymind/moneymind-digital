@@ -150,7 +150,6 @@ export const ProfilePicture = () => {
       <ProfilePictureUploader 
         imageUrl={imageUrl}
         onFileSelect={handleFileChange}
-        onOpenDialog={() => setIsOpen(true)}
       />
 
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
