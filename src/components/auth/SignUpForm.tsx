@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { SignUpInputs } from "./SignUpInputs";
 import { useSignUpValidation } from "./SignUpValidation";
@@ -16,6 +16,7 @@ export const SignUpForm = () => {
   const { validateInputs } = useSignUpValidation();
   const { isLoading, handleSignUp } = useSignUp();
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   const handlePasswordChange = (value: string) => {
     setPassword(value);
@@ -53,6 +54,8 @@ export const SignUpForm = () => {
           description: "Please check your email to verify your account. You will be able to set your password after verification.",
           duration: 6000,
         });
+        // Add navigation to signin page after successful signup
+        navigate("/signin");
       }
     } catch (error) {
       const authError = error as AuthError;
