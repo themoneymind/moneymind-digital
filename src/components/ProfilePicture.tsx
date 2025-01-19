@@ -37,7 +37,6 @@ export const ProfilePicture = () => {
       .single();
 
     if (profile?.avatar_url) {
-      // Preload the image to prevent flash
       const img = new Image();
       img.src = profile.avatar_url;
       img.onload = () => {
@@ -96,7 +95,6 @@ export const ProfilePicture = () => {
       const reader = new FileReader();
       reader.onload = (e) => {
         setImageUrl(e.target?.result as string);
-        setIsOpen(true);
       };
       reader.readAsDataURL(file);
     }
@@ -152,22 +150,39 @@ export const ProfilePicture = () => {
       <ProfilePictureUploader 
         imageUrl={imageUrl}
         onFileSelect={handleFileChange}
+        onOpenDialog={() => setIsOpen(true)}
       />
 
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle>Adjust Profile Picture</DialogTitle>
+            <DialogTitle>
+              {selectedFile ? "Adjust Profile Picture" : "Update Profile Picture"}
+            </DialogTitle>
           </DialogHeader>
-          <ProfilePictureEditor
-            imageUrl={imageUrl}
-            scale={scale}
-            position={position}
-            onScaleChange={(e) => setScale(Number(e.target.value))}
-            onPositionChange={setPosition}
-            onSave={handleSave}
-            isLoading={isLoading}
-          />
+          {selectedFile ? (
+            <ProfilePictureEditor
+              imageUrl={imageUrl}
+              scale={scale}
+              position={position}
+              onScaleChange={(e) => setScale(Number(e.target.value))}
+              onPositionChange={setPosition}
+              onSave={handleSave}
+              isLoading={isLoading}
+            />
+          ) : (
+            <div className="p-6 space-y-4">
+              <p className="text-sm text-gray-500">
+                Choose a new profile picture to upload
+              </p>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleFileChange}
+                className="w-full"
+              />
+            </div>
+          )}
         </DialogContent>
       </Dialog>
     </>

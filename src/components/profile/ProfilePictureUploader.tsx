@@ -5,14 +5,19 @@ import { useAuth } from "@/contexts/AuthContext";
 type ProfilePictureUploaderProps = {
   imageUrl: string | null;
   onFileSelect: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onOpenDialog: () => void;
 };
 
-export const ProfilePictureUploader = ({ imageUrl, onFileSelect }: ProfilePictureUploaderProps) => {
+export const ProfilePictureUploader = ({ 
+  imageUrl, 
+  onFileSelect,
+  onOpenDialog 
+}: ProfilePictureUploaderProps) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { user } = useAuth();
 
   const handleClick = () => {
-    fileInputRef.current?.click();
+    onOpenDialog();
   };
 
   return (
