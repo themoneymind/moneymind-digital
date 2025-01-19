@@ -122,6 +122,10 @@ export const ProfileEditPage = () => {
     }
   };
 
+  const handleProfileClick = () => {
+    // This function is intentionally empty as the click handling is managed by the ProfilePicture component
+  };
+
   return (
     <div className="min-h-screen bg-[#F5F5F7] dark:bg-gray-900">
       <SettingsHeader title="Edit Profile" />
@@ -131,6 +135,8 @@ export const ProfileEditPage = () => {
             <ProfilePictureUploader
               imageUrl={profile.avatar_url}
               onFileSelect={handleFileSelect}
+              onClick={handleProfileClick}
+              hasExistingImage={!!profile.avatar_url}
             />
           </div>
 
