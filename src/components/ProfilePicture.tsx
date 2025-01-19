@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/dialog";
 import { ProfilePictureUploader } from "./profile/ProfilePictureUploader";
 import { ProfilePictureEditor } from "./profile/ProfilePictureEditor";
+import { Position } from "./profile/types";
 
 export const ProfilePicture = () => {
   const [scale, setScale] = useState(1);
@@ -19,7 +20,7 @@ export const ProfilePicture = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [position, setPosition] = useState({ x: 0, y: 0 });
+  const [position, setPosition] = useState<Position>({ x: 0, y: 0 });
 
   useEffect(() => {
     if (user) {
@@ -52,34 +53,42 @@ export const ProfilePicture = () => {
         const img = new Image();
         img.onload = () => {
           const canvas = document.createElement('canvas');
-          const MAX_WIDTH = 800;
-          const MAX_HEIGHT = 800;
-          let width = img.width;
-          let height = img.height;
-
-          if (width > height) {
-            if (width > MAX_WIDTH) {
-              height *= MAX_WIDTH / width;
-              width = MAX_WIDTH;
-            }
-          } else {
-            if (height > MAX_HEIGHT) {
-              width *= MAX_HEIGHT / height;
-              height = MAX_HEIGHT;
-            }
-          }
-
-          canvas.width = width;
-          canvas.height = height;
           const ctx = canvas.getContext('2d');
-          ctx?.drawImage(img, position.x, position.y, width * scale, height * scale);
+          if (!ctx) return;
+
+          // Set canvas size to final desired dimensions
+          const SIZE = 400; // Final size
+          canvas.width = SIZE;
+          canvas.height = SIZE;
+
+          // Calculate scaled dimensions
+          const scaledWidth = img.width * scale;
+          const scaledHeight = img.height * scale;
+
+          // Calculate centering offsets
+          const centerX = (SIZE - scaledWidth) / 2 + position.x;
+          const centerY = (SIZE - scaledHeight) / 2 + position.y;
+
+          // Draw with transformations
+          ctx.save();
+          ctx.translate(SIZE / 2, SIZE / 2);
+          ctx.scale(scale, scale);
+          ctx.translate(-SIZE / 2, -SIZE / 2);
+          ctx.drawImage(
+            img,
+            centerX / scale,
+            centerY / scale,
+            img.width,
+            img.height
+          );
+          ctx.restore();
 
           canvas.toBlob(
             (blob) => {
               if (blob) resolve(blob);
             },
             'image/jpeg',
-            0.7
+            0.9
           );
         };
         img.src = e.target?.result as string;
@@ -97,7 +106,10 @@ export const ProfilePicture = () => {
         setImageUrl(e.target?.result as string);
       };
       reader.readAsDataURL(file);
-      setIsOpen(true); // Open the scaling dialog immediately after file selection
+      setIsOpen(true);
+      // Reset position and scale when new image is selected
+      setPosition({ x: 0, y: 0 });
+      setScale(1);
     }
   };
 
