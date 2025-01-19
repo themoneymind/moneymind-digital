@@ -5,17 +5,25 @@ import { useAuth } from "@/contexts/AuthContext";
 type ProfilePictureUploaderProps = {
   imageUrl: string | null;
   onFileSelect: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onClick: () => void;
+  hasExistingImage: boolean;
 };
 
 export const ProfilePictureUploader = ({ 
   imageUrl, 
   onFileSelect,
+  onClick,
+  hasExistingImage,
 }: ProfilePictureUploaderProps) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { user } = useAuth();
 
   const handleClick = () => {
-    fileInputRef.current?.click();
+    if (hasExistingImage) {
+      onClick();
+    } else {
+      fileInputRef.current?.click();
+    }
   };
 
   return (
@@ -30,7 +38,11 @@ export const ProfilePictureUploader = ({
           {user?.email?.charAt(0).toUpperCase() || 'U'}
         </AvatarFallback>
       </Avatar>
-      <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity rounded-full" />
+      <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity rounded-full">
+        <span className="text-white text-xs">
+          {hasExistingImage ? 'Edit Photo' : 'Add Photo'}
+        </span>
+      </div>
       <input
         type="file"
         ref={fileInputRef}

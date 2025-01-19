@@ -12,6 +12,7 @@ import { ProfilePictureUploader } from "./profile/ProfilePictureUploader";
 import { ProfilePictureEditor } from "./profile/ProfilePictureEditor";
 import { Position } from "./profile/types";
 import { processImageForCanvas } from "@/utils/imageProcessing";
+import { Button } from "./ui/button";
 
 export const ProfilePicture = () => {
   const [scale, setScale] = useState(1);
@@ -59,6 +60,12 @@ export const ProfilePicture = () => {
       setIsOpen(true);
       setPosition({ x: 0, y: 0 });
       setScale(1);
+    }
+  };
+
+  const handleProfileClick = () => {
+    if (imageUrl) {
+      setIsOpen(true);
     }
   };
 
@@ -112,6 +119,8 @@ export const ProfilePicture = () => {
       <ProfilePictureUploader 
         imageUrl={imageUrl}
         onFileSelect={handleFileChange}
+        onClick={handleProfileClick}
+        hasExistingImage={!!imageUrl}
       />
 
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
@@ -119,17 +128,36 @@ export const ProfilePicture = () => {
           <DialogHeader>
             <DialogTitle>Adjust Profile Picture</DialogTitle>
           </DialogHeader>
-          {selectedFile && (
-            <ProfilePictureEditor
-              imageUrl={imageUrl}
-              scale={scale}
-              position={position}
-              onScaleChange={(e) => setScale(Number(e.target.value))}
-              onPositionChange={setPosition}
-              onSave={handleSave}
-              isLoading={isLoading}
-            />
-          )}
+          <div className="space-y-4">
+            {imageUrl && (
+              <ProfilePictureEditor
+                imageUrl={imageUrl}
+                scale={scale}
+                position={position}
+                onScaleChange={(e) => setScale(Number(e.target.value))}
+                onPositionChange={setPosition}
+                onSave={handleSave}
+                isLoading={isLoading}
+              />
+            )}
+            <div className="flex justify-center">
+              <label className="cursor-pointer">
+                <Button 
+                  variant="outline" 
+                  type="button"
+                  className="w-full"
+                >
+                  Change Profile Picture
+                  <input
+                    type="file"
+                    className="hidden"
+                    onChange={handleFileChange}
+                    accept="image/*"
+                  />
+                </Button>
+              </label>
+            </div>
+          </div>
         </DialogContent>
       </Dialog>
     </>
