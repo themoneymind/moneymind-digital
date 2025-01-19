@@ -1,27 +1,4 @@
 import type { Config } from "tailwindcss";
-import { flattenColorPalette } from "tailwindcss/lib/util/flattenColorPalette";
-
-// This plugin adds each Tailwind color as a global CSS variable, e.g. var(--gray-200).
-function addVariablesForColors({ addBase, theme }: any) {
-  let allColors = flattenColorPalette(theme("colors"));
-  let newVars = Object.fromEntries(
-    Object.entries(allColors).map(([key, val]) => [`--${key}`, val])
-  );
-
-  addBase({
-    ":root": {
-      ...newVars,
-      "--white": "#FFFFFF",
-      "--black": "#000000",
-      "--transparent": "transparent",
-      "--blue-300": "#93C5FD",
-      "--blue-400": "#60A5FA",
-      "--blue-500": "#3B82F6",
-      "--indigo-300": "#A5B4FC",
-      "--violet-200": "#DDD6FE",
-    },
-  });
-}
 
 export default {
   darkMode: ["class"],
@@ -74,6 +51,7 @@ export default {
           DEFAULT: "#F3F4F6",
           foreground: "#1F2937",
         },
+        // Adding new transaction type colors
         transaction: {
           income: "#00AF1E",
           expense: "#FF1122",
@@ -109,23 +87,14 @@ export default {
           "60%": { transform: "rotate(0.0deg)" },
           "100%": { transform: "rotate(0.0deg)" },
         },
-        "aurora": {
-          from: {
-            backgroundPosition: "50% 50%, 50% 50%",
-          },
-          to: {
-            backgroundPosition: "350% 50%, 350% 50%",
-          },
-        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
         "fade-in": "fade-in 0.3s ease-out",
         "wave": "wave 2.5s ease-in-out infinite",
-        "aurora": "aurora 60s linear infinite",
       },
     },
   },
-  plugins: [require("tailwindcss-animate"), addVariablesForColors],
+  plugins: [require("tailwindcss-animate")],
 } satisfies Config;
