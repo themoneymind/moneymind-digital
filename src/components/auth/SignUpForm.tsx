@@ -5,7 +5,6 @@ import { SignUpInputs } from "./SignUpInputs";
 import { useSignUpValidation } from "./SignUpValidation";
 import { useSignUp } from "@/hooks/useSignUp";
 import { useToast } from "@/hooks/use-toast";
-import { Checkbox } from "@/components/ui/checkbox";
 import { AuthError } from "@supabase/supabase-js";
 
 export const SignUpForm = () => {
@@ -54,7 +53,6 @@ export const SignUpForm = () => {
           description: "Please check your email to verify your account. You will be able to set your password after verification.",
           duration: 6000,
         });
-        // Add navigation to signin page after successful signup
         navigate("/signin");
       }
     } catch (error) {
@@ -91,19 +89,12 @@ export const SignUpForm = () => {
         isLoading={isLoading}
       />
       
-      <div className="flex items-center space-x-2">
-        <Checkbox 
-          id="terms" 
-          className="border-2 border-[#7F3DFF] data-[state=checked]:bg-[#7F3DFF] data-[state=checked]:border-[#7F3DFF]"
-          required 
-        />
-        <label htmlFor="terms" className="text-sm text-gray-600">
-          I agree to the{" "}
-          <Link to="/terms" className="text-[#7F3DFF] hover:text-[#6366F1] transition-colors">
-            Terms & Conditions
-          </Link>
-        </label>
-      </div>
+      <p className="text-sm text-gray-600 text-center">
+        By clicking Sign Up, you agree to our{" "}
+        <Link to="/terms" className="text-[#7F3DFF] hover:text-[#6366F1] transition-colors">
+          Terms & Conditions
+        </Link>
+      </p>
       
       <Button 
         type="submit" 
