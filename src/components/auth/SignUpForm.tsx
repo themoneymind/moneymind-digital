@@ -89,13 +89,6 @@ export const SignUpForm = () => {
         isLoading={isLoading}
       />
       
-      <p className="text-sm text-gray-600 text-center">
-        By clicking Sign Up, you agree to our{" "}
-        <Link to="/terms" className="text-[#7F3DFF] hover:text-[#6366F1] transition-colors">
-          Terms & Conditions
-        </Link>
-      </p>
-      
       <Button 
         type="submit" 
         className="w-full h-12 rounded-xl text-base bg-[#7F3DFF] hover:bg-[#6366F1] transition-colors"
@@ -108,6 +101,13 @@ export const SignUpForm = () => {
         Already have an account?{" "}
         <Link to="/signin" className="text-[#7F3DFF] hover:text-[#6366F1] transition-colors">
           Sign In
+        </Link>
+      </p>
+
+      <p className="text-xs text-gray-500 text-center">
+        By clicking Sign Up, you agree to our{" "}
+        <Link to="/terms" className="text-[#7F3DFF] hover:text-[#6366F1] transition-colors">
+          Terms & Conditions
         </Link>
       </p>
     </form>
