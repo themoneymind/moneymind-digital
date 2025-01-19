@@ -1,18 +1,23 @@
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { ResendOtpButton } from "./ResendOtpButton";
 
 interface OtpVerificationStepProps {
   otp: string;
   setOtp: (value: string) => void;
   handleVerifyOtp: () => void;
+  handleResendOtp: () => void;
   isLoading: boolean;
+  cooldownTime: number;
 }
 
 export const OtpVerificationStep = ({
   otp,
   setOtp,
   handleVerifyOtp,
+  handleResendOtp,
   isLoading,
+  cooldownTime,
 }: OtpVerificationStepProps) => {
   return (
     <div className="space-y-4">
@@ -33,6 +38,11 @@ export const OtpVerificationStep = ({
       >
         {isLoading ? "Verifying..." : "Verify OTP"}
       </Button>
+      <ResendOtpButton
+        cooldownTime={cooldownTime}
+        onResend={handleResendOtp}
+        isLoading={isLoading}
+      />
     </div>
   );
 };

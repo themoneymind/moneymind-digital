@@ -19,7 +19,6 @@ export const PinSignIn = ({
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
 
-  // Handle cooldown timer
   useEffect(() => {
     let timer: NodeJS.Timeout;
     if (cooldownTime > 0) {
@@ -33,92 +32,78 @@ export const PinSignIn = ({
   }, [cooldownTime]);
 
   const handleSendOtp = useCallback(async () => {
-    try {
-      // Prevent multiple clicks while processing
-      if (isLoading || externalLoading) {
-        return;
-      }
-
-      // Check if in cooldown
+    if (isLoading || externalLoading || cooldownTime > 0) {
       if (cooldownTime > 0) {
         toast({
           title: "Please wait",
           description: `You can request another OTP in ${cooldownTime} seconds`,
           variant: "destructive",
         });
-        return;
       }
+      return;
+    }
 
-      const contactValue = contact.trim();
-      
-      // If input contains only numbers, show the "coming soon" message
-      if (/^\d+$/.test(contactValue)) {
-        toast({
-          title: "Phone Authentication Coming Soon",
-          description: "Currently, only email authentication is available. Please use your email address.",
-          variant: "default",
-        });
-        return;
-      }
-
-      const contactType = getContactType(contactValue);
-      
-      if (contactType === 'invalid') {
-        toast({
-          title: "Invalid Input",
-          description: "Please enter a valid email address",
-          variant: "destructive",
-        });
-        return;
-      }
-
-      setIsLoading(true);
-
-      try {
-        await sendOtpEmail(contactValue);
-        toast({
-          title: "Success",
-          description: "Please check your email for the verification code",
-        });
-        setOtpSent(true);
-        setCooldownTime(60); // Start cooldown
-      } catch (error: any) {
-        console.error("Error sending OTP:", error);
-        
-        if (error.status === 404) {
-          toast({
-            title: "Account Not Found",
-            description: error.message || "No account exists with this email address. Please sign up first.",
-            variant: "destructive",
-          });
-        } else if (error.status === 429) {
-          setCooldownTime(60);
-          toast({
-            title: "Too Many Attempts",
-            description: "Please wait a minute before requesting another OTP",
-            variant: "destructive",
-          });
-        } else if (error.status === 422) {
-          toast({
-            title: "OTP Not Available",
-            description: error.message || "Email OTP authentication is not enabled. Please use password authentication.",
-            variant: "destructive",
-          });
-        } else {
-          toast({
-            title: "Error",
-            description: error.message || "Failed to send OTP",
-            variant: "destructive",
-          });
-        }
-      }
-    } catch (error: any) {
-      console.error("Error in handleSendOtp:", error);
+    const contactValue = contact.trim();
+    
+    if (/^\d+$/.test(contactValue)) {
       toast({
-        title: "Error",
-        description: "An unexpected error occurred. Please try again.",
+        title: "Phone Authentication Coming Soon",
+        description: "Currently, only email authentication is available. Please use your email address.",
+        variant: "default",
+      });
+      return;
+    }
+
+    const contactType = getContactType(contactValue);
+    
+    if (contactType === 'invalid') {
+      toast({
+        title: "Invalid Input",
+        description: "Please enter a valid email address",
         variant: "destructive",
       });
+      return;
+    }
+
+    setIsLoading(true);
+
+    try {
+      await sendOtpEmail(contactValue);
+      toast({
+        title: "Success",
+        description: "Please check your email for the verification code",
+      });
+      setOtpSent(true);
+      setCooldownTime(60);
+    } catch (error: any) {
+      console.error("Error sending OTP:", error);
+      
+      if (error.status === 404) {
+        toast({
+          title: "Account Not Found",
+          description: error.message || "No account exists with this email address. Please sign up first.",
+          variant: "destructive",
+        });
+      } else if (error.status === 429) {
+        setCooldownTime(60);
+        toast({
+          title: "Too Many Attempts",
+          description: "Please wait a minute before requesting another OTP",
+          variant: "destructive",
+        });
+      } else if (error.status === 422) {
+        toast({
+          title: "OTP Not Available",
+          description: error.message || "Email OTP authentication is not enabled. Please use password authentication.",
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "Error",
+          description: error.message || "Failed to send OTP",
+          variant: "destructive",
+        });
+      }
     } finally {
       setIsLoading(false);
     }
@@ -153,7 +138,9 @@ export const PinSignIn = ({
           otp={otp}
           setOtp={setOtp}
           handleVerifyOtp={handleVerifyOtp}
+          handleResendOtp={handleSendOtp}
           isLoading={isLoading || externalLoading}
+          cooldownTime={cooldownTime}
         />
       ) : (
         <ContactInputStep
