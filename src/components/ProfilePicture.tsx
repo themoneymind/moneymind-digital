@@ -63,7 +63,6 @@ export const ProfilePicture = () => {
     if (imageUrl) {
       setScale(1); // Reset scale when opening dialog
       setPosition({ x: 0, y: 0 }); // Reset position when opening dialog
-      setSelectedFile(null); // Reset selected file when opening existing image
       setIsOpen(true);
     }
   };
