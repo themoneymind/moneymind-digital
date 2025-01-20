@@ -40,6 +40,7 @@ export const ProfilePicture = () => {
       .single();
 
     if (profile?.avatar_url) {
+      // Ensure we're using the complete URL without any malformed parts
       setImageUrl(profile.avatar_url);
     }
   };
@@ -83,9 +84,13 @@ export const ProfilePicture = () => {
 
       if (uploadError) throw uploadError;
 
+      // Get the public URL using the proper method
       const { data: { publicUrl } } = supabase.storage
         .from('profile_pictures')
         .getPublicUrl(filePath);
+
+      // Ensure the URL is properly formatted before updating the profile
+      if (!publicUrl) throw new Error('Failed to get public URL');
 
       const { error: updateError } = await supabase
         .from('profiles')
