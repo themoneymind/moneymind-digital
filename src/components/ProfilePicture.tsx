@@ -33,15 +33,35 @@ export const ProfilePicture = () => {
   const fetchProfilePicture = async () => {
     if (!user) return;
     
-    const { data: profile } = await supabase
-      .from('profiles')
-      .select('avatar_url')
-      .eq('id', user.id)
-      .single();
+    try {
+      const { data: profile, error } = await supabase
+        .from('profiles')
+        .select('avatar_url')
+        .eq('id', user.id)
+        .maybeSingle();
 
-    if (profile?.avatar_url) {
-      // Ensure we're using the complete URL without any malformed parts
-      setImageUrl(profile.avatar_url);
+      if (error) {
+        console.error('Error fetching profile:', error);
+        return;
+      }
+
+      if (profile?.avatar_url) {
+        // Validate and clean the URL
+        try {
+          const url = new URL(profile.avatar_url);
+          setImageUrl(url.toString());
+        } catch (e) {
+          console.error('Invalid URL format:', e);
+          setImageUrl(null);
+        }
+      }
+    } catch (error) {
+      console.error('Error in fetchProfilePicture:', error);
+      toast({
+        title: "Error",
+        description: "Failed to fetch profile picture",
+        variant: "destructive",
+      });
     }
   };
 
@@ -62,9 +82,9 @@ export const ProfilePicture = () => {
 
   const handleProfileClick = () => {
     if (imageUrl) {
-      setScale(1); // Reset scale when opening dialog
-      setPosition({ x: 0, y: 0 }); // Reset position when opening dialog
-      setSelectedFile(null); // Reset selected file when opening existing image
+      setScale(1);
+      setPosition({ x: 0, y: 0 });
+      setSelectedFile(null);
       setIsOpen(true);
     }
   };
@@ -84,22 +104,25 @@ export const ProfilePicture = () => {
 
       if (uploadError) throw uploadError;
 
-      // Get the public URL using the proper method
-      const { data: { publicUrl } } = supabase.storage
+      const { data } = supabase.storage
         .from('profile_pictures')
         .getPublicUrl(filePath);
 
-      // Ensure the URL is properly formatted before updating the profile
-      if (!publicUrl) throw new Error('Failed to get public URL');
+      if (!data?.publicUrl) {
+        throw new Error('Failed to get public URL');
+      }
+
+      // Validate the URL before updating
+      const validatedUrl = new URL(data.publicUrl).toString();
 
       const { error: updateError } = await supabase
         .from('profiles')
-        .update({ avatar_url: publicUrl })
+        .update({ avatar_url: validatedUrl })
         .eq('id', user.id);
 
       if (updateError) throw updateError;
 
-      setImageUrl(publicUrl);
+      setImageUrl(validatedUrl);
       toast({
         title: "Success",
         description: "Profile picture updated successfully",
