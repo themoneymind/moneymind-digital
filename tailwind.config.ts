@@ -28,11 +28,11 @@ export default {
         background: "#F8FAFC",
         foreground: "hsl(var(--foreground))",
         primary: {
-          DEFAULT: "#6366F1",
+          DEFAULT: "#7F3DFF",
           foreground: "#FFFFFF",
           gradient: {
-            from: "#7C3AED",
-            to: "#6366F1",
+            from: "#7F3DFF",
+            to: "#1F64FF",
           },
         },
         success: {
@@ -51,7 +51,6 @@ export default {
           DEFAULT: "#F3F4F6",
           foreground: "#1F2937",
         },
-        // Adding new transaction type colors
         transaction: {
           income: "#00AF1E",
           expense: "#FF1122",

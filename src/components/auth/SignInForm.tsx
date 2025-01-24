@@ -65,12 +65,14 @@ export const SignInForm = ({
 
   return (
     <div className="space-y-6">
-      <div className="text-left space-y-2">
-        <div className="flex items-center mb-2">
-          <PiggyBank className="h-10 w-10 text-[#7F3DFF]" />
+      <div className="text-center space-y-2">
+        <div className="flex items-center justify-center mb-2">
+          <PiggyBank className="h-10 w-10 bg-gradient-to-r from-primary-gradient-from to-primary-gradient-to bg-clip-text text-transparent" />
         </div>
-        <h1 className="text-2xl font-bold text-[#7F3DFF]">MoneyMind</h1>
-        <p className="text-gray-600 text-base">
+        <h1 className="text-xl font-bold bg-gradient-to-r from-primary-gradient-from to-primary-gradient-to bg-clip-text text-transparent">
+          MoneyMind
+        </h1>
+        <p className="text-sm text-gray-600">
           Sign in to your account
         </p>
       </div>
@@ -111,9 +113,9 @@ export const SignInForm = ({
         )}
       </Tabs>
 
-      <p className="text-gray-600 text-sm text-center">
+      <p className="text-xs text-gray-600 text-center">
         Don't have an account?{" "}
-        <Link to="/signup" className="text-[#7F3DFF] hover:text-[#7F3DFF]/90">
+        <Link to="/signup" className="text-primary hover:text-primary/90">
           Sign up
         </Link>
       </p>
