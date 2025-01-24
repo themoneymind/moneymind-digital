@@ -129,7 +129,7 @@ export const SignIn = () => {
   };
 
   return (
-    <div className="min-h-screen relative overflow-hidden bg-white bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-purple-100/80 via-blue-50/60 to-white">
+    <div className="min-h-screen relative overflow-hidden bg-white bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-purple-200 via-blue-100 to-white">
       <div className="p-6 pt-8 md:flex md:items-center md:justify-center md:min-h-screen">
         <div className="w-full max-w-6xl mx-auto">
           <div className="md:grid md:grid-cols-2 md:gap-8">
