@@ -68,15 +68,17 @@ export const SignInForm = ({
   return (
     <div className="space-y-6">
       <div className="text-left space-y-2">
-        <Button
-          variant="ghost"
-          size="icon"
-          className="mb-4 -ml-2 text-gray-600 hover:text-gray-900"
-          onClick={() => navigate(-1)}
-        >
-          <ArrowLeft className="h-5 w-5" />
-        </Button>
-        <h2 className="text-xl font-semibold text-gray-900 mb-6">Sign In</h2>
+        <div className="flex items-center gap-2 mb-6">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="text-gray-600 hover:text-gray-900"
+            onClick={() => navigate(-1)}
+          >
+            <ArrowLeft className="h-5 w-5" />
+          </Button>
+          <h2 className="text-2xl font-semibold text-gray-900">Sign In</h2>
+        </div>
         <div className="flex items-center mb-2">
           <PiggyBank className="h-10 w-10 text-[#7F3DFF]" />
         </div>
