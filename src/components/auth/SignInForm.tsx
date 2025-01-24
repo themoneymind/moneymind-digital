@@ -67,8 +67,8 @@ export const SignInForm = ({
 
   return (
     <div className="space-y-6">
-      <div className="text-left space-y-2">
-        <div className="flex items-center gap-2 mb-6">
+      <div className="text-center space-y-2">
+        <div className="flex items-center justify-between mb-6">
           <Button
             variant="ghost"
             size="icon"
@@ -77,13 +77,14 @@ export const SignInForm = ({
           >
             <ArrowLeft className="h-5 w-5" />
           </Button>
-          <h2 className="text-2xl font-semibold text-gray-900">Sign In</h2>
+          <h2 className="text-xl font-semibold text-gray-900">Sign In</h2>
+          <div className="w-10" /> {/* Spacer for centering */}
         </div>
-        <div className="flex items-center mb-2">
+        <div className="flex justify-center items-center mb-2">
           <PiggyBank className="h-10 w-10 text-[#7F3DFF]" />
         </div>
-        <h1 className="text-2xl font-bold text-[#7F3DFF]">MoneyMind</h1>
-        <p className="text-gray-600 text-base">
+        <h1 className="text-xl font-bold text-[#7F3DFF]">MoneyMind</h1>
+        <p className="text-sm text-gray-600">
           Sign in to your account
         </p>
       </div>
@@ -124,7 +125,7 @@ export const SignInForm = ({
         )}
       </Tabs>
 
-      <p className="text-gray-600 text-sm text-center">
+      <p className="text-gray-600 text-xs text-center">
         Don't have an account?{" "}
         <Link to="/signup" className="text-[#7F3DFF] hover:text-[#7F3DFF]/90">
           Sign up
