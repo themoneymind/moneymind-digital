@@ -130,8 +130,12 @@ export const SignIn = () => {
 
   return (
     <div className="min-h-screen relative overflow-hidden bg-white">
-      {/* Gradient overlay */}
-      <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-purple-200/30 via-blue-100/20 to-transparent"></div>
+      {/* Mesh gradient overlay */}
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute top-0 right-0 w-2/3 h-2/3 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-blue-200/50 via-blue-100/30 to-transparent"></div>
+        <div className="absolute top-1/4 right-1/4 w-1/2 h-1/2 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-purple-200/30 via-pink-100/20 to-transparent blur-xl"></div>
+        <div className="absolute top-1/3 right-1/3 w-1/3 h-1/3 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-indigo-200/40 via-indigo-100/20 to-transparent blur-lg"></div>
+      </div>
       
       <div className="p-6 pt-8 md:flex md:items-center md:justify-center md:min-h-screen">
         <div className="w-full max-w-6xl mx-auto">
