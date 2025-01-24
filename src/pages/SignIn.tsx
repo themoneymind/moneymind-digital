@@ -4,6 +4,7 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { SignInForm } from "@/components/auth/SignInForm";
 import { SignInDecoration } from "@/components/auth/SignInDecoration";
+import { ArrowLeft } from "lucide-react";
 
 export const SignIn = () => {
   const [email, setEmail] = useState("");
@@ -129,9 +130,17 @@ export const SignIn = () => {
   };
 
   return (
-    <div className="min-h-screen relative overflow-hidden bg-white bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-[#D6BCFA]/20 via-[#E5DEFF]/10 to-[#D3E4FD]/5">
+    <div className="min-h-screen relative overflow-hidden bg-white bg-[linear-gradient(135deg,_var(--tw-gradient-stops))] from-[#D6BCFA]/10 via-[#E5DEFF]/5 to-[#D3E4FD]/5">
       <div className="p-6 pt-8 md:flex md:items-center md:justify-center md:min-h-screen">
         <div className="w-full max-w-6xl mx-auto">
+          <button
+            onClick={() => navigate(-1)}
+            className="absolute top-4 left-4 p-2 text-gray-600 hover:text-gray-900 transition-colors"
+            aria-label="Go back"
+          >
+            <ArrowLeft className="h-6 w-6" />
+          </button>
+          
           <div className="md:grid md:grid-cols-2 md:gap-8">
             {/* Left Column - Sign In Form */}
             <div className="md:bg-white/10 backdrop-blur-lg md:p-8 md:rounded-2xl md:shadow-lg">
