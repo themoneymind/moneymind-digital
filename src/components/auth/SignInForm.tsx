@@ -1,13 +1,12 @@
 import { useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Tabs, TabsContent } from "@/components/ui/tabs";
-import { PiggyBank, ArrowLeft } from "lucide-react";
+import { PiggyBank } from "lucide-react";
 import { PasswordSignIn } from "./signin/PasswordSignIn";
 import { PinSignIn } from "./signin/PinSignIn";
 import { BiometricSignIn } from "./signin/BiometricSignIn";
 import { SignInTabs } from "./signin/SignInTabs";
 import { useSignInForm } from "@/hooks/useSignInForm";
-import { Button } from "@/components/ui/button";
 
 interface SignInFormProps {
   email: string;
@@ -26,7 +25,6 @@ export const SignInForm = ({
   handleSubmit,
   isLoading,
 }: SignInFormProps) => {
-  const navigate = useNavigate();
   const {
     activeTab,
     setActiveTab,
@@ -67,24 +65,12 @@ export const SignInForm = ({
 
   return (
     <div className="space-y-6">
-      <div className="text-center space-y-2">
-        <div className="flex items-center justify-between mb-6">
-          <Button
-            variant="ghost"
-            size="icon"
-            className="text-gray-600 hover:text-gray-900"
-            onClick={() => navigate(-1)}
-          >
-            <ArrowLeft className="h-5 w-5" />
-          </Button>
-          <h2 className="text-xl font-semibold text-gray-900">Sign In</h2>
-          <div className="w-10" /> {/* Spacer for centering */}
-        </div>
-        <div className="flex justify-center items-center mb-2">
+      <div className="text-left space-y-2">
+        <div className="flex items-center mb-2">
           <PiggyBank className="h-10 w-10 text-[#7F3DFF]" />
         </div>
-        <h1 className="text-xl font-bold text-[#7F3DFF]">MoneyMind</h1>
-        <p className="text-sm text-gray-600">
+        <h1 className="text-2xl font-bold text-[#7F3DFF]">MoneyMind</h1>
+        <p className="text-gray-600 text-base">
           Sign in to your account
         </p>
       </div>
@@ -125,7 +111,7 @@ export const SignInForm = ({
         )}
       </Tabs>
 
-      <p className="text-gray-600 text-xs text-center">
+      <p className="text-gray-600 text-sm text-center">
         Don't have an account?{" "}
         <Link to="/signup" className="text-[#7F3DFF] hover:text-[#7F3DFF]/90">
           Sign up

@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { TopBar } from "@/components/TopBar";
 import { SignInForm } from "@/components/auth/SignInForm";
 import { SignInDecoration } from "@/components/auth/SignInDecoration";
 
@@ -129,15 +130,17 @@ export const SignIn = () => {
   };
 
   return (
-    <div className="min-h-screen relative overflow-hidden bg-white">
-      {/* Gradient overlay */}
-      <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-purple-200/30 via-blue-100/20 to-transparent"></div>
+    <div className="min-h-screen bg-[#F5F3FF] relative overflow-hidden">
+      <TopBar title="Sign In" />
       
-      <div className="p-6 pt-8 md:flex md:items-center md:justify-center md:min-h-screen">
+      {/* Decorative Circle */}
+      <div className="absolute top-0 right-0 w-32 h-32 rounded-full bg-[#7F3DFF]/10 -mr-16 -mt-16" />
+      
+      <div className="p-6 pt-8 md:flex md:items-center md:justify-center md:min-h-[calc(100vh-64px)]">
         <div className="w-full max-w-6xl mx-auto">
           <div className="md:grid md:grid-cols-2 md:gap-8">
             {/* Left Column - Sign In Form */}
-            <div className="md:bg-white/10 backdrop-blur-sm md:p-8 md:rounded-2xl md:shadow-lg">
+            <div className="md:bg-white/50 md:backdrop-blur-sm md:p-8 md:rounded-2xl md:shadow-lg">
               <SignInForm
                 email={email}
                 setEmail={setEmail}
