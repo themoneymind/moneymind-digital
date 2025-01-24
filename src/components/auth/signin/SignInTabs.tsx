@@ -1,6 +1,4 @@
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { BiometricIcon } from "./BiometricIcon";
-import { LockKeyhole, Smartphone } from "lucide-react";
+import { TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 interface SignInTabsProps {
   biometricAvailable: boolean;
@@ -8,34 +6,25 @@ interface SignInTabsProps {
 
 export const SignInTabs = ({ biometricAvailable }: SignInTabsProps) => {
   return (
-    <TabsList className="grid w-full grid-cols-2 bg-muted rounded-lg p-1">
+    <TabsList className="flex p-1 bg-gray-100 rounded-full gap-2 w-[80%] max-w-md mx-auto">
       <TabsTrigger
         value="password"
-        className="rounded-md data-[state=active]:bg-white data-[state=active]:text-foreground data-[state=active]:shadow-sm"
+        className="flex-1 px-6 py-2 rounded-full text-sm transition-all data-[state=active]:bg-[#7F3DFF] data-[state=active]:text-white data-[state=inactive]:bg-transparent data-[state=inactive]:text-gray-500"
       >
-        <div className="flex items-center gap-2">
-          <LockKeyhole className="h-4 w-4" />
-          <span>Password</span>
-        </div>
+        Password
       </TabsTrigger>
       <TabsTrigger
         value="otp"
-        className="rounded-md data-[state=active]:bg-white data-[state=active]:text-foreground data-[state=active]:shadow-sm"
+        className="flex-1 px-6 py-2 rounded-full text-sm transition-all data-[state=active]:bg-[#7F3DFF] data-[state=active]:text-white data-[state=inactive]:bg-transparent data-[state=inactive]:text-gray-500"
       >
-        <div className="flex items-center gap-2">
-          <Smartphone className="h-4 w-4" />
-          <span>OTP</span>
-        </div>
+        OTP Login
       </TabsTrigger>
       {biometricAvailable && (
         <TabsTrigger
           value="biometric"
-          className="rounded-md data-[state=active]:bg-white data-[state=active]:text-foreground data-[state=active]:shadow-sm"
+          className="flex-1 px-6 py-2 rounded-full text-sm transition-all data-[state=active]:bg-[#7F3DFF] data-[state=active]:text-white data-[state=inactive]:bg-transparent data-[state=inactive]:text-gray-500"
         >
-          <div className="flex items-center gap-2">
-            <BiometricIcon className="h-4 w-4" />
-            <span>Biometric</span>
-          </div>
+          Biometric
         </TabsTrigger>
       )}
     </TabsList>
