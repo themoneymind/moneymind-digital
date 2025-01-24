@@ -130,10 +130,8 @@ export const SignIn = () => {
 
   return (
     <div className="min-h-screen relative overflow-hidden bg-white">
-      {/* Glassmorphism gradient overlay */}
-      <div className="absolute top-0 right-0 w-[40%] h-[40%] pointer-events-none">
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-200/30 via-blue-100/20 to-transparent backdrop-blur-[2px] rounded-bl-full"></div>
-      </div>
+      {/* Gradient overlay */}
+      <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-purple-200/30 via-blue-100/20 to-transparent"></div>
       
       <div className="p-6 pt-8 md:flex md:items-center md:justify-center md:min-h-screen">
         <div className="w-full max-w-6xl mx-auto">
