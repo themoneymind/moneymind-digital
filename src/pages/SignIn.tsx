@@ -130,11 +130,19 @@ export const SignIn = () => {
 
   return (
     <div className="min-h-screen relative overflow-hidden bg-white">
-      {/* Mesh gradient overlay */}
+      {/* Multicolor mesh gradient overlay */}
       <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-0 right-0 w-2/3 h-2/3 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-blue-200/50 via-blue-100/30 to-transparent"></div>
-        <div className="absolute top-1/4 right-1/4 w-1/2 h-1/2 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-purple-200/30 via-pink-100/20 to-transparent blur-xl"></div>
-        <div className="absolute top-1/3 right-1/3 w-1/3 h-1/3 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-indigo-200/40 via-indigo-100/20 to-transparent blur-lg"></div>
+        {/* Primary gradient - Ocean Blue to Sky */}
+        <div className="absolute top-0 right-0 w-3/4 h-2/3 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-[#0EA5E9]/40 via-[#33C3F0]/30 to-transparent"></div>
+        
+        {/* Secondary gradient - Purple accent */}
+        <div className="absolute top-1/4 right-1/4 w-1/2 h-1/2 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-[#8B5CF6]/30 via-[#9b87f5]/20 to-transparent blur-xl"></div>
+        
+        {/* Tertiary gradient - Pink highlight */}
+        <div className="absolute top-1/3 left-1/3 w-1/3 h-1/3 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-[#D946EF]/20 via-[#FFDEE2]/20 to-transparent blur-lg"></div>
+        
+        {/* Accent gradient - Soft blue */}
+        <div className="absolute bottom-1/4 right-1/4 w-1/4 h-1/4 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-[#D3E4FD]/30 via-[#F1F0FB]/20 to-transparent blur-md"></div>
       </div>
       
       <div className="p-6 pt-8 md:flex md:items-center md:justify-center md:min-h-screen">
