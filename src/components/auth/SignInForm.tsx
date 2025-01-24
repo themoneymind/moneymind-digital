@@ -1,12 +1,13 @@
 import { useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Tabs, TabsContent } from "@/components/ui/tabs";
-import { PiggyBank } from "lucide-react";
+import { PiggyBank, ArrowLeft } from "lucide-react";
 import { PasswordSignIn } from "./signin/PasswordSignIn";
 import { PinSignIn } from "./signin/PinSignIn";
 import { BiometricSignIn } from "./signin/BiometricSignIn";
 import { SignInTabs } from "./signin/SignInTabs";
 import { useSignInForm } from "@/hooks/useSignInForm";
+import { Button } from "@/components/ui/button";
 
 interface SignInFormProps {
   email: string;
@@ -25,6 +26,7 @@ export const SignInForm = ({
   handleSubmit,
   isLoading,
 }: SignInFormProps) => {
+  const navigate = useNavigate();
   const {
     activeTab,
     setActiveTab,
@@ -66,6 +68,15 @@ export const SignInForm = ({
   return (
     <div className="space-y-6">
       <div className="text-left space-y-2">
+        <Button
+          variant="ghost"
+          size="icon"
+          className="mb-4 -ml-2 text-gray-600 hover:text-gray-900"
+          onClick={() => navigate(-1)}
+        >
+          <ArrowLeft className="h-5 w-5" />
+        </Button>
+        <h2 className="text-xl font-semibold text-gray-900 mb-6">Sign In</h2>
         <div className="flex items-center mb-2">
           <PiggyBank className="h-10 w-10 text-[#7F3DFF]" />
         </div>
