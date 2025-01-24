@@ -129,8 +129,11 @@ export const SignIn = () => {
   };
 
   return (
-    <div className="min-h-screen relative overflow-hidden bg-white bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-purple-200 via-blue-100 to-white">
-      <div className="p-6 pt-8 md:flex md:items-center md:justify-center md:min-h-screen">
+    <div className="min-h-screen relative overflow-hidden bg-white">
+      {/* Add a separate div for the gradient overlay */}
+      <div className="absolute top-0 right-0 w-1/2 h-1/2 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-purple-200 via-blue-100 to-transparent pointer-events-none" />
+      
+      <div className="relative p-6 pt-8 md:flex md:items-center md:justify-center md:min-h-screen">
         <div className="w-full max-w-6xl mx-auto">
           <div className="md:grid md:grid-cols-2 md:gap-8">
             {/* Left Column - Sign In Form */}
