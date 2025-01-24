@@ -28,11 +28,11 @@ export default {
         background: "#F8FAFC",
         foreground: "hsl(var(--foreground))",
         primary: {
-          DEFAULT: "#7F3DFF",
+          DEFAULT: "#1F64FF",
           foreground: "#FFFFFF",
           gradient: {
-            from: "#7F3DFF",
-            to: "#1F64FF",
+            from: "#1F64FF",
+            to: "#7F3DFF",
           },
         },
         success: {
@@ -54,7 +54,7 @@ export default {
         transaction: {
           income: "#00AF1E",
           expense: "#FF1122",
-          transfer: "#7F3DFF",
+          transfer: "#1F64FF",
         },
       },
       borderRadius: {
