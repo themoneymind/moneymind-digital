@@ -28,11 +28,11 @@ export default {
         background: "#F8FAFC",
         foreground: "hsl(var(--foreground))",
         primary: {
-          DEFAULT: "#8B5CF6",
+          DEFAULT: "#7F3DFF",
           foreground: "#FFFFFF",
           gradient: {
-            from: "#8B5CF6",
-            to: "#6366F1",
+            from: "#7F3DFF",
+            to: "#1F64FF",
           },
         },
         success: {
