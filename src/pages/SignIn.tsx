@@ -129,7 +129,7 @@ export const SignIn = () => {
   };
 
   return (
-    <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-[#8B5CF6] via-[#D946EF] to-[#0EA5E9]">
+    <div className="min-h-screen relative overflow-hidden bg-white bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-[#D6BCFA]/20 via-[#E5DEFF]/10 to-[#D3E4FD]/5">
       <div className="p-6 pt-8 md:flex md:items-center md:justify-center md:min-h-screen">
         <div className="w-full max-w-6xl mx-auto">
           <div className="md:grid md:grid-cols-2 md:gap-8">
