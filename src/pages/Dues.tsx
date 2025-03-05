@@ -1,8 +1,10 @@
+
 import { TopBar } from "@/components/TopBar";
 import { BottomNav } from "@/components/BottomNav";
 import { DuesForm } from "@/components/dues/DuesForm";
 import { DuesBalanceCard } from "@/components/dues/DuesBalanceCard";
 import { DuesTransactionsList } from "@/components/dues/DuesTransactionsList";
+import { DashboardAd } from "@/components/ads/DashboardAd";
 
 const Dues = () => {
   return (
@@ -13,6 +15,8 @@ const Dues = () => {
         <div className="max-w-[100%] px-4 space-y-3">
           <DuesBalanceCard />
           <DuesForm />
+          {/* Ad placement between form and transactions list */}
+          <DashboardAd />
           <DuesTransactionsList />
         </div>
       </main>

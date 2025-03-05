@@ -1,9 +1,11 @@
+
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { PaymentSources } from "./PaymentSources";
 import { CreditCards } from "./CreditCards";
 import { RecentTransactions } from "./RecentTransactions";
 import { BalanceCard } from "./BalanceCard";
 import { MonthSelector } from "./MonthSelector";
+import { DashboardAd } from "./ads/DashboardAd";
 
 export const DashboardTabs = () => {
   return (
@@ -33,6 +35,8 @@ export const DashboardTabs = () => {
         <div className="px-6">
           <MonthSelector />
           <BalanceCard />
+          {/* Ad placement between main content sections */}
+          <DashboardAd />
           <PaymentSources />
         </div>
       </TabsContent>
@@ -42,12 +46,18 @@ export const DashboardTabs = () => {
           <MonthSelector />
         </div>
         <CreditCards />
+        {/* Ad placement at bottom of tab */}
+        <div className="px-6 mt-4">
+          <DashboardAd />
+        </div>
       </TabsContent>
 
       <TabsContent value="transactions" className="mt-6">
         <div className="px-6">
           <MonthSelector />
           <RecentTransactions />
+          {/* Ad placement after transactions list */}
+          <DashboardAd />
         </div>
       </TabsContent>
     </Tabs>
